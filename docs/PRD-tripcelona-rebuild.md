@@ -476,6 +476,8 @@ Server-side `purchase` via Stripe webhook → GA4 Measurement Protocol (optional
 
 ## 14. Decisions required before build
 
+Status of each decision is tracked in [`docs/decisions.md`](decisions.md).
+
 | # | Decision | Options | Recommendation | Owner |
 |---|---|---|---|---|
 | D1 | Payment provider | Stripe / PayTPV-Redsys (current contract) | Stripe unless merchant contract forbids it; confirm fees and settlement | Ayoub |
