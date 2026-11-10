@@ -367,7 +367,7 @@ export function urlMapFromCsv(csv: string): Map<string, string> {
   return map;
 }
 
-function splitCsvLine(line: string): string[] {
+export function splitCsvLine(line: string): string[] {
   const out: string[] = [];
   let cur = "";
   let quoted = false;

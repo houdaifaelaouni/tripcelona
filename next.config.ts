@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { securityHeaders } from "./src/lib/seo/security-headers";
 
 const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL)
@@ -7,9 +8,24 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  // src/proxy.ts removes trailing slashes and maps legacy URLs in one 301 hop.
+  skipTrailingSlashRedirect: true,
   experimental: {
     // Media library uploads (FR-87): images up to 10 MB go through a server action.
     serverActions: { bodySizeLimit: "11mb" },
+  },
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders({
+          supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+          production: process.env.VERCEL_ENV === "production",
+          preview: process.env.VERCEL_ENV === "preview",
+        }),
+      },
+    ];
   },
   images: {
     formats: ["image/avif", "image/webp"],

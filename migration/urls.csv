@@ -1,17 +1,17 @@
 old_url,source,lastmod,page_type,new_path,action,notes
 https://tripcelona.com/,sitemap:page,2026-11-09,home,/,keep,
 https://tripcelona.com/ofertas-de-viajes/,sitemap:page,2026-10-31,catalog,/ofertas-de-viajes,keep,Trailing slash normalised by 308 (PRD §6 rule)
-https://tripcelona.com/grupos/,sitemap:page,2026-11-09,page,/grupos,keep,NOT in PRD §5.2 inventory; needs a route decision (own page or merge into /crea-tu-tour). Flagged to PO
+https://tripcelona.com/grupos/,sitemap:page,2026-11-09,page,/grupos,pending,"Old page had only booking-plugin shortcodes, no text (Sprint 8 import). Needs owner copy or a redirect target"
 https://tripcelona.com/sobre-nosotros/,sitemap:page,2026-10-30,page,/sobre-nosotros,keep,
 https://tripcelona.com/crea-tu-tour/,sitemap:page,2026-10-26,quote,/crea-tu-tour,keep,
 https://tripcelona.com/contactanos/,sitemap:page,2026-10-25,page,/contactanos,keep,
 https://tripcelona.com/preguntas-frecuentes/,sitemap:page,2026-10-25,faq,/preguntas-frecuentes,keep,
-https://tripcelona.com/eventos/,prd:5.2,,events,/eventos,keep,Not in live sitemap; verify it is live and whether it is noindexed
+https://tripcelona.com/eventos/,prd:5.2,,events,/eventos,pending,No route yet: events scope is decision D3 (open). Until then this URL returns 404
 https://tripcelona.com/blogs/,prd:5.2,,blog-index,/blog,301,Not in live sitemap; verify
 https://tripcelona.com/politica-de-privacidad/,prd:5.2,,legal,/politica-de-privacidad,keep,Not in live sitemap (likely noindex); verify live
 https://tripcelona.com/politica-de-devoluciones/,prd:5.2,,legal,/politica-de-devoluciones,keep,Not in live sitemap (likely noindex); verify live
 https://tripcelona.com/condiciones-de-contratacion/,prd:5.2,,legal,/condiciones-de-contratacion,keep,Not in live sitemap (likely noindex); verify live
-https://tripcelona.com/politica-de-cookies/,prd:5.2,,legal,/politica-de-cookies,keep,Not in live sitemap (likely noindex); verify live
+https://tripcelona.com/politica-de-cookies/,prd:5.2,,legal,/politica-de-cookies,pending,Old page was a Complianz shortcode only; owner must supply the text (docs/legal/owner-review.md)
 https://tripcelona.com/aviso-legal/,prd:5.2,,legal,/aviso-legal,keep,Not in live sitemap (likely noindex); verify live
 https://tripcelona.com/cart/,prd:5.2,,woocommerce,/reservar,301,
 https://tripcelona.com/checkout/,prd:5.2,,woocommerce,/reservar,301,
@@ -31,6 +31,6 @@ https://tripcelona.com/sitemap_index.xml,sitemap:index,,system,/sitemap.xml,301,
 https://tripcelona.com/post-sitemap.xml,sitemap:index,,system,/sitemap.xml,301,
 https://tripcelona.com/page-sitemap.xml,sitemap:index,,system,/sitemap.xml,301,
 https://tripcelona.com/product-sitemap.xml,sitemap:index,,system,/sitemap.xml,301,
-https://tripcelona.com/wp-content/uploads/*,legacy-media,,media,(per-file map after S7 media pipeline),301,Image URLs may be indexed in Google Images; map in S7 (US-30)
-https://tripcelona.com/wp-admin/*,legacy,,system,,retire,410/404 after cutover
-https://tripcelona.com/feed/,legacy,,system,,retire,Or 301 to RSS if built (FR-94 optional)
+https://tripcelona.com/wp-content/uploads/*,legacy-media,,media,Supabase Storage via media.source_url,301,"src/app/wp-content/uploads route: 301 to the Storage copy, 404 if unknown. Needs pnpm media:sync before cutover"
+https://tripcelona.com/wp-admin/*,legacy,,system,,retire,410 Gone (src/lib/seo/legacy.ts)
+https://tripcelona.com/feed/,legacy,,system,,retire,410 Gone (src/lib/seo/legacy.ts)

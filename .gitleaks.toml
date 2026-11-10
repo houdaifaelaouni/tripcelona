@@ -1,0 +1,13 @@
+# Secret scan (US-39). Default gitleaks rules, plus two reviewed exceptions.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Reviewed false positives"
+# Redsys' published sandbox key (documented by Redsys, test environment only),
+# used for local tests and the e2e fake gateway.
+regexes = ['''sq7HjrUOBfKmC576ILgskD5srU870gJ7''']
+# 2e0fbbb committed a password for the e2e owner on the throwaway local
+# Supabase stack (no real system). It was replaced by a value derived at run
+# time in the next commit.
+commits = ["2e0fbbb19ba6236b0bf5ad70e1465a14b66aa8bf"]
