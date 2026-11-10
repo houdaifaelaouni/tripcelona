@@ -54,6 +54,51 @@ export type Database = {
         };
         Relationships: [];
       };
+      booking_emails: {
+        Row: {
+          attempts: number;
+          booking_id: string;
+          created_at: string;
+          error: string | null;
+          id: string;
+          kind: string;
+          provider_id: string | null;
+          status: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          attempts?: number;
+          booking_id: string;
+          created_at?: string;
+          error?: string | null;
+          id?: string;
+          kind: string;
+          provider_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          attempts?: number;
+          booking_id?: string;
+          created_at?: string;
+          error?: string | null;
+          id?: string;
+          kind?: string;
+          provider_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "booking_emails_booking_id_fkey";
+            columns: ["booking_id"];
+            isOneToOne: false;
+            referencedRelation: "bookings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       booking_travellers: {
         Row: {
           age_group: string | null;
@@ -349,6 +394,37 @@ export type Database = {
         };
         Relationships: [];
       };
+      payment_events: {
+        Row: {
+          event_key: string;
+          id: string;
+          outcome: string | null;
+          payload: NonNullable<Json>;
+          provider: string;
+          provider_ref: string;
+          received_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          event_key: string;
+          id?: string;
+          outcome?: string | null;
+          payload: NonNullable<Json>;
+          provider: string;
+          provider_ref: string;
+          received_at?: string;
+        };
+        Update: {
+          event_key?: string;
+          id?: string;
+          outcome?: string | null;
+          payload?: NonNullable<Json>;
+          provider?: string;
+          provider_ref?: string;
+          received_at?: string;
+        };
+        Relationships: [];
+      };
       payments: {
         Row: {
           amount_cents: number;
@@ -358,6 +434,8 @@ export type Database = {
           provider: string;
           provider_ref: string;
           raw_event: Json | null;
+          refund_raw: Json | null;
+          refunded_at: string | null;
           status: Database["public"]["Enums"]["payment_status"];
           updated_at: string;
         };
@@ -370,6 +448,8 @@ export type Database = {
           provider: string;
           provider_ref: string;
           raw_event?: Json | null;
+          refund_raw?: Json | null;
+          refunded_at?: string | null;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
         };
@@ -381,6 +461,8 @@ export type Database = {
           provider?: string;
           provider_ref?: string;
           raw_event?: Json | null;
+          refund_raw?: Json | null;
+          refunded_at?: string | null;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
         };
@@ -959,6 +1041,17 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      apply_payment_result: {
+        Args: {
+          p_amount_cents: number;
+          p_authorized: boolean;
+          p_event_key: string;
+          p_payload: Json;
+          p_provider: string;
+          p_provider_ref: string;
+        };
+        Returns: string;
+      };
       confirm_hold: { Args: { p_booking_id: string; p_hold_id: string }; Returns: boolean };
       current_staff_role: {
         Args: Record<PropertyKey, never>;
@@ -971,6 +1064,7 @@ export type Database = {
       is_owner: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_staff: { Args: Record<PropertyKey, never>; Returns: boolean };
       next_booking_reference: { Args: Record<PropertyKey, never>; Returns: string };
+      release_booking_seats: { Args: { p_booking_id: string }; Returns: number };
       release_expired_holds: { Args: Record<PropertyKey, never>; Returns: number };
       release_hold: { Args: { p_hold_id: string }; Returns: boolean };
     };

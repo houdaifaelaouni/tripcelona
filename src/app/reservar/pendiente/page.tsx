@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { BookingSummary } from "@/components/booking/booking-summary";
 import { WhatsAppCta } from "@/components/tours/empty-state";
-import { Card } from "@/components/ui/card";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { formatDateLong, formatPrice } from "@/lib/tours/format";
+import { getBookingDetails } from "@/lib/booking/details";
+import { redsysConfig } from "@/lib/payments/config";
 
-export const metadata: Metadata = { title: "Reserva pendiente de pago", robots: { index: false } };
+export const metadata: Metadata = { title: "Pago de tu reserva", robots: { index: false } };
 
-/**
- * Landing page after checkout. Online payment (Redsys, decision D1) plugs in
- * here in Sprint 6; until then the booking stays pending and the seats are
- * released when the 15-minute hold expires.
- */
+const NOTICES: Record<string, string> = {
+  error: "El pago no se ha completado. Puedes intentarlo de nuevo, con la misma u otra tarjeta.",
+  no_seats: "Lo sentimos: mientras tanto se han agotado las plazas de esta salida.",
+  not_configured: "El pago con tarjeta no está disponible ahora mismo.",
+  not_pending: "Esta reserva ya no está pendiente de pago.",
+  not_found: "No encontramos esta reserva.",
+};
+
+/** Step 2 of checkout: review and pay (US-19). */
 export default function PendingPage({ searchParams }: PageProps<"/reservar/pendiente">) {
   return (
     <div className="container-site max-w-2xl py-8 md:py-12">
@@ -24,67 +29,86 @@ export default function PendingPage({ searchParams }: PageProps<"/reservar/pendi
   );
 }
 
+function first(value: string | string[] | undefined): string {
+  return (Array.isArray(value) ? value[0] : value) ?? "";
+}
+
 async function Pending({
   searchParams,
 }: {
   searchParams: PageProps<"/reservar/pendiente">["searchParams"];
 }) {
   await connection();
-  const raw = (await searchParams).id;
-  const id = Array.isArray(raw) ? raw[0] : raw;
-  const booking =
-    id && /^[0-9a-f-]{36}$/i.test(id)
-      ? (
-          await createAdminClient()
-            .from("bookings")
-            .select(
-              "reference, travellers, total_cents, status, tour_departures(starts_at, tours(title))",
-            )
-            .eq("id", id)
-            .maybeSingle()
-        ).data
-      : null;
+  const params = await searchParams;
+  const booking = await getBookingDetails({ id: first(params.id) });
+  const notice = NOTICES[first(params.pago)];
 
-  if (!booking) {
-    return <h1 className="text-2xl">No encontramos esta reserva</h1>;
+  if (!booking) return <h1 className="text-2xl">No encontramos esta reserva</h1>;
+
+  if (booking.status === "paid") {
+    return (
+      <>
+        <h1 className="text-3xl">Esta reserva ya está pagada</h1>
+        <BookingSummary booking={booking} />
+        <div className="mt-6">
+          <ButtonLink href={`/reservar/confirmada?id=${booking.id}`}>Ver confirmación</ButtonLink>
+        </div>
+      </>
+    );
   }
 
+  if (booking.status !== "pending") {
+    return (
+      <>
+        <h1 className="text-3xl">Reserva cancelada</h1>
+        <p className="mt-2 text-muted">
+          La reserva <strong className="text-ink">{booking.reference}</strong> ya no está activa.
+        </p>
+        <div className="mt-6">
+          <WhatsAppCta
+            message={`Hola, tengo una pregunta sobre la reserva ${booking.reference}.`}
+          />
+        </div>
+      </>
+    );
+  }
+
+  const canPay = redsysConfig() !== null;
   return (
     <>
-      <h1 className="text-3xl">Plazas reservadas</h1>
+      <h1 className="text-3xl">Revisa y paga tu reserva</h1>
       <p className="mt-2 text-muted">
-        Tu reserva <strong className="text-ink">{booking.reference}</strong> está pendiente de pago.
+        Guardamos tus plazas durante 15 minutos. La reserva se confirma en cuanto el banco autoriza
+        el pago.
       </p>
-      <Card className="mt-6 p-5">
-        <dl className="space-y-2">
-          <div>
-            <dt className="text-sm text-muted">Excursión</dt>
-            <dd className="font-bold">{booking.tour_departures.tours.title}</dd>
-          </div>
-          <div>
-            <dt className="text-sm text-muted">Fecha</dt>
-            <dd className="font-bold first-letter:uppercase">
-              {formatDateLong(booking.tour_departures.starts_at)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-sm text-muted">Viajeros</dt>
-            <dd className="font-bold">{booking.travellers}</dd>
-          </div>
-          <div>
-            <dt className="text-sm text-muted">Total</dt>
-            <dd className="text-2xl font-bold">{formatPrice(booking.total_cents)}</dd>
-          </div>
-        </dl>
-      </Card>
-      {/* TODO(S6, US-19): redirect to the Redsys payment page here. */}
-      <p className="mt-6">
-        El pago online con tarjeta se activa muy pronto. Mientras tanto, escríbenos por WhatsApp con
-        tu referencia y te ayudamos a completar la reserva.
-      </p>
-      <div className="mt-4">
+      {notice && (
+        <p
+          role="alert"
+          className="mt-4 rounded-card border border-danger/30 bg-danger/5 p-3 text-sm font-bold text-danger"
+        >
+          {notice}
+        </p>
+      )}
+      <BookingSummary booking={booking} />
+      {canPay ? (
+        <form method="post" action="/api/pagos/redsys/iniciar" className="mt-6">
+          <input type="hidden" name="bookingId" value={booking.id} />
+          <Button type="submit" size="lg" className="w-full sm:w-auto">
+            Pagar con tarjeta
+          </Button>
+          <p className="mt-2 text-sm text-muted">
+            Pago seguro en la pasarela del banco (Redsys), con verificación 3D Secure.
+          </p>
+        </form>
+      ) : (
+        <p className="mt-6">
+          El pago online no está disponible ahora mismo. Escríbenos por WhatsApp con tu referencia y
+          te ayudamos a completar la reserva.
+        </p>
+      )}
+      <div className="mt-6">
         <WhatsAppCta
-          label="Completar por WhatsApp"
+          label="¿Dudas? Escríbenos"
           message={`Hola, tengo la reserva ${booking.reference} pendiente de pago.`}
         />
       </div>
