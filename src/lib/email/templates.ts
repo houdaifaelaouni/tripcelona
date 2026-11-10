@@ -20,7 +20,8 @@ export type EmailBooking = {
 };
 
 export type EmailContent = { subject: string; html: string; text: string };
-export type EmailKind = "confirmation" | "owner_alert" | "payment_failed" | "cancellation";
+export type EmailKind =
+  "confirmation" | "owner_alert" | "payment_failed" | "payment_request" | "cancellation";
 
 function esc(value: string): string {
   return value
@@ -178,5 +179,27 @@ ${rows(facts)}
 <p>${esc(refundLine)}</p>`,
     ),
     text: `${heading}.\n\nHola ${b.customerName}, ${intro}\n\n${textRows(facts)}\n\n${refundLine}`,
+  };
+}
+
+export function paymentRequestEmail(b: EmailBooking, payUrl: string): EmailContent {
+  const date = formatDateLong(b.departure.startsAt);
+  const facts: [string, string][] = [
+    ["Referencia", b.reference],
+    ["Excursión", b.tour.title],
+    ["Fecha", date.charAt(0).toUpperCase() + date.slice(1)],
+    ["Viajeros", String(b.travellers)],
+    ["Total", formatPrice(b.totalCents)],
+  ];
+  return {
+    subject: `Completa el pago de tu reserva ${b.reference}`,
+    html: layout(
+      "Pago pendiente",
+      `<h1 style="font-size:22px;margin:0 0 8px">Te hemos guardado las plazas</h1>
+<p>Hola ${esc(b.customerName)}, para confirmar tu reserva solo falta el pago con tarjeta:</p>
+${rows(facts)}
+<p><a href="${payUrl}" style="background:#0071c2;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Pagar la reserva</a></p>`,
+    ),
+    text: `Te hemos guardado las plazas.\n\nHola ${b.customerName}, para confirmar tu reserva solo falta el pago con tarjeta.\n\n${textRows(facts)}\n\nPagar la reserva: ${payUrl}`,
   };
 }

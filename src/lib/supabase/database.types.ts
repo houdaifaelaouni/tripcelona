@@ -1067,6 +1067,16 @@ export type Database = {
       release_booking_seats: { Args: { p_booking_id: string }; Returns: number };
       release_expired_holds: { Args: Record<PropertyKey, never>; Returns: number };
       release_hold: { Args: { p_hold_id: string }; Returns: boolean };
+      staff_members: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          email: string;
+          full_name: string;
+          id: string;
+          last_sign_in_at: string;
+          role: Database["public"]["Enums"]["staff_role"];
+        }[];
+      };
     };
     Enums: {
       booking_status: "pending" | "paid" | "cancelled" | "refunded";

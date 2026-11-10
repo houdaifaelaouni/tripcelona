@@ -75,3 +75,36 @@ pnpm ops resend TC-2026-0001 confirmation   # or owner_alert, payment_failed, ca
 pnpm ops refund TC-2026-0001                # refund one paid booking and free its seats
 pnpm ops cancel-departure <departure-uuid>  # cancel, refund every paid booking, email everyone
 ```
+
+## Admin (`/admin`)
+
+- Invite-only Supabase Auth. Public sign-up is off (`enable_signup = false`); the owner
+  invites people from **Equipo**, and roles live in `profiles.role` (`owner` | `editor`).
+- `src/proxy.ts` sends signed-out visitors to `/admin/login`; every admin page and server
+  action checks the role again on the server (`requireStaff` / `assertStaff`), and RLS
+  enforces the same rules in the database.
+- Editors edit tour content. Only the owner sees bookings/customer data, changes dates,
+  seats and prices, cancels departures, refunds and manages the team.
+- Optional TOTP two-step verification under **Mi cuenta**. Every admin change is written
+  to `audit_log`.
+
+First owner (run once with production env):
+
+```bash
+pnpm ops grant-staff owner@tu-dominio.com owner            # sends an invite email
+pnpm ops grant-staff owner@tu-dominio.com owner 'password' # or sets a password directly
+```
+
+Supabase dashboard settings for production: Auth → disable sign-ups, enable TOTP MFA,
+Site URL = production domain, add `https://<domain>/admin/auth/confirm` to redirect URLs.
+
+## Media pipeline
+
+```bash
+pnpm media:sync --dry-run          # what would change
+pnpm media:sync                    # download legacy originals, max 2000 px, WebP + AVIF to Storage
+pnpm media:sync --source-dir ./wp-uploads   # use local originals instead of downloading
+```
+
+Idempotent (already uploaded files are skipped; `--force` redoes them), reports skipped and
+failed files and exits non-zero on failures. When a run is clean, set `MEDIA_FROM_STORAGE=true`.

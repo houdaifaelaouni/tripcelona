@@ -68,18 +68,21 @@ export async function ensureHold(
   const db = createAdminClient();
   const { data: live } = await db
     .from("seat_holds")
-    .select("id, status")
+    .select("id, status, expires_at")
     .eq("booking_id", bookingId)
     .in("status", ["held", "confirmed"])
     .gt("expires_at", new Date().toISOString())
     .limit(1);
   if (live?.length) {
-    // Give the customer a full window on the payment page.
-    await db
-      .from("seat_holds")
-      .update({ expires_at: new Date(Date.now() + 15 * 60_000).toISOString() })
-      .eq("id", live[0].id)
-      .eq("status", "held");
+    // Give the customer a full window on the payment page (never shorten a
+    // longer hold, e.g. a manual booking waiting 24 h for payment).
+    const window = new Date(Date.now() + 15 * 60_000).toISOString();
+    if (live[0].expires_at < window)
+      await db
+        .from("seat_holds")
+        .update({ expires_at: window })
+        .eq("id", live[0].id)
+        .eq("status", "held");
     return true;
   }
   // The old hold expired: free it now rather than waiting for the cron job.
@@ -172,17 +175,35 @@ export type RefundResult = { ok: true } | { ok: false; error: string };
  * Redsys again.
  */
 export async function refundPayment(paymentId: string): Promise<RefundResult> {
-  const config = redsysConfig();
-  if (!config) return { ok: false, error: "Redsys is not configured" };
   const db = createAdminClient();
   const { data: payment } = await db
     .from("payments")
-    .select("id, provider_ref, amount_cents, status, raw_event")
+    .select("id, provider, provider_ref, amount_cents, status, raw_event")
     .eq("id", paymentId)
     .single();
   if (!payment) return { ok: false, error: "Payment not found" };
   if (payment.status === "refunded") return { ok: true };
   if (payment.status !== "succeeded") return { ok: false, error: `Payment is ${payment.status}` };
+
+  // Cash/transfer bookings taken in the admin: the owner returns the money
+  // outside the site, so there is no gateway call, only the record.
+  if (payment.provider === "manual") {
+    await db
+      .from("payments")
+      .update({
+        status: "refunded",
+        refunded_at: new Date().toISOString(),
+        refund_raw: {
+          method: "manual",
+          note: "Devolución fuera de la web (efectivo/transferencia)",
+        },
+      })
+      .eq("id", payment.id);
+    return { ok: true };
+  }
+
+  const config = redsysConfig();
+  if (!config) return { ok: false, error: "Redsys is not configured" };
 
   // Refund what Redsys actually charged (differs only on amount_mismatch).
   const charged = Number((payment.raw_event as Record<string, string> | null)?.Ds_Amount);

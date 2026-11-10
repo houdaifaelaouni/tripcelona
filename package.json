@@ -14,7 +14,8 @@
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript > src/lib/supabase/database.types.ts && prettier --write src/lib/supabase/database.types.ts",
     "test": "vitest run tests/unit",
-    "ops": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/ops.ts"
+    "ops": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/ops.ts",
+    "media:sync": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/media-pipeline.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -37,6 +38,7 @@
     "eslint-config-prettier": "^10.1.8",
     "pg": "^8.23.1",
     "prettier": "^3.9.10",
+    "sharp": "^0.35.5",
     "supabase": "^3.1.0",
     "tailwindcss": "4.3.3",
     "tsx": "^4.23.15",
