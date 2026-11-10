@@ -12,11 +12,13 @@
     "format:check": "prettier --check .",
     "test:db": "vitest run tests/db && supabase test db",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript > src/lib/supabase/database.types.ts && prettier --write src/lib/supabase/database.types.ts"
+    "db:types": "supabase gen types typescript > src/lib/supabase/database.types.ts && prettier --write src/lib/supabase/database.types.ts",
+    "test": "vitest run tests/unit"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
+    "clsx": "^2.1.1",
     "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",

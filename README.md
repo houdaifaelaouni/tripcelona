@@ -50,3 +50,12 @@ Data model notes:
 3. Every PR gets a preview URL; check `<preview>/health` returns `{"status":"ok"}`.
 
 Previews send `noindex` until launch (set in `src/app/layout.tsx`).
+
+## CI
+
+- `.github/workflows/ci.yml` runs on every PR: typecheck, lint, format, unit tests, build, then a database job that starts Supabase, resets from migrations + seed, checks generated types are current and runs `pnpm test:db`.
+- `.github/workflows/lighthouse.yml` runs mobile Lighthouse against each successful Vercel preview, with budgets in `lighthouserc.json` (performance ≥ 0.9, accessibility ≥ 0.95, LCP ≤ 2.5 s, CLS ≤ 0.1, JS ≤ 200 KB). If Vercel preview protection is on, add a bypass token before this job can reach the preview.
+
+## Design system
+
+Tokens live in `src/app/globals.css` (`@theme`) and map to Tailwind utilities: `bg-navy`, `text-blue`, `border-yellow`, `rounded-card`, `shadow-panel`, `container-site`, and so on. Primitives are in `src/components/ui`; shell content (nav, footer links, contact) is in `src/lib/site.ts`.

@@ -1,11 +1,16 @@
+import { Hero } from "@/components/home/hero";
+
+// TODO(PO): hero video (tripcelona-hero-pirineo.mp4, re-encoded ≤ 6 MB) and a
+// poster image are needed from the owner; until then the hero shows the brand
+// gradient. Pass them as <Hero videoSrc posterSrc /> once uploaded to Storage.
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-4 px-4 py-16">
-      <h1 className="text-3xl font-bold">Tripcelona</h1>
-      <p>
-        Nueva web en construcción. Esta es una vista previa interna del Sprint 1; el sitio público
-        sigue en tripcelona.com.
-      </p>
-    </main>
+    <>
+      <Hero />
+      <section className="container-site py-12">
+        <h2 className="text-2xl">Próximas salidas</h2>
+        <p className="mt-2 text-muted">Las fichas de las excursiones llegan en el Sprint 4.</p>
+      </section>
+    </>
   );
 }
