@@ -1,19 +1,65 @@
 "use client";
 
+/*
+ * Pill search bar (design rule: one rounded bar split into labelled segments
+ * by hairlines, ending in a round search button). On phones the segments
+ * stack inside a rounded panel. Plain GET forms, so search works without JS.
+ */
+import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { FormEvent } from "react";
+import type { FormEvent, ReactNode } from "react";
 import { Tabs } from "@/components/ui/tabs";
-import { buttonClasses } from "@/components/ui/button";
+import { cn } from "@/lib/cn";
 import { destinations } from "@/lib/site";
 import { buildCatalogUrl, buildQuoteUrl, CATALOG_PATH, MONTHS_ES, QUOTE_PATH } from "@/lib/search";
 
-// Booking-style search bar: white panel inside a yellow ring (PRD Appendix B).
-const bar =
-  "grid gap-1 rounded-control border-[5px] border-yellow bg-yellow md:min-h-14 md:grid-cols-[2fr_1.2fr_1fr_auto]";
-const cell = "flex min-h-14 flex-col justify-center rounded-control bg-white px-3";
-const cellLabel = "text-xs font-bold text-muted";
-const cellControl =
-  "w-full bg-transparent text-base font-bold text-ink outline-none focus-visible:outline-none";
+const bar = cn(
+  "flex flex-col gap-1 rounded-panel bg-white p-2 text-ink shadow-float",
+  "md:flex-row md:items-center md:gap-0 md:rounded-full md:p-2 md:pl-2",
+);
+
+function Segment({
+  label,
+  className,
+  children,
+}: {
+  label: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <label
+      className={cn(
+        "relative flex min-h-14 flex-1 cursor-pointer flex-col justify-center rounded-control px-4 hover:bg-surface-alt md:rounded-full md:px-6",
+        // Hairline between segments on the pill (hidden next to the hovered one).
+        "md:not-first:before:absolute md:not-first:before:inset-y-3 md:not-first:before:left-0 md:not-first:before:w-px md:not-first:before:bg-border",
+        "focus-within:bg-surface-alt",
+        className,
+      )}
+    >
+      <span className="text-caption font-semibold">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+const control =
+  "w-full cursor-pointer appearance-none bg-transparent text-meta text-muted outline-none focus-visible:outline-none";
+
+function SearchOrb({ label }: { label: string }) {
+  return (
+    <button
+      type="submit"
+      className={cn(
+        "flex h-12 shrink-0 items-center justify-center gap-2 rounded-control bg-blue px-5 font-semibold text-white transition-colors hover:bg-blue-dark",
+        "md:ml-2 md:size-12 md:rounded-full md:px-0",
+      )}
+    >
+      <Search size={18} strokeWidth={2.5} aria-hidden />
+      <span className="md:sr-only">{label}</span>
+    </button>
+  );
+}
 
 export function SearchWidget() {
   const router = useRouter();
@@ -40,22 +86,16 @@ export function SearchWidget() {
   return (
     <Tabs
       label="Tipo de búsqueda"
-      tabListClassName="gap-1"
+      tabListClassName="mb-4"
       tabs={[
         {
           id: "excursiones",
           label: "Excursiones",
           content: (
-            <form
-              action={CATALOG_PATH}
-              method="get"
-              onSubmit={onTrips}
-              className="rounded-panel rounded-tl-none bg-white/0"
-            >
+            <form action={CATALOG_PATH} method="get" onSubmit={onTrips}>
               <div className={bar}>
-                <label className={`${cell} focus-within:ring-2 focus-within:ring-blue`}>
-                  <span className={cellLabel}>Destino</span>
-                  <select name="zona" className={cellControl} defaultValue="">
+                <Segment label="Zona" className="md:flex-[1.4]">
+                  <select name="zona" className={control} defaultValue="">
                     <option value="">Todos los destinos</option>
                     {destinations.map((d) => (
                       <option key={d.area} value={d.area}>
@@ -63,10 +103,9 @@ export function SearchWidget() {
                       </option>
                     ))}
                   </select>
-                </label>
-                <label className={`${cell} focus-within:ring-2 focus-within:ring-blue`}>
-                  <span className={cellLabel}>Mes</span>
-                  <select name="mes" className={cellControl} defaultValue="">
+                </Segment>
+                <Segment label="Fecha">
+                  <select name="mes" className={control} defaultValue="">
                     <option value="">Cualquier mes</option>
                     {MONTHS_ES.map((m, i) => (
                       <option key={m} value={i + 1}>
@@ -74,27 +113,21 @@ export function SearchWidget() {
                       </option>
                     ))}
                   </select>
-                </label>
-                <label className={`${cell} focus-within:ring-2 focus-within:ring-blue`}>
-                  <span className={cellLabel}>Personas</span>
+                </Segment>
+                <Segment label="Personas">
                   <input
                     name="personas"
                     type="number"
                     inputMode="numeric"
                     min={1}
                     max={60}
-                    placeholder="2"
-                    className={cellControl}
+                    placeholder="¿Cuántos sois?"
+                    className={cn(control, "cursor-text placeholder:text-muted")}
                   />
-                </label>
-                <button
-                  type="submit"
-                  className={buttonClasses({ size: "lg" }, "min-h-14 w-full md:w-auto")}
-                >
-                  Ver excursión
-                </button>
+                </Segment>
+                <SearchOrb label="Ver excursiones" />
               </div>
-              <p className="mt-2 text-sm text-white">
+              <p className="mt-3 text-meta text-white">
                 Salida en domingo desde Estació del Nord, Barcelona
               </p>
             </form>
@@ -105,27 +138,21 @@ export function SearchWidget() {
           label: "Grupos y empresas",
           content: (
             <form action={QUOTE_PATH} method="get" onSubmit={onGroups}>
-              <div className="grid gap-1 rounded-control border-[5px] border-yellow bg-yellow md:grid-cols-[1fr_auto]">
-                <label className={`${cell} focus-within:ring-2 focus-within:ring-blue`}>
-                  <span className={cellLabel}>Tamaño del grupo</span>
+              <div className={cn(bar, "md:max-w-xl")}>
+                <Segment label="Tamaño del grupo">
                   <input
                     name="grupo"
                     type="number"
                     inputMode="numeric"
                     min={1}
                     max={500}
-                    placeholder="20"
-                    className={cellControl}
+                    placeholder="Ej. 20 personas"
+                    className={cn(control, "cursor-text placeholder:text-muted")}
                   />
-                </label>
-                <button
-                  type="submit"
-                  className={buttonClasses({ size: "lg" }, "min-h-14 w-full md:w-auto")}
-                >
-                  Pedir presupuesto
-                </button>
+                </Segment>
+                <SearchOrb label="Pedir presupuesto" />
               </div>
-              <p className="mt-2 text-sm text-white">
+              <p className="mt-3 text-meta text-white">
                 Excursiones y team building a medida para grupos grandes y empresas
               </p>
             </form>

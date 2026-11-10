@@ -38,11 +38,11 @@ export function Hero({ videoSrc, posterSrc }: { videoSrc?: string; posterSrc?: s
         className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-dark via-navy-dark/70 to-navy-dark/30"
       />
 
-      <div className="container-site py-12 md:py-16">
-        <h1 className="max-w-3xl text-3xl md:text-5xl">
+      <div className="container-site py-16">
+        <h1 className="max-w-3xl text-display-xl md:text-5xl md:leading-[1.1]">
           Excursiones en grupo por Cataluña desde Barcelona
         </h1>
-        <p className="mt-4 max-w-2xl text-base text-white/90 md:text-lg">
+        <p className="mt-4 max-w-2xl text-base text-white/90">
           Excursiones de un día cada domingo desde Estació del Nord: el Pirineo, los volcanes de la
           Garrotxa y pueblos medievales de Cataluña. Transporte, guía local y logística incluidos,
           desde 55 € por persona.
