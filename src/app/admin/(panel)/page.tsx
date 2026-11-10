@@ -59,7 +59,10 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
         <Panel>
           <p>
             Tienes{" "}
-            <Link className="font-bold text-blue underline" href="/admin/solicitudes?estado=new">
+            <Link
+              className="font-semibold text-blue underline"
+              href="/admin/solicitudes?estado=new"
+            >
               {inbox.quotes}{" "}
               {inbox.quotes === 1
                 ? "solicitud de presupuesto nueva"
@@ -67,7 +70,7 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
             </Link>{" "}
             y{" "}
             <Link
-              className="font-bold text-blue underline"
+              className="font-semibold text-blue underline"
               href="/admin/solicitudes?tipo=mensajes&estado=new"
             >
               {inbox.messages} {inbox.messages === 1 ? "mensaje nuevo" : "mensajes nuevos"}

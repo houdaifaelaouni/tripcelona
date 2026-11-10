@@ -77,7 +77,7 @@ export default async function FaqAdmin({ searchParams }: PageProps<"/admin/faqs"
       {faqs.map((f) => (
         <Panel key={f.id} id={`faq-${f.id}`}>
           <details>
-            <summary className="cursor-pointer font-bold">
+            <summary className="cursor-pointer font-semibold">
               {f.question}{" "}
               <span className="font-normal text-muted">
                 ·{" "}

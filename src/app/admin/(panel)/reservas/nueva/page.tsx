@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Flash } from "@/components/admin/flash";
 import { PageTitle, Panel } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { Input, Select, Textarea } from "@/components/ui/field";
+import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
 import { createManualBooking } from "@/lib/admin/booking-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -62,11 +62,14 @@ export default async function NewBooking({ searchParams }: PageProps<"/admin/res
           <Input label="Email" name="email" type="email" required />
           <Input label="Teléfono" name="phone" type="tel" />
           <Textarea label="Comentarios" name="pickupNote" rows={2} />
-          <label className="flex items-center gap-2 text-sm md:col-span-2">
-            <input type="checkbox" name="notify" defaultChecked /> Enviar email de confirmación al
-            cliente
-          </label>
-          <p className="text-sm text-muted md:col-span-2">
+          <div className="md:col-span-2">
+            <Checkbox
+              name="notify"
+              defaultChecked
+              label="Enviar email de confirmación al cliente"
+            />
+          </div>
+          <p className="text-meta text-muted md:col-span-2">
             El precio se calcula con el precio de la salida. Las plazas se descuentan igual que en
             la web.
           </p>

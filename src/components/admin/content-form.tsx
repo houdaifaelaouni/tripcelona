@@ -42,7 +42,7 @@ export function ContentForm({
   return (
     <form action={action}>
       {readOnly && (
-        <p role="note" className="mb-4 rounded-card border border-border bg-white p-3 text-sm">
+        <p role="note" className="mb-4 rounded-card border border-border bg-white p-3 text-meta">
           {readOnly}
         </p>
       )}
@@ -108,7 +108,7 @@ export function ContentForm({
             </div>
           )}
           <div className="mt-4">
-            <p className="mb-1 text-sm font-bold" id="editor-label">
+            <p className="mb-1 text-meta font-semibold" id="editor-label">
               Texto
             </p>
             <RichTextEditor name="content" initial={values.content} images={media} label="Texto" />
@@ -145,11 +145,11 @@ export function ContentForm({
               </Select>
             </div>
             <Button type="submit">Guardar</Button>
-            <Link href={previewHref} className="text-sm text-blue underline" target="_blank">
+            <Link href={previewHref} className="text-meta text-blue underline" target="_blank">
               Vista previa (guarda antes) ↗
             </Link>
             {values.status === "published" && (
-              <Link href={publicPath} className="text-sm text-blue underline" target="_blank">
+              <Link href={publicPath} className="text-meta text-blue underline" target="_blank">
                 Ver en la web ↗
               </Link>
             )}

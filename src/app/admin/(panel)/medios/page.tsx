@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Flash } from "@/components/admin/flash";
 import { PageTitle, Panel } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/field";
+import { Checkbox, Input } from "@/components/ui/field";
 import { deleteMedia, updateMediaAlt, uploadMedia } from "@/lib/admin/media-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -46,7 +46,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
       <Panel title="Subir imagen">
         <form action={uploadMedia} className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
           <div className="flex flex-col gap-1">
-            <label htmlFor="file" className="text-sm font-bold">
+            <label htmlFor="file" className="text-meta font-semibold">
               Imagen (JPG, PNG, WebP, AVIF o GIF, máx. 10 MB)
             </label>
             <input
@@ -55,7 +55,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
               type="file"
               accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
               required
-              className="text-sm"
+              className="text-meta"
             />
           </div>
           <Input
@@ -79,21 +79,19 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
               placeholder="Texto alternativo o nombre de archivo"
             />
           </div>
-          <label className="flex items-center gap-2 pb-2 text-sm">
-            <input
-              type="checkbox"
+          <div className="pb-4">
+            <Checkbox
               name="sin_alt"
               value="1"
               defaultChecked={missingAlt}
-              className="h-4 w-4 accent-blue"
+              label="Solo sin texto alternativo"
             />
-            Solo sin texto alternativo
-          </label>
+          </div>
           <Button type="submit" variant="outline">
             Filtrar
           </Button>
         </form>
-        <p className="mt-3 text-sm text-muted">
+        <p className="mt-3 text-meta text-muted">
           {count ?? 0} imágenes
           {(count ?? 0) > PAGE ? ` (se muestran las ${PAGE} más recientes)` : ""}.
         </p>
@@ -115,7 +113,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
                   )}
                 </div>
                 <div className="space-y-2 p-3">
-                  <p className="truncate text-xs text-muted" title={m.path}>
+                  <p className="truncate text-caption text-muted" title={m.path}>
                     {m.path.split("/").pop()}
                     {m.width ? ` · ${m.width}×${m.height}` : ""}
                   </p>
@@ -133,7 +131,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
                       </Button>
                       {staff.role === "owner" &&
                         (used > 0 ? (
-                          <span className="text-xs text-muted">
+                          <span className="text-caption text-muted">
                             En uso ({used}): no se puede borrar
                           </span>
                         ) : (

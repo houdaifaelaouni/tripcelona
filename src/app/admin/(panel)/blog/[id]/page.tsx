@@ -39,7 +39,7 @@ export default async function PostEdit({ params, searchParams }: PageProps<"/adm
             action={deletePost.bind(null, post.id)}
             className="flex flex-wrap items-center gap-3"
           >
-            <p className="text-sm text-muted">
+            <p className="text-meta text-muted">
               Borra la entrada para siempre. Si solo quieres ocultarla, archívala.
             </p>
             <Button type="submit" variant="outline">

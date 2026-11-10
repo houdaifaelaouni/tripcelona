@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
 import { BookingStatus, PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/field";
+import { Checkbox, Select } from "@/components/ui/field";
 import {
   cancelPendingBooking,
   refundBookingAction,
@@ -73,7 +73,7 @@ export default async function BookingDetail({
       <Flash ok={ok} error={error} />
       <div className="grid gap-x-6 lg:grid-cols-2">
         <Panel title="Cliente">
-          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-sm">
+          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-meta">
             <dt className="text-muted">Nombre</dt>
             <dd>{b.customer_name}</dd>
             <dt className="text-muted">Email</dt>
@@ -95,7 +95,7 @@ export default async function BookingDetail({
           </dl>
         </Panel>
         <Panel title="Excursión">
-          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-sm">
+          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-meta">
             <dt className="text-muted">Excursión</dt>
             <dd>
               <Link className="text-blue underline" href={`/admin/excursiones/${dep.tours.id}`}>
@@ -109,7 +109,7 @@ export default async function BookingDetail({
             <dt className="text-muted">Viajeros</dt>
             <dd>{b.travellers}</dd>
             <dt className="text-muted">Total</dt>
-            <dd className="font-bold">{formatPrice(b.total_cents)}</dd>
+            <dd className="font-semibold">{formatPrice(b.total_cents)}</dd>
             <dt className="text-muted">Creada</dt>
             <dd>{dateTime(b.created_at)}</dd>
           </dl>
@@ -150,13 +150,13 @@ export default async function BookingDetail({
             </tbody>
           </Table>
         ) : (
-          <p className="text-sm text-muted">Sin intentos de pago.</p>
+          <p className="text-meta text-muted">Sin intentos de pago.</p>
         )}
       </Panel>
 
       <div className="grid gap-x-6 lg:grid-cols-2">
         <Panel title="Emails">
-          <ul className="mb-3 text-sm">
+          <ul className="mb-3 text-meta">
             {(emails ?? []).map((e) => (
               <li key={e.kind}>
                 {EMAIL_LABELS[e.kind]}:{" "}
@@ -190,15 +190,13 @@ export default async function BookingDetail({
           {b.status === "paid" && (
             <form
               action={refundBookingAction.bind(null, b.id)}
-              className="flex flex-col gap-2 text-sm"
+              className="flex flex-col gap-2 text-meta"
             >
-              <label className="flex items-start gap-2">
-                <input type="checkbox" name="confirm" required className="mt-1" />
-                <span>
-                  Reembolsar {formatPrice(b.total_cents)}, liberar las plazas y avisar al cliente.
-                  No se puede deshacer.
-                </span>
-              </label>
+              <Checkbox
+                name="confirm"
+                required
+                label={`Reembolsar ${formatPrice(b.total_cents)}, liberar las plazas y avisar al cliente. No se puede deshacer.`}
+              />
               <Button type="submit" variant="outline" className="self-start text-danger">
                 Reembolsar reserva
               </Button>
@@ -206,21 +204,21 @@ export default async function BookingDetail({
           )}
           {b.status === "pending" && (
             <form action={cancelPendingBooking.bind(null, b.id)}>
-              <p className="mb-2 text-sm">Pendiente de pago. Cancelarla libera sus plazas.</p>
+              <p className="mb-2 text-meta">Pendiente de pago. Cancelarla libera sus plazas.</p>
               <Button type="submit" variant="outline">
                 Cancelar reserva pendiente
               </Button>
             </form>
           )}
           {(b.status === "cancelled" || b.status === "refunded") && (
-            <p className="text-sm text-muted">Reserva cerrada: no hay acciones disponibles.</p>
+            <p className="text-meta text-muted">Reserva cerrada: no hay acciones disponibles.</p>
           )}
         </Panel>
       </div>
 
       {log && log.length > 0 && (
         <Panel title="Historial">
-          <ul className="text-sm text-muted">
+          <ul className="text-meta text-muted">
             {log.map((l) => (
               <li key={l.id}>
                 {dateTime(l.created_at)} · {l.action}
