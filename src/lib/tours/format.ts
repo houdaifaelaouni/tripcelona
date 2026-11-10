@@ -59,3 +59,14 @@ export function formatDuration(minutes: number): string {
   const m = minutes % 60;
   return m ? `${h} h ${m} min` : `${h} h`;
 }
+
+/** Day number and short month ("15", "nov") for the circular date cells. */
+export function dateParts(iso: string): { day: string; month: string } {
+  const parts = new Intl.DateTimeFormat("es-ES", {
+    day: "numeric",
+    month: "short",
+    timeZone: TZ,
+  }).formatToParts(new Date(iso));
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return { day: get("day"), month: get("month").replace(".", "") };
+}

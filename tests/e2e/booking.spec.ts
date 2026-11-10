@@ -19,9 +19,11 @@ test.describe("booking", () => {
     await page.waitForURL(`**/excursiones/${E2E.tourSlug}`);
 
     // Pick the e2e departure (the last open one) for 2 travellers.
-    const radio = page.locator("input[name=salida]:not([disabled])").last();
-    await radio.check();
-    await page.locator("input[name=personas]").fill("2");
+    // The radios are visually hidden inside the date cells; click the cell.
+    await page.locator("label:has(input[name=salida]:not([disabled]))").last().click();
+    await expect(page.locator("input[name=salida]:not([disabled])").last()).toBeChecked();
+    await page.getByRole("button", { name: "Añadir uno (Viajeros)" }).click();
+    await expect(page.locator("input[name=personas]")).toHaveValue("2");
     await page.getByRole("button", { name: "Reservar" }).click();
     await page.waitForURL(/\/reservar\?/);
 

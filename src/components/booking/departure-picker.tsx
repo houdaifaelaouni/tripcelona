@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import { buttonClasses } from "@/components/ui/button";
+import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { cn } from "@/lib/cn";
 import { MAX_TRAVELLERS } from "@/lib/booking/schema";
-import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
+import { dateParts, formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 import type { Departure } from "@/lib/tours/types";
 
 /**
  * Departure picker (FR-23/FR-24). A GET form to /reservar, so the choice is
  * carried in the URL and it works without JavaScript; JS only adds the live
  * total. Prices shown here are informative: checkout recomputes them.
+ *
+ * Slot list with circular day cells and the Opensource UI quantity stepper
+ * (MIT, see THIRD_PARTY_NOTICES.md).
  */
 export function DeparturePicker({ departures }: { departures: Departure[] }) {
   const firstOpen = departures.find((d) => d.status === "open" && d.seatsLeft > 0);
@@ -21,21 +25,27 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
 
   if (!firstOpen) return null;
 
+  const choose = (d: Departure) => {
+    setSelected(d.id);
+    setTravellers((t) => Math.min(t, Math.min(d.seatsLeft, MAX_TRAVELLERS)));
+  };
+
   return (
-    <form action="/reservar" method="get" className="mt-2">
+    <form action="/reservar" method="get" className="mt-4">
       <fieldset>
-        <legend className="text-base font-bold">Elige fecha</legend>
-        <ul className="mt-2 space-y-2">
+        <legend className="text-base font-semibold">Elige fecha</legend>
+        <ul className="mt-3 space-y-2">
           {departures.map((d) => {
             const soldOut = d.status !== "open" || d.seatsLeft === 0;
+            const { day, month } = dateParts(d.startsAt);
             return (
               <li key={d.id}>
                 <label
                   className={cn(
-                    "flex cursor-pointer items-center gap-3 rounded-control border p-3 has-[:checked]:border-blue has-[:checked]:bg-blue/5 has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-yellow",
+                    "group flex items-center gap-3 rounded-card border p-2 pr-3 transition-colors has-[:checked]:border-ink has-[:checked]:shadow-[inset_0_0_0_1px_var(--color-ink)] has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-yellow",
                     soldOut
-                      ? "cursor-not-allowed border-border bg-surface-alt text-muted"
-                      : "border-border-strong hover:border-blue",
+                      ? "cursor-not-allowed border-border text-muted"
+                      : "cursor-pointer border-border hover:border-ink",
                   )}
                 >
                   <input
@@ -44,26 +54,38 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
                     value={d.id}
                     disabled={soldOut}
                     checked={selected === d.id}
-                    onChange={() => setSelected(d.id)}
-                    className="h-4 w-4 accent-blue"
+                    onChange={() => choose(d)}
+                    className="sr-only"
                   />
-                  <span className="flex-1">
-                    <span className="block font-bold first-letter:uppercase">
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "flex size-12 shrink-0 flex-col items-center justify-center rounded-full leading-none",
+                      soldOut
+                        ? "bg-surface-alt line-through"
+                        : "bg-surface-alt text-ink group-has-[:checked]:bg-ink group-has-[:checked]:text-white",
+                    )}
+                  >
+                    <span className="text-base font-semibold">{day}</span>
+                    <span className="text-badge uppercase">{month}</span>
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-meta font-semibold first-letter:uppercase">
                       {formatDateLong(d.startsAt)}
                     </span>
-                    <span className="text-sm text-muted">
+                    <span className="text-caption text-muted">
                       Salida {formatTime(d.startsAt)} · {formatPrice(d.priceCents)}
                     </span>
                   </span>
                   {soldOut ? (
-                    <span className="rounded-control bg-danger px-2 py-0.5 text-sm font-bold text-white">
+                    <span className="rounded-full bg-danger px-2 py-0.5 text-badge font-semibold text-white">
                       Completo
                     </span>
                   ) : (
                     <span
                       className={cn(
-                        "text-sm whitespace-nowrap",
-                        d.seatsLeft <= 10 ? "font-bold text-danger" : "text-muted",
+                        "text-caption whitespace-nowrap",
+                        d.seatsLeft <= 10 ? "font-semibold text-danger" : "text-muted",
                       )}
                     >
                       {d.seatsLeft <= 10 ? `¡Quedan ${d.seatsLeft}!` : `${d.seatsLeft} plazas`}
@@ -76,29 +98,26 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
         </ul>
       </fieldset>
 
-      <label className="mt-4 flex items-center justify-between gap-3">
-        <span className="font-bold">Viajeros</span>
-        <input
-          type="number"
-          name="personas"
-          min={1}
-          max={maxForSelected}
-          value={travellers}
-          onChange={(e) =>
-            setTravellers(Math.max(1, Math.min(maxForSelected, Number(e.target.value) || 1)))
-          }
-          className="h-10 w-20 rounded-control border border-border-strong px-3 text-center"
-        />
-      </label>
+      <QuantityStepper
+        label="Viajeros"
+        name="personas"
+        min={1}
+        max={maxForSelected}
+        value={travellers}
+        onChange={setTravellers}
+        className="mt-5 border-t border-border pt-5"
+      />
 
       {current && (
-        <p className="mt-3 flex items-baseline justify-between" aria-live="polite">
+        <p className="mt-5 flex items-baseline justify-between" aria-live="polite">
           <span className="text-muted">Total</span>
-          <span className="text-2xl font-bold">{formatPrice(current.priceCents * travellers)}</span>
+          <span className="text-display-sm font-semibold">
+            {formatPrice(current.priceCents * travellers)}
+          </span>
         </p>
       )}
 
-      <button type="submit" className={buttonClasses({ size: "lg" }, "mt-3 w-full")}>
+      <button type="submit" className={buttonClasses({ size: "lg" }, "mt-4 w-full")}>
         Reservar
       </button>
     </form>

@@ -1,8 +1,10 @@
+import { ChevronDown } from "lucide-react";
 import type { ReactNode } from "react";
 
 /**
  * Accordion built on <details>/<summary>: keyboard and screen-reader support
- * come from the platform and it works without JavaScript.
+ * come from the platform and it works without JavaScript. Hairline rows
+ * (Opensource UI accordion, MIT; see THIRD_PARTY_NOTICES.md).
  */
 export function Accordion({
   items,
@@ -10,16 +12,18 @@ export function Accordion({
   items: { id: string; title: string; content: ReactNode }[];
 }) {
   return (
-    <div className="divide-y divide-border rounded-card border border-border">
+    <div className="divide-y divide-border border-y border-border">
       {items.map((item) => (
         <details key={item.id} className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 font-bold marker:hidden hover:bg-surface-alt [&::-webkit-details-marker]:hidden">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold marker:hidden [&::-webkit-details-marker]:hidden">
             {item.title}
-            <span aria-hidden className="text-blue transition-transform group-open:rotate-180">
-              ▾
-            </span>
+            <ChevronDown
+              aria-hidden
+              size={20}
+              className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+            />
           </summary>
-          <div className="px-4 pb-4 text-muted">{item.content}</div>
+          <div className="pb-5 text-muted">{item.content}</div>
         </details>
       ))}
     </div>

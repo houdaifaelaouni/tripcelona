@@ -1,6 +1,8 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
+import { iconButtonClasses } from "@/components/ui/icon-button";
 
 /**
  * Modal dialog on the native <dialog> element: focus trapping, Escape to close
@@ -34,16 +36,16 @@ export function Dialog({
       className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-panel p-0 shadow-panel backdrop:bg-ink/50"
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <h2 id="dialog-title" className="text-lg">
+        <h2 id="dialog-title" className="text-base font-semibold">
           {title}
         </h2>
         <button
           type="button"
           onClick={onClose}
-          className="rounded-control p-2 text-muted hover:bg-surface-alt"
+          className={iconButtonClasses("soft", "sm")}
           aria-label="Cerrar"
         >
-          ✕
+          <X aria-hidden size={16} />
         </button>
       </div>
       <div className="p-4">{children}</div>
