@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E } from "./constants";
+import { E2E, e2eOwnerPassword } from "./constants";
 
 test("owner signs in and publishes a blog post", async ({ page }) => {
   const csp: string[] = [];
@@ -9,7 +9,7 @@ test("owner signs in and publishes a blog post", async ({ page }) => {
   await page.goto("/admin");
   await page.waitForURL(/\/admin\/login/);
   await page.locator("input[name=email]").fill(E2E.ownerEmail);
-  await page.locator("input[name=password]").fill(E2E.ownerPassword);
+  await page.locator("input[name=password]").fill(e2eOwnerPassword());
   await page.locator("button[type=submit]").click();
   await page.waitForURL((u) => !u.pathname.startsWith("/admin/login"));
 
