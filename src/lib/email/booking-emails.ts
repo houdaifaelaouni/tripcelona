@@ -8,6 +8,7 @@ import {
   confirmationEmail,
   ownerAlertEmail,
   paymentFailedEmail,
+  paymentRequestEmail,
   type EmailContent,
   type EmailKind,
 } from "./templates";
@@ -55,6 +56,9 @@ export async function sendBookingEmail(
       break;
     case "payment_failed":
       content = paymentFailedEmail(booking, `${base}/reservar/pendiente?id=${booking.id}`);
+      break;
+    case "payment_request":
+      content = paymentRequestEmail(booking, `${base}/reservar/pendiente?id=${booking.id}`);
       break;
     case "cancellation":
       content = cancellationEmail(booking, options.refunded ?? false, options.scope);

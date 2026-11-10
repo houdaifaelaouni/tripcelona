@@ -1,21 +1,14 @@
 // End-to-end payment flow against the local Supabase stack (US-19, US-20, US-22):
 // start payment → signed notification → paid, replay is a no-op, cancel → refund.
-import { execSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { connectLocalSupabase, waitForSupabaseApi } from "./local-env";
 import { encodeParameters, decodeParameters, sign } from "@/lib/payments/redsys";
 
 const KEY = "sq7HjrUOBfKmC576ILgskD5srU870gJ7"; // Redsys public sandbox key
 
-function localEnv() {
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) return;
-  const out = execSync("pnpm --silent supabase status -o env", { encoding: "utf8" });
-  const get = (k: string) => out.match(new RegExp(`^${k}="?([^"\\n]+)"?`, "m"))?.[1];
-  process.env.NEXT_PUBLIC_SUPABASE_URL = get("API_URL");
-  process.env.SUPABASE_SERVICE_ROLE_KEY = get("SERVICE_ROLE_KEY");
-}
-
-localEnv();
+connectLocalSupabase();
+await waitForSupabaseApi();
 Object.assign(process.env, {
   REDSYS_MERCHANT_CODE: "999008881",
   REDSYS_TERMINAL: "1",

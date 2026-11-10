@@ -88,3 +88,27 @@ export function Select({
     </FieldShell>
   );
 }
+
+export function Textarea({
+  label,
+  hint,
+  error,
+  hideLabel,
+  id,
+  className,
+  ...props
+}: FieldProps & ComponentProps<"textarea">) {
+  const autoId = useId();
+  const fieldId = id ?? autoId;
+  return (
+    <FieldShell id={fieldId} label={label} hint={hint} error={error} hideLabel={hideLabel}>
+      <textarea
+        id={fieldId}
+        className={cn(control, "h-auto min-h-24 py-2", className)}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={describedBy(fieldId, hint, error)}
+        {...props}
+      />
+    </FieldShell>
+  );
+}

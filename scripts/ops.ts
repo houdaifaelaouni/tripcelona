@@ -4,15 +4,23 @@
  *   pnpm ops resend <TC-YYYY-NNNN> [confirmation|owner_alert|payment_failed|cancellation]
  *   pnpm ops refund <TC-YYYY-NNNN>          refund a paid booking and free its seats
  *   pnpm ops cancel-departure <departure-uuid>   cancel, refund and notify everyone
+ *   pnpm ops grant-staff <email> <owner|editor> [password]   first owner / extra staff
  *
  * Reads .env.local (or the shell env): Supabase service role, Redsys, Resend.
  */
 import { getBookingDetails } from "@/lib/booking/details";
 import { sendBookingEmail } from "@/lib/email/booking-emails";
 import type { EmailKind } from "@/lib/email/templates";
+import { grantStaff } from "@/lib/admin/staff-admin";
 import { cancelDeparture, refundBooking } from "@/lib/payments/service";
 
-const KINDS: EmailKind[] = ["confirmation", "owner_alert", "payment_failed", "cancellation"];
+const KINDS: EmailKind[] = [
+  "confirmation",
+  "owner_alert",
+  "payment_failed",
+  "payment_request",
+  "cancellation",
+];
 
 async function bookingByRef(reference: string) {
   const booking = await getBookingDetails({ reference });
@@ -21,7 +29,7 @@ async function bookingByRef(reference: string) {
 }
 
 async function main() {
-  const [command, arg, extra] = process.argv.slice(2);
+  const [command, arg, extra, more] = process.argv.slice(2);
   switch (command) {
     case "resend": {
       const kind = (extra ?? "confirmation") as EmailKind;
@@ -42,8 +50,14 @@ async function main() {
       console.log(JSON.stringify(await cancelDeparture(arg), null, 2));
       break;
     }
+    case "grant-staff": {
+      if (extra !== "owner" && extra !== "editor") throw new Error("Role must be owner or editor");
+      // Without a password the person gets an invite email (needs Supabase SMTP).
+      console.log(await grantStaff(arg, extra, { password: more }));
+      break;
+    }
     default:
-      console.error("Usage: pnpm ops resend|refund|cancel-departure <arg>");
+      console.error("Usage: pnpm ops resend|refund|cancel-departure|grant-staff <args>");
       process.exitCode = 1;
   }
 }
