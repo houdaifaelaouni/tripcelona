@@ -29,7 +29,7 @@ export default function NotFound() {
             <select
               id="nf-zona"
               name="zona"
-              className="h-10 flex-1 rounded-control border border-border-strong bg-white px-3"
+              className="h-10 min-w-0 flex-1 rounded-control border border-border-strong bg-white px-3"
               defaultValue=""
             >
               <option value="">Todos los destinos</option>

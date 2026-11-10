@@ -120,6 +120,23 @@ Site URL = production domain, add `https://<domain>/admin/auth/confirm` to redir
 - **Legacy copy import**: see `migration/README.md`. Owner follow-ups on legal texts:
   `docs/legal/owner-review.md`.
 
+## QA and launch (Sprint 9)
+
+```bash
+pnpm e2e:prepare && pnpm build   # e2e data first: tour pages prerender with departures
+pnpm e2e                         # Playwright: booking, forms, admin, axe, layout, CSP
+pnpm check:urls --base http://localhost:3000 --allow-missing-content   # legacy URL crawl
+```
+
+- Legacy URLs: `src/lib/seo/legacy.ts` (checked against `migration/urls.csv` by a unit
+  test). `src/proxy.ts` applies them in one 301 hop, answers 410 for WordPress endpoints
+  and a real 404 for unknown slugs.
+- Security headers: `src/lib/seo/security-headers.ts` (CSP, HSTS on production).
+- E2E payments use the fake gateway `tests/e2e/fake-redsys.mjs` (public sandbox key).
+  The e2e server must run on the port of `NEXT_PUBLIC_SITE_URL` used at build time,
+  because Redsys notifications go there.
+- Cutover: `docs/launch/runbook.md`; sign-off: `docs/launch/go-no-go.md`.
+
 ## Media pipeline
 
 ```bash

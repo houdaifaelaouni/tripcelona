@@ -1,0 +1,8 @@
+# Secret scan (US-39). Default gitleaks rules, plus one known-public value:
+# Redsys' published sandbox key, used only for local tests and the e2e fake gateway.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Public Redsys sandbox key (documented by Redsys, test environment only)"
+regexes = ['''sq7HjrUOBfKmC576ILgskD5srU870gJ7''']

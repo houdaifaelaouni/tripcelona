@@ -16,7 +16,10 @@
     "test": "vitest run tests/unit",
     "ops": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/ops.ts",
     "media:sync": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/media-pipeline.ts",
-    "content:import": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/content-import.ts"
+    "content:import": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/content-import.ts",
+    "check:urls": "node --import tsx scripts/check-urls.ts",
+    "e2e:prepare": "node --conditions=react-server --import tsx tests/e2e/prepare.ts",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -35,6 +38,8 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^20",
     "@types/pg": "^8.23.1",
