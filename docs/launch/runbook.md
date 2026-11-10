@@ -31,6 +31,8 @@ Placeholders in `<angle brackets>` depend on open decisions (D7, D9, D10).
    | `NEXT_PUBLIC_ALLOW_INDEXING` | `false` until T-0 |
 
    Never set `REDSYS_BASE_URL` in production (it is ignored there anyway).
+   Check them with `vercel env pull .env.check --environment=production`
+   then `pnpm check:env production` (prints names only; delete `.env.check` after).
    Preview env vars use the Redsys **test** values.
 3. **Email (D7)**: verify the sender domain in Resend and add its SPF, DKIM
    and DMARC records. Test it by sending the contact form on a preview deployment.
