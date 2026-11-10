@@ -1,3 +1,4 @@
+import { SearchX } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { getSiteSettings, whatsappLink } from "@/lib/settings";
@@ -26,8 +27,11 @@ export async function WhatsAppCta({
 /** FR-13: shown when the filters return nothing. */
 export function CatalogEmptyState() {
   return (
-    <div className="rounded-panel border border-dashed border-border-strong p-8 text-center">
-      <h2 className="text-xl">No hay salidas con estos filtros</h2>
+    <div className="rounded-panel bg-surface-alt px-6 py-12 text-center">
+      <span className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-white shadow-float">
+        <SearchX aria-hidden className="size-6" />
+      </span>
+      <h2 className="text-display-sm">No hay salidas con estos filtros</h2>
       <p className="mx-auto mt-2 max-w-md text-muted">
         Prueba con otro mes o destino, o escríbenos: organizamos salidas a medida para grupos.
       </p>

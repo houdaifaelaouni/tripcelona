@@ -4,7 +4,12 @@ import { Badge } from "@/components/ui/card";
 import { formatDateShort, formatPrice, formatTime } from "@/lib/tours/format";
 import type { Departure, TourSummary } from "@/lib/tours/types";
 
-/** Catalog / home card (FR-10): image, title, area, price-from, next departure. */
+/**
+ * Catalog / home card (FR-10): photo-first listing card, adapted from
+ * Opensource UI (MIT, © 2026 Bidyut Kundu; see THIRD_PARTY_NOTICES.md).
+ * Image, area, title, next departure and price-from. The whole card is one
+ * link through the stretched title link.
+ */
 export function TourCard({
   tour,
   departure,
@@ -18,63 +23,52 @@ export function TourCard({
   const next = departure ?? tour.departures.find((d) => d.status === "open") ?? null;
   const price = next?.priceCents ?? tour.priceFromCents;
   const href = `/excursiones/${tour.slug}`;
+  const fewSeats = next !== null && next.seatsLeft > 0 && next.seatsLeft <= 10;
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-card border border-border bg-white shadow-card transition-shadow hover:shadow-panel">
-      <div className="relative aspect-[4/3] bg-surface-alt">
+    <article className="group relative flex w-full flex-col gap-3">
+      <div className="relative aspect-square overflow-hidden rounded-card bg-surface-alt">
         {tour.image && (
           <Image
             src={tour.image.url}
             alt={tour.image.alt}
             fill
-            sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
-            className="object-cover"
+            sizes="(min-width: 1440px) 320px, (min-width: 1128px) 33vw, (min-width: 744px) 50vw, 100vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             priority={priority}
           />
         )}
-        {tour.area && (
-          <Badge tone="brand" className="absolute top-3 left-3">
-            {tour.area}
-          </Badge>
-        )}
+        <div className="absolute inset-x-3 top-3 flex flex-wrap gap-2">
+          {tour.area && <Badge tone="light">{tour.area}</Badge>}
+          {fewSeats && <Badge tone="accent">Últimas plazas</Badge>}
+        </div>
       </div>
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <h3 className="text-lg leading-snug">
-          {/* Whole card is clickable through the stretched link. */}
+      <div className="flex flex-1 flex-col gap-1">
+        <h3 className="line-clamp-2 text-base font-semibold">
           <Link
             href={href}
-            className="after:absolute after:inset-0 hover:text-blue focus-visible:outline-none group-focus-within:underline"
+            className="after:absolute after:inset-0 after:rounded-card focus-visible:outline-none group-hover:underline group-focus-within:underline"
           >
             {tour.title}
           </Link>
         </h3>
-        <p className="text-muted">
+        <p className="text-meta text-muted">
           {next ? (
             <>
-              Próxima salida: <strong className="text-ink">{formatDateShort(next.startsAt)}</strong>{" "}
-              a las {formatTime(next.startsAt)}
-              {next.seatsLeft <= 10 && next.seatsLeft > 0 && (
-                <span className="text-danger"> · quedan {next.seatsLeft} plazas</span>
-              )}
+              Próxima salida: {formatDateShort(next.startsAt)} a las {formatTime(next.startsAt)}
+              {fewSeats && <span className="text-danger"> · quedan {next.seatsLeft} plazas</span>}
             </>
           ) : (
             "Nuevas fechas próximamente"
           )}
         </p>
-        <div className="mt-auto flex items-end justify-between gap-2">
-          {price !== null ? (
-            <p>
-              <span className="block text-sm text-muted">Desde</span>
-              <span className="text-2xl font-bold">{formatPrice(price)}</span>
-              <span className="text-sm text-muted"> / persona</span>
-            </p>
-          ) : (
-            <span />
-          )}
-          <span className="font-bold text-blue group-hover:underline" aria-hidden>
-            Ver excursión →
-          </span>
-        </div>
+        {price !== null && (
+          <p className="mt-1">
+            <span className="text-meta text-muted">Desde </span>
+            <span className="font-semibold">{formatPrice(price)}</span>
+            <span className="text-meta text-muted"> / persona</span>
+          </p>
+        )}
       </div>
     </article>
   );
