@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { E2E, e2eOwnerPassword } from "./constants";
 
@@ -12,6 +13,16 @@ test("owner signs in and publishes a blog post", async ({ page }) => {
   await page.locator("input[name=password]").fill(e2eOwnerPassword());
   await page.locator("button[type=submit]").click();
   await page.waitForURL((u) => !u.pathname.startsWith("/admin/login"));
+
+  // Owner home with the health panel (US-41): visible and accessible.
+  await page.goto("/admin");
+  await expect(page.getByRole("heading", { name: "Estado de la web (24 h)" })).toBeVisible();
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(
+    violations.filter((v) => v.impact === "critical" || v.impact === "serious").map((v) => v.id),
+  ).toEqual([]);
 
   await page.goto("/admin/blog");
   await page.getByRole("button", { name: "Nueva entrada" }).click();

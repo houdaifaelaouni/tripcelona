@@ -1,6 +1,8 @@
 /**
- * Owner operations until the admin UI lands in Sprint 7 (US-22, US-21).
+ * Owner and operator commands (US-21, US-22, US-41). Most of this is also in
+ * the admin; the CLI is for support and for scheduled checks.
  *
+ *   pnpm ops health [hours]                 daily health report (exit 2 on P0)
  *   pnpm ops resend <TC-YYYY-NNNN> [confirmation|owner_alert|payment_failed|cancellation]
  *   pnpm ops refund <TC-YYYY-NNNN>          refund a paid booking and free its seats
  *   pnpm ops cancel-departure <departure-uuid>   cancel, refund and notify everyone
@@ -12,7 +14,9 @@ import { getBookingDetails } from "@/lib/booking/details";
 import { sendBookingEmail } from "@/lib/email/booking-emails";
 import type { EmailKind } from "@/lib/email/templates";
 import { grantStaff } from "@/lib/admin/staff-admin";
+import { assessHealth, loadHealthInput } from "@/lib/ops/health";
 import { cancelDeparture, refundBooking } from "@/lib/payments/service";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const KINDS: EmailKind[] = [
   "confirmation",
@@ -56,8 +60,26 @@ async function main() {
       console.log(await grantStaff(arg, extra, { password: more }));
       break;
     }
+    case "health": {
+      const hours = Number(arg ?? 24);
+      if (!Number.isFinite(hours) || hours <= 0) throw new Error("Hours must be a positive number");
+      const report = assessHealth(await loadHealthInput(createAdminClient(), hours));
+      const pct =
+        report.funnel.conversion === null ? "–" : `${Math.round(report.funnel.conversion * 100)}%`;
+      console.log(`Estado (${hours} h): ${report.status.toUpperCase()}`);
+      console.log(
+        `Reservas iniciadas ${report.funnel.started}, pagadas ${report.funnel.paid} (${pct}), abandonadas ${report.funnel.abandoned}; pagos rechazados ${report.paymentsFailed}; emails enviados ${report.emailsSent}`,
+      );
+      for (const a of report.alerts) {
+        console.log(
+          `\n[${a.severity}] ${a.title}\n  ${a.detail}${a.refs.length ? `\n  ${a.refs.join(", ")}` : ""}`,
+        );
+      }
+      if (report.status === "critical") process.exitCode = 2;
+      break;
+    }
     default:
-      console.error("Usage: pnpm ops resend|refund|cancel-departure|grant-staff <args>");
+      console.error("Usage: pnpm ops health|resend|refund|cancel-departure|grant-staff <args>");
       process.exitCode = 1;
   }
 }

@@ -1,4 +1,4 @@
-# Secret scan (US-39). Default gitleaks rules, plus two reviewed exceptions.
+# Secret scan (US-38). Default gitleaks rules, plus two reviewed exceptions.
 [extend]
 useDefault = true
 

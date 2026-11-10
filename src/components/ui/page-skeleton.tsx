@@ -1,7 +1,7 @@
 /**
  * Generic skeleton for streamed page bodies (catalog, tour, blog pages).
  * Full viewport height, so the footer starts below the fold and does not jump
- * when the content arrives (CLS, US-38).
+ * when the content arrives (CLS, US-37).
  */
 export function PageSkeleton() {
   return (

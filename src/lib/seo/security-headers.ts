@@ -1,5 +1,5 @@
 /**
- * Security headers for every response (US-39). Read by next.config.ts at
+ * Security headers for every response (US-38). Read by next.config.ts at
  * build time.
  *
  * CSP notes:
