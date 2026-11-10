@@ -1,12 +1,11 @@
-import { Card } from "@/components/ui/card";
 import type { BookingDetails } from "@/lib/booking/details";
 import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 
 export function BookingSummary({ booking }: { booking: BookingDetails }) {
   const { departure, tour } = booking;
   return (
-    <Card className="mt-6 p-5">
-      <dl className="grid gap-3 sm:grid-cols-2">
+    <div className="mt-6 rounded-card border border-border bg-white p-6 shadow-float">
+      <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
         <Item label="Referencia" value={booking.reference} />
         <Item label="Excursión" value={tour.title} />
         <Item label="Fecha" value={formatDateLong(departure.startsAt)} capitalize />
@@ -19,11 +18,11 @@ export function BookingSummary({ booking }: { booking: BookingDetails }) {
         />
         <Item label="Viajeros" value={String(booking.travellers)} />
         <div>
-          <dt className="text-sm text-muted">Total</dt>
-          <dd className="text-2xl font-bold">{formatPrice(booking.totalCents)}</dd>
+          <dt className="text-meta text-muted">Total</dt>
+          <dd className="text-display-lg font-semibold">{formatPrice(booking.totalCents)}</dd>
         </div>
       </dl>
-    </Card>
+    </div>
   );
 }
 
@@ -38,8 +37,10 @@ function Item({
 }) {
   return (
     <div>
-      <dt className="text-sm text-muted">{label}</dt>
-      <dd className={capitalize ? "font-bold first-letter:uppercase" : "font-bold"}>{value}</dd>
+      <dt className="text-meta text-muted">{label}</dt>
+      <dd className={capitalize ? "font-semibold first-letter:uppercase" : "font-semibold"}>
+        {value}
+      </dd>
     </div>
   );
 }

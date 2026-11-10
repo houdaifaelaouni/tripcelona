@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { FormAlert } from "@/components/forms/form-bits";
 import { BookingSummary } from "@/components/booking/booking-summary";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -21,7 +22,7 @@ const NOTICES: Record<string, string> = {
 /** Step 2 of checkout: review and pay (US-19). */
 export default function PendingPage({ searchParams }: PageProps<"/reservar/pendiente">) {
   return (
-    <div className="container-site max-w-2xl py-8 md:py-12">
+    <div className="container-site max-w-2xl py-8 md:py-16">
       <Suspense fallback={<PageSkeleton />}>
         <Pending searchParams={searchParams} />
       </Suspense>
@@ -43,12 +44,12 @@ async function Pending({
   const booking = await getBookingDetails({ id: first(params.id) });
   const notice = NOTICES[first(params.pago)];
 
-  if (!booking) return <h1 className="text-2xl">No encontramos esta reserva</h1>;
+  if (!booking) return <h1 className="text-display-lg">No encontramos esta reserva</h1>;
 
   if (booking.status === "paid") {
     return (
       <>
-        <h1 className="text-3xl">Esta reserva ya está pagada</h1>
+        <h1 className="text-display-xl">Esta reserva ya está pagada</h1>
         <BookingSummary booking={booking} />
         <div className="mt-6">
           <ButtonLink href={`/reservar/confirmada?id=${booking.id}`}>Ver confirmación</ButtonLink>
@@ -60,7 +61,7 @@ async function Pending({
   if (booking.status !== "pending") {
     return (
       <>
-        <h1 className="text-3xl">Reserva cancelada</h1>
+        <h1 className="text-display-xl">Reserva cancelada</h1>
         <p className="mt-2 text-muted">
           La reserva <strong className="text-ink">{booking.reference}</strong> ya no está activa.
         </p>
@@ -76,18 +77,15 @@ async function Pending({
   const canPay = redsysConfig() !== null;
   return (
     <>
-      <h1 className="text-3xl">Revisa y paga tu reserva</h1>
+      <h1 className="text-display-xl">Revisa y paga tu reserva</h1>
       <p className="mt-2 text-muted">
         Guardamos tus plazas durante 15 minutos. La reserva se confirma en cuanto el banco autoriza
         el pago.
       </p>
       {notice && (
-        <p
-          role="alert"
-          className="mt-4 rounded-card border border-danger/30 bg-danger/5 p-3 text-sm font-bold text-danger"
-        >
-          {notice}
-        </p>
+        <div className="mt-4">
+          <FormAlert message={notice} />
+        </div>
       )}
       <BookingSummary booking={booking} />
       {canPay ? (
@@ -96,7 +94,7 @@ async function Pending({
           <Button type="submit" size="lg" className="w-full sm:w-auto">
             Pagar con tarjeta
           </Button>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-meta text-muted">
             Pago seguro en la pasarela del banco (Redsys), con verificación 3D Secure.
           </p>
         </form>

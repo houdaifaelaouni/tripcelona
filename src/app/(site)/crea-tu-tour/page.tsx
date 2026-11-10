@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) {
   return (
     <div className="container-site py-8 md:py-12">
-      <h1 className="text-3xl">Crea tu tour a medida</h1>
+      <h1 className="text-display-xl">Crea tu tour a medida</h1>
       <p className="mt-2 max-w-2xl text-muted">
         ¿Vienes con tu empresa, tu asociación o un grupo de amigos? Elige un plan, la fecha y los
         extras, y te enviamos una propuesta personalizada en 24–48 horas.
@@ -30,7 +30,7 @@ export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) 
           </Suspense>
         </section>
         <aside className="space-y-3">
-          <h2 className="text-lg">¿Prefieres hablarlo?</h2>
+          <h2 className="text-display-sm">¿Prefieres hablarlo?</h2>
           <WhatsAppCta
             message="Hola Tripcelona, quiero organizar una excursión para mi grupo."
             label="Hablar por WhatsApp"
