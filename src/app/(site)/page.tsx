@@ -20,16 +20,16 @@ export default async function Home() {
     <>
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       <Hero />
-      <section aria-labelledby="proximas-heading" className="container-site py-12">
+      <section aria-labelledby="proximas-heading" className="container-site py-16">
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 id="proximas-heading" className="text-2xl md:text-3xl">
+          <h2 id="proximas-heading" className="text-display-lg md:text-display-xl">
             Próximas salidas
           </h2>
           <ButtonLink href="/ofertas-de-viajes" variant="ghost">
             Ver todas las ofertas
           </ButtonLink>
         </div>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {bySoonest.map((tour) => (
             <li key={tour.slug} className="flex">
               <TourCard tour={tour} />
