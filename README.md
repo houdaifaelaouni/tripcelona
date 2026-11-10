@@ -137,6 +137,16 @@ pnpm check:urls --base http://localhost:3000 --allow-missing-content   # legacy 
   because Redsys notifications go there.
 - Cutover: `docs/launch/runbook.md`; sign-off: `docs/launch/go-no-go.md`.
 
+## Operations and handover (Sprint 10)
+
+- `pnpm ops health [hours]`: daily health report (stuck seat holds, payment mismatches,
+  card payments without confirmation email, failed emails, booking funnel). Exits 2 on a
+  P0. The same report is on the owner's admin home.
+- `docs/operations.md`: environments, deploys, rollback, backups, incidents, secret rotation.
+- `docs/owner-guide.md`: admin guide in Spanish with training exercises.
+- `docs/launch/hypercare-log.md`: daily log for the first week.
+- `docs/retro-and-backlog.md`: retrospective and proposed 90-day backlog.
+
 ## Media pipeline
 
 ```bash
