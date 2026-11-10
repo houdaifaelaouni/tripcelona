@@ -21,24 +21,54 @@
   --color-success: #008234;
   --color-whatsapp: #117c38; /* 5.3:1 with white text (WCAG AA) */
 
-  --radius-control: 4px;
-  --radius-card: 8px;
-  --radius-panel: 12px;
+  /*
+   * Shape, type, spacing and elevation follow docs/ui-rebuild/scrum-plan.md
+   * (design-file rules, Tripcelona colours above are unchanged).
+   */
+  --radius-control: 8px; /* buttons, inputs */
+  --radius-card: 14px; /* cards, photos */
+  --radius-panel: 20px; /* large panels, sheets */
+  --radius-strip: 32px; /* chip strips */
 
   --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
-  --text-base: 14px;
+  --text-base: 16px;
   --text-base--line-height: 1.5;
+  --text-meta: 14px;
+  --text-meta--line-height: 1.43;
+  --text-caption: 13px;
+  --text-caption--line-height: 1.23;
+  --text-badge: 11px;
+  --text-badge--line-height: 1.18;
+  --text-display-sm: 20px;
+  --text-display-sm--line-height: 1.2;
+  --text-display-sm--letter-spacing: -0.18px;
+  --text-display-md: 21px;
+  --text-display-md--line-height: 1.43;
+  --text-display-lg: 22px;
+  --text-display-lg--line-height: 1.18;
+  --text-display-lg--letter-spacing: -0.44px;
+  --text-display-xl: 28px;
+  --text-display-xl--line-height: 1.43;
 
-  --shadow-card: 0 2px 8px rgb(26 26 26 / 0.12);
-  --shadow-panel: 0 4px 16px rgb(26 26 26 / 0.16);
+  /* One elevation tier (hover-floated cards, dropdowns, sticky panels). */
+  --shadow-float: 0 0 0 1px rgb(0 0 0 / 0.02), 0 2px 6px rgb(0 0 0 / 0.04), 0 4px 8px rgb(0 0 0 / 0.1);
+  --shadow-card: var(--shadow-float);
+  --shadow-panel: var(--shadow-float);
 
-  --container-site: 1140px;
+  --container-site: 1280px;
+  --container-detail: 1080px;
+
+  /* rem like Tailwind's defaults, so the breakpoints sort correctly:
+     744px, 1128px, 1440px. */
+  --breakpoint-md: 46.5rem;
+  --breakpoint-lg: 70.5rem;
+  --breakpoint-xl: 90rem;
 }
 
 @layer base {
   html {
-    font-size: 14px;
+    font-size: 16px;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -49,11 +79,15 @@
   }
 
   h1,
-  h2,
-  h3,
-  h4 {
+  h2 {
     font-weight: 700;
     line-height: 1.2;
+  }
+
+  h3,
+  h4 {
+    font-weight: 600;
+    line-height: 1.25;
   }
 
   /* One visible focus style everywhere (WCAG 2.2 AA 2.4.7 / 2.4.11). */
@@ -81,10 +115,17 @@
   padding-inline: 16px;
 }
 
+@utility container-detail {
+  width: 100%;
+  max-width: var(--container-detail);
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
 /* Rich text from the blog/pages editor (components/content/rich-text.tsx). */
 @layer components {
   .rich-text {
-    font-size: 1.0714rem;
+    font-size: 1rem;
     line-height: 1.7;
     max-width: 72ch;
     overflow-wrap: anywhere;
