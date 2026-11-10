@@ -1,4 +1,6 @@
+import { CircleAlert, CircleCheck } from "lucide-react";
 import Link from "next/link";
+import { Checkbox } from "@/components/ui/field";
 
 /** Honeypot (FR-41): off-screen, hidden from assistive tech, never autofilled. */
 export function Honeypot() {
@@ -14,30 +16,25 @@ export function Honeypot() {
 
 export function PrivacyConsent({ error }: { error?: string }) {
   return (
-    <div>
-      <label className="flex items-start gap-2">
-        <input
-          type="checkbox"
-          name="privacy"
-          required
-          className="mt-1 h-4 w-4 accent-blue"
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? "privacy-error" : undefined}
-        />
-        <span>
+    <Checkbox
+      id="privacy"
+      name="privacy"
+      required
+      error={error}
+      label={
+        <>
           He leído y acepto la{" "}
-          <Link href="/politica-de-privacidad" target="_blank" className="text-blue underline">
+          <Link
+            href="/politica-de-privacidad"
+            target="_blank"
+            className="font-semibold underline underline-offset-2"
+          >
             política de privacidad
           </Link>
           .
-        </span>
-      </label>
-      {error && (
-        <p id="privacy-error" className="mt-1 text-sm text-danger" role="alert">
-          {error}
-        </p>
-      )}
-    </div>
+        </>
+      }
+    />
   );
 }
 
@@ -45,18 +42,22 @@ export function FormAlert({ message }: { message: string }) {
   return (
     <div
       role="alert"
-      className="rounded-control border border-danger bg-danger/5 p-3 font-bold text-danger"
+      className="flex items-start gap-3 rounded-card border border-danger/30 bg-danger/5 p-4 text-danger"
     >
-      {message}
+      <CircleAlert aria-hidden size={20} className="mt-0.5 shrink-0" />
+      <p className="font-semibold">{message}</p>
     </div>
   );
 }
 
 export function FormSuccess({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div role="status" className="rounded-panel border border-success bg-success/5 p-6">
-      <h2 className="text-xl text-success">{title}</h2>
-      <div className="mt-2">{children}</div>
+    <div role="status" className="rounded-panel border border-border bg-white p-6 shadow-float">
+      <span className="flex size-12 items-center justify-center rounded-full bg-success/10 text-success">
+        <CircleCheck aria-hidden size={24} />
+      </span>
+      <h2 className="mt-4 text-display-sm">{title}</h2>
+      <div className="mt-2 text-muted">{children}</div>
     </div>
   );
 }
