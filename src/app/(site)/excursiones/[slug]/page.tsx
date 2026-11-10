@@ -24,8 +24,13 @@ import { getLiveDepartures } from "@/lib/booking/queries";
 import { getPublishedTours, getTourBySlug, getTourSlugs, relatedTours } from "@/lib/tours/queries";
 import type { TourDetail } from "@/lib/tours/types";
 
+// Cache Components needs at least one param at build time; "_" renders the
+// 404 page when there are no published tours yet (fresh database).
+const NONE = "_";
+
 export async function generateStaticParams() {
-  return (await getTourSlugs()).map((slug) => ({ slug }));
+  const slugs = await getTourSlugs();
+  return (slugs.length ? slugs : [NONE]).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
