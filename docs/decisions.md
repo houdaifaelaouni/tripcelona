@@ -6,7 +6,7 @@ Decisions from PRD §14. Sprint 1 (US-01) closes D1–D3; D4–D10 are tracked h
 
 | # | Decision | Status | Chosen option | Owner | Date closed | Needed by |
 |---|---|---|---|---|---|---|
-| D1 | Payment provider | **OPEN** | — | Ayoub | — | Gate G1 (end of S1); build starts S6 |
+| D1 | Payment provider | **CLOSED** | B. Keep PayTPV / Redsys | HOUDAIFA (for the owner) | 2026-11-10 | Build in S6 |
 | D2 | Languages at launch | **OPEN** | — | Ayoub | — | Gate G1 (end of S1) |
 | D3 | Events scope / ticketing | **OPEN** | — | Ayoub | — | Gate G1 (end of S1) |
 | D4 | Customer accounts | OPEN | — | Ayoub | — | S5 (checkout) |
@@ -21,7 +21,7 @@ Decisions from PRD §14. Sprint 1 (US-01) closes D1–D3; D4–D10 are tracked h
 
 ## D1 — Payment provider
 
-**Status:** OPEN
+**Status:** CLOSED on 2026-11-10: **B. Keep PayTPV / Redsys**
 
 **Question:** which provider takes card payments in the new checkout?
 
@@ -36,7 +36,14 @@ Decisions from PRD §14. Sprint 1 (US-01) closes D1–D3; D4–D10 are tracked h
 
 **If still OPEN at Sprint 6:** per SCRUM-PLAN §7, build the Stripe path and document the Redsys delta.
 
-**Decision:** _pending_
+**Decision:** B. Keep PayTPV / Redsys (current merchant contract). Chosen by HOUDAIFA on 2026-11-10.
+
+**Consequences:**
+- Sprint 6 (US-19, US-20, US-22) builds the Redsys HMAC-SHA256 redirect flow with 3DS, with the Redsys notification URL as the source of truth instead of a Stripe webhook.
+- PRD §9.1 estimates +4–6 dev-days; Sprint 6 must be re-sized at Sprint 5 refinement.
+- Refunds go through the Redsys refund operation (transaction type 3) or the bank's portal; confirm the contract allows API refunds.
+- Env vars change from Stripe to Redsys (see `.env.example`).
+- Still needed from the owner before S6: merchant code (FUC), terminal, test environment access and the secret key, delivered through Vercel env vars, never in the repo.
 
 ---
 
@@ -91,3 +98,4 @@ Decisions from PRD §14. Sprint 1 (US-01) closes D1–D3; D4–D10 are tracked h
 | Date | Change | By |
 |---|---|---|
 | 2026-11-10 | Log created; D1–D10 recorded as OPEN | Build agent |
+| 2026-11-10 | D1 closed: PayTPV / Redsys | HOUDAIFA |
