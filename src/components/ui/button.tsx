@@ -12,7 +12,8 @@ type Size = "sm" | "md" | "lg";
 type Shape = "rounded" | "pill";
 
 const base = cn(
-  "inline-flex items-center justify-center gap-2 font-semibold whitespace-nowrap select-none",
+  // Labels may wrap on very narrow screens (WCAG 1.4.10 reflow at 320px).
+  "inline-flex items-center justify-center gap-2 text-center leading-tight font-semibold select-none",
   "transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none",
   "active:translate-y-px motion-reduce:active:translate-y-0",
   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
@@ -28,9 +29,9 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-9 px-4 text-meta",
-  md: "h-12 px-6 text-base",
-  lg: "h-14 px-7 text-base",
+  sm: "min-h-9 px-4 py-1.5 text-meta",
+  md: "min-h-12 px-6 py-2 text-base",
+  lg: "min-h-14 px-7 py-2 text-base",
 };
 
 const shapes: Record<Shape, string> = {

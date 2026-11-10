@@ -58,7 +58,18 @@ Previews send `noindex` until launch (set in `src/app/layout.tsx`).
 
 ## Design system
 
-Tokens live in `src/app/globals.css` (`@theme`) and map to Tailwind utilities: `bg-navy`, `text-blue`, `border-yellow`, `rounded-card`, `shadow-panel`, `container-site`, and so on. Primitives are in `src/components/ui`; shell content (nav, footer links, contact) is in `src/lib/site.ts`.
+Tokens live in `src/app/globals.css` (`@theme`) and map to Tailwind utilities.
+
+- **Colours:** `bg-navy`, `text-blue`, `border-yellow`, and so on.
+- **Shape and depth:** radii `rounded-control` (8px), `rounded-card` (14px), `rounded-panel` (20px) and `rounded-strip` (32px). There is one elevation, `shadow-float`.
+- **Type:** `text-meta`, `text-caption`, `text-badge`, `text-display-sm` to `text-display-xl`.
+- **Layout:** containers `container-site` (1280px) and `container-detail` (1080px); breakpoints `md` 744px, `lg` 1128px and `xl` 1440px.
+
+Join class names with `cn()` from `src/lib/cn.ts`; it knows the custom keys.
+
+Primitives are in `src/components/ui`. Several are adapted from [Opensource UI](https://opensourceui.in) (MIT; credits in `THIRD_PARTY_NOTICES.md`): buttons, icon buttons, fields, quantity stepper, password input and toast. The admin page `/admin/componentes` shows them all. The plan and the design rules are in `docs/ui-rebuild/scrum-plan.md`. Shell content (nav, footer links, contact) is in `src/lib/site.ts`.
+
+Screenshots: `SCREENSHOTS=1 pnpm e2e --trace off` writes desktop and mobile captures to `screenshots/`, which is gitignored.
 
 ## Payments (Redsys) and owner operations
 

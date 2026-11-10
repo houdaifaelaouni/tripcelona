@@ -223,7 +223,7 @@ function Btn({
       title={label}
       className={cn(
         "h-8 min-w-8 rounded-control px-2 text-sm hover:bg-white disabled:opacity-40",
-        on && "bg-white font-bold text-blue shadow-card",
+        on && "bg-white font-bold text-blue shadow-float",
       )}
     >
       {children}

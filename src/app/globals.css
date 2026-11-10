@@ -54,8 +54,6 @@
   /* One elevation tier (hover-floated cards, dropdowns, sticky panels). */
   --shadow-float:
     0 0 0 1px rgb(0 0 0 / 0.02), 0 2px 6px rgb(0 0 0 / 0.04), 0 4px 8px rgb(0 0 0 / 0.1);
-  --shadow-card: var(--shadow-float);
-  --shadow-panel: var(--shadow-float);
 
   --container-site: 1280px;
   --container-detail: 1080px;
