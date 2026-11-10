@@ -7,6 +7,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export const LIMITS = {
   contact: { limit: 5, windowSeconds: 600 },
   quote: { limit: 5, windowSeconds: 600 },
+  // Booking lookup: enough for typos, too few to guess references.
+  lookup: { limit: 10, windowSeconds: 600 },
 } as const;
 
 /** Client key: hash of form + IP (+ user agent), so no raw IP is stored. */
