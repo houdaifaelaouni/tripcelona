@@ -15,33 +15,31 @@ const dateFmt = new Intl.DateTimeFormat("es-ES", { dateStyle: "long", timeZone: 
 export default async function BlogIndex() {
   const posts = await getPublishedPosts();
   return (
-    <div className="container-site py-8 md:py-12">
-      <h1 className="text-3xl">Blog</h1>
+    <div className="container-site py-8 md:py-16">
+      <h1 className="text-display-xl">Blog</h1>
+      <p className="mt-1 text-muted">Guías de destinos y consejos para tus excursiones.</p>
       {posts.length === 0 ? (
-        <p className="mt-4 text-muted">Pronto publicaremos nuevas guías.</p>
+        <p className="mt-8 rounded-panel bg-surface-alt px-6 py-12 text-center text-muted">
+          Pronto publicaremos nuevas guías.
+        </p>
       ) : (
-        <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-8 grid gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((p) => (
-            <li
-              key={p.slug}
-              className="overflow-hidden rounded-card border border-border bg-white shadow-card"
-            >
-              <Link href={`/blog/${p.slug}`} className="group block h-full">
-                {p.cover && (
-                  <div className="relative aspect-[16/10] bg-surface-alt">
+            <li key={p.slug}>
+              <article className="group relative flex flex-col gap-3">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface-alt">
+                  {p.cover && (
                     <Image
                       src={p.cover.url}
                       alt=""
                       fill
-                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover"
+                      sizes="(min-width: 1128px) 400px, (min-width: 744px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none"
                     />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h2 className="text-lg group-hover:underline">{p.title}</h2>
-                  {p.excerpt && <p className="mt-2 line-clamp-3 text-muted">{p.excerpt}</p>}
-                  <p className="mt-3 text-sm text-muted">
+                  )}
+                </div>
+                <div>
+                  <p className="text-caption text-muted">
                     {p.publishedAt && (
                       <time dateTime={p.publishedAt}>
                         {dateFmt.format(new Date(p.publishedAt))}
@@ -49,8 +47,19 @@ export default async function BlogIndex() {
                     )}
                     {p.readingMinutes ? ` · ${p.readingMinutes} min de lectura` : ""}
                   </p>
+                  <h2 className="mt-1 line-clamp-2 text-base font-semibold">
+                    <Link
+                      href={`/blog/${p.slug}`}
+                      className="after:absolute after:inset-0 after:rounded-card focus-visible:outline-none group-hover:underline group-focus-within:underline"
+                    >
+                      {p.title}
+                    </Link>
+                  </h2>
+                  {p.excerpt && (
+                    <p className="mt-1 line-clamp-2 text-meta text-muted">{p.excerpt}</p>
+                  )}
                 </div>
-              </Link>
+              </article>
             </li>
           ))}
         </ul>

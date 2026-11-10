@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/field";
 
@@ -24,10 +25,20 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
     return [...map.entries()];
   }, [shown]);
 
+  if (faqs.length === 0) {
+    return <p className="text-muted">Pronto publicaremos las preguntas frecuentes.</p>;
+  }
+
   return (
     <div>
-      <div className="max-w-md">
+      <div className="relative max-w-md">
+        <Search
+          aria-hidden
+          size={18}
+          className="pointer-events-none absolute bottom-[19px] left-4 text-muted"
+        />
         <Input
+          className="rounded-full pl-11"
           label="Buscar en las preguntas"
           type="search"
           value={q}
@@ -44,21 +55,20 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
         </p>
       )}
       {groups.map(([category, items]) => (
-        <section key={category || "general"} className="mt-6">
-          {category && <h2 className="mb-3 text-xl">{category}</h2>}
-          <div className="divide-y divide-border rounded-card border border-border">
+        <section key={category || "general"} className="mt-10">
+          {category && <h2 className="mb-2 text-display-sm">{category}</h2>}
+          <div className="divide-y divide-border border-y border-border">
             {items.map((f) => (
               <details key={f.id} className="group" open={Boolean(q)}>
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 font-bold marker:hidden hover:bg-surface-alt [&::-webkit-details-marker]:hidden">
+                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold marker:hidden [&::-webkit-details-marker]:hidden">
                   {f.question}
-                  <span
+                  <ChevronDown
                     aria-hidden
-                    className="text-blue transition-transform group-open:rotate-180"
-                  >
-                    ▾
-                  </span>
+                    size={20}
+                    className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+                  />
                 </summary>
-                <div className="space-y-2 px-4 pb-4 text-muted">
+                <div className="space-y-2 pb-5 text-muted">
                   {f.answer.split(/\n{2,}/).map((para, i) => (
                     <p key={i} className="whitespace-pre-line">
                       {para}
