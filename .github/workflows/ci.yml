@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   checks:
-    name: Typecheck, lint, unit tests, build
+    name: Typecheck, lint, unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,13 +25,9 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm test
-      - run: pnpm build
-        env:
-          # Build needs no secrets; public placeholders keep env reads happy.
-          NEXT_PUBLIC_SITE_URL: http://localhost:3000
 
   database:
-    name: Database (migrations, RLS, seat holds)
+    name: Database + build (migrations, RLS, seat holds, next build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,3 +46,10 @@ jobs:
           pnpm db:types
           git diff --exit-code -- src/lib/supabase/database.types.ts
       - run: pnpm test:db
+      # Pages prerender from the database, so the build runs against the
+      # freshly seeded local stack (anon key only; no production secrets).
+      - name: Build against local Supabase
+        run: |
+          eval "$(pnpm --silent supabase status -o env | grep -E '^(API_URL|ANON_KEY)=')"
+          NEXT_PUBLIC_SUPABASE_URL="$API_URL" NEXT_PUBLIC_SUPABASE_ANON_KEY="$ANON_KEY" \
+          NEXT_PUBLIC_SITE_URL=http://localhost:3000 pnpm build
