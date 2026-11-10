@@ -31,7 +31,14 @@ pnpm dev                     # http://localhost:3000, health check at /health
 
 ## Supabase
 
-Config lives in `supabase/config.toml`; migrations go in `supabase/migrations/` from Sprint 2.
+Config lives in `supabase/config.toml`, migrations in `supabase/migrations/`, database tests in `supabase/tests/`.
+
+Data model notes:
+
+- RLS is on (and forced) for every table. Visitors only read published content; nobody writes through the anon key. Public forms and checkout write from server code with the service-role client (`src/lib/supabase/admin.ts`).
+- Roles live in `profiles.role` (`owner` / `editor`). New auth users get a profile with no role; only an owner can grant one.
+- Seats: `hold_seats(departure, qty)` → hold id or `null`; `confirm_hold`, `release_hold`; a pg_cron job releases expired holds every minute. Only the service role can call them.
+- `supabase/seed.sql` is **dev data** taken from `migration/content/`. Capacity values are the live-site stock seen on 2026-11-10, not confirmed capacities; see the TODO notes on each departure.
 
 - With Docker: `pnpm supabase start`, then copy the printed URL and anon key into `.env.local`.
 - Without Docker: create a separate **dev** Supabase project (never use production), `pnpm supabase link --project-ref <dev-ref>`, and push migrations with `pnpm supabase db push`.
