@@ -18,6 +18,7 @@
     "media:sync": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/media-pipeline.ts",
     "content:import": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/content-import.ts",
     "check:urls": "node --import tsx scripts/check-urls.ts",
+    "check:env": "node --env-file-if-exists=.env.check --import tsx scripts/check-env.ts",
     "e2e:prepare": "node --conditions=react-server --import tsx tests/e2e/prepare.ts",
     "e2e": "playwright test"
   },
