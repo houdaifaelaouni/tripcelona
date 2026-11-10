@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { SkipLink } from "@/components/layout/skip-link";
+import { indexingAllowed } from "@/lib/seo/site-url";
 import "./globals.css";
 
 const inter = Inter({
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
   },
   description:
     "Excursiones de un día cada domingo desde Estació del Nord, Barcelona: Pirineo, Garrotxa y pueblos medievales de Cataluña.",
-  robots: { index: false, follow: false }, // pre-launch: never index previews
+  // Pre-launch and previews: noindex until NEXT_PUBLIC_ALLOW_INDEXING=true.
+  robots: indexingAllowed() ? undefined : { index: false, follow: false },
+  openGraph: { siteName: "Tripcelona", locale: "es_ES", type: "website" },
 };
 
 export const viewport: Viewport = {

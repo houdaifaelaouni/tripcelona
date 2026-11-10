@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { DeparturePicker } from "@/components/booking/departure-picker";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd, faqJsonLd, tourJsonLd } from "@/lib/seo/json-ld";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { TourCard } from "@/components/tours/tour-card";
 import { Accordion } from "@/components/ui/accordion";
@@ -14,6 +18,7 @@ import {
   formatPrice,
   formatTime,
 } from "@/lib/tours/format";
+import { getLiveDepartures } from "@/lib/booking/queries";
 import { getPublishedTours, getTourBySlug, getTourSlugs, relatedTours } from "@/lib/tours/queries";
 import type { TourDetail } from "@/lib/tours/types";
 
@@ -33,7 +38,11 @@ export async function generateMetadata({
       tour.seoDescription ??
       `${tour.title}. Excursión de un día en grupo desde Barcelona${tour.area ? ` a ${tour.area}` : ""}.`,
     alternates: { canonical: `/excursiones/${tour.slug}` },
-    openGraph: tour.image ? { images: [{ url: tour.image.url, alt: tour.image.alt }] } : undefined,
+    openGraph: {
+      title: tour.seoTitle ?? tour.title,
+      url: `/excursiones/${tour.slug}`,
+      images: tour.image ? [{ url: tour.image.url, alt: tour.image.alt }] : undefined,
+    },
   };
 }
 
@@ -46,6 +55,17 @@ export default async function TourPage({ params }: PageProps<"/excursiones/[slug
 
   return (
     <article className="container-site py-6 md:py-10">
+      <JsonLd
+        data={[
+          tourJsonLd(tour),
+          breadcrumbJsonLd([
+            { name: "Inicio", path: "/" },
+            { name: "Ofertas de viajes", path: "/ofertas-de-viajes" },
+            { name: tour.title, path: `/excursiones/${tour.slug}` },
+          ]),
+          ...(faqJsonLd(tour.faqs) ? [faqJsonLd(tour.faqs)!] : []),
+        ]}
+      />
       <nav aria-label="Ruta de navegación" className="text-sm text-muted">
         <ol className="flex flex-wrap gap-1">
           <li>
@@ -261,10 +281,8 @@ function KeyFacts({ tour }: { tour: TourDetail }) {
   );
 }
 
-/** Read-only dates list. The interactive departure picker + checkout is Sprint 5 (US-16, US-18). */
 function BookingPanel({ tour }: { tour: TourDetail }) {
-  const upcoming = tour.departures.slice(0, 6);
-  const price = upcoming.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
+  const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
   return (
     <Card className="p-5">
       {price !== null && (
@@ -274,30 +292,52 @@ function BookingPanel({ tour }: { tour: TourDetail }) {
           <span className="text-sm text-muted"> / persona</span>
         </p>
       )}
-      <h2 className="mt-4 text-base">Próximas salidas</h2>
-      {upcoming.length > 0 ? (
-        <ul className="mt-2 divide-y divide-border">
-          {upcoming.map((d) => (
-            <li key={d.id} className="flex items-center justify-between gap-2 py-2">
-              <span className="first-letter:uppercase">{formatDateLong(d.startsAt)}</span>
-              {d.status === "sold_out" || d.seatsLeft === 0 ? (
-                <Badge tone="danger">Completo</Badge>
-              ) : (
-                <span className="text-sm whitespace-nowrap text-muted">{d.seatsLeft} plazas</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mt-2 text-muted">Estamos preparando nuevas fechas para esta excursión.</p>
-      )}
-      <div className="mt-4 flex flex-col gap-2">
-        <WhatsAppCta
-          label="Reservar por WhatsApp"
-          message={`Hola, quiero reservar la excursión "${tour.title}".`}
-        />
-      </div>
-      <p className="mt-3 text-sm text-muted">La reserva online llega muy pronto.</p>
+      {/* Seats are read live per request; the cached list shows meanwhile. */}
+      <Suspense fallback={<CachedDates tour={tour} />}>
+        <LiveAvailability tour={tour} />
+      </Suspense>
     </Card>
+  );
+}
+
+async function LiveAvailability({ tour }: { tour: TourDetail }) {
+  const departures = (await getLiveDepartures(tour.slug)).slice(0, 8);
+  const bookable = departures.some((d) => d.status === "open" && d.seatsLeft > 0);
+  if (!bookable) return <NoDates tour={tour} soldOut={departures.length > 0} />;
+  return <DeparturePicker departures={departures} />;
+}
+
+function CachedDates({ tour }: { tour: TourDetail }) {
+  if (tour.departures.length === 0) return <NoDates tour={tour} soldOut={false} />;
+  return (
+    <ul className="mt-4 divide-y divide-border" aria-busy="true">
+      {tour.departures.slice(0, 8).map((d) => (
+        <li key={d.id} className="py-2 first-letter:uppercase">
+          {formatDateLong(d.startsAt)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function NoDates({ tour, soldOut }: { tour: TourDetail; soldOut: boolean }) {
+  return (
+    <div className="mt-4">
+      <p className="text-muted">
+        {soldOut
+          ? "Todas las fechas publicadas están completas."
+          : "Estamos preparando nuevas fechas para esta excursión."}{" "}
+        Escríbenos y te avisamos de la próxima salida.
+      </p>
+      <div className="mt-3 flex flex-col gap-2">
+        <WhatsAppCta
+          label="Avísame por WhatsApp"
+          message={`Hola, me interesa la excursión "${tour.title}". ¿Cuándo es la próxima salida?`}
+        />
+        <Link href="/ofertas-de-viajes" className="text-center font-bold text-blue hover:underline">
+          Ver otras excursiones
+        </Link>
+      </div>
+    </div>
   );
 }

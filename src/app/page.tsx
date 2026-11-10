@@ -1,4 +1,6 @@
 import { Hero } from "@/components/home/hero";
+import { JsonLd } from "@/components/seo/json-ld";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { ButtonLink } from "@/components/ui/button";
 import { TourCard } from "@/components/tours/tour-card";
 import { getPublishedTours } from "@/lib/tours/queries";
@@ -16,6 +18,7 @@ export default async function Home() {
 
   return (
     <>
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       <Hero />
       <section aria-labelledby="proximas-heading" className="container-site py-12">
         <div className="flex flex-wrap items-end justify-between gap-2">
