@@ -1,0 +1,36 @@
+old_url,source,lastmod,page_type,new_path,action,notes
+https://tripcelona.com/,sitemap:page,2026-11-09,home,/,keep,
+https://tripcelona.com/ofertas-de-viajes/,sitemap:page,2026-10-31,catalog,/ofertas-de-viajes,keep,Trailing slash normalised by 308 (PRD §6 rule)
+https://tripcelona.com/grupos/,sitemap:page,2026-11-09,page,/grupos,keep,NOT in PRD §5.2 inventory; needs a route decision (own page or merge into /crea-tu-tour). Flagged to PO
+https://tripcelona.com/sobre-nosotros/,sitemap:page,2026-10-30,page,/sobre-nosotros,keep,
+https://tripcelona.com/crea-tu-tour/,sitemap:page,2026-10-26,quote,/crea-tu-tour,keep,
+https://tripcelona.com/contactanos/,sitemap:page,2026-10-25,page,/contactanos,keep,
+https://tripcelona.com/preguntas-frecuentes/,sitemap:page,2026-10-25,faq,/preguntas-frecuentes,keep,
+https://tripcelona.com/eventos/,prd:5.2,,events,/eventos,keep,Not in live sitemap; verify it is live and whether it is noindexed
+https://tripcelona.com/blogs/,prd:5.2,,blog-index,/blog,301,Not in live sitemap; verify
+https://tripcelona.com/politica-de-privacidad/,prd:5.2,,legal,/politica-de-privacidad,keep,Not in live sitemap (likely noindex); verify live
+https://tripcelona.com/politica-de-devoluciones/,prd:5.2,,legal,/politica-de-devoluciones,keep,Not in live sitemap (likely noindex); verify live
+https://tripcelona.com/condiciones-de-contratacion/,prd:5.2,,legal,/condiciones-de-contratacion,keep,Not in live sitemap (likely noindex); verify live
+https://tripcelona.com/politica-de-cookies/,prd:5.2,,legal,/politica-de-cookies,keep,Not in live sitemap (likely noindex); verify live
+https://tripcelona.com/aviso-legal/,prd:5.2,,legal,/aviso-legal,keep,Not in live sitemap (likely noindex); verify live
+https://tripcelona.com/cart/,prd:5.2,,woocommerce,/reservar,301,
+https://tripcelona.com/checkout/,prd:5.2,,woocommerce,/reservar,301,
+https://tripcelona.com/my-account/,prd:5.2,,woocommerce,/,301,Guest checkout at launch (D4); repoint to /cuenta if accounts ship
+https://tripcelona.com/product/la-ruta-del-fuego-exploracion-en-fageda-den-jorda-y-castellfollit-de-la-roca/,sitemap:product,2026-10-31,tour,/excursiones/la-ruta-del-fuego-exploracion-en-fageda-den-jorda-y-castellfollit-de-la-roca,301,New slug kept identical to old; shorter slug optional (PO choice)
+https://tripcelona.com/product/la-magia-rural-de-cataluna-escapada-a-rupit-y-tavertet/,sitemap:product,2026-10-31,tour,/excursiones/la-magia-rural-de-cataluna-escapada-a-rupit-y-tavertet,301,
+https://tripcelona.com/product/el-reto-del-pirineo-exploracion-de-queralbs-y-el-mitico-vall-de-nuria/,sitemap:product,2026-10-31,tour,/excursiones/el-reto-del-pirineo-exploracion-de-queralbs-y-el-mitico-vall-de-nuria,301,
+https://tripcelona.com/product/el-canon-del-vero-alquezar-y-la-ruta-de-las-pasarelas/,sitemap:product,2026-10-31,tour,/excursiones/el-canon-del-vero-alquezar-y-la-ruta-de-las-pasarelas,301,
+https://tripcelona.com/product/el-corazon-salvaje-del-pirineo-aiguestortes-y-el-lago-de-sant-maurici/,sitemap:product,2026-10-30,tour,/excursiones/el-corazon-salvaje-del-pirineo-aiguestortes-y-el-lago-de-sant-maurici,301,
+https://tripcelona.com/que-llevar-a-una-excursion-de-un-dia/,sitemap:post,2026-10-26,post,/blog/que-llevar-a-una-excursion-de-un-dia,301,Live posts are at the ROOT (/<slug>/) not /blog/<slug>/ as PRD §5.2 assumes
+https://tripcelona.com/rupit-y-tavertet-pueblos-con-encanto/,sitemap:post,2026-10-26,post,/blog/rupit-y-tavertet-pueblos-con-encanto,301,
+https://tripcelona.com/vall-de-nuria-queralbs-excursion/,sitemap:post,2026-10-26,post,/blog/vall-de-nuria-queralbs-excursion,301,
+https://tripcelona.com/aiguestortes-lago-sant-maurici-guia/,sitemap:post,2026-10-26,post,/blog/aiguestortes-lago-sant-maurici-guia,301,
+https://tripcelona.com/fageda-den-jorda-castellfollit-de-la-roca/,sitemap:post,2026-10-26,post,/blog/fageda-den-jorda-castellfollit-de-la-roca,301,
+https://tripcelona.com/excursiones-de-un-dia-desde-barcelona/,sitemap:post,2026-10-26,post,/blog/excursiones-de-un-dia-desde-barcelona,301,
+https://tripcelona.com/sitemap_index.xml,sitemap:index,,system,/sitemap.xml,301,Rank Math sitemap index
+https://tripcelona.com/post-sitemap.xml,sitemap:index,,system,/sitemap.xml,301,
+https://tripcelona.com/page-sitemap.xml,sitemap:index,,system,/sitemap.xml,301,
+https://tripcelona.com/product-sitemap.xml,sitemap:index,,system,/sitemap.xml,301,
+https://tripcelona.com/wp-content/uploads/*,legacy-media,,media,(per-file map after S7 media pipeline),301,Image URLs may be indexed in Google Images; map in S7 (US-30)
+https://tripcelona.com/wp-admin/*,legacy,,system,,retire,410/404 after cutover
+https://tripcelona.com/feed/,legacy,,system,,retire,Or 301 to RSS if built (FR-94 optional)
