@@ -49,7 +49,7 @@ export function Tabs({
       <div
         role="tablist"
         aria-label={label}
-        className={cn("flex", tabListClassName)}
+        className={cn("inline-flex rounded-full bg-navy-dark/60 p-1", tabListClassName)}
         onKeyDown={onKeyDown}
       >
         {tabs.map((tab, i) => (
@@ -66,8 +66,9 @@ export function Tabs({
             tabIndex={i === active ? 0 : -1}
             onClick={() => setActive(i)}
             className={cn(
-              "rounded-t-panel px-4 py-2.5 text-base font-bold transition-colors",
-              i === active ? "bg-white text-navy" : "bg-navy-dark/70 text-white hover:bg-navy-dark",
+              // Segmented pill (Opensource UI `segmented-toggle-button`, MIT).
+              "rounded-full px-4 py-2 text-meta font-semibold transition-[background-color,color] duration-200 motion-reduce:transition-none",
+              i === active ? "bg-white text-navy shadow-float" : "text-white hover:bg-white/15",
             )}
           >
             {tab.label}

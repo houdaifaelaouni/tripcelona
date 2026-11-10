@@ -42,3 +42,27 @@ test("owner signs in and publishes a blog post", async ({ page }) => {
   );
   expect(csp, "CSP violations in the admin").toEqual([]);
 });
+
+test("component gallery renders and passes axe", async ({ page }) => {
+  await page.goto("/admin/componentes");
+  await page.waitForURL(/\/admin\/login/);
+  await page.locator("input[name=email]").fill(E2E.ownerEmail);
+  await page.locator("input[name=password]").fill(e2eOwnerPassword());
+  await page.locator("button[type=submit]").click();
+  await page.waitForURL(/\/admin\/componentes/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Componentes");
+
+  // The stepper is interactive and keeps a form value.
+  const qty = page.locator("input[name=demo-qty]");
+  await expect(qty).toHaveValue("1");
+  await page.getByRole("button", { name: "Añadir uno (Personas)" }).click();
+  await expect(qty).toHaveValue("2");
+
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+    .analyze();
+  const blocking = violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+  expect(
+    blocking.map((v) => `${v.impact} ${v.id}: ${v.nodes.map((n) => n.target).join(", ")}`),
+  ).toEqual([]);
+});

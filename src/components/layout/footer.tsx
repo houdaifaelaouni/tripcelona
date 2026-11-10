@@ -7,18 +7,19 @@ export async function Footer() {
   const socials = SOCIAL_NETWORKS.filter((n) => site.socials[n]);
   return (
     <footer className="mt-auto bg-navy text-white">
-      <div className="container-site grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-5">
-        <div className="lg:col-span-1">
-          <p className="text-xl font-bold">{siteDefaults.name}</p>
-          <p className="mt-2 text-white/80">
+      {/* Light-weight footer (design rule): link columns, then a legal band. */}
+      <div className="container-site grid gap-x-6 gap-y-10 py-12 md:grid-cols-2 lg:grid-cols-5">
+        <div>
+          <p className="text-display-sm font-bold">{siteDefaults.name}</p>
+          <p className="mt-2 text-meta text-white/80">
             Rutas guiadas, escapadas y ofertas de viaje para grupos.
           </p>
         </div>
 
         {footerColumns.map((col) => (
           <nav key={col.title} aria-label={col.title}>
-            <h2 className="text-base">{col.title}</h2>
-            <ul className="mt-3 space-y-2">
+            <h2 className="text-base font-medium">{col.title}</h2>
+            <ul className="mt-4 space-y-3 text-meta">
               {col.links.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -34,8 +35,8 @@ export async function Footer() {
         ))}
 
         <div>
-          <h2 className="text-base">Contáctanos</h2>
-          <ul className="mt-3 space-y-2 text-white/80">
+          <h2 className="text-base font-medium">Contáctanos</h2>
+          <ul className="mt-4 space-y-3 text-meta text-white/80">
             <li>
               <a href={site.phoneHref} className="hover:text-white hover:underline">
                 Teléfono: {site.phoneDisplay}
@@ -59,7 +60,7 @@ export async function Footer() {
               </li>
             )}
             <li>
-              <span className="font-bold text-white">Salidas:</span>{" "}
+              <span className="font-semibold text-white">Salidas:</span>{" "}
               <a
                 href={siteDefaults.meetingPointMapHref}
                 target="_blank"
@@ -92,7 +93,7 @@ export async function Footer() {
         </div>
       </div>
       <div className="border-t border-white/15">
-        <p className="container-site py-4 text-sm text-white/70">
+        <p className="container-site py-6 text-caption text-white/70">
           Copyright © 2026 Tripcelona | Todos los derechos reservados
         </p>
       </div>

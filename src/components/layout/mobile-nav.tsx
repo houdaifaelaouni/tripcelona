@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { primaryNav } from "@/lib/site";
-import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "@/components/ui/icons";
+import { Menu, Phone, X } from "lucide-react";
+import { WhatsAppIcon } from "@/components/ui/icons";
+import { iconButtonClasses } from "@/components/ui/icon-button";
 
 export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whatsappHref: string }) {
   const [open, setOpen] = useState(false);
@@ -19,29 +21,29 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
     <div className="lg:hidden">
       <button
         type="button"
-        className="flex items-center rounded-control p-2 hover:bg-white/10"
+        className={iconButtonClasses("soft", "md", "bg-white/10 text-white hover:bg-white/20")}
         aria-label="Abrir menú"
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
       >
-        <MenuIcon />
+        <Menu size={18} aria-hidden />
       </button>
       <dialog
         ref={dialogRef}
         onClose={() => setOpen(false)}
         aria-label="Menú"
-        className="m-0 ml-auto h-dvh max-h-dvh w-[min(20rem,85vw)] max-w-none bg-white p-0 text-ink backdrop:bg-ink/50"
+        className="m-0 ml-auto h-dvh max-h-dvh w-[min(22rem,88vw)] max-w-none rounded-l-panel bg-white p-0 text-ink backdrop:bg-ink/50"
       >
-        <div className="flex h-16 items-center justify-between bg-navy px-4 text-white">
-          <span className="text-lg font-bold">Menú</span>
+        <div className="flex h-20 items-center justify-between border-b border-border px-6">
+          <span className="text-display-sm font-semibold">Menú</span>
           <button
             type="button"
-            className="rounded-control p-2 hover:bg-white/10"
+            className={iconButtonClasses("soft", "md")}
             aria-label="Cerrar menú"
             onClick={() => setOpen(false)}
           >
-            <CloseIcon />
+            <X size={18} aria-hidden />
           </button>
         </div>
         <nav
@@ -51,10 +53,13 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
             if ((e.target as HTMLElement).closest("a")) setOpen(false);
           }}
         >
-          <ul className="py-2">
+          <ul className="p-3">
             {primaryNav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="block px-4 py-3 font-bold hover:bg-surface-alt">
+                <Link
+                  href={item.href}
+                  className="block rounded-control px-3 py-3 font-semibold hover:bg-surface-alt"
+                >
                   {item.label}
                 </Link>
                 {item.children && (
@@ -63,7 +68,7 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
                       <li key={child.href}>
                         <Link
                           href={child.href}
-                          className="block py-2.5 pr-4 pl-8 hover:bg-surface-alt"
+                          className="block rounded-control py-2.5 pr-3 pl-6 text-meta text-muted hover:bg-surface-alt hover:text-ink"
                         >
                           {child.label}
                         </Link>
@@ -75,15 +80,15 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
             ))}
           </ul>
         </nav>
-        <div className="flex flex-col gap-2 border-t border-border p-4">
-          <a href={site.phoneHref} className="flex items-center gap-2 py-2 font-bold text-blue">
-            <PhoneIcon /> {site.phoneDisplay}
+        <div className="flex flex-col gap-2 border-t border-border p-6">
+          <a href={site.phoneHref} className="flex items-center gap-2 py-2 font-semibold text-blue">
+            <Phone size={18} aria-hidden /> {site.phoneDisplay}
           </a>
           <a
             href={site.whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 py-2 font-bold text-whatsapp"
+            className="flex items-center gap-2 py-2 font-semibold text-whatsapp"
           >
             <WhatsAppIcon /> WhatsApp
           </a>
