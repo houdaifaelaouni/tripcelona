@@ -864,6 +864,7 @@ export type Database = {
       tours: {
         Row: {
           area: string | null;
+          area_slug: string | null;
           created_at: string;
           description: Json | null;
           difficulty: string | null;
@@ -891,6 +892,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           area?: string | null;
+          area_slug?: string | null;
           created_at?: string;
           description?: Json | null;
           difficulty?: string | null;
@@ -917,6 +919,7 @@ export type Database = {
         };
         Update: {
           area?: string | null;
+          area_slug?: string | null;
           created_at?: string;
           description?: Json | null;
           difficulty?: string | null;

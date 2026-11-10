@@ -154,6 +154,15 @@ insert into public.tour_images (tour_id, media_id, storage_path, alt, sort_order
 with m as (insert into public.media (path, alt, source_url) values ('tours/el-corazon-salvaje-del-pirineo-aiguestortes-y-el-lago-de-sant-maurici/image-3.png', null, 'https://tripcelona.com/wp-content/uploads/2025/11/image-3.png') on conflict (bucket, path) do update set source_url = excluded.source_url returning id)
 insert into public.tour_images (tour_id, media_id, storage_path, alt, sort_order) select t.id, m.id, 'tours/el-corazon-salvaje-del-pirineo-aiguestortes-y-el-lago-de-sant-maurici/image-3.png', null, 11 from public.tours t, m where t.slug = 'el-corazon-salvaje-del-pirineo-aiguestortes-y-el-lago-de-sant-maurici';
 
+-- Area filter keys (match the hero search values in src/lib/site.ts).
+update public.tours set area_slug = case area
+  when 'La Garrotxa' then 'la-garrotxa'
+  when 'Osona' then 'osona'
+  when 'Ripollès' then 'ripolles'
+  when 'Huesca (Aragón)' then 'huesca'
+  when 'Pallars' then 'pallars'
+end;
+
 -- Site settings observed on the live site. Contact email intentionally not seeded:
 -- the live one is a personal Gmail to be replaced (PRD §5.5).
 insert into public.settings (key, value) values
