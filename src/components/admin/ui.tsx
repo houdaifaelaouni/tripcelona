@@ -71,7 +71,18 @@ export function DepartureStatus({ status }: { status: keyof typeof DEP_TONES }) 
 }
 
 const TOUR_TONES = { draft: "neutral", published: "success", archived: "danger" } as const;
-const TOUR_LABELS = { draft: "Borrador", published: "Publicada", archived: "Archivada" };
+export const TOUR_LABELS = { draft: "Borrador", published: "Publicada", archived: "Archivada" };
 export function TourStatus({ status }: { status: keyof typeof TOUR_TONES }) {
   return <Badge tone={TOUR_TONES[status]}>{TOUR_LABELS[status]}</Badge>;
+}
+
+const REQ_TONES = { new: "accent", quoted: "brand", won: "success", lost: "neutral" } as const;
+export const REQUEST_LABELS = {
+  new: "Nueva",
+  quoted: "Presupuestada",
+  won: "Ganada",
+  lost: "Perdida",
+};
+export function RequestStatus({ status }: { status: keyof typeof REQ_TONES }) {
+  return <Badge tone={REQ_TONES[status]}>{REQUEST_LABELS[status]}</Badge>;
 }

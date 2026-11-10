@@ -167,4 +167,5 @@ end;
 -- the live one is a personal Gmail to be replaced (PRD §5.5).
 insert into public.settings (key, value) values
   ('phone', '"+34 666 69 69 54"'::jsonb),
-  ('meeting_point', to_jsonb('Estació del Nord, C/ d''Alí Bei 80, 08013 Barcelona (Metro L1 Arc de Triomf). Llegar 15 minutos antes.'::text));
+  ('meeting_point', to_jsonb('Estació del Nord, C/ d''Alí Bei 80, 08013 Barcelona (Metro L1 Arc de Triomf). Llegar 15 minutos antes.'::text))
+on conflict (key) do update set value = excluded.value;

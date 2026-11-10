@@ -4,3 +4,22 @@
 - `content/` — one file per tour (US-02): current copy as observed on the live site, missing-fields checklist and image inventory.
 
 Actions: `keep` = same path on the new site (trailing slash normalised); `301` = permanent redirect to `new_path`; `retire` = no replacement.
+
+## Content import (Sprint 8, US-31)
+
+```bash
+pnpm content:import --wxr ./export.xml --dry-run --report ./import-report.json
+pnpm content:import --wxr ./export.xml          # or --wp-api https://tripcelona.com
+```
+
+- Source: a WordPress export (Tools → Export → All content). **The export contains
+  customer data (quote requests); never commit it.** Only posts, pages, products and
+  their FAQ blocks are read.
+- Posts and pages are converted to the editor format word for word (breadcrumbs, repeated
+  titles and plugin shortcodes removed; `[tripola dato]` kept). Pages whose slug belongs to
+  a route of the new site are skipped, existing rows are kept unless `--overwrite`.
+- Products only fill the description of an existing tour with the same slug.
+- FAQs are replaced per source URL. Inline images are registered in `media` under
+  `content/`.
+- The report lists warnings: personal email addresses, empty pages (skipped),
+  removed shortcodes, missing legal pages and future-dated products.

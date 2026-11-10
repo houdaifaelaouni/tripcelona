@@ -24,6 +24,7 @@ export type TourSummary = {
 
 export type TourDetail = TourSummary & {
   summary: string | null;
+  description: import("@/lib/content/rich-text").RichDoc | null;
   highlights: string[];
   inclusions: string[];
   exclusions: string[];

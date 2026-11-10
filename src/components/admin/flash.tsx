@@ -9,6 +9,13 @@ const MESSAGES: Record<string, string> = {
   invitado: "Invitación enviada.",
   rol: "Rol actualizado.",
   "solo-propietario": "Esa sección es solo para el propietario.",
+  publicado: "Publicado. La web pública ya muestra la nueva versión.",
+  borrador: "Borrador guardado. No se ve en la web hasta que lo publiques.",
+  archivado: "Archivado. Ya no se ve en la web.",
+  eliminado: "Eliminado.",
+  subido: "Imagen subida.",
+  estado: "Solicitud actualizada.",
+  ajustes: "Ajustes guardados. La web ya muestra los nuevos datos.",
 };
 
 /** One-line result banner driven by ?ok= / ?error= after a form post. */

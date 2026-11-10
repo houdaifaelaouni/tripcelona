@@ -76,6 +76,29 @@ export function faqJsonLd(faqs: { question: string; answer: string }[]): Json | 
   };
 }
 
+export function blogPostingJsonLd(post: {
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  seoDescription: string | null;
+  publishedAt: string | null;
+  updatedAt: string;
+  cover: { url: string } | null;
+}): Json {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.seoDescription ?? post.excerpt ?? undefined,
+    datePublished: post.publishedAt ?? undefined,
+    dateModified: post.updatedAt,
+    image: post.cover ? [post.cover.url] : undefined,
+    mainEntityOfPage: `${siteUrl()}/blog/${post.slug}`,
+    inLanguage: "es",
+    publisher: { "@type": "Organization", name: site.name, url: siteUrl() },
+  };
+}
+
 export function breadcrumbJsonLd(items: { name: string; path: string }[]): Json {
   return {
     "@context": "https://schema.org",

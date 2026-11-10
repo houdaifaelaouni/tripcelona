@@ -9,7 +9,13 @@ const ITEMS: Item[] = [
   { href: "/admin", label: "Panel" },
   { href: "/admin/excursiones", label: "Excursiones" },
   { href: "/admin/reservas", label: "Reservas", ownerOnly: true },
+  { href: "/admin/solicitudes", label: "Solicitudes", ownerOnly: true },
+  { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/paginas", label: "Páginas" },
+  { href: "/admin/faqs", label: "Preguntas frecuentes" },
+  { href: "/admin/medios", label: "Medios" },
   { href: "/admin/equipo", label: "Equipo", ownerOnly: true },
+  { href: "/admin/ajustes", label: "Ajustes", ownerOnly: true },
   { href: "/admin/cuenta", label: "Mi cuenta" },
 ];
 

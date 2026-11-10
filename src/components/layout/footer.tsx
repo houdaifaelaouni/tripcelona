@@ -1,12 +1,15 @@
 import Link from "next/link";
-import { footerColumns, site } from "@/lib/site";
+import { SOCIAL_LABELS, SOCIAL_NETWORKS, getSiteSettings } from "@/lib/settings";
+import { footerColumns, site as siteDefaults } from "@/lib/site";
 
-export function Footer() {
+export async function Footer() {
+  const site = await getSiteSettings();
+  const socials = SOCIAL_NETWORKS.filter((n) => site.socials[n]);
   return (
     <footer className="mt-auto bg-navy text-white">
       <div className="container-site grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div className="lg:col-span-1">
-          <p className="text-xl font-bold">{site.name}</p>
+          <p className="text-xl font-bold">{siteDefaults.name}</p>
           <p className="mt-2 text-white/80">
             Rutas guiadas, escapadas y ofertas de viaje para grupos.
           </p>
@@ -58,14 +61,32 @@ export function Footer() {
             <li>
               <span className="font-bold text-white">Salidas:</span>{" "}
               <a
-                href={site.meetingPointMapHref}
+                href={siteDefaults.meetingPointMapHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-white hover:underline"
               >
-                {site.meetingPoint}
+                {siteDefaults.meetingPoint}
               </a>
             </li>
+            {socials.length > 0 && (
+              <li>
+                <ul className="flex flex-wrap gap-3" aria-label="Redes sociales">
+                  {socials.map((n) => (
+                    <li key={n}>
+                      <a
+                        href={site.socials[n]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-white"
+                      >
+                        {SOCIAL_LABELS[n]}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
             {/* TODO(PO): office/phone schedule text for FR-04 — not on the live site. */}
           </ul>
         </div>

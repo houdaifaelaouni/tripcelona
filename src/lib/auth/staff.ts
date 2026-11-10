@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -17,6 +18,8 @@ type StaffCheck =
  * the role from `profiles`, and requires the MFA level the user enrolled.
  */
 export async function checkStaff(required: StaffRole | "any" = "any"): Promise<StaffCheck> {
+  // Request-time only: keeps the auth client (which reads the clock) out of prerenders.
+  await connection();
   const supabase = await createClient();
   const {
     data: { user },

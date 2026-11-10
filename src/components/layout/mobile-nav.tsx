@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { primaryNav, site } from "@/lib/site";
+import { primaryNav } from "@/lib/site";
 import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "@/components/ui/icons";
 
-export function MobileNav() {
+export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whatsappHref: string }) {
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {

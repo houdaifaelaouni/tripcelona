@@ -15,11 +15,18 @@
     "db:types": "supabase gen types typescript > src/lib/supabase/database.types.ts && prettier --write src/lib/supabase/database.types.ts",
     "test": "vitest run tests/unit",
     "ops": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/ops.ts",
-    "media:sync": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/media-pipeline.ts"
+    "media:sync": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/media-pipeline.ts",
+    "content:import": "node --conditions=react-server --env-file-if-exists=.env.local --import tsx scripts/content-import.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
+    "@tiptap/extension-image": "3.33.1",
+    "@tiptap/extension-link": "3.33.1",
+    "@tiptap/extension-table": "3.33.1",
+    "@tiptap/pm": "3.33.1",
+    "@tiptap/react": "3.33.1",
+    "@tiptap/starter-kit": "3.33.1",
     "clsx": "^2.1.1",
     "next": "16.4.6",
     "react": "19.3.0",
@@ -36,6 +43,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "eslint-config-prettier": "^10.1.8",
+    "node-html-parser": "9.0.7",
     "pg": "^8.23.1",
     "prettier": "^3.9.10",
     "sharp": "^0.35.5",

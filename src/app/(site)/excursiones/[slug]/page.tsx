@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { Suspense } from "react";
 import { DeparturePicker } from "@/components/booking/departure-picker";
+import { RichText } from "@/components/content/rich-text";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, tourJsonLd } from "@/lib/seo/json-ld";
 import { WhatsAppCta } from "@/components/tours/empty-state";
@@ -46,7 +48,20 @@ export async function generateMetadata({
   };
 }
 
-export default async function TourPage({ params }: PageProps<"/excursiones/[slug]">) {
+/**
+ * `params` is read inside Suspense: when a cache tag used by the layout is
+ * invalidated, Next re-prerenders the route shell with fallback params, and
+ * awaiting them outside a boundary fails that render (500 on every slug).
+ */
+export default function TourPage({ params }: PageProps<"/excursiones/[slug]">) {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <TourPageBody params={params} />
+    </Suspense>
+  );
+}
+
+async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]">["params"] }) {
   const { slug } = await params;
   const tour = await getTourBySlug(slug);
   if (!tour) notFound();
@@ -97,6 +112,11 @@ export default async function TourPage({ params }: PageProps<"/excursiones/[slug
         <div className="min-w-0 space-y-10">
           <KeyFacts tour={tour} />
           {tour.summary && <p className="text-lg">{tour.summary}</p>}
+          {tour.description && tour.description.content.length > 0 && (
+            <Section title="La excursión">
+              <RichText doc={tour.description} />
+            </Section>
+          )}
 
           {tour.highlights.length > 0 && (
             <Section title="Lo más destacado">

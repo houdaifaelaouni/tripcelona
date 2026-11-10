@@ -23,7 +23,7 @@ export type EmailContent = { subject: string; html: string; text: string };
 export type EmailKind =
   "confirmation" | "owner_alert" | "payment_failed" | "payment_request" | "cancellation";
 
-function esc(value: string): string {
+export function esc(value: string): string {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -31,7 +31,7 @@ function esc(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function layout(title: string, body: string): string {
+export function layout(title: string, body: string): string {
   return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc(title)}</title></head>
 <body style="margin:0;background:#f4f6fa;font-family:Arial,Helvetica,sans-serif;color:#1a1f2b">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:24px 12px">
@@ -43,7 +43,7 @@ function layout(title: string, body: string): string {
 </td></tr></table></td></tr></table></body></html>`;
 }
 
-function rows(items: [string, string][]): string {
+export function rows(items: [string, string][]): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin:16px 0">${items
     .map(
       ([k, v]) =>
@@ -52,7 +52,7 @@ function rows(items: [string, string][]): string {
     .join("")}</table>`;
 }
 
-function textRows(items: [string, string][]): string {
+export function textRows(items: [string, string][]): string {
   return items.map(([k, v]) => `${k}: ${v}`).join("\n");
 }
 

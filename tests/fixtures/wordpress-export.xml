@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Synthetic WXR used only by tests. Text is test copy, not site content. -->
+<rss version="2.0" xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wp="http://wordpress.org/export/1.2/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+  <title>Fixture</title>
+  <item>
+    <title><![CDATA[Imagen portada]]></title>
+    <wp:post_id>90</wp:post_id>
+    <wp:post_type><![CDATA[attachment]]></wp:post_type>
+    <wp:attachment_url><![CDATA[https://tripcelona.com/wp-content/uploads/2025/11/portada-prueba.jpg]]></wp:attachment_url>
+  </item>
+  <item>
+    <title><![CDATA[Entrada de prueba &amp; guía]]></title>
+    <link>https://tripcelona.com/entrada-de-prueba/</link>
+    <excerpt:encoded><![CDATA[<p>Resumen de prueba.</p>]]></excerpt:encoded>
+    <content:encoded><![CDATA[<!-- wp:paragraph --><p>Primer párrafo con <strong>negrita</strong> y <a href="https://tripcelona.com/product/la-magia-rural-de-cataluna-escapada-a-rupit-y-tavertet/">un enlace</a>.</p><!-- /wp:paragraph -->
+<h2 class="wp-block-heading">Sección uno</h2>
+<ul><li>Elemento A</li><li>Elemento <em>B</em></li></ul>
+<figure class="wp-block-image"><img src="https://tripcelona.com/wp-content/uploads/2025/11/foto-prueba-1024x683.jpg" alt="Foto de prueba" /><figcaption>Pie de foto</figcaption></figure>
+<table><thead><tr><th>Plazo</th><th>Reembolso</th></tr></thead><tbody><tr><td>Opción 1</td><td>Valor 1</td></tr></tbody></table>
+<script>alert(1)</script><p onclick="x()">Final con <a href="javascript:alert(1)">enlace malo</a> y <a href="https://tripcelona.com/ofertas-de-viajes/#top">interno</a>.</p>]]></content:encoded>
+    <wp:post_id>10</wp:post_id>
+    <wp:post_date_gmt><![CDATA[2026-10-26 16:43:50]]></wp:post_date_gmt>
+    <wp:post_modified_gmt><![CDATA[2026-10-27 10:00:00]]></wp:post_modified_gmt>
+    <wp:post_name><![CDATA[entrada-de-prueba]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_type><![CDATA[post]]></wp:post_type>
+    <category domain="post_tag" nicename="prueba"><![CDATA[Prueba]]></category>
+    <wp:postmeta><wp:meta_key><![CDATA[_thumbnail_id]]></wp:meta_key><wp:meta_value><![CDATA[90]]></wp:meta_value></wp:postmeta>
+    <wp:postmeta><wp:meta_key><![CDATA[rank_math_title]]></wp:meta_key><wp:meta_value><![CDATA[%title% %sep% %sitename%]]></wp:meta_value></wp:postmeta>
+    <wp:postmeta><wp:meta_key><![CDATA[rank_math_description]]></wp:meta_key><wp:meta_value><![CDATA[Descripción SEO de prueba.]]></wp:meta_value></wp:postmeta>
+  </item>
+  <item>
+    <title><![CDATA[Aviso legal]]></title>
+    <link>https://tripcelona.com/aviso-legal/</link>
+    <content:encoded><![CDATA[<div class="elementor"><div class="elementor-widget-container"><h1>Aviso legal</h1><p>Texto legal de prueba 1.</p><ol><li>Punto uno</li><li>Punto dos</li></ol></div></div>]]></content:encoded>
+    <wp:post_id>20</wp:post_id>
+    <wp:post_date_gmt><![CDATA[2026-10-25 09:00:00]]></wp:post_date_gmt>
+    <wp:post_name><![CDATA[aviso-legal]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_type><![CDATA[page]]></wp:post_type>
+  </item>
+  <item>
+    <title><![CDATA[Preguntas frecuentes]]></title>
+    <link>https://tripcelona.com/preguntas-frecuentes/</link>
+    <content:encoded><![CDATA[<div class="elementor-accordion"><div class="elementor-accordion-item"><div class="elementor-tab-title"><a href="">¿Pregunta uno?</a></div><div class="elementor-tab-content"><p>Respuesta uno.</p><p>Segunda línea.</p></div></div><div class="elementor-accordion-item"><div class="elementor-tab-title">¿Pregunta dos?</div><div class="elementor-tab-content">Respuesta dos.</div></div></div>]]></content:encoded>
+    <wp:post_id>30</wp:post_id>
+    <wp:post_name><![CDATA[preguntas-frecuentes]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_type><![CDATA[page]]></wp:post_type>
+  </item>
+  <item>
+    <title><![CDATA[Contáctanos]]></title>
+    <content:encoded><![CDATA[<p>Página con ruta propia.</p>]]></content:encoded>
+    <wp:post_name><![CDATA[contactanos]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_type><![CDATA[page]]></wp:post_type>
+  </item>
+</channel>
+</rss>

@@ -7,6 +7,10 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  experimental: {
+    // Media library uploads (FR-87): images up to 10 MB go through a server action.
+    serverActions: { bodySizeLimit: "11mb" },
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { primaryNav, site } from "@/lib/site";
+import { getSiteSettings } from "@/lib/settings";
+import { primaryNav } from "@/lib/site";
 import { ChevronDownIcon, PhoneIcon, TicketIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { MobileNav } from "./mobile-nav";
 
-export function Header() {
+export async function Header() {
+  const site = await getSiteSettings();
   return (
     <header className="sticky top-0 z-40 bg-navy text-white">
       <div className="container-site flex h-16 items-center justify-between gap-4">
@@ -79,7 +81,11 @@ export function Header() {
           >
             <TicketIcon />
           </Link>
-          <MobileNav />
+          <MobileNav
+            phoneDisplay={site.phoneDisplay}
+            phoneHref={site.phoneHref}
+            whatsappHref={site.whatsappHref}
+          />
         </div>
       </div>
     </header>

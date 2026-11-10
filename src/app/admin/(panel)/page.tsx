@@ -39,10 +39,43 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
         ).data
       : null;
 
+  const inbox =
+    staff.role === "owner"
+      ? await Promise.all([
+          db.from("tour_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
+          db
+            .from("leads")
+            .select("id", { count: "exact", head: true })
+            .eq("source", "contact")
+            .eq("status", "new"),
+        ]).then(([q, m]) => ({ quotes: q.count ?? 0, messages: m.count ?? 0 }))
+      : null;
+
   return (
     <>
       <PageTitle>Hola{staff.name ? `, ${staff.name}` : ""}</PageTitle>
       <Flash ok={aviso} />
+      {inbox && (inbox.quotes > 0 || inbox.messages > 0) && (
+        <Panel>
+          <p>
+            Tienes{" "}
+            <Link className="font-bold text-blue underline" href="/admin/solicitudes?estado=new">
+              {inbox.quotes}{" "}
+              {inbox.quotes === 1
+                ? "solicitud de presupuesto nueva"
+                : "solicitudes de presupuesto nuevas"}
+            </Link>{" "}
+            y{" "}
+            <Link
+              className="font-bold text-blue underline"
+              href="/admin/solicitudes?tipo=mensajes&estado=new"
+            >
+              {inbox.messages} {inbox.messages === 1 ? "mensaje nuevo" : "mensajes nuevos"}
+            </Link>
+            .
+          </p>
+        </Panel>
+      )}
       <Panel title="Próximas salidas">
         {departures?.length ? (
           <Table>
