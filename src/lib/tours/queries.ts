@@ -1,6 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createPublicClient } from "@/lib/supabase/public";
+import { sanitizeDoc } from "@/lib/content/rich-text";
 import { mediaUrl } from "./media";
 import type { Departure, TourDetail, TourImage, TourSummary } from "./types";
 
@@ -123,7 +124,7 @@ export async function getTourBySlug(slug: string): Promise<TourDetail | null> {
     .from("tours")
     .select(
       `${SUMMARY_SELECT},
-       summary, highlights, inclusions, exclusions, packing_list, meeting_point, map_url,
+       summary, description, highlights, inclusions, exclusions, packing_list, meeting_point, map_url,
        seo_title, seo_description,
        tour_itinerary ( sort_order, time_label, title, body ),
        tour_faqs ( sort_order, question, answer )`,
@@ -138,6 +139,7 @@ export async function getTourBySlug(slug: string): Promise<TourDetail | null> {
   return {
     ...summary,
     summary: data.summary,
+    description: data.description ? sanitizeDoc(data.description) : null,
     highlights: strings(data.highlights),
     inclusions: strings(data.inclusions),
     exclusions: strings(data.exclusions),

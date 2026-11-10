@@ -266,6 +266,7 @@ export type Database = {
           id: string;
           question: string;
           sort_order: number;
+          source_url: string | null;
           status: Database["public"]["Enums"]["content_status"];
           updated_at: string;
         };
@@ -277,6 +278,7 @@ export type Database = {
           id?: string;
           question: string;
           sort_order?: number;
+          source_url?: string | null;
           status?: Database["public"]["Enums"]["content_status"];
           updated_at?: string;
         };
@@ -287,30 +289,65 @@ export type Database = {
           id?: string;
           question?: string;
           sort_order?: number;
+          source_url?: string | null;
           status?: Database["public"]["Enums"]["content_status"];
           updated_at?: string;
         };
         Relationships: [];
       };
-      leads: {
+      form_rate_limits: {
         Row: {
-          created_at: string;
-          id: string;
-          payload: NonNullable<Json>;
-          source: string;
+          hits: number;
+          key: string;
+          window_start: string;
         };
         ComputedFields: never;
         Insert: {
-          created_at?: string;
-          id?: string;
-          payload: NonNullable<Json>;
-          source: string;
+          hits?: number;
+          key: string;
+          window_start: string;
         };
         Update: {
+          hits?: number;
+          key?: string;
+          window_start?: string;
+        };
+        Relationships: [];
+      };
+      leads: {
+        Row: {
+          admin_notes: string | null;
+          created_at: string;
+          email_error: string | null;
+          id: string;
+          notified_at: string | null;
+          payload: NonNullable<Json>;
+          source: string;
+          status: Database["public"]["Enums"]["request_status"];
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          admin_notes?: string | null;
           created_at?: string;
+          email_error?: string | null;
           id?: string;
+          notified_at?: string | null;
+          payload: NonNullable<Json>;
+          source: string;
+          status?: Database["public"]["Enums"]["request_status"];
+          updated_at?: string;
+        };
+        Update: {
+          admin_notes?: string | null;
+          created_at?: string;
+          email_error?: string | null;
+          id?: string;
+          notified_at?: string | null;
           payload?: NonNullable<Json>;
           source?: string;
+          status?: Database["public"]["Enums"]["request_status"];
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -362,9 +399,12 @@ export type Database = {
           content: Json | null;
           created_at: string;
           id: string;
+          kind: string;
+          published_at: string | null;
           seo_description: string | null;
           seo_title: string | null;
           slug: string;
+          source_url: string | null;
           status: Database["public"]["Enums"]["content_status"];
           title: string;
           updated_at: string;
@@ -374,9 +414,12 @@ export type Database = {
           content?: Json | null;
           created_at?: string;
           id?: string;
+          kind?: string;
+          published_at?: string | null;
           seo_description?: string | null;
           seo_title?: string | null;
           slug: string;
+          source_url?: string | null;
           status?: Database["public"]["Enums"]["content_status"];
           title: string;
           updated_at?: string;
@@ -385,9 +428,12 @@ export type Database = {
           content?: Json | null;
           created_at?: string;
           id?: string;
+          kind?: string;
+          published_at?: string | null;
           seo_description?: string | null;
           seo_title?: string | null;
           slug?: string;
+          source_url?: string | null;
           status?: Database["public"]["Enums"]["content_status"];
           title?: string;
           updated_at?: string;
@@ -488,7 +534,9 @@ export type Database = {
           seo_description: string | null;
           seo_title: string | null;
           slug: string;
+          source_url: string | null;
           status: Database["public"]["Enums"]["content_status"];
+          tags: string[];
           title: string;
           updated_at: string;
         };
@@ -504,7 +552,9 @@ export type Database = {
           seo_description?: string | null;
           seo_title?: string | null;
           slug: string;
+          source_url?: string | null;
           status?: Database["public"]["Enums"]["content_status"];
+          tags?: string[];
           title: string;
           updated_at?: string;
         };
@@ -519,7 +569,9 @@ export type Database = {
           seo_description?: string | null;
           seo_title?: string | null;
           slug?: string;
+          source_url?: string | null;
           status?: Database["public"]["Enums"]["content_status"];
+          tags?: string[];
           title?: string;
           updated_at?: string;
         };
@@ -890,14 +942,19 @@ export type Database = {
         Row: {
           admin_notes: string | null;
           budget: string | null;
+          company: string | null;
           created_at: string;
           email: string;
+          email_error: string | null;
+          extras: string[];
           group_size: number | null;
           id: string;
           message: string | null;
           name: string;
+          notified_at: string | null;
           phone: string | null;
           preferred_dates: string | null;
+          privacy_accepted_at: string | null;
           status: Database["public"]["Enums"]["request_status"];
           tour_id: string | null;
           updated_at: string;
@@ -906,14 +963,19 @@ export type Database = {
         Insert: {
           admin_notes?: string | null;
           budget?: string | null;
+          company?: string | null;
           created_at?: string;
           email: string;
+          email_error?: string | null;
+          extras?: string[];
           group_size?: number | null;
           id?: string;
           message?: string | null;
           name: string;
+          notified_at?: string | null;
           phone?: string | null;
           preferred_dates?: string | null;
+          privacy_accepted_at?: string | null;
           status?: Database["public"]["Enums"]["request_status"];
           tour_id?: string | null;
           updated_at?: string;
@@ -921,14 +983,19 @@ export type Database = {
         Update: {
           admin_notes?: string | null;
           budget?: string | null;
+          company?: string | null;
           created_at?: string;
           email?: string;
+          email_error?: string | null;
+          extras?: string[];
           group_size?: number | null;
           id?: string;
           message?: string | null;
           name?: string;
+          notified_at?: string | null;
           phone?: string | null;
           preferred_dates?: string | null;
+          privacy_accepted_at?: string | null;
           status?: Database["public"]["Enums"]["request_status"];
           tour_id?: string | null;
           updated_at?: string;
@@ -1057,12 +1124,17 @@ export type Database = {
         Args: Record<PropertyKey, never>;
         Returns: Database["public"]["Enums"]["staff_role"];
       };
+      hit_rate_limit: {
+        Args: { p_key: string; p_limit: number; p_window_seconds: number };
+        Returns: boolean;
+      };
       hold_seats: {
         Args: { p_departure_id: string; p_qty: number; p_ttl?: string };
         Returns: string;
       };
       is_owner: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_staff: { Args: Record<PropertyKey, never>; Returns: boolean };
+      media_usage: { Args: { p_media_id: string }; Returns: number };
       next_booking_reference: { Args: Record<PropertyKey, never>; Returns: string };
       release_booking_seats: { Args: { p_booking_id: string }; Returns: number };
       release_expired_holds: { Args: Record<PropertyKey, never>; Returns: number };

@@ -1,17 +1,18 @@
 import { ButtonLink } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
-import { site } from "@/lib/site";
+import { getSiteSettings, whatsappLink } from "@/lib/settings";
 
-export function WhatsAppCta({
+export async function WhatsAppCta({
   message,
   label = "Pregúntanos por WhatsApp",
 }: {
   message: string;
   label?: string;
 }) {
+  const site = await getSiteSettings();
   return (
     <ButtonLink
-      href={`${site.whatsappHref}?text=${encodeURIComponent(message)}`}
+      href={whatsappLink(site, message)}
       variant="whatsapp"
       target="_blank"
       rel="noopener noreferrer"

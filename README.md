@@ -98,6 +98,28 @@ pnpm ops grant-staff owner@tu-dominio.com owner 'password' # or sets a password 
 Supabase dashboard settings for production: Auth → disable sign-ups, enable TOTP MFA,
 Site URL = production domain, add `https://<domain>/admin/auth/confirm` to redirect URLs.
 
+## Content, forms and inbox (Sprint 8)
+
+- **Blog, pages and FAQs** are edited in Admin → Blog / Páginas / Preguntas frecuentes
+  (Tiptap editor, stored as JSON and sanitised on save). Draft → preview
+  (`/admin/vista-previa/...`) → publish; saving refreshes the public pages
+  (`updateTag("content")`). Legal pages (`kind = 'legal'`) can only be changed by the owner,
+  and their `[tripola dato="titular|nif|domicilio|email|telefono|web"]` tokens are filled
+  from Admin → Ajustes → Datos legales.
+- **Media library** (Admin → Medios): uploads are resized to WebP under `library/YYYY/MM`,
+  alt text is required, and an image that is still used cannot be deleted (`media_usage()`
+  plus a delete trigger). Only the owner deletes.
+- **Settings** (Admin → Ajustes, owner): phone, WhatsApp, email, socials, site banner, quote
+  extras and legal identity. Header, footer and WhatsApp buttons read them.
+- **Forms**: `/contactanos` and `/crea-tu-tour` save to `leads` / `tour_requests` first and
+  then email the owner (`OWNER_EMAIL`) and the visitor. A failed email is recorded in
+  `email_error` and never loses the submission. Honeypot field plus a per-client limit of
+  5 per 10 minutes (`hit_rate_limit()`, salted IP hash, no raw IPs stored).
+- **Inbox** (Admin → Solicitudes, owner): quote requests and contact messages with
+  status and internal notes.
+- **Legacy copy import**: see `migration/README.md`. Owner follow-ups on legal texts:
+  `docs/legal/owner-review.md`.
+
 ## Media pipeline
 
 ```bash
