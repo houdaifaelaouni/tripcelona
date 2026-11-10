@@ -59,3 +59,19 @@ Previews send `noindex` until launch (set in `src/app/layout.tsx`).
 ## Design system
 
 Tokens live in `src/app/globals.css` (`@theme`) and map to Tailwind utilities: `bg-navy`, `text-blue`, `border-yellow`, `rounded-card`, `shadow-panel`, `container-site`, and so on. Primitives are in `src/components/ui`; shell content (nav, footer links, contact) is in `src/lib/site.ts`.
+
+## Payments (Redsys) and owner operations
+
+- Checkout → `/reservar/pendiente` (review and pay) → Redsys → `/reservar/confirmada`.
+- Redsys' server notification (`POST /api/pagos/redsys/notificacion`) is the only thing
+  that confirms a booking; replays are no-ops (`apply_payment_result`, `payment_events`).
+- Without `REDSYS_*` env vars, the pay button is replaced by a WhatsApp fallback.
+- Without `RESEND_API_KEY`/`EMAIL_FROM`, emails are logged to the server console.
+
+Until the admin UI (Sprint 7), the owner actions run from a terminal with production env:
+
+```bash
+pnpm ops resend TC-2026-0001 confirmation   # or owner_alert, payment_failed, cancellation
+pnpm ops refund TC-2026-0001                # refund one paid booking and free its seats
+pnpm ops cancel-departure <departure-uuid>  # cancel, refund every paid booking, email everyone
+```
