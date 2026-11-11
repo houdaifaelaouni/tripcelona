@@ -1,5 +1,7 @@
 import { Bus, MapPin, Route, UserCheck } from "lucide-react";
 import Link from "next/link";
+import { HeroIntro } from "@/components/motion/reveal";
+import { HeroMountains } from "./illustrations";
 import { buttonClasses } from "@/components/ui/button";
 
 /** Facts already stated in the hero copy, shown as icon bullets. */
@@ -48,22 +50,30 @@ export function Hero({ videoSrc, posterSrc }: { videoSrc?: string; posterSrc?: s
         className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-dark via-navy-dark/70 to-navy-dark/30"
       />
 
-      <div className="container-site pt-24 pb-14 md:pt-32">
-        <p className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pr-3 pl-1 text-sm font-medium ring-1 ring-white/25 backdrop-blur ring-inset">
+      <HeroMountains className="absolute inset-x-0 bottom-0 -z-10 h-48 w-full md:h-64" />
+
+      <HeroIntro className="container-site pt-24 pb-36 md:pt-32 md:pb-44">
+        <p
+          data-intro
+          className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pr-3 pl-1 text-sm font-medium ring-1 ring-white/25 backdrop-blur ring-inset"
+        >
           <span className="rounded-full bg-white px-2.5 py-0.5 whitespace-nowrap text-navy">
             Cada domingo
           </span>
           Excursiones de un día desde Barcelona
         </p>
-        <h1 className="mt-5 max-w-3xl text-4xl leading-[1.15] font-semibold tracking-tight md:text-6xl md:leading-[1.1]">
+        <h1
+          data-intro
+          className="mt-5 max-w-3xl text-4xl leading-[1.15] font-semibold tracking-tight md:text-6xl md:leading-[1.1]"
+        >
           Excursiones en grupo por Cataluña desde Barcelona
         </h1>
-        <p className="mt-5 max-w-2xl text-lg text-white/90 md:text-xl">
+        <p data-intro className="mt-5 max-w-2xl text-lg text-white/90 md:text-xl">
           Excursiones de un día cada domingo desde Estació del Nord: el Pirineo, los volcanes de la
           Garrotxa y pueblos medievales de Cataluña. Transporte, guía local y logística incluidos,
           desde 55 € por persona.
         </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <div data-intro className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
             href="#proximas-heading"
             className={buttonClasses({ size: "lg" }, "bg-white text-navy hover:bg-brand-50")}
@@ -80,7 +90,7 @@ export function Hero({ videoSrc, posterSrc }: { videoSrc?: string; posterSrc?: s
             Viajes para grupos
           </Link>
         </div>
-        <ul className="mt-10 grid max-w-4xl grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-4">
+        <ul data-intro className="mt-10 grid max-w-4xl grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-4">
           {bullets.map(({ icon: Icon, label }) => (
             <li key={label} className="flex items-center gap-3 text-sm font-medium">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 ring-inset">
@@ -90,7 +100,7 @@ export function Hero({ videoSrc, posterSrc }: { videoSrc?: string; posterSrc?: s
             </li>
           ))}
         </ul>
-      </div>
+      </HeroIntro>
     </section>
   );
 }
