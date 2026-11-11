@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Flash } from "@/components/admin/flash";
+import { MediaDropzone } from "@/components/admin/media-dropzone";
 import { EmptyState, PageTitle, Panel } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { Checkbox, Input } from "@/components/ui/field";
+import { Button } from "@/components/admin/button";
+import { Checkbox, Input } from "@/components/admin/fields";
 import { deleteMedia, updateMediaAlt, uploadMedia } from "@/lib/admin/media-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -47,19 +48,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
       <Flash ok={ok} error={error} />
       <Panel title="Subir imagen">
         <form action={uploadMedia} className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
-          <div className="flex flex-col gap-1">
-            <label htmlFor="file" className="text-meta font-semibold">
-              Imagen (JPG, PNG, WebP, AVIF o GIF, máx. 10 MB)
-            </label>
-            <input
-              id="file"
-              name="file"
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
-              required
-              className="text-meta"
-            />
-          </div>
+          <MediaDropzone />
           <Input
             label="Texto alternativo"
             name="alt"
@@ -93,7 +82,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
             Filtrar
           </Button>
         </form>
-        <p className="mt-3 text-meta text-muted">
+        <p className="mt-3 text-sm text-tertiary">
           {count ?? 0} imágenes
           {(count ?? 0) > PAGE ? ` (se muestran las ${PAGE} más recientes)` : ""}.
         </p>
@@ -107,8 +96,8 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
             const url = mediaUrl(m);
             const used = usage.get(m.id) ?? 0;
             return (
-              <li key={m.id} className="overflow-hidden rounded-card border border-border">
-                <div className="aspect-[4/3] bg-surface-alt">
+              <li key={m.id} className="overflow-hidden rounded-xl border border-secondary">
+                <div className="aspect-[4/3] bg-secondary">
                   {url && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -120,7 +109,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
                   )}
                 </div>
                 <div className="space-y-2 p-3">
-                  <p className="truncate text-caption text-muted" title={m.path}>
+                  <p className="truncate text-xs text-tertiary" title={m.path}>
                     {m.path.split("/").pop()}
                     {m.width ? ` · ${m.width}×${m.height}` : ""}
                   </p>
@@ -138,7 +127,7 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
                       </Button>
                       {staff.role === "owner" &&
                         (used > 0 ? (
-                          <span className="text-caption text-muted">
+                          <span className="text-xs text-tertiary">
                             En uso ({used}): no se puede borrar
                           </span>
                         ) : (

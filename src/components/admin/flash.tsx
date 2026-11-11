@@ -1,5 +1,4 @@
-import { FormAlert } from "@/components/forms/form-bits";
-import { Toast } from "@/components/ui/toast";
+import { Alert, Toast } from "./alert";
 
 const MESSAGES: Record<string, string> = {
   guardado: "Cambios guardados. La web pública ya muestra la nueva versión.",
@@ -30,9 +29,9 @@ export function Flash({ ok, error }: { ok?: string | string[]; error?: string | 
   const err = Array.isArray(error) ? error[0] : error;
   if (err)
     return (
-      <div className="mb-4">
-        <FormAlert message={err} />
-      </div>
+      <Alert tone="error" title="No se ha podido guardar" className="mb-6">
+        {err}
+      </Alert>
     );
   if (okKey && MESSAGES[okKey]) return <Toast key={okKey} message={MESSAGES[okKey]} />;
   return null;

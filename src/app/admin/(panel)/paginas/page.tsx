@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Flash } from "@/components/admin/flash";
 import { PageTitle, Panel, ResultCount, Table, TourStatus, td, th } from "@/components/admin/ui";
 import { Badge } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/button";
 import { createPage } from "@/lib/admin/content-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -52,12 +52,12 @@ export default async function PagesAdmin({ searchParams }: PageProps<"/admin/pag
               <tr key={p.id}>
                 <td className={td}>
                   <Link
-                    className="font-semibold text-blue hover:underline"
+                    className="font-semibold text-brand-secondary hover:underline"
                     href={`/admin/paginas/${p.id}`}
                   >
                     {p.title}
                   </Link>
-                  <div className="text-caption text-muted">/{p.slug}</div>
+                  <div className="text-xs text-tertiary">/{p.slug}</div>
                 </td>
                 <td className={td}>
                   {p.kind === "legal" ? <Badge tone="brand">Legal</Badge> : "Página"}

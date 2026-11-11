@@ -10,8 +10,8 @@ import {
   td,
   th,
 } from "@/components/admin/ui";
-import { Button, ButtonLink } from "@/components/ui/button";
-import { Input, Select } from "@/components/ui/field";
+import { Button, ButtonLink } from "@/components/admin/button";
+import { Input, Select } from "@/components/admin/fields";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateShort, formatPrice } from "@/lib/tours/format";
@@ -64,7 +64,7 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
         }
       >
         <form
-          className="-mx-5 -mt-5 grid grid-cols-1 items-end gap-3 border-b border-border bg-white px-5 py-4 sm:grid-cols-[1fr_200px_auto]"
+          className="-mx-5 -mt-5 grid grid-cols-1 items-end gap-3 border-b border-secondary bg-primary px-5 py-4 sm:grid-cols-[1fr_200px_auto]"
           role="search"
         >
           <Input
@@ -102,7 +102,7 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
                 <tr key={b.id}>
                   <td className={`${td} whitespace-nowrap`}>
                     <Link
-                      className="font-semibold text-blue hover:underline"
+                      className="font-semibold text-brand-secondary hover:underline"
                       href={`/admin/reservas/${b.id}`}
                     >
                       {b.reference}
@@ -111,7 +111,7 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
                   <td className={td}>
                     {b.customer_name}
                     <br />
-                    <span className="text-muted">{b.email}</span>
+                    <span className="text-tertiary">{b.email}</span>
                   </td>
                   <td className={td}>{b.tour_departures.tours.title}</td>
                   <td className={`${td} whitespace-nowrap`}>

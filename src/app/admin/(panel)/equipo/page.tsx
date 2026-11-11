@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Flash } from "@/components/admin/flash";
-import { PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { Input, Select } from "@/components/ui/field";
+import { SettingsTabs } from "@/components/admin/settings";
+import { CountBadge, PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
+import { Avatar } from "@/components/uui/base/avatar/avatar";
+import { Button } from "@/components/admin/button";
+import { Input, Select } from "@/components/admin/fields";
 import { inviteStaff, setStaffRole } from "@/lib/admin/team-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -17,9 +19,14 @@ export default async function TeamPage({ searchParams }: PageProps<"/admin/equip
 
   return (
     <>
-      <PageTitle description="Quién puede entrar en el panel y con qué rol.">Equipo</PageTitle>
+      <PageTitle crumbs={[{ label: "Ajustes" }]}>Ajustes</PageTitle>
+      <SettingsTabs current="/admin/equipo" role="owner" />
       <Flash ok={ok} error={error} />
-      <Panel title="Personas con acceso">
+      <Panel
+        title="Personas con acceso"
+        description="Quién puede entrar en el panel y con qué rol."
+        badge={<CountBadge>{(members ?? []).length}</CountBadge>}
+      >
         <Table>
           <thead>
             <tr>
@@ -32,8 +39,13 @@ export default async function TeamPage({ searchParams }: PageProps<"/admin/equip
             {(members ?? []).map((m) => (
               <tr key={m.id}>
                 <td className={td}>
-                  {m.email}
-                  {m.full_name && <span className="block text-muted">{m.full_name}</span>}
+                  <div className="flex items-center gap-3">
+                    <Avatar size="md" initials={m.email.slice(0, 1).toUpperCase()} />
+                    <div>
+                      <p className="font-medium text-primary">{m.email}</p>
+                      {m.full_name && <p>{m.full_name}</p>}
+                    </div>
+                  </div>
                 </td>
                 <td className={td}>
                   {m.last_sign_in_at
@@ -65,7 +77,7 @@ export default async function TeamPage({ searchParams }: PageProps<"/admin/equip
         </Table>
       </Panel>
       <Panel title="Invitar a alguien">
-        <p className="mb-3 text-meta text-muted">
+        <p className="mb-3 text-sm text-tertiary">
           Los editores pueden cambiar textos de las excursiones. Solo el propietario ve reservas,
           datos de clientes, precios y plazas.
         </p>

@@ -52,18 +52,21 @@ export default async function Preview({ params }: PageProps<"/admin/vista-previa
           Vista previa ·{" "}
           {status === "published" ? "publicado" : status === "draft" ? "borrador" : "archivado"}
         </Badge>
-        <Link href={`/admin/${kind}/${id}`} className="text-meta text-blue hover:underline">
+        <Link
+          href={`/admin/${kind}/${id}`}
+          className="text-sm text-brand-secondary hover:underline"
+        >
           Volver a editar
         </Link>
       </div>
-      <article className="rounded-panel border border-border bg-white p-5 md:p-8">
+      <article className="rounded-2xl border border-secondary bg-primary p-5 md:p-8">
         <h1 className="text-display-xl">{title}</h1>
         {cover && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={cover.url}
             alt={cover.alt}
-            className="mt-6 max-h-96 w-full max-w-4xl rounded-panel object-cover"
+            className="mt-6 max-h-96 w-full max-w-4xl rounded-2xl object-cover"
           />
         )}
         <RichText className="mt-6" doc={sanitizeDoc(content)} tokens={tokens} />

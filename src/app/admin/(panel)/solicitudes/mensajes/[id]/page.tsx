@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
 import { Facts, InboxStatusForm } from "@/components/admin/inbox-form";
 import { PageTitle, Panel, RequestStatus } from "@/components/admin/ui";
-import { buttonClasses } from "@/components/ui/button";
+import { buttonClasses } from "@/components/admin/button";
 import { updateContactMessage } from "@/lib/admin/inbox-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -67,7 +67,7 @@ export default async function ContactMessage({
             [
               "Emails automáticos",
               m.email_error ? (
-                <span className="text-danger">No enviados: {m.email_error}</span>
+                <span className="text-error-primary">No enviados: {m.email_error}</span>
               ) : m.notified_at ? (
                 "Enviados"
               ) : (
@@ -90,7 +90,10 @@ export default async function ContactMessage({
         status={m.status}
         notes={m.admin_notes}
       />
-      <Link href="/admin/solicitudes?tipo=mensajes" className="text-meta text-blue hover:underline">
+      <Link
+        href="/admin/solicitudes?tipo=mensajes"
+        className="text-sm text-brand-secondary hover:underline"
+      >
         ← Todos los mensajes
       </Link>
     </>

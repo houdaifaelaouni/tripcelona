@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ContentForm } from "@/components/admin/content-form";
 import { Flash } from "@/components/admin/flash";
 import { PageTitle, Panel } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/button";
 import { deletePost, savePost } from "@/lib/admin/content-actions";
 import { mediaOptions } from "@/lib/admin/media-options";
 import { requireStaff } from "@/lib/auth/staff";
@@ -39,7 +39,7 @@ export default async function PostEdit({ params, searchParams }: PageProps<"/adm
             action={deletePost.bind(null, post.id)}
             className="flex flex-wrap items-center gap-3"
           >
-            <p className="text-meta text-muted">
+            <p className="text-sm text-tertiary">
               Borra la entrada para siempre. Si solo quieres ocultarla, archívala.
             </p>
             <Button type="submit" variant="outline">

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
 import { Facts, InboxStatusForm } from "@/components/admin/inbox-form";
 import { PageTitle, Panel, RequestStatus } from "@/components/admin/ui";
-import { buttonClasses } from "@/components/ui/button";
+import { buttonClasses } from "@/components/admin/button";
 import { updateQuoteRequest } from "@/lib/admin/inbox-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -53,7 +53,7 @@ export default async function QuoteRequest({
               "Plan",
               r.tours ? (
                 <Link
-                  className="text-blue hover:underline"
+                  className="text-brand-secondary hover:underline"
                   href={`/excursiones/${r.tours.slug}`}
                   target="_blank"
                 >
@@ -82,7 +82,7 @@ export default async function QuoteRequest({
             [
               "Emails automáticos",
               r.email_error ? (
-                <span className="text-danger">No enviados: {r.email_error}</span>
+                <span className="text-error-primary">No enviados: {r.email_error}</span>
               ) : r.notified_at ? (
                 "Enviados"
               ) : (
@@ -109,7 +109,7 @@ export default async function QuoteRequest({
             </a>
           )}
         </div>
-        <p className="mt-2 text-meta text-muted">
+        <p className="mt-2 text-sm text-tertiary">
           Cuando envíes la propuesta, marca la solicitud como «Presupuestada».
         </p>
       </Panel>
@@ -118,7 +118,7 @@ export default async function QuoteRequest({
         status={r.status}
         notes={r.admin_notes}
       />
-      <Link href="/admin/solicitudes" className="text-meta text-blue hover:underline">
+      <Link href="/admin/solicitudes" className="text-sm text-brand-secondary hover:underline">
         ← Todas las solicitudes
       </Link>
     </>

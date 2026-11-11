@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/field";
-import { PasswordInput } from "@/components/ui/password-input";
+import { Button } from "@/components/admin/button";
+import { Input } from "@/components/admin/fields";
+import { PasswordInput } from "@/components/admin/password-input";
 import { createClient } from "@/lib/supabase/browser";
 
 export function ChangePassword() {
@@ -33,7 +33,7 @@ export function ChangePassword() {
       {msg && (
         <p
           role={msg.ok ? "status" : "alert"}
-          className={msg.ok ? "text-meta text-success" : "text-meta text-danger"}
+          className={msg.ok ? "text-sm text-success-primary" : "text-sm text-error-primary"}
         >
           {msg.text}
         </p>
@@ -122,17 +122,21 @@ export function MfaSetup() {
           {factors.map((f) => (
             <li
               key={f.id}
-              className="flex items-center justify-between gap-3 rounded-control border border-border p-2 text-meta"
+              className="flex items-center justify-between gap-3 rounded-lg border border-secondary p-2 text-sm"
             >
               <span>✓ {f.name}</span>
-              <button type="button" className="text-danger underline" onClick={() => remove(f.id)}>
+              <button
+                type="button"
+                className="text-error-primary underline"
+                onClick={() => remove(f.id)}
+              >
                 Quitar
               </button>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-meta text-muted">
+        <p className="text-sm text-tertiary">
           Sin verificación en dos pasos. Recomendada para el propietario.
         </p>
       )}
@@ -145,7 +149,7 @@ export function MfaSetup() {
             width={180}
             height={180}
           />
-          <p className="break-all text-caption text-muted">Clave manual: {enrolling.secret}</p>
+          <p className="break-all text-xs text-tertiary">Clave manual: {enrolling.secret}</p>
           <Input
             label="Código de la app"
             name="code"
@@ -161,7 +165,7 @@ export function MfaSetup() {
       ) : (
         <>
           {error && (
-            <p role="alert" className="text-meta text-danger">
+            <p role="alert" className="text-sm text-error-primary">
               {error}
             </p>
           )}
