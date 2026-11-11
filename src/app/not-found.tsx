@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonLink, buttonClasses } from "@/components/ui/button";
 import { destinations } from "@/lib/site";
 import { buildCatalogUrl } from "@/lib/search";
 
@@ -10,9 +10,9 @@ export default function NotFound() {
     <>
       <Header />
       <main id="contenido" tabIndex={-1} className="flex flex-1 flex-col outline-none">
-        <section className="container-site py-16">
-          <p className="text-sm font-bold text-blue">Error 404</p>
-          <h1 className="mt-2 text-3xl">No encontramos esta página</h1>
+        <section className="container-site py-16 md:py-24">
+          <p className="text-meta font-semibold text-muted">Error 404</p>
+          <h1 className="mt-2 text-display-xl">No encontramos esta página</h1>
           <p className="mt-3 max-w-xl text-muted">
             Puede que el enlace haya cambiado. Busca tu próxima excursión o vuelve al inicio.
           </p>
@@ -20,7 +20,7 @@ export default function NotFound() {
           <form
             action="/ofertas-de-viajes"
             method="get"
-            className="mt-6 flex max-w-md gap-2"
+            className="mt-8 flex max-w-md items-center gap-1 rounded-full border border-border bg-white p-1.5 shadow-float"
             role="search"
           >
             <label htmlFor="nf-zona" className="sr-only">
@@ -29,7 +29,7 @@ export default function NotFound() {
             <select
               id="nf-zona"
               name="zona"
-              className="h-10 min-w-0 flex-1 rounded-control border border-border-strong bg-white px-3"
+              className="h-11 min-w-0 flex-1 rounded-full bg-transparent px-4"
               defaultValue=""
             >
               <option value="">Todos los destinos</option>
@@ -41,19 +41,19 @@ export default function NotFound() {
             </select>
             <button
               type="submit"
-              className="h-10 rounded-control bg-blue px-4 font-bold text-white hover:bg-blue-dark"
+              className={buttonClasses({ size: "sm", shape: "pill" }, "h-11 px-5")}
             >
               Buscar
             </button>
           </form>
 
-          <h2 className="mt-10 text-lg">Excursiones destacadas</h2>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          <h2 className="mt-12 text-display-sm">Excursiones destacadas</h2>
+          <ul className="mt-4 flex flex-wrap gap-2">
             {destinations.map((d) => (
               <li key={d.area}>
                 <Link
                   href={buildCatalogUrl({ area: d.area })}
-                  className="text-blue hover:underline"
+                  className="inline-flex h-10 items-center rounded-full border border-border-strong px-4 text-meta font-semibold hover:border-ink"
                 >
                   {d.label}
                 </Link>
