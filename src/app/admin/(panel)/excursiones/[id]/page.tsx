@@ -210,12 +210,23 @@ export default async function TourEdit({
                   name="map_url"
                   defaultValue={tour.map_url ?? ""}
                 />
-                <Input
-                  label="URL (no editable)"
-                  name="_slug"
-                  defaultValue={`/excursiones/${tour.slug}`}
-                  disabled
-                />
+                {tour.published_at ? (
+                  <Input
+                    label="URL (no editable)"
+                    name="_slug"
+                    defaultValue={`/excursiones/${tour.slug}`}
+                    disabled
+                  />
+                ) : (
+                  <Input
+                    label="URL de la excursión"
+                    name="slug"
+                    defaultValue={tour.slug.startsWith("borrador-") ? "" : tour.slug}
+                    placeholder="p. ej. ruta-por-montserrat"
+                    pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                    hint="Minúsculas y guiones. Se fija al publicar por primera vez."
+                  />
+                )}
               </div>
             </Section>
 
