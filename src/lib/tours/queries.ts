@@ -78,6 +78,7 @@ function toSummary(
     durationMinutes: row.duration_minutes,
     priceFromCents: row.price_from_cents,
     image: images[0] ?? null,
+    gallery: images,
     departures: toDepartures(row.tour_departures, now),
   };
 }
