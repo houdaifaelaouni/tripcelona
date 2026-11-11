@@ -140,4 +140,19 @@ test("staff create a new tour and set its URL", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Excursión creada por la prueba e2e",
   );
+
+  // Add a photo by uploading it from the tour editor.
+  const png = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "base64",
+  );
+  const fotos = page.locator("#fotos");
+  await fotos
+    .locator("input[name=file]")
+    .setInputFiles({ name: "foto-e2e.png", mimeType: "image/png", buffer: png });
+  await fotos.locator("input[name=alt]").fill("Foto de prueba e2e");
+  await fotos.getByRole("button", { name: "Subir foto" }).click();
+  await page.waitForURL(/ok=foto_anadida/);
+  await expect(page.locator("#fotos").getByText("Principal", { exact: true })).toBeVisible();
+  await expect(page.locator("#fotos").getByRole("button", { name: "Quitar foto 1" })).toBeVisible();
 });

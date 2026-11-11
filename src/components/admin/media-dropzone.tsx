@@ -15,7 +15,7 @@ import {
 const ACCEPT = "image/jpeg,image/png,image/webp,image/avif,image/gif";
 const MAX = 10 * 1024 * 1024;
 
-export function MediaDropzone() {
+export function MediaDropzone({ required = true }: { required?: boolean }) {
   const input = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string>();
@@ -47,7 +47,7 @@ export function MediaDropzone() {
         name="file"
         type="file"
         accept={ACCEPT}
-        required
+        required={required}
         tabIndex={-1}
         aria-hidden
         className="sr-only"

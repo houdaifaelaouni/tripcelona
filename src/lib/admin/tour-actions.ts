@@ -9,6 +9,7 @@ import { assertStaff } from "@/lib/auth/staff";
 import { cancelDeparture } from "@/lib/payments/service";
 import { createClient } from "@/lib/supabase/server";
 import { TOURS_TAG } from "@/lib/tours/queries";
+import { storeImage } from "./media-store";
 import { backWith } from "./redirect";
 import { eurosToCents, madridToIso } from "./time";
 
@@ -248,4 +249,98 @@ export async function cancelDepartureAction(tourId: string, departureId: string,
         .join(", ")}. Vuelve a cancelar para reintentarlo o revísalo en Redsys.`,
     });
   backWith(back, { ok: "salida_cancelada" });
+}
+
+const uuid = z.string().uuid();
+
+async function nextImageOrder(db: Awaited<ReturnType<typeof createClient>>, tourId: string) {
+  const { data } = await db
+    .from("tour_images")
+    .select("sort_order")
+    .eq("tour_id", tourId)
+    .order("sort_order", { ascending: false })
+    .limit(1);
+  return (data?.[0]?.sort_order ?? -1) + 1;
+}
+
+/** Adds a photo to a tour: a new upload, or an image already in Medios. */
+export async function addTourImage(tourId: string, form: FormData) {
+  const staff = await assertStaff("any");
+  const back = `/admin/excursiones/${tourId}#fotos`;
+  const db = await createClient();
+
+  let mediaId: string;
+  let path: string;
+  let altText: string | null;
+  const file = form.get("file");
+  if (file instanceof File && file.size > 0) {
+    const stored = await storeImage(db, file, form.get("alt"));
+    if ("error" in stored) backWith(back, { error: stored.error });
+    await audit(staff.id, "media.upload", "media", stored.id, { path: stored.path });
+    mediaId = stored.id;
+    path = stored.path;
+    altText = String(form.get("alt")).trim();
+  } else {
+    const picked = uuid.safeParse(form.get("media_id"));
+    if (!picked.success) backWith(back, { error: "Sube una foto o elige una de Medios." });
+    const { data: media } = await db
+      .from("media")
+      .select("id, path, alt")
+      .eq("id", picked.data)
+      .maybeSingle();
+    if (!media) backWith(back, { error: "Esa imagen ya no está en Medios." });
+    mediaId = media.id;
+    path = media.path;
+    altText = media.alt;
+  }
+
+  const { data, error } = await db
+    .from("tour_images")
+    .insert({
+      tour_id: tourId,
+      media_id: mediaId,
+      storage_path: path,
+      alt: altText,
+      sort_order: await nextImageOrder(db, tourId),
+    })
+    .select("id")
+    .single();
+  if (error) backWith(back, { error: `No se pudo añadir: ${error.message}` });
+  await audit(staff.id, "tour.image_add", "tour_images", data.id, { tourId, mediaId });
+  updateTag(TOURS_TAG);
+  backWith(back, { ok: "foto_anadida" });
+}
+
+/** Takes a photo off the tour. The image stays in Medios. */
+export async function removeTourImage(tourId: string, imageId: string) {
+  const staff = await assertStaff("any");
+  const back = `/admin/excursiones/${tourId}#fotos`;
+  const db = await createClient();
+  const { error } = await db.from("tour_images").delete().eq("id", imageId).eq("tour_id", tourId);
+  if (error) backWith(back, { error: `No se pudo quitar: ${error.message}` });
+  await audit(staff.id, "tour.image_remove", "tour_images", imageId, { tourId });
+  updateTag(TOURS_TAG);
+  backWith(back, { ok: "foto_quitada" });
+}
+
+/** Makes a photo the tour's main one (first in the gallery). */
+export async function setTourCover(tourId: string, imageId: string) {
+  const staff = await assertStaff("any");
+  const back = `/admin/excursiones/${tourId}#fotos`;
+  const db = await createClient();
+  const { data: first } = await db
+    .from("tour_images")
+    .select("sort_order")
+    .eq("tour_id", tourId)
+    .order("sort_order")
+    .limit(1);
+  const { error } = await db
+    .from("tour_images")
+    .update({ sort_order: (first?.[0]?.sort_order ?? 0) - 1 })
+    .eq("id", imageId)
+    .eq("tour_id", tourId);
+  if (error) backWith(back, { error: `No se pudo cambiar: ${error.message}` });
+  await audit(staff.id, "tour.image_cover", "tour_images", imageId, { tourId });
+  updateTag(TOURS_TAG);
+  backWith(back, { ok: "foto_portada" });
 }
