@@ -18,6 +18,8 @@ export type TourSummary = {
   durationMinutes: number | null;
   priceFromCents: number | null;
   image: TourImage | null;
+  /** Every published photo of the tour, in order (home gallery). */
+  gallery?: TourImage[];
   /** Upcoming departures (open or sold out), soonest first. */
   departures: Departure[];
 };
