@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Flash } from "@/components/admin/flash";
-import { CalendarCheck, CalendarDays, Euro, Inbox, Map, Users } from "lucide-react";
+import { CalendarDays, Euro, Inbox, Users } from "lucide-react";
 import {
   BookingStatus,
   DepartureStatus,
   EmptyState,
-  PageTitle,
   Panel,
   StatCard,
   StatGrid,
@@ -15,6 +14,7 @@ import {
   td,
   th,
 } from "@/components/admin/ui";
+import { WelcomeIllustration } from "@/components/admin/illustrations";
 import { ButtonLink } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth/staff";
 import { assessHealth, loadHealthInput, type HealthReport } from "@/lib/ops/health";
@@ -97,18 +97,38 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
   const occupancy = seats.total ? Math.round((seats.taken / seats.total) * 100) : null;
   return (
     <>
-      <PageTitle
-        description="Resumen de las próximas salidas, las ventas y lo que tienes pendiente."
-        actions={
-          staff.role === "owner" ? (
-            <ButtonLink href="/admin/reservas/nueva" size="sm">
-              Nueva reserva manual
+      <section className="mb-6 flex flex-col overflow-hidden rounded-card border border-border bg-white md:flex-row md:items-center">
+        <div className="min-w-0 flex-1 p-5 md:p-8">
+          <p className="text-caption font-semibold tracking-wide text-muted uppercase">
+            {new Intl.DateTimeFormat("es-ES", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              timeZone: "Europe/Madrid",
+            }).format(now)}
+          </p>
+          <h1 className="mt-1 text-display-md md:text-display-lg">
+            Hola{staff.name ? `, ${staff.name}` : ""}
+          </h1>
+          <p className="mt-2 max-w-md text-meta text-muted">
+            Resumen de las próximas salidas, las ventas y lo que tienes pendiente.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {staff.role === "owner" && (
+              <ButtonLink href="/admin/reservas/nueva" size="sm">
+                Nueva reserva manual
+              </ButtonLink>
+            )}
+            <ButtonLink href="/admin/excursiones" size="sm" variant="outline">
+              Ver excursiones
             </ButtonLink>
-          ) : undefined
-        }
-      >
-        Hola{staff.name ? `, ${staff.name}` : ""}
-      </PageTitle>
+          </div>
+        </div>
+        <WelcomeIllustration
+          className="h-36 w-full shrink-0 bg-surface-alt md:h-52 md:w-[44%] md:self-stretch"
+          preserveAspectRatio="xMidYMax slice"
+        />
+      </section>
       <Flash ok={aviso} />
       <StatGrid>
         <StatCard
@@ -188,7 +208,9 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
               </tbody>
             </Table>
           ) : (
-            <EmptyState icon={Map}>No hay salidas programadas.</EmptyState>
+            <EmptyState illustration="calendar" title="Sin salidas programadas">
+              Añade fechas desde la ficha de cada excursión para abrir la venta.
+            </EmptyState>
           )}
         </Panel>
 
@@ -237,7 +259,9 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
                 </tbody>
               </Table>
             ) : (
-              <EmptyState icon={CalendarCheck}>Todavía no hay reservas.</EmptyState>
+              <EmptyState illustration="tickets" title="Todavía no hay reservas">
+                Las reservas pagadas aparecerán aquí en cuanto entren.
+              </EmptyState>
             )}
           </Panel>
         )}

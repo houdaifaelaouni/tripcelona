@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Flash } from "@/components/admin/flash";
-import { PageTitle, Panel, ResultCount, Table, TourStatus, td, th } from "@/components/admin/ui";
+import {
+  EmptyState,
+  PageTitle,
+  Panel,
+  ResultCount,
+  Table,
+  TourStatus,
+  td,
+  th,
+} from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { createPost } from "@/lib/admin/content-actions";
 import { requireStaff } from "@/lib/auth/staff";
@@ -67,7 +76,9 @@ export default async function BlogAdmin({ searchParams }: PageProps<"/admin/blog
             {(posts ?? []).length === 0 && (
               <tr>
                 <td className={td} colSpan={4}>
-                  Todavía no hay entradas.
+                  <EmptyState illustration="notebook" title="Todavía no hay entradas">
+                    Crea la primera con «Nueva entrada».
+                  </EmptyState>
                 </td>
               </tr>
             )}

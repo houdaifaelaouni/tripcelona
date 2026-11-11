@@ -50,4 +50,17 @@ test("screen admin", async ({ page }, info) => {
     await page.getByRole("heading", { level: 1 }).waitFor();
     await page.screenshot({ path: `screenshots/${info.project.name}-admin-${name}.png` });
   }
+  // Tour editor (two columns with the sticky summary card).
+  await page.goto("/admin/excursiones");
+  await page.locator('a[href^="/admin/excursiones/"]').first().click();
+  await page.waitForURL(/\/admin\/excursiones\/[0-9a-f-]{36}$/);
+  await page.getByRole("heading", { level: 1 }).waitFor();
+  await page.waitForLoadState("networkidle");
+  await page.screenshot({
+    path: `screenshots/${info.project.name}-admin-tour-edit.png`,
+    fullPage: true,
+  });
+  await page.goto("/admin/medios?q=zzzz-no-match");
+  await page.getByRole("heading", { level: 1 }).waitFor();
+  await page.screenshot({ path: `screenshots/${info.project.name}-admin-empty-media.png` });
 });
