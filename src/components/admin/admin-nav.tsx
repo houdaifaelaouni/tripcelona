@@ -1,58 +1,70 @@
 "use client";
 
 /**
- * Admin sidebar navigation, after Preline UI's application sidebar
- * (https://github.com/htmlstreamofficial/preline, MIT + Preline UI Fair Use
- * License). On large screens it is a fixed column; on smaller ones the
- * header's menu button opens it as a modal drawer (native <dialog>).
+ * Admin sidebar: the Untitled UI "sections with subheadings" sidebar
+ * (MIT, © 2025 Untitled UI, https://github.com/untitleduico/react,
+ * application/app-navigation) with Tripcelona's brand, nav groups and an
+ * account card. Phones and tablets get the Untitled mobile header + drawer.
  */
 import {
-  CalendarCheck,
-  FileText,
+  BarChartSquare02,
+  BookOpen01,
+  Calendar,
+  File04,
   HelpCircle,
-  Image as ImageIcon,
-  Inbox,
-  LayoutDashboard,
-  Map,
-  Menu,
-  Newspaper,
-  Settings,
-  UserRound,
-  Users,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+  Image01,
+  Inbox01,
+  LinkExternal01,
+  LogOut01,
+  Map01,
+  Menu02,
+  Settings01,
+  User01,
+  Users01,
+  X as CloseIcon,
+} from "@untitledui/icons";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { cn } from "@/lib/cn";
+import { usePathname, useRouter } from "next/navigation";
+import type { ReactNode } from "react";
+import {
+  Button as AriaButton,
+  Dialog as AriaDialog,
+  DialogTrigger as AriaDialogTrigger,
+  Modal as AriaModal,
+  ModalOverlay as AriaModalOverlay,
+  RouterProvider,
+} from "react-aria-components";
+import { NavItemBase } from "@/components/uui/application/app-navigation/base-components/nav-item";
+import { Avatar } from "@/components/uui/base/avatar/avatar";
+import { cx } from "@/components/uui/utils/cx";
+import { signOut } from "@/lib/admin/auth-actions";
 
-type Item = { href: string; label: string; icon: LucideIcon; ownerOnly?: boolean };
-const GROUPS: { label?: string; items: Item[] }[] = [
-  { items: [{ href: "/admin", label: "Panel", icon: LayoutDashboard }] },
+type Item = { href: string; label: string; icon: typeof Map01; ownerOnly?: boolean };
+const GROUPS: { label: string; items: Item[] }[] = [
+  { label: "General", items: [{ href: "/admin", label: "Panel", icon: BarChartSquare02 }] },
   {
     label: "Ventas",
     items: [
-      { href: "/admin/excursiones", label: "Excursiones", icon: Map },
-      { href: "/admin/reservas", label: "Reservas", icon: CalendarCheck, ownerOnly: true },
-      { href: "/admin/solicitudes", label: "Solicitudes", icon: Inbox, ownerOnly: true },
+      { href: "/admin/excursiones", label: "Excursiones", icon: Map01 },
+      { href: "/admin/reservas", label: "Reservas", icon: Calendar, ownerOnly: true },
+      { href: "/admin/solicitudes", label: "Solicitudes", icon: Inbox01, ownerOnly: true },
     ],
   },
   {
     label: "Contenido",
     items: [
-      { href: "/admin/blog", label: "Blog", icon: Newspaper },
-      { href: "/admin/paginas", label: "Páginas", icon: FileText },
+      { href: "/admin/blog", label: "Blog", icon: BookOpen01 },
+      { href: "/admin/paginas", label: "Páginas", icon: File04 },
       { href: "/admin/faqs", label: "Preguntas frecuentes", icon: HelpCircle },
-      { href: "/admin/medios", label: "Medios", icon: ImageIcon },
+      { href: "/admin/medios", label: "Medios", icon: Image01 },
     ],
   },
   {
     label: "Cuenta",
     items: [
-      { href: "/admin/equipo", label: "Equipo", icon: Users, ownerOnly: true },
-      { href: "/admin/ajustes", label: "Ajustes", icon: Settings, ownerOnly: true },
-      { href: "/admin/cuenta", label: "Mi cuenta", icon: UserRound },
+      { href: "/admin/equipo", label: "Equipo", icon: Users01, ownerOnly: true },
+      { href: "/admin/ajustes", label: "Ajustes", icon: Settings01, ownerOnly: true },
+      { href: "/admin/cuenta", label: "Mi cuenta", icon: User01 },
     ],
   },
 ];
@@ -60,120 +72,142 @@ const GROUPS: { label?: string; items: Item[] }[] = [
 const isActive = (path: string, href: string) =>
   href === "/admin" ? path === "/admin" : path === href || path.startsWith(`${href}/`);
 
-/** The section title for the current path (shown in the top bar). */
-export function useSection() {
-  const path = usePathname();
-  for (const g of GROUPS) for (const i of g.items) if (isActive(path, i.href)) return i.label;
-  return "Panel";
-}
-
-export function AdminNav({
-  role,
-  onNavigate,
-}: {
-  role: "owner" | "editor";
-  onNavigate?: () => void;
-}) {
-  const path = usePathname();
-  return (
-    <nav aria-label="Admin" className="px-3 pb-4">
-      {GROUPS.map((g, gi) => {
-        const items = g.items.filter((i) => role === "owner" || !i.ownerOnly);
-        if (!items.length) return null;
-        return (
-          <div key={g.label ?? gi} className={cn(gi > 0 && "mt-5")}>
-            {g.label && (
-              <p className="mb-1 px-2.5 text-caption font-semibold tracking-wide text-muted uppercase">
-                {g.label}
-              </p>
-            )}
-            <ul className="space-y-0.5">
-              {items.map(({ href, label, icon: Icon }) => {
-                const active = isActive(path, href);
-                return (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      onClick={onNavigate}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "flex min-h-10 items-center gap-3 rounded-control px-2.5 py-2 text-meta text-ink transition-colors hover:bg-surface-alt",
-                        active && "bg-blue/10 font-semibold text-navy hover:bg-blue/10",
-                      )}
-                    >
-                      <Icon
-                        aria-hidden
-                        size={18}
-                        className={cn("shrink-0", active ? "text-navy" : "text-muted")}
-                      />
-                      {label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        );
-      })}
-    </nav>
-  );
+/** React Aria links navigate with the Next router (client-side). */
+export function AdminRouter({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  return <RouterProvider navigate={(href) => router.push(href)}>{children}</RouterProvider>;
 }
 
 export function SidebarBrand() {
   return (
-    <Link href="/admin" className="flex items-center gap-2 rounded-control text-base font-semibold">
+    <Link
+      href="/admin"
+      className="flex items-center gap-2.5 rounded-md text-md font-semibold text-primary"
+    >
       <span
         aria-hidden
-        className="flex size-8 items-center justify-center rounded-control bg-navy text-meta font-bold text-white"
+        className="flex size-8 items-center justify-center rounded-lg bg-brand-800 text-sm font-bold text-white shadow-xs-skeuomorphic"
       >
         T
       </span>
-      Tripcelona <span className="font-normal text-muted">Admin</span>
+      Tripcelona
     </Link>
   );
 }
 
-/** Menu button + drawer for screens narrower than the lg breakpoint. */
-export function MobileNav({ role }: { role: "owner" | "editor" }) {
-  const ref = useRef<HTMLDialogElement>(null);
+type Staff = { role: "owner" | "editor"; email: string; name: string | null };
+
+function SidebarContent({ staff }: { staff: Staff }) {
   const path = usePathname();
-  useEffect(() => ref.current?.close(), [path]);
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => ref.current?.showModal()}
-        className="flex size-10 items-center justify-center rounded-control border border-border text-ink hover:bg-surface-alt lg:hidden"
-      >
-        <Menu aria-hidden size={20} />
-        <span className="sr-only">Abrir menú</span>
-      </button>
-      <dialog
-        ref={ref}
-        aria-label="Menú del panel"
-        onClick={(e) => e.target === e.currentTarget && ref.current?.close()}
-        className="m-0 h-dvh max-h-none w-72 max-w-[85vw] bg-white p-0 text-ink backdrop:bg-ink/40 open:flex open:flex-col"
-      >
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-4">
-          <SidebarBrand />
-          <button
-            type="button"
-            onClick={() => ref.current?.close()}
-            className="flex size-10 items-center justify-center rounded-control hover:bg-surface-alt"
-          >
-            <X aria-hidden size={20} />
-            <span className="sr-only">Cerrar menú</span>
-          </button>
+    <aside className="flex h-full w-full max-w-full flex-col overflow-auto bg-primary pt-5 shadow-xs ring-secondary ring-inset lg:w-[276px] lg:rounded-xl lg:ring-1">
+      <div className="px-5">
+        <SidebarBrand />
+      </div>
+      <nav aria-label="Admin" className="mt-6">
+        <ul>
+          {GROUPS.map((group) => {
+            const items = group.items.filter((i) => staff.role === "owner" || !i.ownerOnly);
+            if (!items.length) return null;
+            return (
+              <li key={group.label}>
+                <p className="px-5 pb-1 text-xs font-bold text-quaternary uppercase">
+                  {group.label}
+                </p>
+                <ul className="px-4 pb-5">
+                  {items.map((item) => (
+                    <li key={item.href} className="py-px">
+                      <NavItemBase
+                        type="link"
+                        href={item.href}
+                        icon={item.icon}
+                        current={isActive(path, item.href)}
+                      >
+                        {item.label}
+                      </NavItemBase>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+      <div className="mt-auto flex flex-col gap-4 px-4 pb-4">
+        <NavItemBase type="link" href="/" icon={LinkExternal01} target="_blank">
+          Ver web
+        </NavItemBase>
+        <div className="relative flex items-center gap-3 rounded-xl p-3 ring-1 ring-secondary ring-inset">
+          <Avatar size="md" initials={(staff.name ?? staff.email).slice(0, 1).toUpperCase()} />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-primary" title={staff.email}>
+              {staff.name ?? staff.email}
+            </p>
+            <p className="truncate text-sm text-tertiary">
+              {staff.role === "owner" ? "Propietario" : "Editor"}
+            </p>
+          </div>
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="flex size-9 items-center justify-center rounded-md text-fg-quaternary hover:bg-primary_hover hover:text-fg-quaternary_hover"
+            >
+              <LogOut01 aria-hidden className="size-5" />
+              <span className="sr-only">Salir</span>
+            </button>
+          </form>
         </div>
-        <div className="flex-1 overflow-y-auto pt-4">
-          <AdminNav role={role} onNavigate={() => ref.current?.close()} />
-        </div>
-      </dialog>
-    </>
+      </div>
+    </aside>
   );
 }
 
-/** Current section name in the top bar. */
-export function SectionTitle() {
-  return <span className="truncate text-meta font-semibold">{useSection()}</span>;
+/** Fixed sidebar from lg up; mobile header with a drawer below lg. */
+export function AdminSidebar({ staff }: { staff: Staff }) {
+  const content = <SidebarContent staff={staff} />;
+  return (
+    <>
+      <AriaDialogTrigger>
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-secondary bg-primary p-3 pl-4 lg:hidden">
+          <SidebarBrand />
+          <AriaButton
+            aria-label="Abrir menú"
+            className="group flex items-center justify-center rounded-lg bg-primary p-2 text-fg-secondary outline-focus-ring hover:bg-primary_hover focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            <Menu02 aria-hidden className="size-6" />
+          </AriaButton>
+        </header>
+        <AriaModalOverlay
+          isDismissable
+          className={({ isEntering, isExiting }) =>
+            cx(
+              "fixed inset-0 z-50 cursor-pointer bg-overlay/70 pr-16 backdrop-blur-md lg:hidden",
+              isEntering && "duration-300 ease-in-out animate-in fade-in",
+              isExiting && "duration-200 ease-in-out animate-out fade-out",
+            )
+          }
+        >
+          {({ state }) => (
+            <>
+              <AriaButton
+                aria-label="Cerrar menú"
+                onPress={() => state.close()}
+                className="fixed top-2.5 right-3 flex cursor-pointer items-center justify-center rounded-lg p-2 text-fg-white/70 hover:bg-primary/10 hover:text-fg-white"
+              >
+                <CloseIcon aria-hidden className="size-6" />
+              </AriaButton>
+              <AriaModal className="w-full max-w-74 cursor-auto">
+                <AriaDialog aria-label="Menú del panel" className="h-dvh outline-hidden">
+                  {content}
+                </AriaDialog>
+              </AriaModal>
+            </>
+          )}
+        </AriaModalOverlay>
+      </AriaDialogTrigger>
+      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:py-1 lg:pl-1">
+        {content}
+      </div>
+    </>
+  );
 }

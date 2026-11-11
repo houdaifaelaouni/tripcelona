@@ -16,8 +16,8 @@ import {
   td,
   th,
 } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
+import { Button } from "@/components/admin/button";
+import { Checkbox, Input, Select, Textarea } from "@/components/admin/fields";
 import { isoToMadrid } from "@/lib/admin/time";
 import {
   cancelDepartureAction,
@@ -88,8 +88,8 @@ export default async function TourEdit({
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
         {/* Summary card: like a listing's reservation card, sticky on large screens. */}
         <aside className="lg:sticky lg:top-24 lg:order-2">
-          <div className="overflow-hidden rounded-card border border-border bg-white shadow-float">
-            <div className="relative aspect-[16/10] bg-surface-alt">
+          <div className="overflow-hidden rounded-xl border border-secondary bg-primary shadow-lg">
+            <div className="relative aspect-[16/10] bg-secondary">
               {coverUrl ? (
                 <Image
                   src={coverUrl}
@@ -103,14 +103,14 @@ export default async function TourEdit({
               )}
             </div>
             <div className="flex flex-col gap-5 p-5">
-              <p className="text-meta text-muted">
+              <p className="text-sm text-tertiary">
                 Desde{" "}
-                <span className="text-display-sm text-ink">
+                <span className="text-lg font-semibold text-primary">
                   {tour.price_from_cents == null ? "—" : formatPrice(tour.price_from_cents)}
                 </span>{" "}
                 por persona
               </p>
-              <ul className="flex flex-col gap-2.5 text-meta">
+              <ul className="flex flex-col gap-2.5 text-sm">
                 <Fact icon={MapPin}>{tour.area || "Sin zona"}</Fact>
                 <Fact icon={Clock}>
                   {tour.duration_minutes ? formatDuration(tour.duration_minutes) : "Sin duración"}
@@ -119,9 +119,9 @@ export default async function TourEdit({
               </ul>
               <a
                 href="#salidas"
-                className="rounded-control border border-border p-3 text-meta transition-colors hover:border-border-strong"
+                className="rounded-lg border border-secondary p-3 text-sm transition-colors hover:border-primary"
               >
-                <span className="block text-caption font-semibold tracking-wide text-muted uppercase">
+                <span className="block text-xs font-semibold tracking-wide text-tertiary uppercase">
                   Próxima salida
                 </span>
                 {next ? (
@@ -129,13 +129,13 @@ export default async function TourEdit({
                     <span className="mt-0.5 block font-semibold first-letter:uppercase">
                       {formatDateShort(next.starts_at)} · {isoToMadrid(next.starts_at).time}
                     </span>
-                    <span className="text-muted">
+                    <span className="text-tertiary">
                       {Math.max(next.capacity - next.seats_taken, 0)} de {next.capacity} plazas
                       libres
                     </span>
                   </>
                 ) : (
-                  <span className="mt-0.5 block font-semibold text-danger">Sin fechas</span>
+                  <span className="mt-0.5 block font-semibold text-error-primary">Sin fechas</span>
                 )}
               </a>
               <Select label="Estado" name="status" form="tour-form" defaultValue={tour.status}>
@@ -148,7 +148,7 @@ export default async function TourEdit({
               </Button>
               {tour.status === "published" && (
                 <Link
-                  className="inline-flex items-center justify-center gap-1.5 text-meta font-semibold text-blue hover:underline"
+                  className="inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-brand-secondary hover:underline"
                   href={`/excursiones/${tour.slug}`}
                   target="_blank"
                 >
@@ -296,12 +296,12 @@ export default async function TourEdit({
           >
             {upcoming.length === 0 ? (
               <EmptyState illustration="calendar" title="Sin salidas futuras">
-                <span className="text-danger">
+                <span className="text-error-primary">
                   No hay salidas futuras: la excursión no se puede reservar.
                 </span>
               </EmptyState>
             ) : (
-              <ul className="-mx-5 -mt-5 divide-y divide-border">
+              <ul className="-mx-5 -mt-5 divide-y divide-secondary">
                 {upcoming.map((d) => {
                   const start = isoToMadrid(d.starts_at);
                   const end = d.ends_at ? isoToMadrid(d.ends_at).time : "";
@@ -315,31 +315,31 @@ export default async function TourEdit({
                           aria-hidden
                           className={
                             cancelled
-                              ? "flex size-14 shrink-0 flex-col items-center justify-center rounded-full border border-border text-muted"
-                              : "flex size-14 shrink-0 flex-col items-center justify-center rounded-full border border-ink"
+                              ? "flex size-14 shrink-0 flex-col items-center justify-center rounded-full border border-secondary text-tertiary"
+                              : "flex size-14 shrink-0 flex-col items-center justify-center rounded-full border border-fg-primary"
                           }
                         >
                           <span className="text-base leading-none font-semibold">{day}</span>
-                          <span className="text-caption leading-tight uppercase">{month}</span>
+                          <span className="text-xs leading-tight uppercase">{month}</span>
                         </span>
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <strong className="text-meta first-letter:uppercase">
+                            <strong className="text-sm first-letter:uppercase">
                               {formatDateShort(d.starts_at)}
                             </strong>
                             <DepartureStatus status={d.status} />
                           </div>
-                          <p className="mt-0.5 text-meta text-muted">
+                          <p className="mt-0.5 text-sm text-tertiary">
                             {start.time}
                             {end && `–${end}`} · {euros(d.price_cents)} € · {d.seats_taken} de{" "}
                             {d.capacity} plazas ocupadas o retenidas
                           </p>
                           <div
                             aria-hidden
-                            className="mt-2 h-1.5 max-w-60 overflow-hidden rounded-full bg-surface-alt"
+                            className="mt-2 h-1.5 max-w-60 overflow-hidden rounded-full bg-secondary"
                           >
                             <div
-                              className="h-full rounded-full bg-navy"
+                              className="h-full rounded-full bg-brand-solid"
                               style={{ width: `${pct}%` }}
                             />
                           </div>
@@ -347,7 +347,7 @@ export default async function TourEdit({
                       </div>
                       {isOwner && !cancelled && (
                         <details className="group mt-3 sm:ml-18">
-                          <summary className="inline-flex cursor-pointer items-center gap-1.5 rounded-control text-meta font-semibold text-blue hover:underline">
+                          <summary className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg text-sm font-semibold text-brand-secondary hover:underline">
                             <Pencil aria-hidden size={14} />
                             Editar salida
                           </summary>
@@ -397,13 +397,13 @@ export default async function TourEdit({
                               Guardar
                             </Button>
                           </form>
-                          <details className="mt-4 text-meta">
-                            <summary className="cursor-pointer text-danger">
+                          <details className="mt-4 text-sm">
+                            <summary className="cursor-pointer text-error-primary">
                               Cancelar esta salida…
                             </summary>
                             <form
                               action={cancelDepartureAction.bind(null, tour.id, d.id)}
-                              className="mt-2 flex flex-col gap-3 rounded-control bg-danger/5 p-4"
+                              className="mt-2 flex flex-col gap-3 rounded-lg bg-error-primary p-4"
                             >
                               <Checkbox
                                 name="confirm"
@@ -414,7 +414,7 @@ export default async function TourEdit({
                                 type="submit"
                                 size="sm"
                                 variant="outline"
-                                className="self-start text-danger"
+                                className="self-start text-error-primary"
                               >
                                 Cancelar salida y reembolsar
                               </Button>
@@ -431,10 +431,10 @@ export default async function TourEdit({
             {isOwner && (
               <form
                 action={createDeparture.bind(null, tour.id)}
-                className="mt-5 grid grid-cols-2 items-end gap-3 rounded-card border border-dashed border-border-strong p-4 md:grid-cols-3"
+                className="mt-5 grid grid-cols-2 items-end gap-3 rounded-xl border border-dashed border-primary p-4 md:grid-cols-3"
               >
                 <p className="col-span-2 flex items-center gap-2 text-base font-semibold md:col-span-3">
-                  <CalendarPlus aria-hidden size={18} className="text-navy" />
+                  <CalendarPlus aria-hidden size={18} className="text-brand-secondary" />
                   Nueva salida
                 </p>
                 <Input label="Fecha" name="date" type="date" required />
@@ -455,8 +455,8 @@ export default async function TourEdit({
             )}
 
             {past.length > 0 && (
-              <details className="mt-5 text-meta">
-                <summary className="cursor-pointer font-semibold text-muted">
+              <details className="mt-5 text-sm">
+                <summary className="cursor-pointer font-semibold text-tertiary">
                   Salidas pasadas
                 </summary>
                 <Table className="mt-2">
@@ -488,12 +488,12 @@ export default async function TourEdit({
       </div>
 
       {/* Phones and tablets: the save button stays in reach, as a bottom bar. */}
-      <div className="fixed inset-x-0 bottom-0 z-20 flex items-center justify-between gap-3 border-t border-border bg-white px-4 py-3 lg:hidden">
-        <p className="min-w-0 truncate text-meta">
+      <div className="fixed inset-x-0 bottom-0 z-20 flex items-center justify-between gap-3 border-t border-secondary bg-primary px-4 py-3 lg:hidden">
+        <p className="min-w-0 truncate text-sm">
           <span className="font-semibold">
             {tour.price_from_cents == null ? "—" : formatPrice(tour.price_from_cents)}
           </span>{" "}
-          <span className="text-muted">desde</span>
+          <span className="text-tertiary">desde</span>
         </p>
         <Button type="submit" form="tour-form">
           Guardar excursión
@@ -514,9 +514,9 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="mb-6 rounded-card border border-border bg-white p-5 md:p-6">
-      <h2 className="text-display-sm">{title}</h2>
-      {description && <p className="mt-1 mb-5 text-meta text-muted">{description}</p>}
+    <section className="mb-6 rounded-xl border border-secondary bg-primary p-5 md:p-6">
+      <h2 className="text-lg font-semibold">{title}</h2>
+      {description && <p className="mt-1 mb-5 text-sm text-tertiary">{description}</p>}
       {children}
     </section>
   );
@@ -525,7 +525,7 @@ function Section({
 function Fact({ icon: Icon, children }: { icon: typeof MapPin; children: ReactNode }) {
   return (
     <li className="flex items-center gap-3">
-      <Icon aria-hidden size={18} className="shrink-0 text-navy" />
+      <Icon aria-hidden size={18} className="shrink-0 text-brand-secondary" />
       <span className="first-letter:uppercase">{children}</span>
     </li>
   );

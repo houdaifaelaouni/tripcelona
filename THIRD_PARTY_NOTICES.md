@@ -101,3 +101,40 @@ The author reserves the right to terminate the rights granted under this Fair Us
 - Users who believe that the terms of this Fair Use License have been violated are encouraged to report the violation to the author.
 - The author reserves the right to take legal action to enforce compliance with this Fair Use License.
 ```
+
+## Untitled UI React (MIT)
+
+Source: https://github.com/untitleduico/react. The open-source components are vendored in
+`src/components/uui/` (sidebar navigation, table, charts base, empty state, file upload,
+loading indicator, carousel, tabs, modal, pagination, badges, buttons, progress indicators,
+featured icon, avatar and their dependencies), and the design tokens are in
+`src/styles/untitled-theme.css`. Changes: import paths, Prettier formatting, Spanish UI
+strings in the file uploader, and the purple brand scale swapped for the Tripcelona
+navy/blue. Admin wrappers in `src/components/admin/` reuse their class lists. The PRO page
+templates (login split carousel, settings, dashboards) were **not** used. Those admin pages
+were written from scratch in the same layout style. The full licence text is in
+`src/components/uui/LICENSE`:
+
+```text
+MIT License
+
+Copyright (c) 2025 Untitled UI
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

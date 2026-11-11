@@ -1,60 +1,157 @@
 /**
- * Admin building blocks. Layout and class patterns adapted from Preline UI
- * (https://github.com/htmlstreamofficial/preline, MIT + Preline UI Fair Use
- * License, © 2026 Preline Labs Ltd.): card with header/footer, table in a
- * card, stat cards and soft status badges. Tripcelona colour tokens replace
- * Preline's theme colours. See THIRD_PARTY_NOTICES.md.
+ * Admin building blocks in the Untitled UI style. Badges and featured icons
+ * are the Untitled UI React components (MIT, © 2025 Untitled UI,
+ * https://github.com/untitleduico/react, vendored in src/components/uui).
+ * Page headers, breadcrumbs, section headers/footers, cards, tables and
+ * metrics are recreated after the Untitled UI patterns with native markup,
+ * so they render on the server. See THIRD_PARTY_NOTICES.md.
  */
+import { ChevronRight, HomeLine } from "@untitledui/icons";
 import type { LucideIcon } from "lucide-react";
-import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
+import { BadgeWithDot } from "@/components/uui/base/badges/badges";
 import { cn } from "@/lib/cn";
-import { ILLUSTRATIONS, type IllustrationName } from "./illustrations";
+export { EmptyState } from "./empty-state";
 
-/** Page heading: optional back link, title, one-line description, actions. */
+export type Crumb = { href?: string; label: string };
+
+/** Breadcrumbs: home icon, chevrons, current page last (not a link). */
+export function Breadcrumbs({ items }: { items: Crumb[] }) {
+  return (
+    <nav aria-label="Migas de pan" className="mb-4">
+      <ol className="flex flex-wrap items-center gap-1.5 text-sm font-medium">
+        <li className="flex items-center">
+          <Link
+            href="/admin"
+            className="flex rounded-md p-1 text-fg-quaternary hover:bg-primary_hover hover:text-fg-quaternary_hover"
+          >
+            <HomeLine aria-hidden className="size-5" />
+            <span className="sr-only">Panel</span>
+          </Link>
+        </li>
+        {items.map((c, i) => {
+          const last = i === items.length - 1;
+          return (
+            <li key={`${c.label}-${i}`} className="flex items-center gap-1.5">
+              <ChevronRight aria-hidden className="size-4 text-fg-quaternary" />
+              {c.href && !last ? (
+                <Link
+                  href={c.href}
+                  className="rounded-md px-1 py-0.5 text-tertiary hover:bg-primary_hover hover:text-tertiary_hover"
+                >
+                  {c.label}
+                </Link>
+              ) : (
+                <span
+                  aria-current={last ? "page" : undefined}
+                  className="rounded-md bg-primary_hover px-2 py-1 font-semibold text-fg-secondary"
+                >
+                  {c.label}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
+/**
+ * Page header: breadcrumbs, title, supporting text and actions over a
+ * divider (Untitled UI "page header" / section header pattern).
+ */
 export function PageTitle({
   children,
   actions,
   description,
   back,
+  crumbs,
 }: {
   children: ReactNode;
   actions?: ReactNode;
   description?: ReactNode;
   back?: { href: string; label: string };
+  crumbs?: Crumb[];
+}) {
+  const trail = crumbs ?? (back ? [back, { label: String(children) }] : undefined);
+  return (
+    <header className="mb-8">
+      {trail && <Breadcrumbs items={trail} />}
+      <div className="flex flex-col gap-4 border-b border-secondary pb-5 md:flex-row md:items-end md:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-2xl leading-8 font-semibold tracking-normal text-primary md:text-3xl md:leading-9">
+            {children}
+          </h1>
+          {description && <div className="mt-1 text-md text-tertiary">{description}</div>}
+        </div>
+        {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
+      </div>
+    </header>
+  );
+}
+
+/** Section header inside a page: title + supporting text + actions. */
+export function SectionHeader({
+  title,
+  description,
+  actions,
+  badge,
+  className,
+}: {
+  title: string;
+  description?: ReactNode;
+  actions?: ReactNode;
+  badge?: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="mb-6 md:mb-8">
-      {back && (
-        <Link
-          href={back.href}
-          className="mb-3 inline-flex items-center gap-1 rounded-control text-meta font-semibold text-blue hover:underline"
-        >
-          <ChevronLeft aria-hidden size={16} />
-          {back.label}
-        </Link>
+    <div
+      className={cn(
+        "flex flex-col gap-4 border-b border-secondary pb-5 md:flex-row md:items-start md:justify-between",
+        className,
       )}
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="text-display-md md:text-display-lg">{children}</h1>
-          {description && <p className="mt-1 text-meta text-muted">{description}</p>}
-        </div>
-        {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    >
+      <div className="min-w-0">
+        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-normal text-primary">
+          {title}
+          {badge}
+        </h2>
+        {description && <p className="mt-1 text-sm text-tertiary">{description}</p>}
       </div>
+      {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
+    </div>
+  );
+}
+
+/** Section footer: supporting text left, actions right, over a divider. */
+export function SectionFooter({
+  children,
+  actions,
+}: {
+  children?: ReactNode;
+  actions?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-4 border-t border-secondary pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="text-sm text-tertiary">{children}</div>
+      {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
     </div>
   );
 }
 
 /**
- * Card section (Preline "card with header and footer"). The header row holds
- * the title, an optional description and actions; tables inside the body run
+ * Card (Untitled UI "table card" / content card): header with title, badge,
+ * supporting text and actions; body; optional footer. Tables inside run
  * edge to edge.
  */
 export function Panel({
   title,
   description,
   actions,
+  badge,
   footer,
   children,
   className,
@@ -63,6 +160,7 @@ export function Panel({
   title?: string;
   description?: ReactNode;
   actions?: ReactNode;
+  badge?: ReactNode;
   footer?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -73,24 +171,29 @@ export function Panel({
     <section
       id={id}
       className={cn(
-        "mb-6 flex flex-col overflow-hidden rounded-card border border-border bg-white",
+        "mb-6 flex flex-col overflow-hidden rounded-xl bg-primary shadow-xs ring-1 ring-secondary",
         className,
       )}
     >
       {hasHeader && (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+        <div className="flex flex-col gap-4 border-b border-secondary px-4 py-5 md:flex-row md:items-start md:justify-between md:px-6">
           <div className="min-w-0">
-            {title && <h2 className="text-base font-semibold">{title}</h2>}
-            {description && <p className="mt-0.5 text-meta text-muted">{description}</p>}
+            {title && (
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-normal text-primary">
+                {title}
+                {badge}
+              </h2>
+            )}
+            {description && <p className="mt-1 text-sm text-tertiary">{description}</p>}
           </div>
-          {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+          {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
         </div>
       )}
-      <div className="p-5 [&>div[data-table]:first-child]:-mt-5 [&>div[data-table]:last-child]:-mb-5">
+      <div className="px-4 py-5 md:px-6 [&>div[data-table]:first-child]:-mt-5 [&>div[data-table]:last-child]:-mb-5">
         {children}
       </div>
       {footer && (
-        <div className="border-t border-border bg-surface-alt px-5 py-3 text-meta text-muted">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-secondary px-4 py-3 text-sm text-tertiary md:px-6">
           {footer}
         </div>
       )}
@@ -98,13 +201,22 @@ export function Panel({
   );
 }
 
-/** Table in a card: runs edge to edge in a Panel and scrolls sideways on phones. */
+/** Count badge for card headers ("12 reservas"). */
+export function CountBadge({ children }: { children: ReactNode }) {
+  return (
+    <span className="rounded-full bg-brand-primary px-2 py-0.5 text-xs font-medium text-brand-secondary ring-1 ring-brand-200 ring-inset">
+      {children}
+    </span>
+  );
+}
+
+/** Table inside a card (Untitled UI table styles): edge to edge, scrolls on phones. */
 export function Table({ className, ...props }: ComponentProps<"table">) {
   return (
-    <div data-table className="-mx-5 overflow-x-auto">
+    <div data-table className="-mx-4 overflow-x-auto md:-mx-6">
       <table
         className={cn(
-          "w-full min-w-[560px] border-collapse text-left text-meta [&_tbody_tr:hover]:bg-surface-alt/60 [&_tbody_tr:last-child>td]:border-b-0",
+          "w-full min-w-[560px] border-collapse text-left text-sm [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-secondary [&_tbody_tr:last-child>td]:border-b-0",
           className,
         )}
         {...props}
@@ -114,85 +226,61 @@ export function Table({ className, ...props }: ComponentProps<"table">) {
 }
 
 export const th =
-  "border-b border-border bg-surface-alt px-5 py-3 text-caption font-semibold tracking-wide whitespace-nowrap text-muted uppercase";
-export const td = "border-b border-border px-5 py-3 align-top";
+  "h-11 border-b border-secondary bg-secondary px-4 py-3 text-xs font-semibold whitespace-nowrap text-quaternary first:pl-4 md:px-6";
+export const td = "border-b border-secondary px-4 py-4 align-middle text-sm text-tertiary md:px-6";
 
 /** Footer line under a list: "12 reservas". */
 export function ResultCount({ count, one, many }: { count: number; one: string; many: string }) {
   return (
-    <p role="status">
-      <span className="font-semibold text-ink">{count}</span> {count === 1 ? one : many}
+    <p role="status" className="text-sm text-tertiary">
+      <span className="font-semibold text-secondary">{count}</span> {count === 1 ? one : many}
     </p>
   );
 }
 
-/**
- * Empty list inside a card: a spot illustration (or an icon), a short title,
- * one line of help and an optional action.
- */
-export function EmptyState({
-  icon: Icon,
-  illustration,
-  title,
-  children,
-  action,
-}: {
-  icon?: LucideIcon;
-  illustration?: IllustrationName;
-  title?: string;
-  children: ReactNode;
-  action?: ReactNode;
-}) {
-  const Art = illustration ? ILLUSTRATIONS[illustration] : null;
-  return (
-    <div className="flex flex-col items-center gap-2 py-8 text-center">
-      {Art ? (
-        <Art className="mb-2 h-28 w-auto" />
-      ) : (
-        Icon && (
-          <span className="mb-1 flex size-11 items-center justify-center rounded-full bg-surface-alt text-muted">
-            <Icon aria-hidden size={20} />
-          </span>
-        )
-      )}
-      {title && <p className="text-base font-semibold text-ink">{title}</p>}
-      <p className="max-w-sm text-meta text-muted">{children}</p>
-      {action && <div className="mt-2">{action}</div>}
-    </div>
-  );
-}
-
-/** Preline stat card: icon, label, value and an optional hint or link. */
+/** Untitled UI metric card: featured icon, label, big number, optional trend and link. */
 export function StatCard({
   icon: Icon,
   label,
   value,
   hint,
   href,
+  trend,
 }: {
   icon: LucideIcon;
   label: string;
   value: ReactNode;
   hint?: ReactNode;
   href?: string;
+  trend?: { value: string; up: boolean };
 }) {
   const body = (
     <>
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-surface-alt text-navy">
-        <Icon aria-hidden size={20} />
-      </span>
-      <span className="min-w-0">
-        <span className="block text-caption font-semibold tracking-wide text-muted uppercase">
-          {label}
-        </span>
-        <span className="mt-1 block text-display-sm text-ink">{value}</span>
-        {hint && <span className="mt-0.5 block text-caption text-muted">{hint}</span>}
-      </span>
+      <div className="flex items-center gap-3">
+        <FeaturedIcon icon={Icon} color="gray" theme="modern" size="md" />
+        <span className="text-sm font-medium text-tertiary">{label}</span>
+      </div>
+      <div className="mt-5 flex flex-wrap items-end justify-between gap-2">
+        <span className="text-3xl leading-9 font-semibold text-primary">{value}</span>
+        {trend && (
+          <span
+            className={cn(
+              "inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset",
+              trend.up
+                ? "bg-utility-success-50 text-utility-success-700 ring-utility-success-200"
+                : "bg-utility-error-50 text-utility-error-700 ring-utility-error-200",
+            )}
+          >
+            {trend.up ? "↑" : "↓"} {trend.value}
+          </span>
+        )}
+      </div>
+      {hint && <p className="mt-2 text-sm text-tertiary">{hint}</p>}
     </>
   );
-  const cls = "flex items-start gap-4 rounded-card border border-border bg-white p-4 md:p-5";
+  const cls = "flex flex-col rounded-xl bg-primary p-5 shadow-xs ring-1 ring-secondary md:p-6";
   return href ? (
-    <Link href={href} className={cn(cls, "transition-colors hover:border-border-strong")}>
+    <Link href={href} className={cn(cls, "transition-shadow hover:shadow-md")}>
       {body}
     </Link>
   ) : (
@@ -201,31 +289,24 @@ export function StatCard({
 }
 
 export function StatGrid({ children }: { children: ReactNode }) {
-  return <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{children}</div>;
+  return <div className="mb-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">{children}</div>;
 }
 
 type Tone = "neutral" | "brand" | "accent" | "success" | "danger";
-const SOFT: Record<Tone, { badge: string; dot: string }> = {
-  neutral: { badge: "bg-surface-alt text-muted", dot: "bg-border-strong" },
-  brand: { badge: "bg-blue/10 text-navy", dot: "bg-blue" },
-  accent: { badge: "bg-yellow/25 text-ink", dot: "bg-yellow" },
-  success: { badge: "bg-success/10 text-ink", dot: "bg-success" },
-  danger: { badge: "bg-danger/10 text-danger", dot: "bg-danger" },
-};
+const BADGE_COLOR = {
+  neutral: "gray",
+  brand: "brand",
+  accent: "warning",
+  success: "success",
+  danger: "error",
+} as const;
 
-/** Preline soft badge with a status dot. */
+/** Untitled UI pill badge with a status dot. */
 export function StatusBadge({ tone, children }: { tone: Tone; children: ReactNode }) {
-  const s = SOFT[tone];
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-badge font-semibold whitespace-nowrap",
-        s.badge,
-      )}
-    >
-      <span aria-hidden className={cn("size-1.5 rounded-full", s.dot)} />
+    <BadgeWithDot type="pill-color" size="sm" color={BADGE_COLOR[tone]}>
       {children}
-    </span>
+    </BadgeWithDot>
   );
 }
 
@@ -266,4 +347,60 @@ export const REQUEST_LABELS = {
 };
 export function RequestStatus({ status }: { status: keyof typeof REQ_TONES }) {
   return <StatusBadge tone={REQ_TONES[status]}>{REQUEST_LABELS[status]}</StatusBadge>;
+}
+
+/** Untitled UI progress bar (label + percentage). */
+export function ProgressBar({ value, label }: { value: number; label?: string }) {
+  const pct = Math.max(0, Math.min(100, Math.round(value)));
+  return (
+    <div className="flex items-center gap-3">
+      <div
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={label ?? "Ocupación"}
+        className="h-2 w-full min-w-16 overflow-hidden rounded-md bg-quaternary"
+      >
+        <div className="h-full rounded-md bg-fg-brand-primary" style={{ width: `${pct}%` }} />
+      </div>
+      <span className="shrink-0 text-sm font-medium text-secondary tabular-nums">{pct}%</span>
+    </div>
+  );
+}
+
+/**
+ * Vertical progress steps (recreated after Untitled UI "progress steps"):
+ * numbered circles joined by a line, title and short help per step. Here
+ * each step links to its section of a single-page form.
+ */
+export function ProgressSteps({
+  steps,
+}: {
+  steps: { id: string; title: string; description: string }[];
+}) {
+  return (
+    <ol className="flex flex-col">
+      {steps.map((s, i) => (
+        <li key={s.id} className="relative flex gap-3 pb-6 last:pb-0">
+          {i < steps.length - 1 && (
+            <span
+              aria-hidden
+              className="absolute top-9 bottom-1 left-4 w-0.5 rounded-full bg-quaternary"
+            />
+          )}
+          <a
+            href={`#${s.id}`}
+            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-solid text-sm font-semibold text-white ring-4 ring-brand-100"
+          >
+            {i + 1}
+          </a>
+          <div className="pt-1">
+            <p className="text-sm font-semibold text-secondary">{s.title}</p>
+            <p className="text-sm text-tertiary">{s.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
 }

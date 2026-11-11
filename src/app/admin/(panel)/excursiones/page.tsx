@@ -42,7 +42,7 @@ export default async function ToursAdmin() {
                 <tr key={t.id}>
                   <td className={td}>
                     <Link
-                      className="font-semibold text-blue hover:underline"
+                      className="font-semibold text-brand-secondary hover:underline"
                       href={`/admin/excursiones/${t.id}`}
                     >
                       {t.title}
@@ -56,7 +56,7 @@ export default async function ToursAdmin() {
                     {next ? (
                       formatDateShort(next.starts_at)
                     ) : (
-                      <span className="text-danger">Sin fechas</span>
+                      <span className="text-error-primary">Sin fechas</span>
                     )}
                   </td>
                   <td className={td}>

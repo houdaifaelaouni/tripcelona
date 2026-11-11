@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/field";
+import { Button } from "@/components/admin/button";
+import { Input } from "@/components/admin/fields";
 import { createClient } from "@/lib/supabase/browser";
 
 /** Second step for staff who enabled an authenticator app (US-24). */
@@ -38,12 +37,14 @@ export function MfaChallenge({ next }: { next: string }) {
   }
 
   return (
-    <Card className="p-6">
-      <h1 className="text-display-sm">Verificación en dos pasos</h1>
-      <p className="mt-2 text-meta text-muted">
+    <div>
+      <h1 className="text-2xl leading-8 font-semibold text-primary md:text-3xl md:leading-9">
+        Verificación en dos pasos
+      </h1>
+      <p className="mt-3 text-md text-tertiary">
         Escribe el código de 6 dígitos de tu app de autenticación.
       </p>
-      <form action={verify} className="mt-4 flex flex-col gap-4">
+      <form action={verify} className="mt-8 flex flex-col gap-5">
         <Input
           label="Código"
           name="code"
@@ -53,10 +54,10 @@ export function MfaChallenge({ next }: { next: string }) {
           required
           error={error}
         />
-        <Button type="submit" disabled={busy}>
+        <Button type="submit" size="lg" className="w-full" disabled={busy}>
           Verificar
         </Button>
       </form>
-    </Card>
+    </div>
   );
 }

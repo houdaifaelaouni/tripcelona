@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
 import { BookingStatus, PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { Checkbox, Select } from "@/components/ui/field";
+import { Button } from "@/components/admin/button";
+import { Checkbox, Select } from "@/components/admin/fields";
 import {
   cancelPendingBooking,
   refundBookingAction,
@@ -78,47 +78,47 @@ export default async function BookingDetail({
       <Flash ok={ok} error={error} />
       <div className="grid gap-x-6 lg:grid-cols-2">
         <Panel title="Cliente">
-          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-meta">
-            <dt className="text-muted">Nombre</dt>
+          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-sm">
+            <dt className="text-tertiary">Nombre</dt>
             <dd>{b.customer_name}</dd>
-            <dt className="text-muted">Email</dt>
+            <dt className="text-tertiary">Email</dt>
             <dd>
-              <a className="text-blue hover:underline" href={`mailto:${b.email}`}>
+              <a className="text-brand-secondary hover:underline" href={`mailto:${b.email}`}>
                 {b.email}
               </a>
             </dd>
-            <dt className="text-muted">Teléfono</dt>
+            <dt className="text-tertiary">Teléfono</dt>
             <dd>{b.phone ?? "—"}</dd>
-            <dt className="text-muted">Comentarios</dt>
+            <dt className="text-tertiary">Comentarios</dt>
             <dd className="whitespace-pre-line">{b.pickup_note || "—"}</dd>
             {b.notes && (
               <>
-                <dt className="text-muted">Notas</dt>
+                <dt className="text-tertiary">Notas</dt>
                 <dd>{b.notes}</dd>
               </>
             )}
           </dl>
         </Panel>
         <Panel title="Excursión">
-          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-meta">
-            <dt className="text-muted">Excursión</dt>
+          <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-sm">
+            <dt className="text-tertiary">Excursión</dt>
             <dd>
               <Link
-                className="text-blue hover:underline"
+                className="text-brand-secondary hover:underline"
                 href={`/admin/excursiones/${dep.tours.id}`}
               >
                 {dep.tours.title}
               </Link>
             </dd>
-            <dt className="text-muted">Fecha</dt>
+            <dt className="text-tertiary">Fecha</dt>
             <dd className="first-letter:uppercase">
               {formatDateLong(dep.starts_at)} · {formatTime(dep.starts_at)}
             </dd>
-            <dt className="text-muted">Viajeros</dt>
+            <dt className="text-tertiary">Viajeros</dt>
             <dd>{b.travellers}</dd>
-            <dt className="text-muted">Total</dt>
+            <dt className="text-tertiary">Total</dt>
             <dd className="font-semibold">{formatPrice(b.total_cents)}</dd>
-            <dt className="text-muted">Creada</dt>
+            <dt className="text-tertiary">Creada</dt>
             <dd>{dateTime(b.created_at)}</dd>
           </dl>
         </Panel>
@@ -158,13 +158,13 @@ export default async function BookingDetail({
             </tbody>
           </Table>
         ) : (
-          <p className="text-meta text-muted">Sin intentos de pago.</p>
+          <p className="text-sm text-tertiary">Sin intentos de pago.</p>
         )}
       </Panel>
 
       <div className="grid gap-x-6 lg:grid-cols-2">
         <Panel title="Emails">
-          <ul className="mb-3 text-meta">
+          <ul className="mb-3 text-sm">
             {(emails ?? []).map((e) => (
               <li key={e.kind}>
                 {EMAIL_LABELS[e.kind]}:{" "}
@@ -172,7 +172,7 @@ export default async function BookingDetail({
                 {e.attempts > 1 && ` (${e.attempts} envíos)`} · {dateTime(e.updated_at)}
               </li>
             ))}
-            {!emails?.length && <li className="text-muted">Ningún email enviado.</li>}
+            {!emails?.length && <li className="text-tertiary">Ningún email enviado.</li>}
           </ul>
           <form
             action={resendBookingEmail.bind(null, b.id)}
@@ -198,35 +198,35 @@ export default async function BookingDetail({
           {b.status === "paid" && (
             <form
               action={refundBookingAction.bind(null, b.id)}
-              className="flex flex-col gap-2 text-meta"
+              className="flex flex-col gap-2 text-sm"
             >
               <Checkbox
                 name="confirm"
                 required
                 label={`Reembolsar ${formatPrice(b.total_cents)}, liberar las plazas y avisar al cliente. No se puede deshacer.`}
               />
-              <Button type="submit" variant="outline" className="self-start text-danger">
+              <Button type="submit" variant="outline" className="self-start text-error-primary">
                 Reembolsar reserva
               </Button>
             </form>
           )}
           {b.status === "pending" && (
             <form action={cancelPendingBooking.bind(null, b.id)}>
-              <p className="mb-2 text-meta">Pendiente de pago. Cancelarla libera sus plazas.</p>
+              <p className="mb-2 text-sm">Pendiente de pago. Cancelarla libera sus plazas.</p>
               <Button type="submit" variant="outline">
                 Cancelar reserva pendiente
               </Button>
             </form>
           )}
           {(b.status === "cancelled" || b.status === "refunded") && (
-            <p className="text-meta text-muted">Reserva cerrada: no hay acciones disponibles.</p>
+            <p className="text-sm text-tertiary">Reserva cerrada: no hay acciones disponibles.</p>
           )}
         </Panel>
       </div>
 
       {log && log.length > 0 && (
         <Panel title="Historial">
-          <ul className="text-meta text-muted">
+          <ul className="text-sm text-tertiary">
             {log.map((l) => (
               <li key={l.id}>
                 {dateTime(l.created_at)} · {l.action}

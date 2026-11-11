@@ -55,12 +55,12 @@ export function RichTextEditor({
   });
 
   return (
-    <div className="rounded-control border border-border-strong bg-white focus-within:border-blue">
+    <div className="rounded-lg border border-primary bg-primary focus-within:border-blue">
       <input type="hidden" name={name} value={json} />
       {editor ? (
         <Toolbar editor={editor} images={images} />
       ) : (
-        <div className="h-11 border-b border-border" />
+        <div className="h-11 border-b border-secondary" />
       )}
       <EditorContent editor={editor} />
     </div>
@@ -109,7 +109,7 @@ function Toolbar({ editor, images }: { editor: Editor; images: PickerImage[] }) 
     <div
       role="toolbar"
       aria-label="Formato"
-      className="flex flex-wrap items-center gap-1 border-b border-border bg-surface-alt p-1"
+      className="flex flex-wrap items-center gap-1 border-b border-secondary bg-secondary p-1"
     >
       <Btn
         on={s.h2}
@@ -175,7 +175,7 @@ function Toolbar({ editor, images }: { editor: Editor; images: PickerImage[] }) 
             id="editor-image"
             value={image}
             onChange={(e) => setImage(e.target.value)}
-            className="h-8 max-w-48 rounded-control border border-border-strong bg-white px-2 text-sm"
+            className="h-8 max-w-48 rounded-lg border border-primary bg-primary px-2 text-sm"
           >
             <option value="">Imagen…</option>
             {images.map((i) => (
@@ -222,8 +222,8 @@ function Btn({
       aria-label={label}
       title={label}
       className={cn(
-        "h-8 min-w-8 rounded-control px-2 text-sm hover:bg-white disabled:opacity-40",
-        on && "bg-white font-bold text-blue shadow-float",
+        "h-8 min-w-8 rounded-lg px-2 text-sm hover:bg-primary disabled:opacity-40",
+        on && "bg-primary font-bold text-brand-secondary shadow-lg",
       )}
     >
       {children}

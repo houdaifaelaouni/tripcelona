@@ -26,7 +26,7 @@ export default async function PageEdit({ params, searchParams }: PageProps<"/adm
       <PageTitle back={{ href: "/admin/paginas", label: "Páginas" }}>{page.title}</PageTitle>
       <Flash ok={ok} error={error} />
       {legal && staff.role === "owner" && (
-        <p role="note" className="mb-4 rounded-card border border-border bg-white p-3 text-meta">
+        <p role="note" className="mb-4 rounded-xl border border-secondary bg-primary p-3 text-sm">
           Página legal. Los textos <code>[tripola dato=&quot;…&quot;]</code> se rellenan con los
           datos de <b>Ajustes → Datos legales</b>.
         </p>

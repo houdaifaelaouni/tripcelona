@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Panel } from "@/components/admin/ui";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
-import { Button } from "@/components/ui/button";
-import { Input, Select, Textarea } from "@/components/ui/field";
+import { Button } from "@/components/admin/button";
+import { Input, Select, Textarea } from "@/components/admin/fields";
 import type { MediaOption } from "@/lib/admin/media-options";
 
 type Values = {
@@ -42,7 +42,7 @@ export function ContentForm({
   return (
     <form action={action}>
       {readOnly && (
-        <p role="note" className="mb-4 rounded-card border border-border bg-white p-3 text-meta">
+        <p role="note" className="mb-4 rounded-xl border border-secondary bg-primary p-3 text-sm">
           {readOnly}
         </p>
       )}
@@ -108,7 +108,7 @@ export function ContentForm({
             </div>
           )}
           <div className="mt-4">
-            <p className="mb-1 text-meta font-semibold" id="editor-label">
+            <p className="mb-1 text-sm font-semibold" id="editor-label">
               Texto
             </p>
             <RichTextEditor name="content" initial={values.content} images={media} label="Texto" />
@@ -147,7 +147,7 @@ export function ContentForm({
             <Button type="submit">Guardar</Button>
             <Link
               href={previewHref}
-              className="text-meta text-blue hover:underline"
+              className="text-sm text-brand-secondary hover:underline"
               target="_blank"
             >
               Vista previa (guarda antes) ↗
@@ -155,7 +155,7 @@ export function ContentForm({
             {values.status === "published" && (
               <Link
                 href={publicPath}
-                className="text-meta text-blue hover:underline"
+                className="text-sm text-brand-secondary hover:underline"
                 target="_blank"
               >
                 Ver en la web ↗

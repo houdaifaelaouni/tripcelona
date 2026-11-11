@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Flash } from "@/components/admin/flash";
 import { PageTitle, Panel } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { Input, Select, Textarea } from "@/components/ui/field";
+import { Button } from "@/components/admin/button";
+import { Input, Select, Textarea } from "@/components/admin/fields";
 import { deleteFaq, saveFaq } from "@/lib/admin/content-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -81,7 +81,7 @@ export default async function FaqAdmin({ searchParams }: PageProps<"/admin/faqs"
           <details>
             <summary className="cursor-pointer font-semibold">
               {f.question}{" "}
-              <span className="font-normal text-muted">
+              <span className="font-normal text-tertiary">
                 ·{" "}
                 {f.status === "published"
                   ? "publicada"

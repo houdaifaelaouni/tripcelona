@@ -1,6 +1,6 @@
 import { Panel } from "@/components/admin/ui";
-import { Button } from "@/components/ui/button";
-import { Select, Textarea } from "@/components/ui/field";
+import { Button } from "@/components/admin/button";
+import { Select, Textarea } from "@/components/admin/fields";
 
 export function InboxStatusForm({
   action,
@@ -40,7 +40,7 @@ export function Facts({ items }: { items: [string, React.ReactNode][] }) {
     <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-[180px_1fr]">
       {items.map(([k, v]) => (
         <div key={k} className="contents">
-          <dt className="text-muted">{k}</dt>
+          <dt className="text-tertiary">{k}</dt>
           <dd className="font-semibold break-words">{v}</dd>
         </div>
       ))}

@@ -1,10 +1,9 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/field";
-import { PasswordInput } from "@/components/ui/password-input";
+import { Button } from "@/components/admin/button";
+import { Input } from "@/components/admin/fields";
+import { PasswordInput } from "@/components/admin/password-input";
 import { requestPasswordReset, signIn, type AuthFormState } from "@/lib/admin/auth-actions";
 
 export function LoginForm({ next, notice }: { next: string; notice?: string }) {
@@ -17,39 +16,46 @@ export function LoginForm({ next, notice }: { next: string; notice?: string }) {
 
   if (mode === "reset") {
     return (
-      <Card className="p-6">
-        <h1 className="text-display-sm">Crear o recuperar contraseña</h1>
-        <form action={reset} className="mt-4 flex flex-col gap-4">
+      <div>
+        <h1 className="text-2xl leading-8 font-semibold text-primary md:text-3xl md:leading-9">
+          Crear o recuperar contraseña
+        </h1>
+        <form action={reset} className="mt-8 flex flex-col gap-5">
           <Input label="Email" name="email" type="email" autoComplete="email" required />
           {resetState.info && (
-            <p role="status" className="text-meta text-success">
+            <p role="status" className="text-sm text-success-primary">
               {resetState.info}
             </p>
           )}
-          <Button type="submit" disabled={resetting}>
+          <Button type="submit" size="lg" className="w-full" disabled={resetting}>
             Enviar enlace
           </Button>
           <button
             type="button"
-            className="text-meta text-blue hover:underline"
+            className="text-sm font-semibold text-brand-secondary hover:underline"
             onClick={() => setMode("login")}
           >
             Volver a iniciar sesión
           </button>
         </form>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="p-6">
-      <h1 className="text-display-sm">Iniciar sesión</h1>
+    <div>
+      <h1 className="text-2xl leading-8 font-semibold text-primary md:text-3xl md:leading-9">
+        Iniciar sesión
+      </h1>
+      <p className="mt-3 text-md text-tertiary">
+        Bienvenido de nuevo. Entra con tu email del equipo.
+      </p>
       {notice && (
-        <p role="alert" className="mt-3 text-meta text-danger">
+        <p role="alert" className="mt-3 text-sm text-error-primary">
           {notice}
         </p>
       )}
-      <form action={login} className="mt-4 flex flex-col gap-4">
+      <form action={login} className="mt-8 flex flex-col gap-5">
         <input type="hidden" name="next" value={next} />
         <Input label="Email" name="email" type="email" autoComplete="username" required />
         <PasswordInput
@@ -59,21 +65,21 @@ export function LoginForm({ next, notice }: { next: string; notice?: string }) {
           required
         />
         {loginState.error && (
-          <p role="alert" className="text-meta text-danger">
+          <p role="alert" className="text-sm text-error-primary">
             {loginState.error}
           </p>
         )}
-        <Button type="submit" disabled={loggingIn}>
+        <Button type="submit" size="lg" className="w-full" disabled={loggingIn}>
           {loggingIn ? "Entrando…" : "Entrar"}
         </Button>
         <button
           type="button"
-          className="text-meta text-blue hover:underline"
+          className="text-sm font-semibold text-brand-secondary hover:underline"
           onClick={() => setMode("reset")}
         >
           ¿Primera vez o has olvidado la contraseña?
         </button>
       </form>
-    </Card>
+    </div>
   );
 }

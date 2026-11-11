@@ -1,4 +1,21 @@
 @import "tailwindcss";
+/* Untitled UI tokens and plugins for the admin (src/components/uui). */
+@import "../styles/untitled-theme.css";
+@plugin "tailwindcss-react-aria-components";
+@plugin "tailwindcss-animate";
+@custom-variant label (& [data-label]);
+@custom-variant focus-input-within (&:has(input:focus));
+@utility scrollbar-hide {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+}
+@utility transition-inherit-all {
+  transition-property: inherit;
+  transition-duration: inherit;
+  transition-timing-function: inherit;
+}
 
 /*
  * Design tokens — PRD Appendix B (booking.md direction).
