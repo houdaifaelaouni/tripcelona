@@ -213,7 +213,14 @@ export function CountBadge({ children }: { children: ReactNode }) {
 /** Table inside a card (Untitled UI table styles): edge to edge, scrolls on phones. */
 export function Table({ className, ...props }: ComponentProps<"table">) {
   return (
-    <div data-table className="-mx-4 overflow-x-auto md:-mx-6">
+    <div
+      data-table
+      // Focusable so the table can be scrolled sideways with the keyboard (axe).
+      tabIndex={0}
+      role="region"
+      aria-label={props["aria-label"] ?? "Tabla"}
+      className="-mx-4 overflow-x-auto outline-focus-ring focus-visible:outline-2 md:-mx-6"
+    >
       <table
         className={cn(
           "w-full min-w-[560px] border-collapse text-left text-sm [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-secondary [&_tbody_tr:last-child>td]:border-b-0",
