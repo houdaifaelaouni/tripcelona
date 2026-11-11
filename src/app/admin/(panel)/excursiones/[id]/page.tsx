@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
 import { DepartureStatus, PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { Input, Select, Textarea } from "@/components/ui/field";
+import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
 import { isoToMadrid } from "@/lib/admin/time";
 import {
   cancelDepartureAction,
@@ -54,7 +54,7 @@ export default async function TourEdit({
         actions={
           tour.status === "published" && (
             <Link
-              className="text-sm text-blue underline"
+              className="text-meta text-blue underline"
               href={`/excursiones/${tour.slug}`}
               target="_blank"
             >
@@ -165,7 +165,7 @@ export default async function TourEdit({
 
       <Panel title="Salidas" id="salidas" className="scroll-mt-4">
         {!isOwner && (
-          <p className="mb-3 text-sm text-muted">
+          <p className="mb-3 text-meta text-muted">
             Solo el propietario puede cambiar fechas, plazas y precios.
           </p>
         )}
@@ -181,7 +181,7 @@ export default async function TourEdit({
             const cancelled = d.status === "cancelled";
             return (
               <li key={d.id} className="rounded-control border border-border p-3">
-                <div className="mb-2 flex flex-wrap items-center gap-2 text-sm">
+                <div className="mb-2 flex flex-wrap items-center gap-2 text-meta">
                   <strong className="first-letter:uppercase">{formatDateShort(d.starts_at)}</strong>
                   <DepartureStatus status={d.status} />
                   <span className="text-muted">
@@ -237,7 +237,7 @@ export default async function TourEdit({
                         Guardar
                       </Button>
                     </form>
-                    <details className="mt-2 text-sm">
+                    <details className="mt-2 text-meta">
                       <summary className="cursor-pointer text-danger">
                         Cancelar esta salida…
                       </summary>
@@ -245,13 +245,11 @@ export default async function TourEdit({
                         action={cancelDepartureAction.bind(null, tour.id, d.id)}
                         className="mt-2 flex flex-col gap-2"
                       >
-                        <label className="flex items-start gap-2">
-                          <input type="checkbox" name="confirm" required className="mt-1" />
-                          <span>
-                            Confirmo que se cancela la salida: se reembolsarán todas las reservas
-                            pagadas y se avisará a los clientes por email. No se puede deshacer.
-                          </span>
-                        </label>
+                        <Checkbox
+                          name="confirm"
+                          required
+                          label="Confirmo que se cancela la salida: se reembolsarán todas las reservas pagadas y se avisará a los clientes por email. No se puede deshacer."
+                        />
                         <Button
                           type="submit"
                           size="sm"
@@ -264,7 +262,7 @@ export default async function TourEdit({
                     </details>
                   </>
                 ) : (
-                  <p className="text-sm">
+                  <p className="text-meta">
                     {start.time}
                     {end && `–${end}`} · {euros(d.price_cents)} €
                   </p>
@@ -279,7 +277,7 @@ export default async function TourEdit({
             action={createDeparture.bind(null, tour.id)}
             className="mt-4 grid grid-cols-2 items-end gap-2 rounded-control border border-dashed border-border-strong p-3 md:grid-cols-6"
           >
-            <p className="col-span-2 text-sm font-bold md:col-span-6">Nueva salida</p>
+            <p className="col-span-2 text-meta font-semibold md:col-span-6">Nueva salida</p>
             <Input
               label="Fecha"
               name="date"
@@ -304,7 +302,7 @@ export default async function TourEdit({
         )}
 
         {past.length > 0 && (
-          <details className="mt-4 text-sm">
+          <details className="mt-4 text-meta">
             <summary className="cursor-pointer text-muted">Salidas pasadas</summary>
             <Table className="mt-2">
               <thead>

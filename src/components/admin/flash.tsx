@@ -1,3 +1,6 @@
+import { FormAlert } from "@/components/forms/form-bits";
+import { Toast } from "@/components/ui/toast";
+
 const MESSAGES: Record<string, string> = {
   guardado: "Cambios guardados. La web pública ya muestra la nueva versión.",
   salida_creada: "Salida creada.",
@@ -18,27 +21,19 @@ const MESSAGES: Record<string, string> = {
   ajustes: "Ajustes guardados. La web ya muestra los nuevos datos.",
 };
 
-/** One-line result banner driven by ?ok= / ?error= after a form post. */
+/**
+ * Result of a form post, driven by ?ok= / ?error=. Errors stay inline above
+ * the form; successes show as a toast.
+ */
 export function Flash({ ok, error }: { ok?: string | string[]; error?: string | string[] }) {
   const okKey = Array.isArray(ok) ? ok[0] : ok;
   const err = Array.isArray(error) ? error[0] : error;
   if (err)
     return (
-      <p
-        role="alert"
-        className="mb-4 rounded-card border border-danger/30 bg-danger/5 p-3 text-sm font-bold text-danger"
-      >
-        {err}
-      </p>
+      <div className="mb-4">
+        <FormAlert message={err} />
+      </div>
     );
-  if (okKey && MESSAGES[okKey])
-    return (
-      <p
-        role="status"
-        className="mb-4 rounded-card border border-success/30 bg-success/5 p-3 text-sm font-bold text-success"
-      >
-        {MESSAGES[okKey]}
-      </p>
-    );
+  if (okKey && MESSAGES[okKey]) return <Toast key={okKey} message={MESSAGES[okKey]} />;
   return null;
 }

@@ -52,12 +52,12 @@ export default async function Preview({ params }: PageProps<"/admin/vista-previa
           Vista previa ·{" "}
           {status === "published" ? "publicado" : status === "draft" ? "borrador" : "archivado"}
         </Badge>
-        <Link href={`/admin/${kind}/${id}`} className="text-sm text-blue underline">
+        <Link href={`/admin/${kind}/${id}`} className="text-meta text-blue underline">
           Volver a editar
         </Link>
       </div>
       <article className="rounded-panel border border-border bg-white p-5 md:p-8">
-        <h1 className="text-3xl">{title}</h1>
+        <h1 className="text-display-xl">{title}</h1>
         {cover && (
           // eslint-disable-next-line @next/next/no-img-element
           <img

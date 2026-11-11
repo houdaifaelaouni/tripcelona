@@ -39,8 +39,8 @@ export function MfaChallenge({ next }: { next: string }) {
 
   return (
     <Card className="p-6">
-      <h1 className="text-xl">Verificación en dos pasos</h1>
-      <p className="mt-2 text-sm text-muted">
+      <h1 className="text-display-sm">Verificación en dos pasos</h1>
+      <p className="mt-2 text-meta text-muted">
         Escribe el código de 6 dígitos de tu app de autenticación.
       </p>
       <form action={verify} className="mt-4 flex flex-col gap-4">

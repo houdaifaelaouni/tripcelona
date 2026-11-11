@@ -39,4 +39,13 @@ test("screen admin", async ({ page }, info) => {
     path: `screenshots/${info.project.name}-admin-components.png`,
     fullPage: true,
   });
+  for (const [name, path] of [
+    ["dashboard", "/admin"],
+    ["bookings", "/admin/reservas"],
+    ["settings", "/admin/ajustes?ok=ajustes"],
+  ]) {
+    await page.goto(path);
+    await page.getByRole("heading", { level: 1 }).waitFor();
+    await page.screenshot({ path: `screenshots/${info.project.name}-admin-${name}.png` });
+  }
 });

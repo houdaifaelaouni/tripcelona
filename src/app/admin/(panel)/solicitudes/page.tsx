@@ -54,7 +54,7 @@ export default async function Inbox({ searchParams }: PageProps<"/admin/solicitu
             href={href(t, null)}
             aria-current={tab === t ? "page" : undefined}
             className={cn(
-              "rounded-control border px-3 py-1.5 text-sm font-bold",
+              "rounded-control border px-3 py-1.5 text-meta font-semibold",
               tab === t ? "border-navy bg-navy text-white" : "border-border bg-white text-blue",
             )}
           >
@@ -62,11 +62,11 @@ export default async function Inbox({ searchParams }: PageProps<"/admin/solicitu
           </Link>
         ))}
       </nav>
-      <nav aria-label="Estado" className="mb-4 flex flex-wrap gap-3 text-sm">
+      <nav aria-label="Estado" className="mb-4 flex flex-wrap gap-3 text-meta">
         <Link
           href={href(tab, null)}
           aria-current={!status ? "true" : undefined}
-          className={cn("underline", !status && "font-bold")}
+          className={cn("underline", !status && "font-semibold")}
         >
           Todas
         </Link>
@@ -75,7 +75,7 @@ export default async function Inbox({ searchParams }: PageProps<"/admin/solicitu
             key={s}
             href={href(tab, s)}
             aria-current={status === s ? "true" : undefined}
-            className={cn("underline", status === s && "font-bold")}
+            className={cn("underline", status === s && "font-semibold")}
           >
             {REQUEST_LABELS[s]}
           </Link>
@@ -115,10 +115,13 @@ async function Quotes({ status }: { status: Status | null }) {
             <tr key={r.id}>
               <td className={td}>{formatDateShort(r.created_at)}</td>
               <td className={td}>
-                <Link href={`/admin/solicitudes/${r.id}`} className="font-bold text-blue underline">
+                <Link
+                  href={`/admin/solicitudes/${r.id}`}
+                  className="font-semibold text-blue underline"
+                >
                   {r.name}
                 </Link>
-                {r.email_error && <div className="text-xs text-danger">Email no enviado</div>}
+                {r.email_error && <div className="text-caption text-danger">Email no enviado</div>}
               </td>
               <td className={td}>{r.tours?.title ?? "Destino a medida"}</td>
               <td className={td}>{r.group_size ?? "—"}</td>
@@ -171,11 +174,13 @@ async function Messages({ status }: { status: Status | null }) {
                 <td className={td}>
                   <Link
                     href={`/admin/solicitudes/mensajes/${m.id}`}
-                    className="font-bold text-blue underline"
+                    className="font-semibold text-blue underline"
                   >
                     {p.name ?? "—"}
                   </Link>
-                  {m.email_error && <div className="text-xs text-danger">Email no enviado</div>}
+                  {m.email_error && (
+                    <div className="text-caption text-danger">Email no enviado</div>
+                  )}
                 </td>
                 <td className={`${td} max-w-md truncate`}>{p.message ?? ""}</td>
                 <td className={td}>

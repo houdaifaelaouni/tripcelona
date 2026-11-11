@@ -45,10 +45,10 @@ export default async function BlogAdmin({ searchParams }: PageProps<"/admin/blog
             {(posts ?? []).map((p) => (
               <tr key={p.id}>
                 <td className={td}>
-                  <Link className="font-bold text-blue underline" href={`/admin/blog/${p.id}`}>
+                  <Link className="font-semibold text-blue underline" href={`/admin/blog/${p.id}`}>
                     {p.title}
                   </Link>
-                  <div className="text-xs text-muted">/blog/{p.slug}</div>
+                  <div className="text-caption text-muted">/blog/{p.slug}</div>
                 </td>
                 <td className={td}>{p.published_at ? formatDateShort(p.published_at) : "—"}</td>
                 <td className={td}>{formatDateShort(p.updated_at)}</td>

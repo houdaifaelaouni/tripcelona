@@ -85,7 +85,7 @@ export default async function ContactMessage({
         status={m.status}
         notes={m.admin_notes}
       />
-      <Link href="/admin/solicitudes?tipo=mensajes" className="text-sm text-blue underline">
+      <Link href="/admin/solicitudes?tipo=mensajes" className="text-meta text-blue underline">
         ← Todos los mensajes
       </Link>
     </>

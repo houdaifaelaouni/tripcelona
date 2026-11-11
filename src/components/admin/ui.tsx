@@ -4,8 +4,8 @@ import { cn } from "@/lib/cn";
 
 export function PageTitle({ children, actions }: { children: ReactNode; actions?: ReactNode }) {
   return (
-    <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-      <h1 className="text-2xl">{children}</h1>
+    <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+      <h1 className="text-display-lg md:text-display-xl">{children}</h1>
       {actions}
     </div>
   );
@@ -25,9 +25,9 @@ export function Panel({
   return (
     <section
       id={id}
-      className={cn("mb-6 rounded-card border border-border bg-white p-4 md:p-5", className)}
+      className={cn("mb-6 rounded-card border border-border bg-white p-5 md:p-6", className)}
     >
-      {title && <h2 className="mb-3 text-lg">{title}</h2>}
+      {title && <h2 className="mb-4 text-display-sm">{title}</h2>}
       {children}
     </section>
   );
@@ -38,15 +38,16 @@ export function Table({ className, ...props }: ComponentProps<"table">) {
   return (
     <div className="-mx-4 overflow-x-auto px-4 md:mx-0 md:px-0">
       <table
-        className={cn("w-full min-w-[560px] border-collapse text-left text-sm", className)}
+        className={cn("w-full min-w-[560px] border-collapse text-left text-meta", className)}
         {...props}
       />
     </div>
   );
 }
 
-export const th = "border-b border-border-strong px-2 py-2 font-bold whitespace-nowrap";
-export const td = "border-b border-border px-2 py-2 align-top";
+export const th =
+  "border-b border-border px-3 py-3 text-caption font-semibold whitespace-nowrap text-muted";
+export const td = "border-b border-border px-3 py-3 align-top";
 
 const BOOKING_TONES = {
   pending: "accent",

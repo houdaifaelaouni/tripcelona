@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Flash } from "@/components/admin/flash";
 import { PageTitle, Panel } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea } from "@/components/ui/field";
+import { Input, Switch, Textarea } from "@/components/ui/field";
 import { saveSettings } from "@/lib/admin/settings-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { SOCIAL_LABELS, SOCIAL_NETWORKS, settingsFromRows } from "@/lib/settings";
@@ -62,21 +62,19 @@ export default async function SettingsAdmin({ searchParams }: PageProps<"/admin/
               />
             ))}
           </div>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-meta text-muted">
             Solo se muestran en el pie de página las que tengan enlace.
           </p>
         </Panel>
 
         <Panel title="Aviso en la web">
-          <label className="mb-4 flex items-center gap-2">
-            <input
-              type="checkbox"
+          <div className="mb-4">
+            <Switch
               name="banner_active"
               defaultChecked={s.banner.active}
-              className="h-4 w-4 accent-blue"
+              label="Mostrar aviso encima de la cabecera"
             />
-            Mostrar aviso encima de la cabecera
-          </label>
+          </div>
           <div className="grid gap-4 md:grid-cols-2">
             <Input
               label="Texto del aviso"
@@ -111,7 +109,7 @@ export default async function SettingsAdmin({ searchParams }: PageProps<"/admin/
         </Panel>
 
         <Panel title="Datos legales">
-          <p className="mb-4 text-sm text-muted">
+          <p className="mb-4 text-meta text-muted">
             Aparecen en el aviso legal, la política de privacidad y las condiciones (LSSI-CE art.
             10). Mientras falten, esas páginas muestran «(pendiente)».
           </p>

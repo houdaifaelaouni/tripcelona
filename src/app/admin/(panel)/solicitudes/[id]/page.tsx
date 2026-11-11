@@ -104,7 +104,7 @@ export default async function QuoteRequest({
             </a>
           )}
         </div>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-meta text-muted">
           Cuando envíes la propuesta, marca la solicitud como «Presupuestada».
         </p>
       </Panel>
@@ -113,7 +113,7 @@ export default async function QuoteRequest({
         status={r.status}
         notes={r.admin_notes}
       />
-      <Link href="/admin/solicitudes" className="text-sm text-blue underline">
+      <Link href="/admin/solicitudes" className="text-meta text-blue underline">
         ← Todas las solicitudes
       </Link>
     </>

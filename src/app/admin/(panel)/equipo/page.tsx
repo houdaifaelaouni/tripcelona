@@ -65,7 +65,7 @@ export default async function TeamPage({ searchParams }: PageProps<"/admin/equip
         </Table>
       </Panel>
       <Panel title="Invitar a alguien">
-        <p className="mb-3 text-sm text-muted">
+        <p className="mb-3 text-meta text-muted">
           Los editores pueden cambiar textos de las excursiones. Solo el propietario ve reservas,
           datos de clientes, precios y plazas.
         </p>
