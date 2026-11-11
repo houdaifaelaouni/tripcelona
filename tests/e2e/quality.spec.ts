@@ -36,7 +36,8 @@ test.describe("accessibility (axe, WCAG 2.2 AA)", () => {
 });
 
 test.describe("responsive layout", () => {
-  for (const width of [360, 768, 1440]) {
+  // 320px is the WCAG 1.4.10 reflow width; 640px is a 1280px screen at 200% zoom.
+  for (const width of [320, 360, 640, 768, 1440]) {
     test(`no horizontal scroll at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       for (const path of PAGES) {
@@ -88,4 +89,29 @@ test("no Content-Security-Policy violations on public pages", async ({ page }) =
     await page.waitForLoadState("networkidle");
   }
   expect(violations).toEqual([]);
+});
+
+test("keyboard: the photo viewer opens, traps focus and closes with Escape", async ({ page }) => {
+  await page.goto(`/excursiones/${E2E.tourSlug}`);
+  const opener = page.getByRole("button", { name: /Mostrar las \d+ fotos/ });
+  await opener.focus();
+  await page.keyboard.press("Enter");
+  const viewer = page.getByRole("dialog", { name: /Fotos:/ });
+  await expect(viewer).toBeVisible();
+  await expect(viewer.getByRole("button", { name: "Cerrar fotos" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(viewer).toBeHidden();
+  await expect(opener).toBeFocused();
+});
+
+test("keyboard: the catalog chips and sort control are links in tab order", async ({ page }) => {
+  await page.goto("/ofertas-de-viajes");
+  const chips = page.getByRole("navigation", { name: "Destinos" }).getByRole("link");
+  await expect(chips.first()).toHaveAttribute("aria-current", "page");
+  await chips.nth(1).focus();
+  await page.keyboard.press("Enter");
+  await page.waitForURL(/zona=/);
+  await expect(
+    page.getByRole("navigation", { name: "Destinos" }).locator("[aria-current=page]"),
+  ).toHaveCount(1);
 });

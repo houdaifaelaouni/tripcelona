@@ -39,7 +39,7 @@ export default async function ToursAdmin() {
                 <tr key={t.id}>
                   <td className={td}>
                     <Link
-                      className="font-bold text-blue underline"
+                      className="font-semibold text-blue underline"
                       href={`/admin/excursiones/${t.id}`}
                     >
                       {t.title}

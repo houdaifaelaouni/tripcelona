@@ -47,10 +47,13 @@ export default async function PagesAdmin({ searchParams }: PageProps<"/admin/pag
             {(pages ?? []).map((p) => (
               <tr key={p.id}>
                 <td className={td}>
-                  <Link className="font-bold text-blue underline" href={`/admin/paginas/${p.id}`}>
+                  <Link
+                    className="font-semibold text-blue underline"
+                    href={`/admin/paginas/${p.id}`}
+                  >
                     {p.title}
                   </Link>
-                  <div className="text-xs text-muted">/{p.slug}</div>
+                  <div className="text-caption text-muted">/{p.slug}</div>
                 </td>
                 <td className={td}>
                   {p.kind === "legal" ? <Badge tone="brand">Legal</Badge> : "Página"}

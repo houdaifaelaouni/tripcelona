@@ -83,7 +83,7 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
                 <tr key={b.id}>
                   <td className={td}>
                     <Link
-                      className="font-bold text-blue underline"
+                      className="font-semibold text-blue underline"
                       href={`/admin/reservas/${b.id}`}
                     >
                       {b.reference}

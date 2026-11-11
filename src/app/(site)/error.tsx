@@ -16,8 +16,8 @@ export default function Error({
   }, [error]);
 
   return (
-    <section className="container-site py-16" role="alert">
-      <h1 className="text-3xl">Algo ha fallado</h1>
+    <section className="container-site py-16 md:py-24" role="alert">
+      <h1 className="text-display-xl">Algo ha fallado</h1>
       <p className="mt-3 max-w-xl text-muted">
         Ha ocurrido un error inesperado. Inténtalo de nuevo o escríbenos por WhatsApp si persiste.
       </p>

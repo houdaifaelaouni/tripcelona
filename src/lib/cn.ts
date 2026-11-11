@@ -11,7 +11,7 @@ const twMerge = extendTailwindMerge({
     theme: {
       text: ["meta", "caption", "badge", "display-sm", "display-md", "display-lg", "display-xl"],
       radius: ["control", "card", "panel", "strip"],
-      shadow: ["float", "card", "panel"],
+      shadow: ["float"],
       color: [
         "navy",
         "navy-dark",

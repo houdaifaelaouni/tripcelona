@@ -41,7 +41,7 @@ export function Facts({ items }: { items: [string, React.ReactNode][] }) {
       {items.map(([k, v]) => (
         <div key={k} className="contents">
           <dt className="text-muted">{k}</dt>
-          <dd className="font-bold break-words">{v}</dd>
+          <dd className="font-semibold break-words">{v}</dd>
         </div>
       ))}
     </dl>
