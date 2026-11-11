@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
-/** Surface card: 14px corners, hairline border, optional float shadow. */
+/** Surface card in the Untitled UI card style: 12px corners, inset ring, xs shadow. */
 export function Card({
   className,
   elevated = true,
@@ -10,8 +10,8 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-card border border-border bg-white",
-        elevated && "shadow-float",
+        "rounded-xl bg-primary ring-1 ring-secondary ring-inset",
+        elevated && "shadow-xs",
         className,
       )}
       {...props}
@@ -21,13 +21,14 @@ export function Card({
 
 type Tone = "neutral" | "brand" | "accent" | "success" | "danger" | "light";
 
+// Untitled UI pill-color badges (MIT, see THIRD_PARTY_NOTICES.md).
 const tones: Record<Tone, string> = {
-  neutral: "bg-surface-alt text-ink",
-  brand: "bg-navy text-white",
-  accent: "bg-yellow text-ink",
-  success: "bg-success text-white",
-  danger: "bg-danger text-white",
-  light: "bg-white text-ink shadow-float",
+  neutral: "bg-utility-neutral-50 text-utility-neutral-700 ring-utility-neutral-200",
+  brand: "bg-utility-brand-50 text-utility-brand-700 ring-utility-brand-200",
+  accent: "bg-utility-amber-50 text-utility-amber-700 ring-utility-amber-200",
+  success: "bg-utility-green-50 text-utility-green-700 ring-utility-green-200",
+  danger: "bg-utility-red-50 text-utility-red-700 ring-utility-red-200",
+  light: "bg-primary text-secondary ring-primary shadow-xs",
 };
 
 /** Pill badge (status, "Últimas plazas", counts). */
@@ -39,7 +40,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-badge font-semibold",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-medium whitespace-nowrap ring-1 ring-inset",
         tones[tone],
         className,
       )}

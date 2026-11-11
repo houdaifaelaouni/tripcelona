@@ -21,7 +21,11 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
     <div className="lg:hidden">
       <button
         type="button"
-        className={iconButtonClasses("soft", "md", "bg-white/10 text-white hover:bg-white/20")}
+        className={iconButtonClasses(
+          "soft",
+          "md",
+          "bg-primary text-fg-quaternary ring-1 ring-primary ring-inset shadow-xs hover:bg-primary_hover",
+        )}
         aria-label="Abrir menú"
         aria-haspopup="dialog"
         aria-expanded={open}

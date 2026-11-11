@@ -1,7 +1,8 @@
 /*
- * Buttons. Structure and motion adapted from Opensource UI `soft-pill-button`
- * (MIT, © 2026 Bidyut Kundu, https://opensourceui.in), re-tokened to the
- * Tripcelona palette. See THIRD_PARTY_NOTICES.md.
+ * Public-site buttons in the Untitled UI button style (MIT, © 2025 Untitled
+ * UI, https://github.com/untitleduico/react; see THIRD_PARTY_NOTICES.md):
+ * skeuomorphic xs shadow, inset ring, 8px corners. Plain <button>/<Link> so
+ * they work in server components and without JavaScript. Tripcelona colours.
  */
 import Link from "next/link";
 import type { ComponentProps } from "react";
@@ -13,29 +14,32 @@ type Shape = "rounded" | "pill";
 
 const base = cn(
   // Labels may wrap on very narrow screens (WCAG 1.4.10 reflow at 320px).
-  "inline-flex items-center justify-center gap-2 text-center leading-tight font-semibold select-none",
-  "transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none",
-  "active:translate-y-px motion-reduce:active:translate-y-0",
+  "relative inline-flex items-center justify-center gap-1.5 text-center leading-tight font-semibold select-none",
+  "transition duration-100 ease-linear motion-reduce:transition-none",
   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
   "aria-disabled:pointer-events-none aria-disabled:opacity-50",
 );
 
 const variants: Record<Variant, string> = {
-  primary: "bg-blue text-white hover:bg-blue-dark",
-  secondary: "bg-navy text-white hover:bg-navy-dark",
-  outline: "border border-ink bg-white text-ink hover:bg-surface-alt",
-  ghost: "text-ink underline-offset-4 hover:underline",
-  whatsapp: "bg-whatsapp text-white hover:brightness-95",
+  primary:
+    "bg-brand-solid text-white shadow-xs-skeuomorphic ring-1 ring-transparent ring-inset hover:bg-brand-solid_hover",
+  secondary:
+    "bg-navy text-white shadow-xs-skeuomorphic ring-1 ring-transparent ring-inset hover:bg-navy-dark",
+  outline:
+    "bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover",
+  ghost: "text-brand-secondary underline-offset-4 hover:text-brand-secondary_hover hover:underline",
+  whatsapp:
+    "bg-whatsapp text-white shadow-xs-skeuomorphic ring-1 ring-transparent ring-inset hover:brightness-95",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "min-h-9 px-4 py-1.5 text-meta",
-  md: "min-h-12 px-6 py-2 text-base",
-  lg: "min-h-14 px-7 py-2 text-base",
+  sm: "min-h-10 px-3.5 py-2 text-sm",
+  md: "min-h-11 px-4 py-2.5 text-md",
+  lg: "min-h-12 px-5 py-3 text-md",
 };
 
 const shapes: Record<Shape, string> = {
-  rounded: "rounded-control",
+  rounded: "rounded-lg",
   pill: "rounded-full",
 };
 

@@ -1,32 +1,44 @@
-import { ChevronDown, Phone, Ticket } from "lucide-react";
+import { ChevronDown, Mountain, Phone, Ticket } from "lucide-react";
 import Link from "next/link";
 import { getSiteSettings } from "@/lib/settings";
 import { primaryNav } from "@/lib/site";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { iconButtonClasses } from "@/components/ui/icon-button";
+import { buttonClasses } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { MobileNav } from "./mobile-nav";
 
 /*
- * 80px top bar (design rule): wordmark left, navigation centred, actions
- * right. Tripcelona navy stays the bar colour.
+ * Untitled UI marketing header layout (MIT, see THIRD_PARTY_NOTICES.md):
+ * white 72px bar, wordmark left, nav centred, actions and a primary CTA
+ * right. Tripcelona navy is the wordmark colour.
  */
 const navLink =
-  "flex items-center gap-1 rounded-full px-4 py-2 font-semibold transition-colors hover:bg-white/10";
-const action = iconButtonClasses("soft", "md", "bg-white/10 text-white hover:bg-white/20");
+  "flex items-center gap-0.5 rounded-lg px-3 py-2 text-md font-semibold text-secondary transition-colors hover:bg-primary_hover hover:text-secondary_hover";
+const action = iconButtonClasses(
+  "soft",
+  "md",
+  "bg-primary text-fg-quaternary ring-1 ring-primary ring-inset shadow-xs hover:bg-primary_hover hover:text-fg-quaternary_hover",
+);
 
 export async function Header() {
   const site = await getSiteSettings();
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-navy text-white">
-      <div className="container-site grid h-20 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
+    <header className="sticky top-0 z-40 border-b border-secondary bg-primary/95 text-primary backdrop-blur">
+      <div className="container-site grid h-18 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
         {/* TODO(PO): replace the wordmark with the SVG logo (access checklist). */}
         <Link
           href="/"
-          className="justify-self-start text-display-sm font-bold tracking-tight"
-          aria-label="Tripcelona - Excursiones en grupo por Cataluña, inicio"
+          className="flex items-center gap-2 justify-self-start text-xl font-bold tracking-tight text-navy"
         >
+          <span
+            aria-hidden
+            className="flex size-8 items-center justify-center rounded-lg [&>svg]:size-5 bg-brand-solid text-md text-white shadow-xs-skeuomorphic"
+          >
+            <Mountain />
+          </span>
           Tripcelona
+          <span className="sr-only"> - Excursiones en grupo por Cataluña, inicio</span>
         </Link>
 
         <nav aria-label="Principal" className="hidden lg:block">
@@ -43,12 +55,12 @@ export async function Header() {
                     />
                   </Link>
                   {/* Opens on hover and on keyboard focus inside the item. */}
-                  <ul className="invisible absolute top-full left-0 mt-2 min-w-56 rounded-card border border-border bg-white p-2 text-ink opacity-0 shadow-float transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul className="invisible absolute top-full left-0 mt-2 min-w-60 rounded-xl bg-primary p-1.5 text-secondary opacity-0 shadow-lg ring-1 ring-secondary transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                     {item.children.map((child) => (
                       <li key={child.href}>
                         <Link
                           href={child.href}
-                          className="block rounded-control px-3 py-2.5 hover:bg-surface-alt"
+                          className="block rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-primary_hover"
                         >
                           {child.label}
                         </Link>
@@ -70,14 +82,14 @@ export async function Header() {
         <div className="flex items-center justify-self-end gap-2">
           <a
             href={site.phoneHref}
-            className="hidden items-center gap-2 rounded-full px-4 py-2 font-semibold hover:bg-white/10 xl:flex"
+            className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-secondary whitespace-nowrap hover:bg-primary_hover 2xl:flex"
           >
             <Phone size={18} aria-hidden />
             <span>{site.phoneDisplay}</span>
           </a>
           <a
             href={site.phoneHref}
-            className={cn(action, "hidden md:inline-flex xl:hidden")}
+            className={cn(action, "hidden md:inline-flex 2xl:hidden")}
             aria-label={`Llamar al ${site.phoneDisplay}`}
           >
             <Phone size={18} aria-hidden />
@@ -93,6 +105,12 @@ export async function Header() {
           </a>
           <Link href="/reservar" className={action} aria-label="Mi reserva">
             <Ticket size={18} aria-hidden />
+          </Link>
+          <Link
+            href="/ofertas-de-viajes"
+            className={buttonClasses({ size: "sm" }, "hidden whitespace-nowrap md:inline-flex")}
+          >
+            Ver excursiones
           </Link>
           <MobileNav
             phoneDisplay={site.phoneDisplay}
