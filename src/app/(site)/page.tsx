@@ -5,6 +5,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { TourCard } from "@/components/tours/tour-card";
 import { getPublishedTours } from "@/lib/tours/queries";
 import { getSiteSettings } from "@/lib/settings";
+import { DeparturesTable, DestinationsMap, HowItWorks, Stats } from "@/components/home/alive";
+import { Reveal } from "@/components/motion/reveal";
 import { ContactSection, GroupsCta, SectionHeader, WhyUs } from "@/components/home/sections";
 
 // TODO(PO): hero video (tripcelona-hero-pirineo.mp4, re-encoded ≤ 6 MB) and a
@@ -22,6 +24,7 @@ export default async function Home() {
     <>
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       <Hero />
+      <Stats tours={tours} />
       <section aria-labelledby="proximas-heading" className="container-site py-16 md:py-24">
         <SectionHeader
           id="proximas-heading"
@@ -34,14 +37,19 @@ export default async function Home() {
             </ButtonLink>
           }
         />
-        <ul className="mt-12 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-          {bySoonest.map((tour) => (
-            <li key={tour.slug} className="flex">
-              <TourCard tour={tour} />
-            </li>
-          ))}
-        </ul>
+        <Reveal>
+          <ul className="mt-12 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {bySoonest.map((tour) => (
+              <li key={tour.slug} data-reveal className="flex">
+                <TourCard tour={tour} />
+              </li>
+            ))}
+          </ul>
+        </Reveal>
       </section>
+      <DeparturesTable tours={tours} />
+      <HowItWorks />
+      <DestinationsMap />
       <GroupsCta whatsappHref={site.whatsappHref} />
       <WhyUs />
       <ContactSection

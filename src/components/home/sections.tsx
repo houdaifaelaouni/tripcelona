@@ -21,6 +21,8 @@ import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/feature
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { site } from "@/lib/site";
+import { Reveal } from "@/components/motion/reveal";
+import { CoachIllustration } from "./illustrations";
 import { ContactForm } from "@/components/forms/contact-form";
 
 export function SectionHeader({
@@ -96,17 +98,19 @@ export function WhyUs() {
           title="Tú disfrutas del día, nosotros nos ocupamos del resto"
           lead="Transporte, guía local y logística incluidos en cada excursión."
         />
-        <ul className="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <li key={f.title} className="flex flex-col gap-4">
-              <FeaturedIcon icon={f.icon} color="brand" theme="light" size="lg" />
-              <div>
-                <h3 className="text-lg font-semibold text-primary">{f.title}</h3>
-                <p className="mt-1 text-md text-tertiary">{f.body}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <Reveal>
+          <ul className="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <li key={f.title} data-reveal className="flex flex-col gap-4">
+                <FeaturedIcon icon={f.icon} color="brand" theme="light" size="lg" />
+                <div>
+                  <h3 className="text-lg font-semibold text-primary">{f.title}</h3>
+                  <p className="mt-1 text-md text-tertiary">{f.body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
       </div>
     </section>
   );
@@ -116,11 +120,8 @@ export function GroupsCta({ whatsappHref }: { whatsappHref: string }) {
   return (
     <section aria-labelledby="grupos-heading" className="container-site pb-16 md:pb-24">
       <div className="relative overflow-hidden rounded-2xl bg-brand-section px-6 py-12 text-white md:px-16 md:py-16">
-        <div
-          aria-hidden
-          className="absolute -top-24 -right-24 size-80 rounded-full bg-white/5 ring-[48px] ring-white/5"
-        />
-        <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <CoachIllustration className="pointer-events-none absolute -right-6 -bottom-6 hidden w-64 opacity-90 xl:block" />
+        <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between xl:pr-56">
           <div className="max-w-2xl">
             <h2
               id="grupos-heading"
