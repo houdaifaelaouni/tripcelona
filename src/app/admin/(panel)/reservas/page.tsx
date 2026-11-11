@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookingStatus, PageTitle, Panel, ResultCount, Table, td, th } from "@/components/admin/ui";
+import {
+  BookingStatus,
+  EmptyState,
+  PageTitle,
+  Panel,
+  ResultCount,
+  Table,
+  td,
+  th,
+} from "@/components/admin/ui";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/field";
 import { requireStaff } from "@/lib/auth/staff";
@@ -118,7 +127,9 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
             </tbody>
           </Table>
         ) : (
-          <p className="pt-5 text-meta text-muted">No hay reservas con estos filtros.</p>
+          <EmptyState illustration="tickets" title="No hay reservas con estos filtros">
+            Prueba con otro estado o borra la búsqueda.
+          </EmptyState>
         )}
       </Panel>
     </>

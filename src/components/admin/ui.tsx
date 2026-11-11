@@ -10,6 +10,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { ILLUSTRATIONS, type IllustrationName } from "./illustrations";
 
 /** Page heading: optional back link, title, one-line description, actions. */
 export function PageTitle({
@@ -125,25 +126,38 @@ export function ResultCount({ count, one, many }: { count: number; one: string; 
   );
 }
 
-/** Empty list inside a card. */
+/**
+ * Empty list inside a card: a spot illustration (or an icon), a short title,
+ * one line of help and an optional action.
+ */
 export function EmptyState({
   icon: Icon,
+  illustration,
+  title,
   children,
   action,
 }: {
   icon?: LucideIcon;
+  illustration?: IllustrationName;
+  title?: string;
   children: ReactNode;
   action?: ReactNode;
 }) {
+  const Art = illustration ? ILLUSTRATIONS[illustration] : null;
   return (
-    <div className="flex flex-col items-center gap-3 py-8 text-center">
-      {Icon && (
-        <span className="flex size-11 items-center justify-center rounded-full bg-surface-alt text-muted">
-          <Icon aria-hidden size={20} />
-        </span>
+    <div className="flex flex-col items-center gap-2 py-8 text-center">
+      {Art ? (
+        <Art className="mb-2 h-28 w-auto" />
+      ) : (
+        Icon && (
+          <span className="mb-1 flex size-11 items-center justify-center rounded-full bg-surface-alt text-muted">
+            <Icon aria-hidden size={20} />
+          </span>
+        )
       )}
-      <p className="text-meta text-muted">{children}</p>
-      {action}
+      {title && <p className="text-base font-semibold text-ink">{title}</p>}
+      <p className="max-w-sm text-meta text-muted">{children}</p>
+      {action && <div className="mt-2">{action}</div>}
     </div>
   );
 }

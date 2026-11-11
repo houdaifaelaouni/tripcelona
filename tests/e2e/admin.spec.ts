@@ -97,6 +97,21 @@ test("main admin screens pass axe and the toast can be dismissed", async ({ page
     ).toEqual([]);
   }
 
+  // The tour editor: two-column layout, summary card and departures.
+  await page.goto("/admin/excursiones");
+  await page.locator('a[href^="/admin/excursiones/"]').first().click();
+  await page.waitForURL(/\/admin\/excursiones\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole("button", { name: "Guardar excursión" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Salidas" })).toBeVisible();
+  const tourAxe = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+    .analyze();
+  expect(
+    tourAxe.violations
+      .filter((v) => v.impact === "critical" || v.impact === "serious")
+      .map((v) => `${v.impact} ${v.id}: ${v.nodes.map((n) => n.target).join(", ")}`),
+  ).toEqual([]);
+
   // Success messages show as a dismissible toast.
   await page.goto("/admin/ajustes?ok=ajustes");
   const toast = page.getByRole("status").filter({ hasText: "Ajustes guardados" });

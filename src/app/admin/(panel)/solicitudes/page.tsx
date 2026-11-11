@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Flash } from "@/components/admin/flash";
 import {
+  EmptyState,
   PageTitle,
   Panel,
   REQUEST_LABELS,
@@ -144,7 +145,9 @@ async function Quotes({ status }: { status: Status | null }) {
           {(data ?? []).length === 0 && (
             <tr>
               <td className={td} colSpan={6}>
-                No hay solicitudes{status ? " con este estado" : ""}.
+                <EmptyState illustration="inbox" title="Bandeja vacía">
+                  No hay solicitudes{status ? " con este estado" : ""}.
+                </EmptyState>
               </td>
             </tr>
           )}
@@ -202,7 +205,9 @@ async function Messages({ status }: { status: Status | null }) {
           {(data ?? []).length === 0 && (
             <tr>
               <td className={td} colSpan={4}>
-                No hay mensajes{status ? " con este estado" : ""}.
+                <EmptyState illustration="inbox" title="Bandeja vacía">
+                  No hay mensajes{status ? " con este estado" : ""}.
+                </EmptyState>
               </td>
             </tr>
           )}

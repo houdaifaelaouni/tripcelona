@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Flash } from "@/components/admin/flash";
-import { PageTitle, Panel } from "@/components/admin/ui";
+import { EmptyState, PageTitle, Panel } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { Checkbox, Input } from "@/components/ui/field";
 import { deleteMedia, updateMediaAlt, uploadMedia } from "@/lib/admin/media-actions";
@@ -97,6 +97,11 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
           {count ?? 0} imágenes
           {(count ?? 0) > PAGE ? ` (se muestran las ${PAGE} más recientes)` : ""}.
         </p>
+        {(media ?? []).length === 0 && (
+          <EmptyState illustration="photos" title="No hay imágenes">
+            Sube la primera foto con el formulario de arriba o cambia el filtro.
+          </EmptyState>
+        )}
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {(media ?? []).map((m) => {
             const url = mediaUrl(m);
