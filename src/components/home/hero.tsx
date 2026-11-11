@@ -1,5 +1,6 @@
 import { Bus, MapPin, Route, UserCheck } from "lucide-react";
-import { SearchWidget } from "./search-widget";
+import Link from "next/link";
+import { buttonClasses } from "@/components/ui/button";
 
 /** Facts already stated in the hero copy, shown as icon bullets. */
 const bullets = [
@@ -62,8 +63,22 @@ export function Hero({ videoSrc, posterSrc }: { videoSrc?: string; posterSrc?: s
           Garrotxa y pueblos medievales de Cataluña. Transporte, guía local y logística incluidos,
           desde 55 € por persona.
         </p>
-        <div className="mt-8 max-w-4xl">
-          <SearchWidget />
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="#proximas-heading"
+            className={buttonClasses({ size: "lg" }, "bg-white text-navy hover:bg-brand-50")}
+          >
+            Ver próximas salidas
+          </Link>
+          <Link
+            href="/crea-tu-tour"
+            className={buttonClasses(
+              { size: "lg" },
+              "bg-white/10 text-white ring-white/30 backdrop-blur hover:bg-white/20",
+            )}
+          >
+            Viajes para grupos
+          </Link>
         </div>
         <ul className="mt-10 grid max-w-4xl grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-4">
           {bullets.map(({ icon: Icon, label }) => (

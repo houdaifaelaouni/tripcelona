@@ -19,7 +19,7 @@ export function CatalogFilters({ filters }: { filters: Filters }) {
       action="/ofertas-de-viajes"
       method="get"
       aria-label="Filtrar excursiones"
-      className="grid gap-4 rounded-card border border-border bg-white p-5 shadow-float lg:sticky lg:top-24"
+      className="grid gap-4 rounded-2xl bg-primary p-5 shadow-xs ring-1 ring-secondary ring-inset lg:sticky lg:top-24"
     >
       <Select label="Destino" name="zona" defaultValue={filters.zona ?? ""}>
         <option value="">Todos los destinos</option>
@@ -68,7 +68,7 @@ export function CatalogFilters({ filters }: { filters: Filters }) {
       </Select>
       {filters.orden === "precio" && <input type="hidden" name="orden" value="precio" />}
       <div className="flex flex-wrap gap-2">
-        <button type="submit" className={buttonClasses({ variant: "secondary" }, "flex-1")}>
+        <button type="submit" className={buttonClasses({ variant: "primary" }, "flex-1")}>
           Aplicar filtros
         </button>
         <Link href="/ofertas-de-viajes" className={buttonClasses({ variant: "ghost" })}>

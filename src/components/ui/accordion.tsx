@@ -12,7 +12,7 @@ export function Accordion({
   items: { id: string; title: string; content: ReactNode }[];
 }) {
   return (
-    <div className="divide-y divide-border border-y border-border">
+    <div className="divide-y divide-secondary border-y border-secondary">
       {items.map((item) => (
         <details key={item.id} className="group">
           <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold marker:hidden [&::-webkit-details-marker]:hidden">
@@ -23,7 +23,7 @@ export function Accordion({
               className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
             />
           </summary>
-          <div className="pb-5 text-muted">{item.content}</div>
+          <div className="pb-5 text-tertiary">{item.content}</div>
         </details>
       ))}
     </div>

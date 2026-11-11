@@ -19,7 +19,9 @@ export const metadata: Metadata = {
 export default function CheckoutPage({ searchParams }: PageProps<"/reservar">) {
   return (
     <div className="container-detail py-8 md:py-12">
-      <h1 className="text-display-lg md:text-display-xl">Reserva tu excursión</h1>
+      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        Reserva tu excursión
+      </h1>
       <Suspense fallback={<PageSkeleton />}>
         <Checkout searchParams={searchParams} />
       </Suspense>
@@ -67,35 +69,35 @@ async function Checkout({
         />
       </section>
       <aside className="lg:sticky lg:top-28 lg:self-start">
-        <div className="rounded-card border border-border bg-white p-6 shadow-float">
-          <p className="text-meta text-muted">{departure.tour.area}</p>
+        <div className="rounded-xl border border-secondary bg-white p-6 shadow-lg">
+          <p className="text-sm text-tertiary">{departure.tour.area}</p>
           <h2 className="text-base font-semibold">{departure.tour.title}</h2>
-          <dl className="mt-4 divide-y divide-border border-t border-border">
+          <dl className="mt-4 divide-y divide-secondary border-t border-secondary">
             <div className="py-3">
-              <dt className="text-meta text-muted">Fecha</dt>
+              <dt className="text-sm text-tertiary">Fecha</dt>
               <dd className="font-semibold first-letter:uppercase">
                 {formatDateLong(departure.startsAt)}
               </dd>
             </div>
             <div className="py-3">
-              <dt className="text-meta text-muted">Horario</dt>
+              <dt className="text-sm text-tertiary">Horario</dt>
               <dd className="font-semibold">
                 Salida {formatTime(departure.startsAt)}
                 {departure.endsAt && ` · regreso aprox. ${formatTime(departure.endsAt)}`}
               </dd>
             </div>
             <div className="py-3">
-              <dt className="text-meta text-muted">Punto de encuentro</dt>
+              <dt className="text-sm text-tertiary">Punto de encuentro</dt>
               <dd>{departure.tour.meetingPoint ?? site.meetingPoint}</dd>
             </div>
             <div className="py-3">
-              <dt className="text-meta text-muted">Precio por persona</dt>
+              <dt className="text-sm text-tertiary">Precio por persona</dt>
               <dd className="font-semibold">{formatPrice(quote.unitCents)}</dd>
             </div>
           </dl>
           <Link
             href={`/excursiones/${departure.tour.slug}`}
-            className="mt-2 inline-block text-meta font-semibold underline underline-offset-2"
+            className="mt-2 inline-block text-sm font-semibold underline underline-offset-2"
           >
             Cambiar fecha
           </Link>
@@ -108,7 +110,7 @@ async function Checkout({
 function NoDeparture() {
   return (
     <div className="mt-6 max-w-xl">
-      <p className="text-muted">
+      <p className="text-tertiary">
         Primero elige una excursión y una fecha. Si prefieres, te ayudamos por WhatsApp.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
@@ -134,7 +136,7 @@ function Unavailable({
       <h2 className="mt-6 text-display-sm">{tour.title}</h2>
       {others.length > 0 ? (
         <>
-          <p className="mt-1 text-muted">Estas fechas todavía tienen plazas:</p>
+          <p className="mt-1 text-tertiary">Estas fechas todavía tienen plazas:</p>
           <ul className="mt-3 space-y-2">
             {others.slice(0, 5).map((d) => (
               <li key={d.id}>
@@ -144,13 +146,13 @@ function Unavailable({
                 >
                   {formatDateLong(d.startsAt)}
                 </Link>{" "}
-                <span className="text-meta text-muted">· {d.seatsLeft} plazas</span>
+                <span className="text-sm text-tertiary">· {d.seatsLeft} plazas</span>
               </li>
             ))}
           </ul>
         </>
       ) : (
-        <p className="mt-1 text-muted">No hay otras fechas con plazas ahora mismo.</p>
+        <p className="mt-1 text-tertiary">No hay otras fechas con plazas ahora mismo.</p>
       )}
       <div className="mt-6 flex flex-wrap gap-2">
         <WhatsAppCta message={`Hola, me interesa "${tour.title}" pero la fecha está completa.`} />

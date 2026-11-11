@@ -33,7 +33,7 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
   return (
     <form action="/reservar" method="get" className="mt-4">
       <fieldset>
-        <legend className="text-base font-semibold">Elige fecha</legend>
+        <legend className="text-md font-semibold text-primary">Elige fecha</legend>
         <ul className="mt-3 space-y-2">
           {departures.map((d) => {
             const soldOut = d.status !== "open" || d.seatsLeft === 0;
@@ -42,10 +42,10 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
               <li key={d.id}>
                 <label
                   className={cn(
-                    "group flex items-center gap-3 rounded-card border p-2 pr-3 transition-colors has-[:checked]:border-ink has-[:checked]:shadow-[inset_0_0_0_1px_var(--color-ink)] has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-yellow",
+                    "group flex items-center gap-3 rounded-xl bg-primary p-2 pr-3 ring-1 transition-shadow ring-inset has-[:checked]:bg-brand-primary_alt has-[:checked]:ring-2 has-[:checked]:ring-brand has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-yellow",
                     soldOut
-                      ? "cursor-not-allowed border-border text-muted"
-                      : "cursor-pointer border-border hover:border-ink",
+                      ? "cursor-not-allowed ring-secondary text-quaternary"
+                      : "cursor-pointer ring-secondary hover:ring-primary",
                   )}
                 >
                   <input
@@ -60,32 +60,32 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
                   <span
                     aria-hidden
                     className={cn(
-                      "flex size-12 shrink-0 flex-col items-center justify-center rounded-full leading-none",
+                      "flex size-12 shrink-0 flex-col items-center justify-center rounded-lg leading-none",
                       soldOut
-                        ? "bg-surface-alt line-through"
-                        : "bg-surface-alt text-ink group-has-[:checked]:bg-ink group-has-[:checked]:text-white",
+                        ? "bg-secondary line-through"
+                        : "bg-secondary text-primary group-has-[:checked]:bg-brand-solid group-has-[:checked]:text-white",
                     )}
                   >
                     <span className="text-base font-semibold">{day}</span>
                     <span className="text-badge uppercase">{month}</span>
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-meta font-semibold first-letter:uppercase">
+                    <span className="block text-sm font-semibold text-primary first-letter:uppercase">
                       {formatDateLong(d.startsAt)}
                     </span>
-                    <span className="text-caption text-muted">
+                    <span className="text-sm text-tertiary">
                       Salida {formatTime(d.startsAt)} · {formatPrice(d.priceCents)}
                     </span>
                   </span>
                   {soldOut ? (
-                    <span className="rounded-full bg-danger px-2 py-0.5 text-badge font-semibold text-white">
+                    <span className="rounded-full bg-utility-red-50 px-2 py-0.5 text-xs font-medium text-utility-red-700 ring-1 ring-utility-red-200 ring-inset">
                       Completo
                     </span>
                   ) : (
                     <span
                       className={cn(
                         "text-caption whitespace-nowrap",
-                        d.seatsLeft <= 10 ? "font-semibold text-danger" : "text-muted",
+                        d.seatsLeft <= 10 ? "font-semibold text-error-primary" : "text-tertiary",
                       )}
                     >
                       {d.seatsLeft <= 10 ? `¡Quedan ${d.seatsLeft}!` : `${d.seatsLeft} plazas`}
@@ -105,12 +105,12 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
         max={maxForSelected}
         value={travellers}
         onChange={setTravellers}
-        className="mt-5 border-t border-border pt-5"
+        className="mt-5 border-t border-secondary pt-5"
       />
 
       {current && (
         <p className="mt-5 flex items-baseline justify-between" aria-live="polite">
-          <span className="text-muted">Total</span>
+          <span className="text-tertiary">Total</span>
           <span className="text-display-sm font-semibold">
             {formatPrice(current.priceCents * travellers)}
           </span>

@@ -44,12 +44,19 @@ async function Pending({
   const booking = await getBookingDetails({ id: first(params.id) });
   const notice = NOTICES[first(params.pago)];
 
-  if (!booking) return <h1 className="text-display-lg">No encontramos esta reserva</h1>;
+  if (!booking)
+    return (
+      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        No encontramos esta reserva
+      </h1>
+    );
 
   if (booking.status === "paid") {
     return (
       <>
-        <h1 className="text-display-xl">Esta reserva ya está pagada</h1>
+        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+          Esta reserva ya está pagada
+        </h1>
         <BookingSummary booking={booking} />
         <div className="mt-6">
           <ButtonLink href={`/reservar/confirmada?id=${booking.id}`}>Ver confirmación</ButtonLink>
@@ -61,9 +68,12 @@ async function Pending({
   if (booking.status !== "pending") {
     return (
       <>
-        <h1 className="text-display-xl">Reserva cancelada</h1>
-        <p className="mt-2 text-muted">
-          La reserva <strong className="text-ink">{booking.reference}</strong> ya no está activa.
+        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+          Reserva cancelada
+        </h1>
+        <p className="mt-2 text-tertiary">
+          La reserva <strong className="text-primary">{booking.reference}</strong> ya no está
+          activa.
         </p>
         <div className="mt-6">
           <WhatsAppCta
@@ -77,8 +87,10 @@ async function Pending({
   const canPay = redsysConfig() !== null;
   return (
     <>
-      <h1 className="text-display-xl">Revisa y paga tu reserva</h1>
-      <p className="mt-2 text-muted">
+      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        Revisa y paga tu reserva
+      </h1>
+      <p className="mt-2 text-tertiary">
         Guardamos tus plazas durante 15 minutos. La reserva se confirma en cuanto el banco autoriza
         el pago.
       </p>
@@ -94,7 +106,7 @@ async function Pending({
           <Button type="submit" size="lg" className="w-full sm:w-auto">
             Pagar con tarjeta
           </Button>
-          <p className="mt-2 text-meta text-muted">
+          <p className="mt-2 text-sm text-tertiary">
             Pago seguro en la pasarela del banco (Redsys), con verificación 3D Secure.
           </p>
         </form>

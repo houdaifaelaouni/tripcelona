@@ -30,10 +30,10 @@ function Segment({
   return (
     <label
       className={cn(
-        "relative flex min-h-14 flex-1 cursor-pointer flex-col justify-center rounded-control px-4 hover:bg-surface-alt md:rounded-full md:px-6",
+        "relative flex min-h-14 flex-1 cursor-pointer flex-col justify-center rounded-lg px-4 hover:bg-secondary md:rounded-full md:px-6",
         // Hairline between segments on the pill (hidden next to the hovered one).
         "md:not-first:before:absolute md:not-first:before:inset-y-3 md:not-first:before:left-0 md:not-first:before:w-px md:not-first:before:bg-border",
-        "focus-within:bg-surface-alt",
+        "focus-within:bg-secondary",
         className,
       )}
     >
@@ -44,7 +44,7 @@ function Segment({
 }
 
 const control =
-  "w-full cursor-pointer appearance-none bg-transparent text-meta text-muted outline-none focus-visible:outline-none";
+  "w-full cursor-pointer appearance-none bg-transparent text-sm text-tertiary outline-none focus-visible:outline-none";
 
 function SearchOrb({ label }: { label: string }) {
   return (
@@ -122,12 +122,12 @@ export function SearchWidget() {
                     min={1}
                     max={60}
                     placeholder="¿Cuántos sois?"
-                    className={cn(control, "cursor-text placeholder:text-muted")}
+                    className={cn(control, "cursor-text placeholder:text-placeholder")}
                   />
                 </Segment>
                 <SearchOrb label="Ver excursiones" />
               </div>
-              <p className="mt-3 text-meta text-white">
+              <p className="mt-3 text-sm text-white">
                 Salida en domingo desde Estació del Nord, Barcelona
               </p>
             </form>
@@ -147,12 +147,12 @@ export function SearchWidget() {
                     min={1}
                     max={500}
                     placeholder="Ej. 20 personas"
-                    className={cn(control, "cursor-text placeholder:text-muted")}
+                    className={cn(control, "cursor-text placeholder:text-placeholder")}
                   />
                 </Segment>
                 <SearchOrb label="Pedir presupuesto" />
               </div>
-              <p className="mt-3 text-meta text-white">
+              <p className="mt-3 text-sm text-white">
                 Excursiones y team building a medida para grupos grandes y empresas
               </p>
             </form>

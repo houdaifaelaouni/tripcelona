@@ -37,9 +37,9 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
         ref={dialogRef}
         onClose={() => setOpen(false)}
         aria-label="Menú"
-        className="m-0 ml-auto h-dvh max-h-dvh w-[min(22rem,88vw)] max-w-none rounded-l-panel bg-white p-0 text-ink backdrop:bg-ink/50"
+        className="m-0 ml-auto h-dvh max-h-dvh w-[min(22rem,88vw)] max-w-none rounded-l-2xl bg-white p-0 text-primary backdrop:bg-ink/50"
       >
-        <div className="flex h-20 items-center justify-between border-b border-border px-6">
+        <div className="flex h-20 items-center justify-between border-b border-secondary px-6">
           <span className="text-display-sm font-semibold">Menú</span>
           <button
             type="button"
@@ -62,7 +62,7 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="block rounded-control px-3 py-3 font-semibold hover:bg-surface-alt"
+                  className="block rounded-lg px-3 py-3 font-semibold hover:bg-secondary"
                 >
                   {item.label}
                 </Link>
@@ -72,7 +72,7 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
                       <li key={child.href}>
                         <Link
                           href={child.href}
-                          className="block rounded-control py-2.5 pr-3 pl-6 text-meta text-muted hover:bg-surface-alt hover:text-ink"
+                          className="block rounded-lg py-2.5 pr-3 pl-6 text-sm text-tertiary hover:bg-secondary hover:text-primary"
                         >
                           {child.label}
                         </Link>
@@ -84,7 +84,7 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
             ))}
           </ul>
         </nav>
-        <div className="flex flex-col gap-2 border-t border-border p-6">
+        <div className="flex flex-col gap-2 border-t border-secondary p-6">
           <a href={site.phoneHref} className="flex items-center gap-2 py-2 font-semibold text-blue">
             <Phone size={18} aria-hidden /> {site.phoneDisplay}
           </a>

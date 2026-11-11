@@ -15,10 +15,10 @@ export function Toast({ message }: { message: string }) {
   return (
     <div
       role="status"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-start gap-3 rounded-card bg-ink p-4 text-white shadow-float sm:right-6 sm:bottom-6 sm:left-auto sm:mx-0"
+      className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-start gap-3 rounded-xl bg-ink p-4 text-white shadow-lg sm:right-6 sm:bottom-6 sm:left-auto sm:mx-0"
     >
       <CircleCheck aria-hidden size={20} className="mt-0.5 shrink-0 text-[#7ee2a8]" />
-      <p className="flex-1 text-meta">{message}</p>
+      <p className="flex-1 text-sm">{message}</p>
       <button
         type="button"
         onClick={() => setOpen(false)}

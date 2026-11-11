@@ -17,14 +17,16 @@ export default async function ContactPage() {
   const s = await getSiteSettings();
   return (
     <div className="container-site py-8 md:py-12">
-      <h1 className="text-display-xl">¿En qué podemos ayudarte?</h1>
-      <p className="mt-2 max-w-2xl text-muted">
+      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        ¿En qué podemos ayudarte?
+      </h1>
+      <p className="mt-2 max-w-2xl text-tertiary">
         Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.
       </p>
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
         <section
           aria-labelledby="form-title"
-          className="rounded-panel border border-border bg-white p-5 md:p-6"
+          className="rounded-2xl border border-secondary bg-white p-5 md:p-6"
         >
           <h2 id="form-title" className="mb-4 text-display-sm">
             Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en

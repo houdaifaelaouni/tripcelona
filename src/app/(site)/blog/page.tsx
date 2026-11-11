@@ -16,10 +16,12 @@ export default async function BlogIndex() {
   const posts = await getPublishedPosts();
   return (
     <div className="container-site py-8 md:py-16">
-      <h1 className="text-display-xl">Blog</h1>
-      <p className="mt-1 text-muted">Guías de destinos y consejos para tus excursiones.</p>
+      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        Blog
+      </h1>
+      <p className="mt-1 text-tertiary">Guías de destinos y consejos para tus excursiones.</p>
       {posts.length === 0 ? (
-        <p className="mt-8 rounded-panel bg-surface-alt px-6 py-12 text-center text-muted">
+        <p className="mt-8 rounded-2xl bg-secondary px-6 py-12 text-center text-tertiary">
           Pronto publicaremos nuevas guías.
         </p>
       ) : (
@@ -27,7 +29,7 @@ export default async function BlogIndex() {
           {posts.map((p) => (
             <li key={p.slug}>
               <article className="group relative flex flex-col gap-3">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface-alt">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary">
                   {p.cover && (
                     <Image
                       src={p.cover.url}
@@ -39,7 +41,7 @@ export default async function BlogIndex() {
                   )}
                 </div>
                 <div>
-                  <p className="text-caption text-muted">
+                  <p className="text-caption text-tertiary">
                     {p.publishedAt && (
                       <time dateTime={p.publishedAt}>
                         {dateFmt.format(new Date(p.publishedAt))}
@@ -50,13 +52,13 @@ export default async function BlogIndex() {
                   <h2 className="mt-1 line-clamp-2 text-base font-semibold">
                     <Link
                       href={`/blog/${p.slug}`}
-                      className="after:absolute after:inset-0 after:rounded-card focus-visible:outline-none group-hover:underline group-focus-within:underline"
+                      className="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-hover:underline group-focus-within:underline"
                     >
                       {p.title}
                     </Link>
                   </h2>
                   {p.excerpt && (
-                    <p className="mt-1 line-clamp-2 text-meta text-muted">{p.excerpt}</p>
+                    <p className="mt-1 line-clamp-2 text-sm text-tertiary">{p.excerpt}</p>
                   )}
                 </div>
               </article>

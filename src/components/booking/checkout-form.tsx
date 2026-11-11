@@ -44,7 +44,7 @@ export function CheckoutForm({
 
       {state.status === "error" && <FormAlert message={state.message} />}
 
-      <div className="rounded-card border border-border p-4">
+      <div className="rounded-xl border border-secondary p-4">
         <QuantityStepper
           label="Viajeros"
           hint={`Quedan ${seatsLeft} plazas en esta salida.`}
@@ -55,7 +55,7 @@ export function CheckoutForm({
           onChange={setTravellers}
         />
         {errors.travellers && (
-          <p className="mt-2 text-meta text-danger" role="alert">
+          <p className="mt-2 text-sm text-error-primary" role="alert">
             {errors.travellers}
           </p>
         )}
@@ -124,10 +124,10 @@ export function CheckoutForm({
       />
 
       <p
-        className="flex items-baseline justify-between border-t border-border pt-4"
+        className="flex items-baseline justify-between border-t border-secondary pt-4"
         aria-live="polite"
       >
-        <span className="text-muted">
+        <span className="text-tertiary">
           Total ({travellers > 0 ? travellers : "–"} × {formatPrice(unitCents)})
         </span>
         <span className="text-display-sm font-semibold">
@@ -138,7 +138,7 @@ export function CheckoutForm({
       <button type="submit" disabled={pending} className={buttonClasses({ size: "lg" }, "w-full")}>
         {pending ? "Reservando plazas…" : "Continuar al pago"}
       </button>
-      <p className="text-center text-meta text-muted">
+      <p className="text-center text-sm text-tertiary">
         Guardamos tus plazas 15 minutos mientras completas el pago.
       </p>
     </form>

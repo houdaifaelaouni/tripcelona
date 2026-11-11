@@ -8,7 +8,7 @@ export async function SiteBanner() {
   if (!banner.active) return null;
   const href = safeHref(banner.href);
   return (
-    <div className="bg-yellow text-ink">
+    <div className="bg-yellow text-primary">
       <p className="container-site py-2 text-center text-sm font-bold">
         {href ? (
           <Link href={href} className="underline underline-offset-2">

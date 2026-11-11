@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Bus, Check, Clock, MapPin, Mountain, Timer, X } from "lucide-react";
+import { Bus, Check, Clock, CreditCard, Mail, MapPin, Mountain, Timer, X } from "lucide-react";
+import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -88,7 +89,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
         ]}
       />
       <div className="container-detail">
-        <nav aria-label="Ruta de navegación" className="text-meta text-muted">
+        <nav aria-label="Ruta de navegación" className="text-sm font-medium text-tertiary">
           <ol className="flex flex-wrap gap-1">
             <li>
               <Link href="/" className="underline-offset-2 hover:underline">
@@ -102,16 +103,18 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
               </Link>{" "}
               /
             </li>
-            <li aria-current="page" className="text-ink">
+            <li aria-current="page" className="font-semibold text-brand-secondary">
               {tour.area ?? tour.title}
             </li>
           </ol>
         </nav>
 
         <header className="mt-3">
-          <h1 className="text-display-lg md:text-display-xl">{tour.title}</h1>
+          <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+            {tour.title}
+          </h1>
           {tour.area && (
-            <p className="mt-1 flex items-center gap-1 text-meta text-muted">
+            <p className="mt-1 flex items-center gap-1 text-sm text-tertiary">
               <MapPin aria-hidden size={16} />
               {tour.area} · salida desde Barcelona
             </p>
@@ -121,10 +124,10 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
         <Gallery images={tour.images} title={tour.title} />
 
         <div className="mt-8 grid gap-x-16 lg:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="min-w-0 divide-y divide-border">
+          <div className="min-w-0 divide-y divide-secondary">
             <div className="pb-8">
               <KeyFacts tour={tour} />
-              {tour.summary && <p className="mt-6 text-base">{tour.summary}</p>}
+              {tour.summary && <p className="mt-6 text-lg text-tertiary">{tour.summary}</p>}
             </div>
 
             {tour.description && tour.description.content.length > 0 && (
@@ -141,21 +144,26 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
 
             {tour.itinerary.length > 0 && (
               <Section title="Itinerario">
-                <ol className="divide-y divide-border">
+                <ol className="relative">
                   {tour.itinerary.map((step, i) => (
-                    <li key={`${i}-${step.title}`} className="flex gap-4 py-4 first:pt-0 last:pb-0">
+                    <li
+                      key={`${i}-${step.title}`}
+                      className="relative flex gap-4 pb-6 last:pb-0 [&:not(:last-child)]:before:absolute [&:not(:last-child)]:before:top-10 [&:not(:last-child)]:before:bottom-1 [&:not(:last-child)]:before:left-4 [&:not(:last-child)]:before:w-0.5 [&:not(:last-child)]:before:bg-border-secondary"
+                    >
                       <span
                         aria-hidden
-                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-alt text-meta font-semibold"
+                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-secondary text-sm font-semibold text-brand-secondary ring-1 ring-brand ring-inset"
                       >
                         {i + 1}
                       </span>
                       <div className="min-w-0">
                         {step.timeLabel && (
-                          <p className="text-caption font-semibold text-muted">{step.timeLabel}</p>
+                          <p className="text-sm font-semibold text-brand-secondary">
+                            {step.timeLabel}
+                          </p>
                         )}
-                        <h3 className="text-base">{step.title}</h3>
-                        {step.body && <p className="mt-1 text-meta text-muted">{step.body}</p>}
+                        <h3 className="text-md font-semibold text-primary">{step.title}</h3>
+                        {step.body && <p className="mt-1 text-md text-tertiary">{step.body}</p>}
                       </div>
                     </li>
                   ))}
@@ -187,7 +195,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
             <Section title="Punto de encuentro">
               <p>{tour.meetingPoint ?? site.meetingPoint}</p>
               {next && (
-                <p className="mt-1 text-meta text-muted">
+                <p className="mt-1 text-sm text-tertiary">
                   Salida a las {formatTime(next.startsAt)}.
                 </p>
               )}
@@ -195,7 +203,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
                 href={tour.mapUrl ?? site.meetingPointMapHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-block font-semibold underline underline-offset-2"
+                className="mt-3 inline-block font-semibold text-brand-secondary underline-offset-2 hover:underline"
               >
                 Ver en Google Maps
               </a>
@@ -217,7 +225,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
           <aside
             id="reservar"
             aria-label="Reserva"
-            className="scroll-mt-24 border-t border-border pt-8 lg:sticky lg:top-28 lg:self-start lg:border-0 lg:pt-0"
+            className="scroll-mt-24 border-t border-secondary pt-8 lg:sticky lg:top-28 lg:self-start lg:border-0 lg:pt-0"
           >
             <BookingPanel tour={tour} />
           </aside>
@@ -227,12 +235,15 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
       {related.length > 0 && (
         <section
           aria-labelledby="related-heading"
-          className="container-detail mt-16 border-t border-border py-16"
+          className="container-detail mt-16 border-t border-secondary py-16"
         >
-          <h2 id="related-heading" className="text-display-lg">
+          <h2
+            id="related-heading"
+            className="text-2xl font-semibold tracking-tight text-primary md:text-3xl"
+          >
             Otras excursiones
           </h2>
-          <ul className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-8 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((t) => (
               <li key={t.slug} className="flex">
                 <TourCard tour={t} />
@@ -250,7 +261,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="py-8">
-      <h2 className="mb-4 text-display-sm">{title}</h2>
+      <h2 className="mb-5 text-xl font-semibold text-primary">{title}</h2>
       {children}
     </section>
   );
@@ -266,15 +277,21 @@ function List({
   columns?: boolean;
 }) {
   return (
-    <ul className={columns ? "grid gap-3 sm:grid-cols-2" : "space-y-3"}>
+    <ul className={columns ? "grid gap-3 text-tertiary sm:grid-cols-2" : "space-y-3 text-tertiary"}>
       {items.map((item) => (
         <li key={item} className="flex gap-3">
           {kind === "yes" && (
-            <Check aria-hidden size={20} className="mt-0.5 shrink-0 text-success" />
+            <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-success-secondary text-fg-success-primary">
+              <Check aria-hidden size={14} strokeWidth={3} />
+            </span>
           )}
-          {kind === "no" && <X aria-hidden size={20} className="mt-0.5 shrink-0 text-danger" />}
+          {kind === "no" && (
+            <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-error-secondary text-fg-error-primary">
+              <X aria-hidden size={14} strokeWidth={3} />
+            </span>
+          )}
           {kind === "dot" && (
-            <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-ink" />
+            <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-fg-quaternary" />
           )}
           {item}
         </li>
@@ -287,17 +304,17 @@ function List({
 function MobileBookingBar({ tour }: { tour: TourDetail }) {
   const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
   return (
-    <div className="sticky bottom-0 z-30 mt-8 border-t border-border bg-white lg:hidden">
+    <div className="sticky bottom-0 z-30 mt-8 border-t border-secondary bg-primary shadow-lg lg:hidden">
       <div className="container-detail flex items-center justify-between gap-4 py-3">
         <p>
           {price !== null ? (
             <>
-              <span className="text-meta text-muted">Desde </span>
+              <span className="text-sm text-tertiary">Desde </span>
               <span className="font-semibold">{formatPrice(price)}</span>
-              <span className="text-meta text-muted"> / persona</span>
+              <span className="text-sm text-tertiary"> / persona</span>
             </>
           ) : (
-            <span className="text-meta text-muted">Nuevas fechas próximamente</span>
+            <span className="text-sm text-tertiary">Nuevas fechas próximamente</span>
           )}
         </p>
         <ButtonLink href="#reservar" size="md">
@@ -326,14 +343,23 @@ function KeyFacts({ tour }: { tour: TourDetail }) {
   ].filter((f): f is typeof f & { value: string } => Boolean(f.value));
 
   return (
-    <dl className="grid gap-5 sm:grid-cols-2">
+    <dl className="grid gap-4 sm:grid-cols-2">
       {facts.map(({ icon: Icon, label, value }) => (
-        <div key={label} className="relative pl-10">
-          <dt className="text-meta text-muted">
-            <Icon aria-hidden size={24} strokeWidth={1.5} className="absolute top-1 left-0" />
+        <div
+          key={label}
+          className="relative min-h-16 rounded-xl bg-primary py-3 pr-3 pl-16 shadow-xs ring-1 ring-secondary ring-inset"
+        >
+          <dt className="text-sm text-tertiary">
+            <FeaturedIcon
+              icon={Icon}
+              color="brand"
+              theme="light"
+              size="md"
+              className="absolute top-1/2 left-3 -translate-y-1/2"
+            />
             {label}
           </dt>
-          <dd className="font-semibold">{value}</dd>
+          <dd className="font-semibold text-primary">{value}</dd>
         </div>
       ))}
     </dl>
@@ -343,18 +369,28 @@ function KeyFacts({ tour }: { tour: TourDetail }) {
 function BookingPanel({ tour }: { tour: TourDetail }) {
   const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
   return (
-    <div className="rounded-card border border-border bg-white p-6 shadow-float">
+    <div className="rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset">
       {price !== null && (
         <p>
-          <span className="text-meta text-muted">Desde </span>
-          <span className="text-display-lg font-semibold">{formatPrice(price)}</span>
-          <span className="text-meta text-muted"> / persona</span>
+          <span className="text-sm text-tertiary">Desde </span>
+          <span className="text-display-xs font-semibold text-primary">{formatPrice(price)}</span>
+          <span className="text-sm text-tertiary"> / persona</span>
         </p>
       )}
       {/* Seats are read live per request; the cached list shows meanwhile. */}
       <Suspense fallback={<CachedDates tour={tour} />}>
         <LiveAvailability tour={tour} />
       </Suspense>
+      <ul className="mt-6 space-y-2 border-t border-secondary pt-5 text-sm text-tertiary">
+        <li className="flex items-center gap-2">
+          <CreditCard aria-hidden className="size-4 text-fg-quaternary" />
+          Pago seguro con tarjeta
+        </li>
+        <li className="flex items-center gap-2">
+          <Mail aria-hidden className="size-4 text-fg-quaternary" />
+          Confirmación por email
+        </li>
+      </ul>
     </div>
   );
 }
@@ -369,7 +405,7 @@ async function LiveAvailability({ tour }: { tour: TourDetail }) {
 function CachedDates({ tour }: { tour: TourDetail }) {
   if (tour.departures.length === 0) return <NoDates tour={tour} soldOut={false} />;
   return (
-    <ul className="mt-4 divide-y divide-border text-meta" aria-busy="true">
+    <ul className="mt-4 divide-y divide-secondary text-sm" aria-busy="true">
       {tour.departures.slice(0, 8).map((d) => (
         <li key={d.id} className="py-3 first-letter:uppercase">
           {formatDateLong(d.startsAt)}
@@ -382,7 +418,7 @@ function CachedDates({ tour }: { tour: TourDetail }) {
 function NoDates({ tour, soldOut }: { tour: TourDetail; soldOut: boolean }) {
   return (
     <div className="mt-4">
-      <p className="text-muted">
+      <p className="text-tertiary">
         {soldOut
           ? "Todas las fechas publicadas están completas."
           : "Estamos preparando nuevas fechas para esta excursión."}{" "}

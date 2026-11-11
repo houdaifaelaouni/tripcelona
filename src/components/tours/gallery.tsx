@@ -25,12 +25,12 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
 
   return (
     <>
-      <div className="relative mt-6 grid gap-2 overflow-hidden rounded-card md:grid-cols-4 md:grid-rows-2">
+      <div className="relative mt-6 grid gap-2 overflow-hidden rounded-xl md:grid-cols-4 md:grid-rows-2">
         <button
           type="button"
           onClick={() => open(0)}
           className={cn(
-            "relative aspect-[4/3] bg-surface-alt focus-visible:outline-offset-[-3px]",
+            "relative aspect-[4/3] bg-secondary focus-visible:outline-offset-[-3px]",
             thumbs.length > 0 ? "md:col-span-2 md:row-span-2 md:aspect-auto" : "md:col-span-4",
           )}
         >
@@ -48,7 +48,7 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
             key={img.url}
             type="button"
             onClick={() => open(i + 1)}
-            className="relative hidden aspect-[4/3] bg-surface-alt focus-visible:outline-offset-[-3px] md:block"
+            className="relative hidden aspect-[4/3] bg-secondary focus-visible:outline-offset-[-3px] md:block"
           >
             <Image
               src={img.url}
@@ -63,7 +63,7 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
           <button
             type="button"
             onClick={() => open(0)}
-            className="absolute right-3 bottom-3 inline-flex h-9 items-center gap-2 rounded-control border border-ink bg-white px-3 text-meta font-semibold text-ink shadow-float hover:bg-surface-alt"
+            className="absolute right-3 bottom-3 inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3 ring-1 ring-primary ring-inset text-sm font-semibold text-primary shadow-lg hover:bg-secondary"
           >
             <Grid3x3 aria-hidden size={16} />
             Mostrar las {images.length} fotos
@@ -76,8 +76,8 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
         aria-label={`Fotos: ${title}`}
         className="m-0 h-dvh max-h-none w-screen max-w-none bg-white p-0 backdrop:bg-ink/60"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-white px-4 py-3">
-          <p className="truncate text-meta font-semibold">{title}</p>
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-secondary bg-white px-4 py-3">
+          <p className="truncate text-sm font-semibold">{title}</p>
           <button
             type="button"
             onClick={() => dialog.current?.close()}
@@ -91,7 +91,7 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
           {images.map((img, i) => (
             <li key={img.url} id={`foto-${i}`} className="scroll-mt-20">
               <figure>
-                <div className="relative aspect-[3/2] overflow-hidden rounded-card bg-surface-alt">
+                <div className="relative aspect-[3/2] overflow-hidden rounded-xl bg-secondary">
                   <Image
                     src={img.url}
                     alt={img.alt}
@@ -102,7 +102,7 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
                   />
                 </div>
                 {img.alt && (
-                  <figcaption className="mt-2 text-caption text-muted">{img.alt}</figcaption>
+                  <figcaption className="mt-2 text-caption text-tertiary">{img.alt}</figcaption>
                 )}
               </figure>
             </li>

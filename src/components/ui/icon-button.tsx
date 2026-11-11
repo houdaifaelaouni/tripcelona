@@ -9,8 +9,8 @@ type Tone = "soft" | "outline" | "brand";
 type Size = "sm" | "md" | "lg";
 
 const tones: Record<Tone, string> = {
-  soft: "bg-surface-alt text-ink hover:bg-border",
-  outline: "border border-border bg-white text-ink hover:shadow-float",
+  soft: "bg-secondary text-primary hover:bg-border",
+  outline: "border border-secondary bg-white text-primary hover:shadow-lg",
   brand: "bg-blue text-white hover:bg-blue-dark",
 };
 

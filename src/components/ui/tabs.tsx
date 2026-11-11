@@ -67,8 +67,8 @@ export function Tabs({
             onClick={() => setActive(i)}
             className={cn(
               // Segmented pill (Opensource UI `segmented-toggle-button`, MIT).
-              "rounded-full px-4 py-2 text-meta font-semibold transition-[background-color,color] duration-200 motion-reduce:transition-none",
-              i === active ? "bg-white text-navy shadow-float" : "text-white hover:bg-white/15",
+              "rounded-full px-4 py-2 text-sm font-semibold transition-[background-color,color] duration-200 motion-reduce:transition-none",
+              i === active ? "bg-white text-navy shadow-lg" : "text-white hover:bg-white/15",
             )}
           >
             {tab.label}

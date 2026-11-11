@@ -11,16 +11,18 @@ export default function NotFound() {
       <Header />
       <main id="contenido" tabIndex={-1} className="flex flex-1 flex-col outline-none">
         <section className="container-site py-16 md:py-24">
-          <p className="text-meta font-semibold text-muted">Error 404</p>
-          <h1 className="mt-2 text-display-xl">No encontramos esta página</h1>
-          <p className="mt-3 max-w-xl text-muted">
+          <p className="text-sm font-semibold text-tertiary">Error 404</p>
+          <h1 className="mt-2 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+            No encontramos esta página
+          </h1>
+          <p className="mt-3 max-w-xl text-tertiary">
             Puede que el enlace haya cambiado. Busca tu próxima excursión o vuelve al inicio.
           </p>
 
           <form
             action="/ofertas-de-viajes"
             method="get"
-            className="mt-8 flex max-w-md items-center gap-1 rounded-full border border-border bg-white p-1.5 shadow-float"
+            className="mt-8 flex max-w-md items-center gap-1 rounded-full border border-secondary bg-white p-1.5 shadow-lg"
             role="search"
           >
             <label htmlFor="nf-zona" className="sr-only">
@@ -53,7 +55,7 @@ export default function NotFound() {
               <li key={d.area}>
                 <Link
                   href={buildCatalogUrl({ area: d.area })}
-                  className="inline-flex h-10 items-center rounded-full border border-border-strong px-4 text-meta font-semibold hover:border-ink"
+                  className="inline-flex h-10 items-center rounded-full border border-primary px-4 text-sm font-semibold hover:border-brand"
                 >
                   {d.label}
                 </Link>
