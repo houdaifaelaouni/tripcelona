@@ -6,15 +6,12 @@
  * only states facts already published on the site.
  */
 import {
-  ArrowRight,
   Bus,
   CalendarDays,
   CreditCard,
-  Mail,
   MapPin,
   MessageCircle,
   Phone,
-  Mountain,
   UserCheck,
   Users,
 } from "lucide-react";
@@ -23,8 +20,8 @@ import type { ReactNode } from "react";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
-import { buildCatalogUrl } from "@/lib/search";
-import { destinations, site } from "@/lib/site";
+import { site } from "@/lib/site";
+import { ContactForm } from "@/components/forms/contact-form";
 
 export function SectionHeader({
   id,
@@ -115,38 +112,6 @@ export function WhyUs() {
   );
 }
 
-export function Destinations() {
-  return (
-    <section aria-labelledby="destinos-heading" className="container-site py-16 md:py-24">
-      <SectionHeader
-        id="destinos-heading"
-        eyebrow="Destinos"
-        title="Elige tu próxima escapada"
-        lead="Pirineo, volcanes de la Garrotxa y pueblos medievales a pocas horas de Barcelona."
-      />
-      <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {destinations.map((d) => (
-          <li key={d.area}>
-            <Link
-              href={buildCatalogUrl({ area: d.area, month: "", travellers: "" })}
-              className="group flex h-full items-center gap-4 rounded-xl bg-primary p-5 shadow-xs ring-1 ring-secondary transition-shadow ring-inset hover:shadow-md"
-            >
-              <FeaturedIcon icon={Mountain} color="gray" theme="modern" size="lg" />
-              <span className="flex-1 font-semibold text-primary group-hover:underline">
-                {d.label}
-              </span>
-              <ArrowRight
-                aria-hidden
-                className="size-5 text-fg-quaternary transition-transform group-hover:translate-x-0.5"
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
 export function GroupsCta({ whatsappHref }: { whatsappHref: string }) {
   return (
     <section aria-labelledby="grupos-heading" className="container-site pb-16 md:pb-24">
@@ -190,49 +155,59 @@ export function GroupsCta({ whatsappHref }: { whatsappHref: string }) {
   );
 }
 
-export function ContactStrip({
+export function ContactSection({
   phoneHref,
   phoneDisplay,
+  whatsappHref,
 }: {
   phoneHref: string;
   phoneDisplay: string;
+  whatsappHref: string;
 }) {
   const items = [
+    { icon: Phone, title: "Teléfono", body: phoneDisplay, href: phoneHref },
+    { icon: MessageCircle, title: "WhatsApp", body: "Escríbenos por WhatsApp", href: whatsappHref },
     {
-      icon: MessageCircle,
-      title: "Preguntas frecuentes",
-      body: "Resolvemos las dudas más habituales.",
-      href: "/preguntas-frecuentes",
-      cta: "Ver FAQ",
+      icon: MapPin,
+      title: "Punto de salida",
+      body: site.meetingPoint,
+      href: site.meetingPointMapHref,
     },
-    {
-      icon: Mail,
-      title: "Escríbenos",
-      body: "Te respondemos lo antes posible.",
-      href: "/contactanos",
-      cta: "Contactar",
-    },
-    { icon: Phone, title: "Llámanos", body: phoneDisplay, href: phoneHref, cta: "Llamar" },
   ];
   return (
-    <section aria-label="Contacto" className="border-t border-secondary py-16">
-      <ul className="container-site grid gap-8 md:grid-cols-3">
-        {items.map((it) => (
-          <li key={it.title} className="flex flex-col items-start gap-4">
-            <FeaturedIcon icon={it.icon} color="gray" theme="modern" size="lg" />
-            <div>
-              <h3 className="text-lg font-semibold text-primary">{it.title}</h3>
-              <p className="mt-1 text-md text-tertiary">{it.body}</p>
-            </div>
-            <a
-              href={it.href}
-              className="text-md font-semibold text-brand-secondary hover:underline"
-            >
-              {it.cta}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <section aria-labelledby="hablemos-heading" className="bg-secondary py-16 md:py-24">
+      <div className="container-site grid gap-12 lg:grid-cols-2">
+        <div>
+          <SectionHeader
+            id="hablemos-heading"
+            eyebrow="Contacto"
+            title="Hablemos"
+            lead="¿Tienes dudas sobre una excursión? Escríbenos y te respondemos lo antes posible."
+          />
+          <ul className="mt-10 space-y-6">
+            {items.map((it) => (
+              <li key={it.title} className="flex gap-4">
+                <FeaturedIcon icon={it.icon} color="brand" theme="light" size="lg" />
+                <div>
+                  <h3 className="text-lg font-semibold text-primary">{it.title}</h3>
+                  <a
+                    href={it.href}
+                    {...(it.href.startsWith("http")
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                    className="text-md text-brand-secondary hover:underline"
+                  >
+                    {it.body}
+                  </a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset md:p-8">
+          <ContactForm />
+        </div>
+      </div>
     </section>
   );
 }

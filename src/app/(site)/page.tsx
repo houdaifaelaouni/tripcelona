@@ -5,13 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { TourCard } from "@/components/tours/tour-card";
 import { getPublishedTours } from "@/lib/tours/queries";
 import { getSiteSettings } from "@/lib/settings";
-import {
-  ContactStrip,
-  Destinations,
-  GroupsCta,
-  SectionHeader,
-  WhyUs,
-} from "@/components/home/sections";
+import { ContactSection, GroupsCta, SectionHeader, WhyUs } from "@/components/home/sections";
 
 // TODO(PO): hero video (tripcelona-hero-pirineo.mp4, re-encoded ≤ 6 MB) and a
 // poster image are needed from the owner; until then the hero shows the brand
@@ -48,10 +42,13 @@ export default async function Home() {
           ))}
         </ul>
       </section>
-      <WhyUs />
-      <Destinations />
       <GroupsCta whatsappHref={site.whatsappHref} />
-      <ContactStrip phoneHref={site.phoneHref} phoneDisplay={site.phoneDisplay} />
+      <WhyUs />
+      <ContactSection
+        phoneHref={site.phoneHref}
+        phoneDisplay={site.phoneDisplay}
+        whatsappHref={site.whatsappHref}
+      />
     </>
   );
 }

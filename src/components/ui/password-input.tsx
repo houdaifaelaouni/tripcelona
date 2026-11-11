@@ -21,10 +21,10 @@ export function PasswordInput({
   const [shown, setShown] = useState(false);
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={fieldId} className="text-meta font-medium text-ink">
+      <label htmlFor={fieldId} className="text-sm font-medium text-primary">
         {label}
         {required && (
-          <span className="ml-0.5 text-danger" aria-hidden>
+          <span className="ml-0.5 text-error-primary" aria-hidden>
             *
           </span>
         )}
@@ -42,7 +42,7 @@ export function PasswordInput({
           onClick={() => setShown((s) => !s)}
           aria-label={shown ? "Ocultar contraseña" : "Mostrar contraseña"}
           aria-pressed={shown}
-          className="absolute inset-y-0 right-1 my-auto flex size-12 items-center justify-center rounded-control text-muted hover:text-ink"
+          className="absolute inset-y-0 right-1 my-auto flex size-12 items-center justify-center rounded-lg text-tertiary hover:text-primary"
         >
           {shown ? <EyeOff aria-hidden size={20} /> : <Eye aria-hidden size={20} />}
         </button>

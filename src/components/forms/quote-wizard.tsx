@@ -160,7 +160,7 @@ export function QuoteWizard({
       <Honeypot />
       {enhanced && (
         <div>
-          <p className="text-meta text-muted">
+          <p className="text-sm text-tertiary">
             Paso {step + 1} de {STEPS.length}
           </p>
           <ol className="mt-2 grid grid-cols-4 gap-2" aria-label="Pasos">
@@ -176,7 +176,7 @@ export function QuoteWizard({
                 <span
                   className={cn(
                     "mt-2 hidden truncate text-caption sm:block",
-                    i === step ? "font-semibold text-ink" : "text-muted",
+                    i === step ? "font-semibold text-primary" : "text-tertiary",
                   )}
                 >
                   {label}
@@ -247,7 +247,7 @@ export function QuoteWizard({
               error={errors.groupSize}
             />
           </div>
-          {groupNote && <p className="text-muted">{groupNote}</p>}
+          {groupNote && <p className="text-tertiary">{groupNote}</p>}
         </fieldset>
 
         <fieldset className={cn("space-y-4", !shown(2) && "hidden")}>
@@ -332,7 +332,7 @@ export function QuoteWizard({
             error={errors.message}
           />
           <PrivacyConsent error={errors.privacy} />
-          <p className="text-meta text-muted">Te confirmaremos el precio final sin compromiso.</p>
+          <p className="text-sm text-tertiary">Te confirmaremos el precio final sin compromiso.</p>
         </fieldset>
       </div>
 

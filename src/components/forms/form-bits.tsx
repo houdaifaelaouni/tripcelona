@@ -42,7 +42,7 @@ export function FormAlert({ message }: { message: string }) {
   return (
     <div
       role="alert"
-      className="flex items-start gap-3 rounded-card border border-danger/30 bg-danger/5 p-4 text-danger"
+      className="flex items-start gap-3 rounded-xl border border-danger/30 bg-danger/5 p-4 text-error-primary"
     >
       <CircleAlert aria-hidden size={20} className="mt-0.5 shrink-0" />
       <p className="font-semibold">{message}</p>
@@ -52,12 +52,12 @@ export function FormAlert({ message }: { message: string }) {
 
 export function FormSuccess({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div role="status" className="rounded-panel border border-border bg-white p-6 shadow-float">
+    <div role="status" className="rounded-2xl border border-secondary bg-white p-6 shadow-lg">
       <span className="flex size-12 items-center justify-center rounded-full bg-success/10 text-success">
         <CircleCheck aria-hidden size={24} />
       </span>
       <h2 className="mt-4 text-display-sm">{title}</h2>
-      <div className="mt-2 text-muted">{children}</div>
+      <div className="mt-2 text-tertiary">{children}</div>
     </div>
   );
 }

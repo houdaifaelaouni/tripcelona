@@ -24,9 +24,12 @@ export const metadata: Metadata = {
 
 export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
   return (
-    <div className="container-site py-8 md:py-12">
-      <h1 className="text-display-xl">Ofertas de viajes</h1>
-      <p className="mt-1 max-w-2xl text-muted">
+    <div className="container-site py-12 md:py-16">
+      <p className="text-sm font-semibold text-brand-secondary md:text-md">Excursiones</p>
+      <h1 className="mt-3 text-4xl leading-[1.15] font-semibold tracking-tight text-primary md:text-5xl">
+        Ofertas de viajes
+      </h1>
+      <p className="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
         Excursiones de un día cada domingo desde Estació del Nord, Barcelona.
       </p>
       <Suspense fallback={<CardGridSkeleton />}>
@@ -46,7 +49,7 @@ async function CatalogResults({
 
   return (
     <>
-      <nav aria-label="Destinos" className="mt-6 -mx-4 overflow-x-auto px-4 pb-1">
+      <nav aria-label="Destinos" className="mt-8 -mx-4 overflow-x-auto px-4 pb-1">
         <ul className="flex w-max gap-2">
           {[{ label: "Todos", area: undefined }, ...destinations].map((d) => {
             const active = filters.zona === d.area;
@@ -56,10 +59,10 @@ async function CatalogResults({
                   href={catalogHref({ ...filters, zona: d.area })}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "inline-flex h-10 items-center rounded-full border px-4 text-meta font-semibold whitespace-nowrap transition-colors",
+                    "inline-flex h-10 items-center rounded-lg px-3.5 text-sm font-semibold whitespace-nowrap shadow-xs ring-1 transition-colors ring-inset",
                     active
-                      ? "border-ink bg-ink text-white"
-                      : "border-border-strong bg-white text-ink hover:border-ink",
+                      ? "bg-brand-secondary text-brand-secondary ring-brand"
+                      : "bg-primary text-secondary ring-primary hover:bg-primary_hover",
                   )}
                 >
                   {d.label}
@@ -75,13 +78,17 @@ async function CatalogResults({
         </aside>
         <section aria-labelledby="results-heading">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <h2 id="results-heading" className="text-base font-semibold" aria-live="polite">
+            <h2
+              id="results-heading"
+              className="text-lg font-semibold text-primary"
+              aria-live="polite"
+            >
               {results.length === 1 ? "1 excursión" : `${results.length} excursiones`}
               {hasActiveFilters(filters) && " con estos filtros"}
             </h2>
-            <nav aria-label="Ordenar" className="flex items-center gap-2 text-meta">
-              <span className="text-muted">Ordenar:</span>
-              <span className="inline-flex rounded-full bg-surface-alt p-1">
+            <nav aria-label="Ordenar" className="flex items-center gap-2 text-sm">
+              <span className="text-tertiary">Ordenar:</span>
+              <span className="inline-flex overflow-hidden rounded-lg shadow-xs ring-1 ring-primary ring-inset">
                 {(
                   [
                     ["salida", "Próxima salida"],
@@ -93,10 +100,10 @@ async function CatalogResults({
                     href={catalogHref({ ...filters, orden: value })}
                     aria-current={filters.orden === value ? "true" : undefined}
                     className={cn(
-                      "rounded-full px-3 py-1.5 font-semibold transition-colors",
+                      "px-4 py-2 font-semibold transition-colors not-last:border-r not-last:border-primary",
                       filters.orden === value
-                        ? "bg-white text-ink shadow-float"
-                        : "text-muted hover:text-ink",
+                        ? "bg-secondary text-secondary_hover"
+                        : "bg-primary text-secondary hover:bg-primary_hover",
                     )}
                   >
                     {label}
@@ -108,7 +115,7 @@ async function CatalogResults({
           {results.length === 0 ? (
             <CatalogEmptyState />
           ) : (
-            <ul className="grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
               {results.map(({ tour, match }, i) => (
                 <li key={tour.slug} className="flex">
                   <TourCard tour={tour} departure={match} priority={i < 2} />

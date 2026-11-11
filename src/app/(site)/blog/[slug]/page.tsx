@@ -68,7 +68,7 @@ async function PostPageBody({ params }: { params: PageProps<"/blog/[slug]">["par
             ]),
           ]}
         />
-        <nav aria-label="Migas de pan" className="text-meta text-muted">
+        <nav aria-label="Migas de pan" className="text-sm text-tertiary">
           <Link
             href="/blog"
             className="inline-flex items-center gap-1 underline-offset-2 hover:underline"
@@ -77,15 +77,17 @@ async function PostPageBody({ params }: { params: PageProps<"/blog/[slug]">["par
             Blog
           </Link>
         </nav>
-        <h1 className="mt-3 text-display-lg md:text-display-xl">{post.title}</h1>
-        <p className="mt-2 text-meta text-muted">
+        <h1 className="mt-3 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+          {post.title}
+        </h1>
+        <p className="mt-2 text-sm text-tertiary">
           {post.publishedAt && (
             <time dateTime={post.publishedAt}>{dateFmt.format(new Date(post.publishedAt))}</time>
           )}
           {post.readingMinutes ? ` · ${post.readingMinutes} min de lectura` : ""}
         </p>
         {post.cover && (
-          <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-card bg-surface-alt">
+          <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-xl bg-secondary">
             <Image
               src={post.cover.url}
               alt={post.cover.alt}
@@ -98,7 +100,7 @@ async function PostPageBody({ params }: { params: PageProps<"/blog/[slug]">["par
         )}
         <RichText className="mt-8" doc={post.content} />
         {post.tags.length > 0 && (
-          <div className="mt-10 border-t border-border pt-6">
+          <div className="mt-10 border-t border-secondary pt-6">
             <h2 className="sr-only">Etiquetas</h2>
             <ul className="flex flex-wrap gap-2">
               {post.tags.map((t) => (

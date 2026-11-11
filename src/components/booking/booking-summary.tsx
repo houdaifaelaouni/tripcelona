@@ -4,7 +4,7 @@ import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 export function BookingSummary({ booking }: { booking: BookingDetails }) {
   const { departure, tour } = booking;
   return (
-    <div className="mt-6 rounded-card border border-border bg-white p-6 shadow-float">
+    <div className="mt-6 rounded-xl border border-secondary bg-white p-6 shadow-lg">
       <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
         <Item label="Referencia" value={booking.reference} />
         <Item label="Excursión" value={tour.title} />
@@ -18,7 +18,7 @@ export function BookingSummary({ booking }: { booking: BookingDetails }) {
         />
         <Item label="Viajeros" value={String(booking.travellers)} />
         <div>
-          <dt className="text-meta text-muted">Total</dt>
+          <dt className="text-sm text-tertiary">Total</dt>
           <dd className="text-display-lg font-semibold">{formatPrice(booking.totalCents)}</dd>
         </div>
       </dl>
@@ -37,7 +37,7 @@ function Item({
 }) {
   return (
     <div>
-      <dt className="text-meta text-muted">{label}</dt>
+      <dt className="text-sm text-tertiary">{label}</dt>
       <dd className={capitalize ? "font-semibold first-letter:uppercase" : "font-semibold"}>
         {value}
       </dd>

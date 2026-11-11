@@ -33,14 +33,21 @@ async function Confirmed({
   await connection();
   const raw = (await searchParams).id;
   const booking = await getBookingDetails({ id: (Array.isArray(raw) ? raw[0] : raw) ?? "" });
-  if (!booking) return <h1 className="text-display-lg">No encontramos esta reserva</h1>;
+  if (!booking)
+    return (
+      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        No encontramos esta reserva
+      </h1>
+    );
 
   if (booking.status === "pending") {
     return (
       <>
         <meta httpEquiv="refresh" content="5" />
-        <h1 className="text-display-xl">Estamos confirmando tu pago…</h1>
-        <p className="mt-2 text-muted" role="status">
+        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+          Estamos confirmando tu pago…
+        </h1>
+        <p className="mt-2 text-tertiary" role="status">
           El banco nos está enviando la confirmación. Esta página se actualiza sola en unos
           segundos.
         </p>
@@ -52,7 +59,7 @@ async function Confirmed({
   if (booking.status !== "paid") {
     return (
       <>
-        <h1 className="text-display-xl">
+        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
           Reserva {booking.status === "refunded" ? "reembolsada" : "cancelada"}
         </h1>
         <BookingSummary booking={booking} />
@@ -71,13 +78,15 @@ async function Confirmed({
       <span className="flex size-14 items-center justify-center rounded-full bg-success/10 text-success">
         <CircleCheck aria-hidden size={28} />
       </span>
-      <p className="mt-4 text-meta font-semibold tracking-wide text-success uppercase">
+      <p className="mt-4 text-sm font-semibold tracking-wide text-success uppercase">
         Pago recibido
       </p>
-      <h1 className="mt-1 text-display-xl">¡Reserva confirmada!</h1>
-      <p className="mt-2 text-muted">
-        Te hemos enviado la confirmación a <strong className="text-ink">{booking.email}</strong>. Si
-        no la ves, revisa la carpeta de spam.
+      <h1 className="mt-1 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        ¡Reserva confirmada!
+      </h1>
+      <p className="mt-2 text-tertiary">
+        Te hemos enviado la confirmación a <strong className="text-primary">{booking.email}</strong>
+        . Si no la ves, revisa la carpeta de spam.
       </p>
       <BookingSummary booking={booking} />
 

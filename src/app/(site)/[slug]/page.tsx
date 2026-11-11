@@ -60,14 +60,16 @@ async function ContentPageBody({ params }: { params: PageProps<"/[slug]">["param
           { name: page.title, path: `/${page.slug}` },
         ])}
       />
-      <h1 className="max-w-3xl text-display-lg md:text-display-xl">{page.title}</h1>
+      <h1 className="max-w-3xl text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        {page.title}
+      </h1>
       <RichText
         className="mt-6"
         doc={page.content}
         tokens={page.kind === "legal" ? legalTokens(settings) : {}}
       />
       {page.kind === "legal" && (
-        <p className="mt-10 text-meta text-muted">
+        <p className="mt-10 text-sm text-tertiary">
           Versión publicada en esta web el {updatedFmt.format(new Date(page.updatedAt))}.
         </p>
       )}

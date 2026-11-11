@@ -11,13 +11,14 @@ import { useId, type ComponentProps, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /** 56px control, 8px corners, hairline border that turns 2px ink on focus. */
+// Untitled UI input style (MIT, see THIRD_PARTY_NOTICES.md).
 export const controlClasses = cn(
-  "h-14 w-full rounded-control border border-border-strong bg-white px-3 text-base text-ink",
-  "transition-[border-color,box-shadow] duration-200 motion-reduce:transition-none",
-  "placeholder:text-muted hover:border-ink",
-  "focus:border-ink focus:shadow-[inset_0_0_0_1px_var(--color-ink)]",
-  "disabled:cursor-not-allowed disabled:bg-surface-alt disabled:text-muted",
-  "aria-invalid:border-danger aria-invalid:focus:shadow-[inset_0_0_0_1px_var(--color-danger)]",
+  "h-12 w-full rounded-lg bg-primary px-3.5 text-md text-primary shadow-xs ring-1 ring-primary ring-inset outline-none",
+  "transition-shadow duration-100 ease-linear motion-reduce:transition-none",
+  "placeholder:text-placeholder",
+  "focus:ring-2 focus:ring-brand",
+  "disabled:cursor-not-allowed disabled:bg-secondary disabled:text-quaternary",
+  "aria-invalid:ring-error_subtle aria-invalid:focus:ring-2 aria-invalid:focus:ring-error",
 );
 
 type FieldProps = {
@@ -30,7 +31,7 @@ type FieldProps = {
 function RequiredMark({ show }: { show?: boolean }) {
   if (!show) return null;
   return (
-    <span className="ml-0.5 text-danger" aria-hidden>
+    <span className="ml-0.5 text-error-primary" aria-hidden>
       *
     </span>
   );
@@ -39,14 +40,14 @@ function RequiredMark({ show }: { show?: boolean }) {
 function Message({ id, hint, error }: { id: string; hint?: ReactNode; error?: string }) {
   if (error) {
     return (
-      <p id={`${id}-error`} className="text-meta text-danger" role="alert">
+      <p id={`${id}-error`} className="text-sm text-error-primary" role="alert">
         {error}
       </p>
     );
   }
   if (hint) {
     return (
-      <p id={`${id}-hint`} className="text-meta text-muted">
+      <p id={`${id}-hint`} className="text-sm text-tertiary">
         {hint}
       </p>
     );
@@ -65,7 +66,10 @@ function FieldShell({
 }: FieldProps & { id: string; required?: boolean; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className={cn("text-meta font-medium text-ink", hideLabel && "sr-only")}>
+      <label
+        htmlFor={id}
+        className={cn("text-sm font-medium text-secondary", hideLabel && "sr-only")}
+      >
         {label}
         <RequiredMark show={required} />
       </label>
@@ -205,10 +209,10 @@ export function Checkbox({ label, hint, error, id, className, required, ...props
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy(fieldId, hint, error)}
             className={cn(
-              "peer size-5 cursor-pointer appearance-none rounded-[6px] border border-border-strong bg-white",
+              "peer size-5 cursor-pointer appearance-none rounded-[6px] border border-primary bg-white",
               "transition-[background-color,border-color] duration-150 motion-reduce:transition-none",
-              "checked:border-ink checked:bg-ink hover:border-ink",
-              "aria-invalid:border-danger disabled:cursor-not-allowed disabled:bg-surface-alt",
+              "checked:border-brand-solid checked:bg-brand-solid hover:border-brand",
+              "aria-invalid:border-danger disabled:cursor-not-allowed disabled:bg-secondary",
               className,
             )}
             {...props}
@@ -220,7 +224,7 @@ export function Checkbox({ label, hint, error, id, className, required, ...props
             className="pointer-events-none absolute inset-0 m-auto text-white opacity-0 peer-checked:opacity-100"
           />
         </span>
-        <span className="min-w-0 text-base text-ink">
+        <span className="min-w-0 text-base text-primary">
           {label}
           <RequiredMark show={required} />
         </span>
@@ -244,17 +248,17 @@ export function Radio({ label, hint, id, className, ...props }: Omit<ChoiceProps
         type="radio"
         aria-describedby={hint ? `${fieldId}-hint` : undefined}
         className={cn(
-          "mt-0.5 size-5 shrink-0 cursor-pointer appearance-none rounded-full border border-border-strong bg-white",
+          "mt-0.5 size-5 shrink-0 cursor-pointer appearance-none rounded-full border border-primary bg-white",
           "transition-[border-width,border-color] duration-150 motion-reduce:transition-none",
-          "checked:border-[6px] checked:border-ink hover:border-ink disabled:cursor-not-allowed",
+          "checked:border-[6px] checked:border-brand-solid hover:border-brand disabled:cursor-not-allowed",
           className,
         )}
         {...props}
       />
       <span className="min-w-0">
-        <span className="block text-base text-ink">{label}</span>
+        <span className="block text-base text-primary">{label}</span>
         {hint && (
-          <span id={`${fieldId}-hint`} className="block text-meta text-muted">
+          <span id={`${fieldId}-hint`} className="block text-sm text-tertiary">
             {hint}
           </span>
         )}
@@ -285,7 +289,7 @@ export function RadioGroup({
       aria-invalid={error ? true : undefined}
       aria-describedby={error ? `${id}-error` : undefined}
     >
-      <legend className={cn("mb-1 text-meta font-medium text-ink", hideLegend && "sr-only")}>
+      <legend className={cn("mb-1 text-sm font-medium text-primary", hideLegend && "sr-only")}>
         {legend}
         <RequiredMark show={required} />
       </legend>
@@ -308,9 +312,9 @@ export function Switch({ label, hint, id, className, ...props }: Omit<ChoiceProp
       className="flex cursor-pointer items-start justify-between gap-4 has-disabled:cursor-not-allowed has-disabled:opacity-60"
     >
       <span className="min-w-0">
-        <span className="block text-base font-medium text-ink">{label}</span>
+        <span className="block text-base font-medium text-primary">{label}</span>
         {hint && (
-          <span id={`${fieldId}-hint`} className="mt-0.5 block text-meta text-muted">
+          <span id={`${fieldId}-hint`} className="mt-0.5 block text-sm text-tertiary">
             {hint}
           </span>
         )}
@@ -322,16 +326,16 @@ export function Switch({ label, hint, id, className, ...props }: Omit<ChoiceProp
           role="switch"
           aria-describedby={hint ? `${fieldId}-hint` : undefined}
           className={cn(
-            "peer h-7 w-12 cursor-pointer appearance-none rounded-full border-2 border-border-strong bg-border",
+            "peer h-7 w-12 cursor-pointer appearance-none rounded-full border-2 border-primary bg-border",
             "transition-[background-color,border-color] duration-200 motion-reduce:transition-none",
-            "checked:border-ink checked:bg-ink disabled:cursor-not-allowed",
+            "checked:border-brand-solid checked:bg-brand-solid disabled:cursor-not-allowed",
             className,
           )}
           {...props}
         />
         <span
           aria-hidden
-          className="pointer-events-none absolute top-1 left-1 size-5 rounded-full bg-white shadow-float transition-transform duration-200 peer-checked:translate-x-5 motion-reduce:transition-none"
+          className="pointer-events-none absolute top-1 left-1 size-5 rounded-full bg-white shadow-lg transition-transform duration-200 peer-checked:translate-x-5 motion-reduce:transition-none"
         />
       </span>
     </label>

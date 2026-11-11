@@ -45,10 +45,10 @@ export function QuantityStepper({
   return (
     <div className={cn("flex items-center justify-between gap-4", className)}>
       <div className="min-w-0">
-        <p id={`${id}-label`} className="text-base font-medium text-ink">
+        <p id={`${id}-label`} className="text-base font-medium text-primary">
           {label}
         </p>
-        {hint && <p className="text-meta text-muted">{hint}</p>}
+        {hint && <p className="text-sm text-tertiary">{hint}</p>}
       </div>
       <div role="group" aria-labelledby={`${id}-label`} className="flex items-center gap-3">
         <button
