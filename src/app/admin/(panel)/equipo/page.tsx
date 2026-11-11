@@ -17,7 +17,7 @@ export default async function TeamPage({ searchParams }: PageProps<"/admin/equip
 
   return (
     <>
-      <PageTitle>Equipo</PageTitle>
+      <PageTitle description="Quién puede entrar en el panel y con qué rol.">Equipo</PageTitle>
       <Flash ok={ok} error={error} />
       <Panel title="Personas con acceso">
         <Table>

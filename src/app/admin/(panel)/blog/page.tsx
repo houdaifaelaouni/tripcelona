@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Flash } from "@/components/admin/flash";
-import { PageTitle, Panel, Table, TourStatus, td, th } from "@/components/admin/ui";
+import { PageTitle, Panel, ResultCount, Table, TourStatus, td, th } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 import { createPost } from "@/lib/admin/content-actions";
 import { requireStaff } from "@/lib/auth/staff";
@@ -27,11 +27,15 @@ export default async function BlogAdmin({ searchParams }: PageProps<"/admin/blog
             <Button type="submit">Nueva entrada</Button>
           </form>
         }
+        description="Artículos del blog. Los borradores no se ven en la web."
       >
         Blog
       </PageTitle>
       <Flash ok={ok} error={error} />
-      <Panel>
+      <Panel
+        title="Entradas"
+        footer={<ResultCount count={posts?.length ?? 0} one="entrada" many="entradas" />}
+      >
         <Table>
           <thead>
             <tr>
@@ -45,7 +49,10 @@ export default async function BlogAdmin({ searchParams }: PageProps<"/admin/blog
             {(posts ?? []).map((p) => (
               <tr key={p.id}>
                 <td className={td}>
-                  <Link className="font-semibold text-blue underline" href={`/admin/blog/${p.id}`}>
+                  <Link
+                    className="font-semibold text-blue hover:underline"
+                    href={`/admin/blog/${p.id}`}
+                  >
                     {p.title}
                   </Link>
                   <div className="text-caption text-muted">/blog/{p.slug}</div>

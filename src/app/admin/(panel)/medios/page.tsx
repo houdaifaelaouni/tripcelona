@@ -41,7 +41,9 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
 
   return (
     <>
-      <PageTitle>Medios</PageTitle>
+      <PageTitle description="Fotos de las excursiones y del contenido. Rellena el texto alternativo de cada una.">
+        Medios
+      </PageTitle>
       <Flash ok={ok} error={error} />
       <Panel title="Subir imagen">
         <form action={uploadMedia} className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookingStatus, PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
+import { BookingStatus, PageTitle, Panel, ResultCount, Table, td, th } from "@/components/admin/ui";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/field";
 import { requireStaff } from "@/lib/auth/staff";
@@ -40,12 +40,22 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
     <>
       <PageTitle
         actions={<ButtonLink href="/admin/reservas/nueva">Nueva reserva manual</ButtonLink>}
+        description="Busca por referencia, email o nombre del cliente."
       >
         Reservas
       </PageTitle>
-      <Panel>
+      <Panel
+        title="Todas las reservas"
+        footer={
+          <ResultCount
+            count={bookings?.length ?? 0}
+            one="reserva"
+            many={bookings?.length === 100 ? "reservas (las 100 más recientes)" : "reservas"}
+          />
+        }
+      >
         <form
-          className="mb-4 grid grid-cols-1 items-end gap-3 sm:grid-cols-[1fr_200px_auto]"
+          className="-mx-5 -mt-5 grid grid-cols-1 items-end gap-3 border-b border-border bg-white px-5 py-4 sm:grid-cols-[1fr_200px_auto]"
           role="search"
         >
           <Input
@@ -81,9 +91,9 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
             <tbody>
               {bookings.map((b) => (
                 <tr key={b.id}>
-                  <td className={td}>
+                  <td className={`${td} whitespace-nowrap`}>
                     <Link
-                      className="font-semibold text-blue underline"
+                      className="font-semibold text-blue hover:underline"
                       href={`/admin/reservas/${b.id}`}
                     >
                       {b.reference}
@@ -95,7 +105,9 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
                     <span className="text-muted">{b.email}</span>
                   </td>
                   <td className={td}>{b.tour_departures.tours.title}</td>
-                  <td className={td}>{formatDateShort(b.tour_departures.starts_at)}</td>
+                  <td className={`${td} whitespace-nowrap`}>
+                    {formatDateShort(b.tour_departures.starts_at)}
+                  </td>
                   <td className={td}>{b.travellers}</td>
                   <td className={td}>{formatPrice(b.total_cents)}</td>
                   <td className={td}>
@@ -106,7 +118,7 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
             </tbody>
           </Table>
         ) : (
-          <p className="text-muted">No hay reservas con estos filtros.</p>
+          <p className="pt-5 text-meta text-muted">No hay reservas con estos filtros.</p>
         )}
       </Panel>
     </>

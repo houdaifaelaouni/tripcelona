@@ -42,42 +42,52 @@ export default async function Inbox({ searchParams }: PageProps<"/admin/solicitu
 
   return (
     <>
-      <PageTitle>Solicitudes</PageTitle>
+      <PageTitle description="Presupuestos de grupo y mensajes del formulario de contacto.">
+        Solicitudes
+      </PageTitle>
       <Flash ok={sp.ok} error={sp.error} />
-      <nav aria-label="Tipo" className="mb-4 flex flex-wrap gap-2">
+      <nav aria-label="Tipo" className="mb-5 flex gap-6 overflow-x-auto border-b border-border">
         {[
-          ["presupuestos", `Presupuestos (${newQuotes ?? 0} nuevas)`],
-          ["mensajes", `Mensajes de contacto (${newMessages ?? 0} nuevos)`],
-        ].map(([t, label]) => (
+          ["presupuestos", "Presupuestos", newQuotes ?? 0],
+          ["mensajes", "Mensajes de contacto", newMessages ?? 0],
+        ].map(([t, label, n]) => (
           <Link
             key={t}
-            href={href(t, null)}
+            href={href(t as string, null)}
             aria-current={tab === t ? "page" : undefined}
             className={cn(
-              "rounded-control border px-3 py-1.5 text-meta font-semibold",
-              tab === t ? "border-navy bg-navy text-white" : "border-border bg-white text-blue",
+              "-mb-px inline-flex items-center gap-2 border-b-2 py-3 text-meta font-semibold whitespace-nowrap",
+              tab === t ? "border-navy text-navy" : "border-transparent text-muted hover:text-ink",
             )}
           >
             {label}
+            <span
+              className={cn(
+                "rounded-full px-2 py-0.5 text-badge",
+                tab === t ? "bg-navy text-white" : "bg-surface-alt text-ink",
+              )}
+            >
+              {n}
+              <span className="sr-only"> sin atender</span>
+            </span>
           </Link>
         ))}
       </nav>
-      <nav aria-label="Estado" className="mb-4 flex flex-wrap gap-3 text-meta">
-        <Link
-          href={href(tab, null)}
-          aria-current={!status ? "true" : undefined}
-          className={cn("underline", !status && "font-semibold")}
-        >
-          Todas
-        </Link>
-        {STATUSES.map((s) => (
+      <nav
+        aria-label="Estado"
+        className="mb-5 inline-flex flex-wrap gap-1 rounded-control border border-border bg-white p-1"
+      >
+        {[null, ...STATUSES].map((s) => (
           <Link
-            key={s}
+            key={s ?? "todas"}
             href={href(tab, s)}
             aria-current={status === s ? "true" : undefined}
-            className={cn("underline", status === s && "font-semibold")}
+            className={cn(
+              "rounded-[6px] px-3 py-1.5 text-meta font-semibold",
+              status === s ? "bg-surface-alt text-ink" : "text-muted hover:text-ink",
+            )}
           >
-            {REQUEST_LABELS[s]}
+            {s ? REQUEST_LABELS[s] : "Todas"}
           </Link>
         ))}
       </nav>
@@ -117,7 +127,7 @@ async function Quotes({ status }: { status: Status | null }) {
               <td className={td}>
                 <Link
                   href={`/admin/solicitudes/${r.id}`}
-                  className="font-semibold text-blue underline"
+                  className="font-semibold text-blue hover:underline"
                 >
                   {r.name}
                 </Link>
@@ -174,7 +184,7 @@ async function Messages({ status }: { status: Status | null }) {
                 <td className={td}>
                   <Link
                     href={`/admin/solicitudes/mensajes/${m.id}`}
-                    className="font-semibold text-blue underline"
+                    className="font-semibold text-blue hover:underline"
                   >
                     {p.name ?? "—"}
                   </Link>

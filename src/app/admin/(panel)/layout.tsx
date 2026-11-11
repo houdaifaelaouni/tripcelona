@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ChevronUp, ExternalLink, LogOut } from "lucide-react";
+import { ChevronDown, ExternalLink, LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminNav, MobileNav, SectionTitle, SidebarBrand } from "@/components/admin/admin-nav";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { signOut } from "@/lib/admin/auth-actions";
 import { requireStaff } from "@/lib/auth/staff";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function PanelLayout({ children }: LayoutProps<"/admin">) {
   return (
-    <div className="flex min-h-full flex-1 flex-col md:flex-row">
+    <div className="min-h-full flex-1 bg-surface-alt">
       <Suspense fallback={<PageSkeleton />}>
         <Shell>{children}</Shell>
       </Suspense>
@@ -22,66 +22,95 @@ export default function PanelLayout({ children }: LayoutProps<"/admin">) {
   );
 }
 
+/**
+ * Application layout after Preline UI's sidebar dashboard
+ * (https://github.com/htmlstreamofficial/preline, MIT + Preline UI Fair Use
+ * License): fixed sidebar from lg up, sticky top bar, content on a grey canvas.
+ */
 async function Shell({ children }: { children: React.ReactNode }) {
   const staff = await requireStaff();
+  const role = staff.role === "owner" ? "Propietario" : "Editor";
   return (
     <>
-      <aside className="bg-navy px-4 py-4 text-white md:sticky md:top-0 md:flex md:h-dvh md:w-64 md:shrink-0 md:flex-col md:py-6">
-        <Link href="/admin" className="block px-1 text-base font-semibold md:px-3">
-          Tripcelona · Admin
-        </Link>
-        <div className="mt-4 md:flex-1 md:overflow-y-auto">
+      <aside className="fixed inset-y-0 start-0 z-40 hidden w-64 flex-col border-e border-border bg-white lg:flex">
+        <div className="flex h-16 shrink-0 items-center px-5">
+          <SidebarBrand />
+        </div>
+        <div className="flex-1 overflow-y-auto pt-2">
           <AdminNav role={staff.role} />
         </div>
-        <details className="group relative mt-4 border-t border-white/15 pt-4">
-          <summary className="flex cursor-pointer list-none items-center gap-3 rounded-control px-1 py-1 hover:bg-white/10 md:px-3 [&::-webkit-details-marker]:hidden">
-            <span
-              aria-hidden
-              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white text-meta font-semibold text-navy uppercase"
-            >
-              {staff.email.slice(0, 1)}
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-meta" title={staff.email}>
-                {staff.email}
-              </span>
-              <span className="block text-caption text-white/70">
-                {staff.role === "owner" ? "Propietario" : "Editor"}
-              </span>
-            </span>
-            <ChevronUp
-              aria-hidden
-              size={16}
-              className="shrink-0 rotate-180 transition-transform group-open:rotate-0"
-            />
-          </summary>
-          <div className="absolute inset-x-0 top-full z-20 mt-2 rounded-card bg-white p-2 text-ink shadow-float md:top-auto md:bottom-full md:mt-0 md:mb-2">
-            <Link
-              href="/"
-              className="flex h-10 items-center gap-2 rounded-control px-3 text-meta hover:bg-surface-alt"
-            >
-              <ExternalLink aria-hidden size={16} />
-              Ver web
-            </Link>
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="flex h-10 w-full items-center gap-2 rounded-control px-3 text-meta hover:bg-surface-alt"
-              >
-                <LogOut aria-hidden size={16} />
-                Salir
-              </button>
-            </form>
-          </div>
-        </details>
       </aside>
-      <main
-        id="contenido"
-        tabIndex={-1}
-        className="min-w-0 flex-1 bg-surface-alt px-4 py-6 outline-none md:px-10 md:py-10"
-      >
-        <div className="mx-auto max-w-[1120px]">{children}</div>
-      </main>
+      <div className="lg:ps-64">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-white px-4 md:px-6 lg:px-8">
+          <MobileNav role={staff.role} />
+          <div className="min-w-0 flex-1">
+            <SectionTitle />
+          </div>
+          <Link
+            href="/"
+            className="hidden h-10 items-center gap-2 rounded-control border border-border px-3 text-meta font-semibold hover:bg-surface-alt sm:inline-flex"
+          >
+            <ExternalLink aria-hidden size={16} />
+            Ver web
+          </Link>
+          <details className="group relative">
+            <summary className="flex cursor-pointer list-none items-center gap-2 rounded-full p-1 pe-2 hover:bg-surface-alt [&::-webkit-details-marker]:hidden">
+              <span
+                aria-hidden
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-navy text-meta font-semibold text-white uppercase"
+              >
+                {staff.email.slice(0, 1)}
+              </span>
+              <span className="sr-only">Cuenta: {staff.email}</span>
+              <ChevronDown
+                aria-hidden
+                size={16}
+                className="text-muted transition-transform group-open:rotate-180"
+              />
+            </summary>
+            <div className="absolute end-0 top-full z-40 mt-2 w-64 rounded-card border border-border bg-white p-2 shadow-float">
+              <div className="border-b border-border px-3 pt-1 pb-3">
+                <p className="truncate text-meta font-semibold" title={staff.email}>
+                  {staff.email}
+                </p>
+                <p className="text-caption text-muted">{role}</p>
+              </div>
+              <div className="pt-2">
+                <Link
+                  href="/admin/cuenta"
+                  className="flex h-10 items-center gap-2 rounded-control px-3 text-meta hover:bg-surface-alt"
+                >
+                  <UserRound aria-hidden size={16} />
+                  Mi cuenta
+                </Link>
+                <Link
+                  href="/"
+                  className="flex h-10 items-center gap-2 rounded-control px-3 text-meta hover:bg-surface-alt"
+                >
+                  <ExternalLink aria-hidden size={16} />
+                  Ver web
+                </Link>
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    className="flex h-10 w-full items-center gap-2 rounded-control px-3 text-meta hover:bg-surface-alt"
+                  >
+                    <LogOut aria-hidden size={16} />
+                    Salir
+                  </button>
+                </form>
+              </div>
+            </div>
+          </details>
+        </header>
+        <main
+          id="contenido"
+          tabIndex={-1}
+          className="px-4 py-6 outline-none md:px-6 md:py-8 lg:px-8"
+        >
+          <div className="mx-auto max-w-[1180px]">{children}</div>
+        </main>
+      </div>
     </>
   );
 }

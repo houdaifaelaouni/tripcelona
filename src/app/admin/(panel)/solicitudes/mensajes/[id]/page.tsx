@@ -43,7 +43,12 @@ export default async function ContactMessage({
 
   return (
     <>
-      <PageTitle actions={<RequestStatus status={m.status} />}>Mensaje: {p.name ?? "—"}</PageTitle>
+      <PageTitle
+        back={{ href: "/admin/solicitudes?tipo=mensajes", label: "Mensajes" }}
+        actions={<RequestStatus status={m.status} />}
+      >
+        Mensaje: {p.name ?? "—"}
+      </PageTitle>
       <Flash ok={ok} error={error} />
       <Panel title="Mensaje">
         <Facts
@@ -85,7 +90,7 @@ export default async function ContactMessage({
         status={m.status}
         notes={m.admin_notes}
       />
-      <Link href="/admin/solicitudes?tipo=mensajes" className="text-meta text-blue underline">
+      <Link href="/admin/solicitudes?tipo=mensajes" className="text-meta text-blue hover:underline">
         ← Todos los mensajes
       </Link>
     </>

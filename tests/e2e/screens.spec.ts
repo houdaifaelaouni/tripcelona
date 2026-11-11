@@ -42,6 +42,8 @@ test("screen admin", async ({ page }, info) => {
   for (const [name, path] of [
     ["dashboard", "/admin"],
     ["bookings", "/admin/reservas"],
+    ["tours", "/admin/excursiones"],
+    ["requests", "/admin/solicitudes"],
     ["settings", "/admin/ajustes?ok=ajustes"],
   ]) {
     await page.goto(path);

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageTitle, Panel, Table, TourStatus, td, th } from "@/components/admin/ui";
+import { PageTitle, Panel, ResultCount, Table, TourStatus, td, th } from "@/components/admin/ui";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateShort, formatPrice } from "@/lib/tours/format";
@@ -18,8 +18,11 @@ export default async function ToursAdmin() {
 
   return (
     <>
-      <PageTitle>Excursiones</PageTitle>
-      <Panel>
+      <PageTitle description="Fichas, fechas y plazas de cada excursión.">Excursiones</PageTitle>
+      <Panel
+        title="Catálogo"
+        footer={<ResultCount count={tours?.length ?? 0} one="excursión" many="excursiones" />}
+      >
         <Table>
           <thead>
             <tr>
@@ -39,7 +42,7 @@ export default async function ToursAdmin() {
                 <tr key={t.id}>
                   <td className={td}>
                     <Link
-                      className="font-semibold text-blue underline"
+                      className="font-semibold text-blue hover:underline"
                       href={`/admin/excursiones/${t.id}`}
                     >
                       {t.title}

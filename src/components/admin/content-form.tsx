@@ -145,11 +145,19 @@ export function ContentForm({
               </Select>
             </div>
             <Button type="submit">Guardar</Button>
-            <Link href={previewHref} className="text-meta text-blue underline" target="_blank">
+            <Link
+              href={previewHref}
+              className="text-meta text-blue hover:underline"
+              target="_blank"
+            >
               Vista previa (guarda antes) ↗
             </Link>
             {values.status === "published" && (
-              <Link href={publicPath} className="text-meta text-blue underline" target="_blank">
+              <Link
+                href={publicPath}
+                className="text-meta text-blue hover:underline"
+                target="_blank"
+              >
                 Ver en la web ↗
               </Link>
             )}

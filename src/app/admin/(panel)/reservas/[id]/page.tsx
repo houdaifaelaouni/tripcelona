@@ -69,7 +69,12 @@ export default async function BookingDetail({
 
   return (
     <>
-      <PageTitle actions={<BookingStatus status={b.status} />}>Reserva {b.reference}</PageTitle>
+      <PageTitle
+        back={{ href: "/admin/reservas", label: "Reservas" }}
+        actions={<BookingStatus status={b.status} />}
+      >
+        Reserva {b.reference}
+      </PageTitle>
       <Flash ok={ok} error={error} />
       <div className="grid gap-x-6 lg:grid-cols-2">
         <Panel title="Cliente">
@@ -78,7 +83,7 @@ export default async function BookingDetail({
             <dd>{b.customer_name}</dd>
             <dt className="text-muted">Email</dt>
             <dd>
-              <a className="text-blue underline" href={`mailto:${b.email}`}>
+              <a className="text-blue hover:underline" href={`mailto:${b.email}`}>
                 {b.email}
               </a>
             </dd>
@@ -98,7 +103,10 @@ export default async function BookingDetail({
           <dl className="grid grid-cols-[120px_1fr] gap-y-1 text-meta">
             <dt className="text-muted">Excursión</dt>
             <dd>
-              <Link className="text-blue underline" href={`/admin/excursiones/${dep.tours.id}`}>
+              <Link
+                className="text-blue hover:underline"
+                href={`/admin/excursiones/${dep.tours.id}`}
+              >
                 {dep.tours.title}
               </Link>
             </dd>

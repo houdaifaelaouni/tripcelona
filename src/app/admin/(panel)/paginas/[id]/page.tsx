@@ -23,7 +23,7 @@ export default async function PageEdit({ params, searchParams }: PageProps<"/adm
 
   return (
     <>
-      <PageTitle>{page.title}</PageTitle>
+      <PageTitle back={{ href: "/admin/paginas", label: "Páginas" }}>{page.title}</PageTitle>
       <Flash ok={ok} error={error} />
       {legal && staff.role === "owner" && (
         <p role="note" className="mb-4 rounded-card border border-border bg-white p-3 text-meta">
