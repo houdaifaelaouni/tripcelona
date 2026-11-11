@@ -24,7 +24,9 @@ export default async function NewBooking({ searchParams }: PageProps<"/admin/res
 
   return (
     <>
-      <PageTitle>Nueva reserva manual</PageTitle>
+      <PageTitle back={{ href: "/admin/reservas", label: "Reservas" }}>
+        Nueva reserva manual
+      </PageTitle>
       <Flash error={error} />
       <Panel>
         <form action={createManualBooking} className="grid max-w-2xl gap-4 md:grid-cols-2">

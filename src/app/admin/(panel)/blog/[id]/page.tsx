@@ -23,7 +23,7 @@ export default async function PostEdit({ params, searchParams }: PageProps<"/adm
 
   return (
     <>
-      <PageTitle>{post.title}</PageTitle>
+      <PageTitle back={{ href: "/admin/blog", label: "Blog" }}>{post.title}</PageTitle>
       <Flash ok={ok} error={error} />
       <ContentForm
         kind="post"

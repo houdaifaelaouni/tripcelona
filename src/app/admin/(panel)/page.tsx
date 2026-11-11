@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Flash } from "@/components/admin/flash";
+import { CalendarCheck, CalendarDays, Euro, Inbox, Map, Users } from "lucide-react";
 import {
   BookingStatus,
   DepartureStatus,
+  EmptyState,
   PageTitle,
   Panel,
+  StatCard,
+  StatGrid,
+  StatusBadge,
   Table,
   td,
   th,
 } from "@/components/admin/ui";
+import { ButtonLink } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth/staff";
 import { assessHealth, loadHealthInput, type HealthReport } from "@/lib/ops/health";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -29,6 +35,33 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
     .gte("starts_at", new Date().toISOString())
     .order("starts_at")
     .limit(12);
+
+  const now = new Date();
+  const in30 = new Date(now.getTime() + 30 * 864e5).toISOString();
+  const ago30 = new Date(now.getTime() - 30 * 864e5).toISOString();
+  const [{ data: soon }, { count: publishedTours }] = await Promise.all([
+    db
+      .from("tour_departures")
+      .select("capacity, seats_taken")
+      .neq("status", "cancelled")
+      .gte("starts_at", now.toISOString())
+      .lte("starts_at", in30),
+    db.from("tours").select("id", { count: "exact", head: true }).eq("status", "published"),
+  ]);
+  const seats = (soon ?? []).reduce(
+    (acc, d) => ({ taken: acc.taken + d.seats_taken, total: acc.total + d.capacity }),
+    { taken: 0, total: 0 },
+  );
+  const sales =
+    staff.role === "owner"
+      ? (
+          await db
+            .from("bookings")
+            .select("total_cents")
+            .eq("status", "paid")
+            .gte("created_at", ago30)
+        ).data
+      : null;
 
   const bookings =
     staff.role === "owner"
@@ -61,116 +94,165 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
           .catch(() => null)
       : undefined;
 
+  const occupancy = seats.total ? Math.round((seats.taken / seats.total) * 100) : null;
   return (
     <>
-      <PageTitle>Hola{staff.name ? `, ${staff.name}` : ""}</PageTitle>
+      <PageTitle
+        description="Resumen de las próximas salidas, las ventas y lo que tienes pendiente."
+        actions={
+          staff.role === "owner" ? (
+            <ButtonLink href="/admin/reservas/nueva" size="sm">
+              Nueva reserva manual
+            </ButtonLink>
+          ) : undefined
+        }
+      >
+        Hola{staff.name ? `, ${staff.name}` : ""}
+      </PageTitle>
       <Flash ok={aviso} />
-      {inbox && (inbox.quotes > 0 || inbox.messages > 0) && (
-        <Panel>
-          <p>
-            Tienes{" "}
-            <Link
-              className="font-semibold text-blue underline"
-              href="/admin/solicitudes?estado=new"
-            >
-              {inbox.quotes}{" "}
-              {inbox.quotes === 1
-                ? "solicitud de presupuesto nueva"
-                : "solicitudes de presupuesto nuevas"}
-            </Link>{" "}
-            y{" "}
-            <Link
-              className="font-semibold text-blue underline"
-              href="/admin/solicitudes?tipo=mensajes&estado=new"
-            >
-              {inbox.messages} {inbox.messages === 1 ? "mensaje nuevo" : "mensajes nuevos"}
-            </Link>
-            .
-          </p>
-        </Panel>
-      )}
-      {health !== undefined && <HealthPanel report={health} />}
-      <Panel title="Próximas salidas">
-        {departures?.length ? (
-          <Table>
-            <thead>
-              <tr>
-                <th className={th}>Fecha</th>
-                <th className={th}>Excursión</th>
-                <th className={th}>Plazas</th>
-                <th className={th}>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {departures.map((d) => (
-                <tr key={d.id}>
-                  <td className={td}>
-                    {formatDateShort(d.starts_at)} · {formatTime(d.starts_at)}
-                  </td>
-                  <td className={td}>
-                    <Link className="text-blue underline" href={`/admin/excursiones/${d.tours.id}`}>
-                      {d.tours.title}
-                    </Link>
-                  </td>
-                  <td className={td}>
-                    {d.seats_taken} / {d.capacity}
-                  </td>
-                  <td className={td}>
-                    <DepartureStatus status={d.status} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        ) : (
-          <p className="text-muted">No hay salidas programadas.</p>
+      <StatGrid>
+        <StatCard
+          icon={CalendarDays}
+          label="Salidas en 30 días"
+          value={soon?.length ?? 0}
+          hint={`${publishedTours ?? 0} excursiones publicadas`}
+          href="/admin/excursiones"
+        />
+        <StatCard
+          icon={Users}
+          label="Plazas vendidas (30 días)"
+          value={`${seats.taken} / ${seats.total}`}
+          hint={occupancy === null ? "Sin salidas próximas" : `${occupancy} % de ocupación`}
+        />
+        {sales && (
+          <StatCard
+            icon={Euro}
+            label="Ventas (últimos 30 días)"
+            value={formatPrice(sales.reduce((sum, b) => sum + b.total_cents, 0))}
+            hint={`${sales.length} ${sales.length === 1 ? "reserva pagada" : "reservas pagadas"}`}
+            href="/admin/reservas?estado=paid"
+          />
         )}
-      </Panel>
-
-      {bookings && (
-        <Panel title="Últimas reservas">
-          {bookings.length ? (
-            <Table>
+        {inbox && (
+          <StatCard
+            icon={Inbox}
+            label="Pendiente de responder"
+            value={inbox.quotes + inbox.messages}
+            hint={`${inbox.quotes} presupuestos · ${inbox.messages} mensajes`}
+            href="/admin/solicitudes?estado=new"
+          />
+        )}
+      </StatGrid>
+      {health !== undefined && <HealthPanel report={health} />}
+      <div className="grid gap-x-6 xl:grid-cols-2">
+        <Panel
+          title="Próximas salidas"
+          actions={
+            <ButtonLink href="/admin/excursiones" variant="outline" size="sm">
+              Ver excursiones
+            </ButtonLink>
+          }
+        >
+          {departures?.length ? (
+            <Table className="min-w-[480px]">
               <thead>
                 <tr>
-                  <th className={th}>Referencia</th>
-                  <th className={th}>Cliente</th>
-                  <th className={th}>Pax</th>
-                  <th className={th}>Total</th>
+                  <th className={th}>Fecha</th>
+                  <th className={th}>Excursión</th>
+                  <th className={th}>Plazas</th>
                   <th className={th}>Estado</th>
                 </tr>
               </thead>
               <tbody>
-                {bookings.map((b) => (
-                  <tr key={b.id}>
+                {departures.map((d) => (
+                  <tr key={d.id}>
+                    <td className={`${td} whitespace-nowrap`}>
+                      {formatDateShort(d.starts_at)} · {formatTime(d.starts_at)}
+                    </td>
                     <td className={td}>
-                      <Link className="text-blue underline" href={`/admin/reservas/${b.id}`}>
-                        {b.reference}
+                      <Link
+                        className="font-semibold text-blue hover:underline"
+                        href={`/admin/excursiones/${d.tours.id}`}
+                      >
+                        {d.tours.title}
                       </Link>
                     </td>
-                    <td className={td}>{b.customer_name}</td>
-                    <td className={td}>{b.travellers}</td>
-                    <td className={td}>{formatPrice(b.total_cents)}</td>
+                    <td className={`${td} whitespace-nowrap`}>
+                      {d.seats_taken} / {d.capacity}
+                    </td>
                     <td className={td}>
-                      <BookingStatus status={b.status} />
+                      <DepartureStatus status={d.status} />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </Table>
           ) : (
-            <p className="text-muted">Todavía no hay reservas.</p>
+            <EmptyState icon={Map}>No hay salidas programadas.</EmptyState>
           )}
         </Panel>
-      )}
+
+        {bookings && (
+          <Panel
+            title="Últimas reservas"
+            actions={
+              <ButtonLink href="/admin/reservas" variant="outline" size="sm">
+                Ver todas
+              </ButtonLink>
+            }
+          >
+            {bookings.length ? (
+              <Table className="min-w-[480px]">
+                <thead>
+                  <tr>
+                    <th className={th}>Referencia</th>
+                    <th className={th}>Cliente</th>
+                    <th className={th}>Total</th>
+                    <th className={th}>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings.map((b) => (
+                    <tr key={b.id}>
+                      <td className={td}>
+                        <Link
+                          className="font-semibold text-blue hover:underline"
+                          href={`/admin/reservas/${b.id}`}
+                        >
+                          {b.reference}
+                        </Link>
+                      </td>
+                      <td className={td}>
+                        {b.customer_name}
+                        <span className="block text-caption text-muted">
+                          {b.travellers} {b.travellers === 1 ? "viajero" : "viajeros"}
+                        </span>
+                      </td>
+                      <td className={`${td} whitespace-nowrap`}>{formatPrice(b.total_cents)}</td>
+                      <td className={td}>
+                        <BookingStatus status={b.status} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <EmptyState icon={CalendarCheck}>Todavía no hay reservas.</EmptyState>
+            )}
+          </Panel>
+        )}
+      </div>
     </>
   );
 }
 
-const STATUS_TEXT: Record<HealthReport["status"], { label: string; className: string }> = {
-  ok: { label: "Todo en orden", className: "bg-success text-white" },
-  warning: { label: "Revisa los avisos", className: "bg-yellow text-ink" },
-  critical: { label: "Hay un problema importante", className: "bg-danger text-white" },
+const STATUS_TEXT: Record<
+  HealthReport["status"],
+  { label: string; tone: "success" | "accent" | "danger" }
+> = {
+  ok: { label: "Todo en orden", tone: "success" },
+  warning: { label: "Revisa los avisos", tone: "accent" },
+  critical: { label: "Hay un problema importante", tone: "danger" },
 };
 
 /** Last 24 h at a glance (US-41). Same checks as `pnpm ops health`. */
@@ -178,7 +260,7 @@ function HealthPanel({ report }: { report: HealthReport | null }) {
   if (!report) {
     return (
       <Panel title="Estado de la web (24 h)">
-        <p className="text-danger">
+        <p className="text-meta text-danger">
           No se pudo calcular el estado. Revisa los registros de Vercel.
         </p>
       </Panel>
@@ -187,14 +269,15 @@ function HealthPanel({ report }: { report: HealthReport | null }) {
   const s = STATUS_TEXT[report.status];
   const { started, paid, abandoned, conversion } = report.funnel;
   return (
-    <Panel title="Estado de la web (24 h)">
-      <p
-        className={`inline-block rounded-control px-3 py-1 font-bold ${s.className}`}
-        role="status"
-      >
-        {s.label}
-      </p>
-      <dl className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+    <Panel
+      title="Estado de la web (24 h)"
+      actions={
+        <span role="status">
+          <StatusBadge tone={s.tone}>{s.label}</StatusBadge>
+        </span>
+      }
+    >
+      <dl className="grid grid-cols-2 gap-4 sm:grid-cols-5">
         {[
           ["Reservas iniciadas", started],
           ["Pagadas", paid],
@@ -203,23 +286,25 @@ function HealthPanel({ report }: { report: HealthReport | null }) {
           ["Emails enviados", report.emailsSent],
         ].map(([label, value]) => (
           <div key={label as string}>
-            <dt className="text-muted">{label}</dt>
-            <dd className="text-lg font-bold">{value}</dd>
+            <dt className="text-caption text-muted">{label}</dt>
+            <dd className="mt-0.5 text-display-sm">{value}</dd>
           </div>
         ))}
       </dl>
       {report.alerts.length > 0 && (
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-5 space-y-3">
           {report.alerts.map((a) => (
-            <li key={a.title} className="rounded-card border border-border p-3">
-              <p className="font-bold">
-                <span className="mr-2 rounded-control bg-surface-alt px-2 py-0.5 text-sm">
+            <li key={a.title} className="rounded-control border border-border p-3">
+              <p className="flex flex-wrap items-center gap-2 text-meta font-semibold">
+                <StatusBadge tone={a.severity === "P0" ? "danger" : "accent"}>
                   {a.severity}
-                </span>
+                </StatusBadge>
                 {a.title}
               </p>
-              <p className="mt-1 text-sm">{a.detail}</p>
-              {a.refs.length > 0 && <p className="mt-1 text-sm text-muted">{a.refs.join(", ")}</p>}
+              <p className="mt-1 text-meta">{a.detail}</p>
+              {a.refs.length > 0 && (
+                <p className="mt-1 text-caption text-muted">{a.refs.join(", ")}</p>
+              )}
             </li>
           ))}
         </ul>

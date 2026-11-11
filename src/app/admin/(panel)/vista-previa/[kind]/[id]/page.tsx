@@ -52,7 +52,7 @@ export default async function Preview({ params }: PageProps<"/admin/vista-previa
           Vista previa ·{" "}
           {status === "published" ? "publicado" : status === "draft" ? "borrador" : "archivado"}
         </Badge>
-        <Link href={`/admin/${kind}/${id}`} className="text-meta text-blue underline">
+        <Link href={`/admin/${kind}/${id}`} className="text-meta text-blue hover:underline">
           Volver a editar
         </Link>
       </div>

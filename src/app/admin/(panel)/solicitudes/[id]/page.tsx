@@ -38,7 +38,12 @@ export default async function QuoteRequest({
 
   return (
     <>
-      <PageTitle actions={<RequestStatus status={r.status} />}>Presupuesto: {r.name}</PageTitle>
+      <PageTitle
+        back={{ href: "/admin/solicitudes", label: "Solicitudes" }}
+        actions={<RequestStatus status={r.status} />}
+      >
+        Presupuesto: {r.name}
+      </PageTitle>
       <Flash ok={ok} error={error} />
       <Panel title="Solicitud">
         <Facts
@@ -48,7 +53,7 @@ export default async function QuoteRequest({
               "Plan",
               r.tours ? (
                 <Link
-                  className="text-blue underline"
+                  className="text-blue hover:underline"
                   href={`/excursiones/${r.tours.slug}`}
                   target="_blank"
                 >
@@ -113,7 +118,7 @@ export default async function QuoteRequest({
         status={r.status}
         notes={r.admin_notes}
       />
-      <Link href="/admin/solicitudes" className="text-meta text-blue underline">
+      <Link href="/admin/solicitudes" className="text-meta text-blue hover:underline">
         ← Todas las solicitudes
       </Link>
     </>

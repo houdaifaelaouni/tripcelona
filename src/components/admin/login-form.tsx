@@ -31,7 +31,7 @@ export function LoginForm({ next, notice }: { next: string; notice?: string }) {
           </Button>
           <button
             type="button"
-            className="text-meta text-blue underline"
+            className="text-meta text-blue hover:underline"
             onClick={() => setMode("login")}
           >
             Volver a iniciar sesión
@@ -68,7 +68,7 @@ export function LoginForm({ next, notice }: { next: string; notice?: string }) {
         </Button>
         <button
           type="button"
-          className="text-meta text-blue underline"
+          className="text-meta text-blue hover:underline"
           onClick={() => setMode("reset")}
         >
           ¿Primera vez o has olvidado la contraseña?

@@ -51,10 +51,11 @@ export default async function TourEdit({
   return (
     <>
       <PageTitle
+        back={{ href: "/admin/excursiones", label: "Excursiones" }}
         actions={
           tour.status === "published" && (
             <Link
-              className="text-meta text-blue underline"
+              className="text-meta text-blue hover:underline"
               href={`/excursiones/${tour.slug}`}
               target="_blank"
             >

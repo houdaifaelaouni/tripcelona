@@ -66,7 +66,9 @@ export default async function FaqAdmin({ searchParams }: PageProps<"/admin/faqs"
 
   return (
     <>
-      <PageTitle>Preguntas frecuentes</PageTitle>
+      <PageTitle description="Las preguntas que se ven en /preguntas-frecuentes, en este orden.">
+        Preguntas frecuentes
+      </PageTitle>
       <Flash ok={ok} error={error} />
       <Panel title="Nueva pregunta">
         <form action={saveFaq.bind(null, null)} className="space-y-4">

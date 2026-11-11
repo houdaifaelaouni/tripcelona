@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Flash } from "@/components/admin/flash";
-import { PageTitle, Panel, Table, TourStatus, td, th } from "@/components/admin/ui";
+import { PageTitle, Panel, ResultCount, Table, TourStatus, td, th } from "@/components/admin/ui";
 import { Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { createPage } from "@/lib/admin/content-actions";
@@ -29,11 +29,15 @@ export default async function PagesAdmin({ searchParams }: PageProps<"/admin/pag
             <Button type="submit">Nueva página</Button>
           </form>
         }
+        description="Sobre nosotros y las páginas legales."
       >
         Páginas
       </PageTitle>
       <Flash ok={ok} error={error} />
-      <Panel>
+      <Panel
+        title="Páginas"
+        footer={<ResultCount count={pages?.length ?? 0} one="página" many="páginas" />}
+      >
         <Table>
           <thead>
             <tr>
@@ -48,7 +52,7 @@ export default async function PagesAdmin({ searchParams }: PageProps<"/admin/pag
               <tr key={p.id}>
                 <td className={td}>
                   <Link
-                    className="font-semibold text-blue underline"
+                    className="font-semibold text-blue hover:underline"
                     href={`/admin/paginas/${p.id}`}
                   >
                     {p.title}
