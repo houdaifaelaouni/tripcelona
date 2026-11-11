@@ -1,6 +1,8 @@
 "use server";
 
+import { randomBytes } from "node:crypto";
 import { updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { audit } from "@/lib/auth/audit";
 import { assertStaff } from "@/lib/auth/staff";
@@ -55,10 +57,34 @@ const tourSchema = z.object({
   seo_title: optionalText,
   seo_description: optionalText,
   status: z.enum(["draft", "published", "archived"]),
+  slug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "La URL solo admite minúsculas, números y guiones.")
+    .optional(),
 });
 
 function firstError(error: z.ZodError): string {
   return error.issues[0]?.message ?? "Revisa el formulario.";
+}
+
+/** Staff create a draft tour and land in its editor. */
+export async function createTour() {
+  const staff = await assertStaff("any");
+  const db = await createClient();
+  const { data, error } = await db
+    .from("tours")
+    .insert({
+      title: "Nueva excursión",
+      slug: `borrador-${randomBytes(3).toString("hex")}`,
+      status: "draft",
+    })
+    .select("id")
+    .single();
+  if (error) backWith("/admin/excursiones", { error: `No se pudo crear: ${error.message}` });
+  await audit(staff.id, "tour.create", "tours", data.id);
+  redirect(`/admin/excursiones/${data.id}`);
 }
 
 /** Staff (owner or editor) edit tour content (US-25). */
@@ -67,18 +93,23 @@ export async function updateTour(tourId: string, form: FormData) {
   const back = `/admin/excursiones/${tourId}`;
   const parsed = tourSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) backWith(back, { error: firstError(parsed.error) });
-  const { price_from, ...fields } = parsed.data;
+  const { price_from, slug, ...fields } = parsed.data;
 
   const db = await createClient();
   const { data: current } = await db
     .from("tours")
-    .select("status, published_at")
+    .select("status, published_at, slug")
     .eq("id", tourId)
     .single();
+  // The URL can change only until the tour is first published (links stay stable).
+  const nextSlug = !current?.published_at && slug ? slug : current?.slug;
+  if (fields.status === "published" && nextSlug?.startsWith("borrador-"))
+    backWith(back, { error: "Elige la URL de la excursión antes de publicarla." });
   const { error } = await db
     .from("tours")
     .update({
       ...fields,
+      slug: nextSlug,
       price_from_cents: price_from,
       published_at:
         fields.status === "published" && !current?.published_at
@@ -86,7 +117,13 @@ export async function updateTour(tourId: string, form: FormData) {
           : current?.published_at,
     })
     .eq("id", tourId);
-  if (error) backWith(back, { error: `No se pudo guardar: ${error.message}` });
+  if (error)
+    backWith(back, {
+      error:
+        error.code === "23505"
+          ? "Ya hay otra excursión con esa URL."
+          : `No se pudo guardar: ${error.message}`,
+    });
 
   await audit(staff.id, "tour.update", "tours", tourId, {
     status: fields.status,

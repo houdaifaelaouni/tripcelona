@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageTitle, Panel, ResultCount, Table, TourStatus, td, th } from "@/components/admin/ui";
+import { Button } from "@/components/admin/button";
+import { Flash } from "@/components/admin/flash";
+import {
+  EmptyState,
+  PageTitle,
+  Panel,
+  ResultCount,
+  Table,
+  TourStatus,
+  td,
+  th,
+} from "@/components/admin/ui";
+import { createTour } from "@/lib/admin/tour-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateShort, formatPrice } from "@/lib/tours/format";
 
 export const metadata: Metadata = { title: "Excursiones" };
 
-export default async function ToursAdmin() {
+export default async function ToursAdmin({ searchParams }: PageProps<"/admin/excursiones">) {
   await requireStaff();
+  const { error } = await searchParams;
   const db = await createClient();
   const now = new Date().toISOString();
   const { data: tours } = await db
@@ -18,7 +31,17 @@ export default async function ToursAdmin() {
 
   return (
     <>
-      <PageTitle description="Fichas, fechas y plazas de cada excursión.">Excursiones</PageTitle>
+      <PageTitle
+        description="Fichas, fechas y plazas de cada excursión."
+        actions={
+          <form action={createTour}>
+            <Button type="submit">Nueva excursión</Button>
+          </form>
+        }
+      >
+        Excursiones
+      </PageTitle>
+      <Flash error={error} />
       <Panel
         title="Catálogo"
         footer={<ResultCount count={tours?.length ?? 0} one="excursión" many="excursiones" />}
@@ -65,6 +88,15 @@ export default async function ToursAdmin() {
                 </tr>
               );
             })}
+            {(tours ?? []).length === 0 && (
+              <tr>
+                <td className={td} colSpan={5}>
+                  <EmptyState illustration="route" title="Todavía no hay excursiones">
+                    Crea la primera con «Nueva excursión».
+                  </EmptyState>
+                </td>
+              </tr>
+            )}
           </tbody>
         </Table>
       </Panel>

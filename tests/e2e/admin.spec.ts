@@ -119,3 +119,25 @@ test("main admin screens pass axe and the toast can be dismissed", async ({ page
   await toast.getByRole("button", { name: "Cerrar aviso" }).click();
   await expect(toast).toHaveCount(0);
 });
+
+test("staff create a new tour and set its URL", async ({ page }) => {
+  await page.goto("/admin/excursiones");
+  await page.waitForURL(/\/admin\/login/);
+  await page.locator("input[name=email]").fill(E2E.ownerEmail);
+  await page.locator("input[name=password]").fill(e2eOwnerPassword());
+  await page.locator("button[type=submit]").click();
+  await page.waitForURL(/\/admin\/excursiones$/);
+  await page.getByRole("button", { name: "Nueva excursión" }).click();
+  await page.waitForURL(/\/admin\/excursiones\/[0-9a-f-]{36}$/);
+  const slug = `e2e-tour-${Date.now()}`;
+  await page.locator("input[name=title]").fill("Excursión creada por la prueba e2e");
+  await page.locator("input[name=slug]").fill(slug);
+  await page.locator("input[name=price_from]").fill("45");
+  await page.locator("select[name=status]").selectOption("draft");
+  await page.getByRole("button", { name: "Guardar excursión" }).first().click();
+  await page.waitForURL(/ok=guardado/);
+  await expect(page.locator("input[name=slug]")).toHaveValue(slug);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Excursión creada por la prueba e2e",
+  );
+});
