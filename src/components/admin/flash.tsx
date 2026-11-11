@@ -3,6 +3,9 @@ import { Alert, Toast } from "./alert";
 const MESSAGES: Record<string, string> = {
   guardado: "Cambios guardados. La web pública ya muestra la nueva versión.",
   salida_creada: "Salida creada.",
+  foto_anadida: "Foto añadida.",
+  foto_quitada: "Foto quitada de la excursión.",
+  foto_portada: "Foto principal actualizada.",
   salida_cancelada: "Salida cancelada.",
   reenviado: "Email reenviado.",
   reembolsado: "Reserva reembolsada.",

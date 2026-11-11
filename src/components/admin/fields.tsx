@@ -115,7 +115,7 @@ export function Select({
         required={required}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(fieldId, hint, error)}
-        className={cn(adminControl, "h-11 appearance-auto pr-8")}
+        className={cn(adminControl, "h-11")}
         {...props}
       >
         {children}

@@ -20,8 +20,11 @@ import { Button } from "@/components/admin/button";
 import { Checkbox, Input, Select, Textarea } from "@/components/admin/fields";
 import { isoToMadrid } from "@/lib/admin/time";
 import {
+  addTourImage,
   cancelDepartureAction,
   createDeparture,
+  removeTourImage,
+  setTourCover,
   updateDeparture,
   updateTour,
 } from "@/lib/admin/tour-actions";
@@ -29,6 +32,8 @@ import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 import { dateParts, formatDateShort, formatDuration, formatPrice } from "@/lib/tours/format";
 import { mediaUrl } from "@/lib/tours/media";
+import { mediaOptions } from "@/lib/admin/media-options";
+import { MediaDropzone } from "@/components/admin/media-dropzone";
 
 export const metadata: Metadata = { title: "Editar excursión" };
 
@@ -58,11 +63,13 @@ export default async function TourEdit({
     .limit(30);
   const { data: images } = await db
     .from("tour_images")
-    .select("alt, sort_order, media ( bucket, path, source_url )")
+    .select("id, alt, sort_order, media_id, media ( bucket, path, source_url )")
     .eq("tour_id", id)
     .order("sort_order")
-    .limit(1);
+    .limit(40);
   const coverUrl = images?.[0] ? mediaUrl(images[0].media) : null;
+  const onTour = new Set((images ?? []).map((i) => i.media_id));
+  const library = (await mediaOptions(60)).filter((m) => !onTour.has(m.id));
 
   const isOwner = staff.role === "owner";
   const now = new Date().toISOString();
@@ -294,6 +301,116 @@ export default async function TourEdit({
               </div>
             </Section>
           </form>
+
+          <Panel
+            title="Fotos"
+            id="fotos"
+            description="La primera foto es la principal: sale en la tarjeta y arriba de la ficha."
+          >
+            {images && images.length > 0 ? (
+              <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                {images.map((img, i) => {
+                  const url = mediaUrl(img.media);
+                  return (
+                    <li key={img.id} className="flex flex-col gap-2">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-secondary">
+                        {url && (
+                          <Image
+                            src={url}
+                            alt={img.alt ?? ""}
+                            fill
+                            sizes="220px"
+                            className="object-cover"
+                          />
+                        )}
+                        {i === 0 && (
+                          <span className="absolute top-2 left-2 rounded-md bg-primary px-2 py-0.5 text-xs font-semibold shadow-xs">
+                            Principal
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {i > 0 && (
+                          <form action={setTourCover.bind(null, tour.id, img.id)}>
+                            <Button type="submit" size="sm" variant="secondary">
+                              Hacer principal
+                            </Button>
+                          </form>
+                        )}
+                        <form action={removeTourImage.bind(null, tour.id, img.id)}>
+                          <Button
+                            type="submit"
+                            size="sm"
+                            variant="tertiary"
+                            aria-label={`Quitar foto ${i + 1}`}
+                          >
+                            Quitar
+                          </Button>
+                        </form>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="text-sm text-tertiary">Esta excursión aún no tiene fotos.</p>
+            )}
+
+            <form
+              action={addTourImage.bind(null, tour.id)}
+              className="mt-6 grid gap-4 border-t border-secondary pt-6 sm:grid-cols-2 sm:items-start"
+            >
+              <MediaDropzone />
+              <Input
+                label="Texto alternativo"
+                name="alt"
+                required
+                hint="Describe lo que se ve, para quien no puede verla."
+              />
+              <Button type="submit" className="sm:col-span-2 sm:justify-self-start">
+                Subir foto
+              </Button>
+            </form>
+
+            {library.length > 0 && (
+              <details className="mt-6 border-t border-secondary pt-6">
+                <summary className="cursor-pointer text-sm font-semibold text-brand-secondary">
+                  Elegir una foto de Medios
+                </summary>
+                <form action={addTourImage.bind(null, tour.id)} className="mt-4">
+                  <fieldset>
+                    <legend className="sr-only">Fotos de Medios</legend>
+                    <div className="grid max-h-96 grid-cols-3 gap-3 overflow-y-auto p-1 sm:grid-cols-4">
+                      {library.map((m) => (
+                        <label
+                          key={m.id}
+                          className="relative aspect-square cursor-pointer overflow-hidden rounded-lg bg-secondary ring-brand-solid has-[:checked]:ring-4 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-focus-ring"
+                        >
+                          <input
+                            type="radio"
+                            name="media_id"
+                            value={m.id}
+                            required
+                            className="sr-only"
+                          />
+                          <Image
+                            src={m.url}
+                            alt={m.alt || m.label}
+                            fill
+                            sizes="140px"
+                            className="object-cover"
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                  <Button type="submit" className="mt-4">
+                    Añadir foto elegida
+                  </Button>
+                </form>
+              </details>
+            )}
+          </Panel>
 
           <Panel
             title="Salidas"

@@ -137,7 +137,7 @@ export function Select({
       <select
         id={fieldId}
         required={required}
-        className={cn(controlClasses, "appearance-auto pr-8", className)}
+        className={cn(controlClasses, className)}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy(fieldId, hint, error)}
         {...props}
