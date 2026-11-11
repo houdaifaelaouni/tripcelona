@@ -4,12 +4,20 @@ import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
 import { ButtonLink } from "@/components/ui/button";
 import { TourCard } from "@/components/tours/tour-card";
 import { getPublishedTours } from "@/lib/tours/queries";
+import { getSiteSettings } from "@/lib/settings";
+import {
+  ContactStrip,
+  Destinations,
+  GroupsCta,
+  SectionHeader,
+  WhyUs,
+} from "@/components/home/sections";
 
 // TODO(PO): hero video (tripcelona-hero-pirineo.mp4, re-encoded ≤ 6 MB) and a
 // poster image are needed from the owner; until then the hero shows the brand
 // gradient. Pass them as <Hero videoSrc posterSrc /> once uploaded to Storage.
 export default async function Home() {
-  const tours = await getPublishedTours();
+  const [tours, site] = await Promise.all([getPublishedTours(), getSiteSettings()]);
   const bySoonest = [...tours].sort(
     (a, b) =>
       (a.departures[0] ? Date.parse(a.departures[0].startsAt) : Infinity) -
@@ -20,16 +28,19 @@ export default async function Home() {
     <>
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       <Hero />
-      <section aria-labelledby="proximas-heading" className="container-site py-16">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2 id="proximas-heading" className="text-display-lg md:text-display-xl">
-            Próximas salidas
-          </h2>
-          <ButtonLink href="/ofertas-de-viajes" variant="ghost">
-            Ver todas las ofertas
-          </ButtonLink>
-        </div>
-        <ul className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <section aria-labelledby="proximas-heading" className="container-site py-16 md:py-24">
+        <SectionHeader
+          id="proximas-heading"
+          eyebrow="Calendario"
+          title="Próximas salidas"
+          lead="Reserva tu plaza online en pocos minutos."
+          action={
+            <ButtonLink href="/ofertas-de-viajes" variant="outline">
+              Ver todas las ofertas
+            </ButtonLink>
+          }
+        />
+        <ul className="mt-12 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
           {bySoonest.map((tour) => (
             <li key={tour.slug} className="flex">
               <TourCard tour={tour} />
@@ -37,6 +48,10 @@ export default async function Home() {
           ))}
         </ul>
       </section>
+      <WhyUs />
+      <Destinations />
+      <GroupsCta whatsappHref={site.whatsappHref} />
+      <ContactStrip phoneHref={site.phoneHref} phoneDisplay={site.phoneDisplay} />
     </>
   );
 }

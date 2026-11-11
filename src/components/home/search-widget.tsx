@@ -14,7 +14,7 @@ import { destinations } from "@/lib/site";
 import { buildCatalogUrl, buildQuoteUrl, CATALOG_PATH, MONTHS_ES, QUOTE_PATH } from "@/lib/search";
 
 const bar = cn(
-  "flex flex-col gap-1 rounded-panel bg-white p-2 text-ink shadow-float",
+  "flex flex-col gap-1 rounded-2xl bg-primary p-2 text-primary shadow-xl ring-1 ring-secondary",
   "md:flex-row md:items-center md:gap-0 md:rounded-full md:p-2 md:pl-2",
 );
 
@@ -51,7 +51,7 @@ function SearchOrb({ label }: { label: string }) {
     <button
       type="submit"
       className={cn(
-        "flex h-12 shrink-0 items-center justify-center gap-2 rounded-control bg-blue px-5 font-semibold text-white transition-colors hover:bg-blue-dark",
+        "flex h-12 shrink-0 items-center justify-center gap-2 rounded-lg bg-brand-solid px-5 font-semibold text-white shadow-xs-skeuomorphic transition-colors hover:bg-brand-solid_hover",
         "md:ml-2 md:size-12 md:rounded-full md:px-0",
       )}
     >
