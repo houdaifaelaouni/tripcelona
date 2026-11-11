@@ -17,7 +17,7 @@ export default async function ContactPage() {
   const s = await getSiteSettings();
   return (
     <div className="container-site py-8 md:py-12">
-      <h1 className="text-3xl">¿En qué podemos ayudarte?</h1>
+      <h1 className="text-display-xl">¿En qué podemos ayudarte?</h1>
       <p className="mt-2 max-w-2xl text-muted">
         Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.
       </p>
@@ -26,7 +26,7 @@ export default async function ContactPage() {
           aria-labelledby="form-title"
           className="rounded-panel border border-border bg-white p-5 md:p-6"
         >
-          <h2 id="form-title" className="mb-4 text-xl">
+          <h2 id="form-title" className="mb-4 text-display-sm">
             Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en
             contacto.
           </h2>
@@ -34,13 +34,13 @@ export default async function ContactPage() {
         </section>
         <aside className="space-y-6">
           <div>
-            <h2 className="text-lg">Llámanos</h2>
-            <a href={s.phoneHref} className="mt-1 block font-bold text-blue underline">
+            <h2 className="text-display-sm">Llámanos</h2>
+            <a href={s.phoneHref} className="mt-1 block font-semibold text-blue underline">
               {s.phoneDisplay}
             </a>
           </div>
           <div>
-            <h2 className="text-lg">WhatsApp</h2>
+            <h2 className="text-display-sm">WhatsApp</h2>
             <div className="mt-2">
               <WhatsAppCta
                 message="Hola Tripcelona, quiero información sobre vuestras excursiones."
@@ -50,14 +50,17 @@ export default async function ContactPage() {
           </div>
           {s.email && (
             <div>
-              <h2 className="text-lg">Email</h2>
-              <a href={`mailto:${s.email}`} className="mt-1 block font-bold text-blue underline">
+              <h2 className="text-display-sm">Email</h2>
+              <a
+                href={`mailto:${s.email}`}
+                className="mt-1 block font-semibold text-blue underline"
+              >
                 {s.email}
               </a>
             </div>
           )}
           <div>
-            <h2 className="text-lg">Punto de salida</h2>
+            <h2 className="text-display-sm">Punto de salida</h2>
             <a
               href={site.meetingPointMapHref}
               target="_blank"

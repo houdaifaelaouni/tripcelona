@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input, Select, Textarea } from "@/components/ui/field";
+import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
 import { submitQuote } from "@/lib/forms/actions";
 import { QUOTE_CUSTOM, type FormState } from "@/lib/forms/schema";
@@ -159,24 +159,35 @@ export function QuoteWizard({
     >
       <Honeypot />
       {enhanced && (
-        <ol className="flex flex-wrap gap-2 text-sm" aria-label="Pasos">
-          {STEPS.map((label, i) => (
-            <li
-              key={label}
-              aria-current={i === step ? "step" : undefined}
-              className={cn(
-                "rounded-control border px-3 py-1",
-                i === step
-                  ? "border-blue bg-blue text-white"
-                  : i < step
-                    ? "border-blue text-blue"
-                    : "border-border text-muted",
-              )}
-            >
-              {i + 1}. {label}
-            </li>
-          ))}
-        </ol>
+        <div>
+          <p className="text-meta text-muted">
+            Paso {step + 1} de {STEPS.length}
+          </p>
+          <ol className="mt-2 grid grid-cols-4 gap-2" aria-label="Pasos">
+            {STEPS.map((label, i) => (
+              <li key={label} aria-current={i === step ? "step" : undefined} className="min-w-0">
+                <span
+                  aria-hidden
+                  className={cn(
+                    "block h-1 rounded-full transition-colors motion-reduce:transition-none",
+                    i <= step ? "bg-ink" : "bg-border",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "mt-2 hidden truncate text-caption sm:block",
+                    i === step ? "font-semibold text-ink" : "text-muted",
+                  )}
+                >
+                  {label}
+                </span>
+                <span className="sr-only sm:hidden">
+                  {i + 1}. {label}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
       )}
       {state.status === "error" && <FormAlert message={state.message} />}
 
@@ -186,7 +197,7 @@ export function QuoteWizard({
           <legend
             ref={step === 0 ? headingRef : undefined}
             tabIndex={-1}
-            className="text-xl font-bold"
+            className="text-display-sm font-semibold"
           >
             1. {STEPS[0]}
           </legend>
@@ -212,7 +223,7 @@ export function QuoteWizard({
           <legend
             ref={step === 1 ? headingRef : undefined}
             tabIndex={-1}
-            className="text-xl font-bold"
+            className="text-display-sm font-semibold"
           >
             2. {STEPS[1]}
           </legend>
@@ -243,24 +254,20 @@ export function QuoteWizard({
           <legend
             ref={step === 2 ? headingRef : undefined}
             tabIndex={-1}
-            className="text-xl font-bold"
+            className="text-display-sm font-semibold"
           >
             3. {STEPS[2]}
           </legend>
           {extras.length > 0 && (
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {extras.map((x) => (
                 <li key={x}>
-                  <label className="flex items-start gap-2">
-                    <input
-                      type="checkbox"
-                      name="extras"
-                      value={x}
-                      defaultChecked={chosenExtras.includes(x)}
-                      className="mt-1 h-4 w-4 accent-blue"
-                    />
-                    <span>{x}</span>
-                  </label>
+                  <Checkbox
+                    name="extras"
+                    value={x}
+                    label={x}
+                    defaultChecked={chosenExtras.includes(x)}
+                  />
                 </li>
               ))}
             </ul>
@@ -278,7 +285,7 @@ export function QuoteWizard({
           <legend
             ref={step === 3 ? headingRef : undefined}
             tabIndex={-1}
-            className="text-xl font-bold"
+            className="text-display-sm font-semibold"
           >
             4. {STEPS[3]}
           </legend>
@@ -325,7 +332,7 @@ export function QuoteWizard({
             error={errors.message}
           />
           <PrivacyConsent error={errors.privacy} />
-          <p className="text-sm text-muted">Te confirmaremos el precio final sin compromiso.</p>
+          <p className="text-meta text-muted">Te confirmaremos el precio final sin compromiso.</p>
         </fieldset>
       </div>
 

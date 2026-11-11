@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { Bus, Check, Clock, MapPin, Mountain, Timer, X } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -9,9 +9,10 @@ import { RichText } from "@/components/content/rich-text";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, tourJsonLd } from "@/lib/seo/json-ld";
 import { WhatsAppCta } from "@/components/tours/empty-state";
+import { Gallery } from "@/components/tours/gallery";
 import { TourCard } from "@/components/tours/tour-card";
 import { Accordion } from "@/components/ui/accordion";
-import { Badge, Card } from "@/components/ui/card";
+import { ButtonLink } from "@/components/ui/button";
 import { site } from "@/lib/site";
 import {
   departureMinutes,
@@ -74,7 +75,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
   const next = tour.departures.find((d) => d.status === "open") ?? null;
 
   return (
-    <article className="container-site py-6 md:py-10">
+    <article className="pt-6 md:pt-8">
       <JsonLd
         data={[
           tourJsonLd(tour),
@@ -86,134 +87,152 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
           ...(faqJsonLd(tour.faqs) ? [faqJsonLd(tour.faqs)!] : []),
         ]}
       />
-      <nav aria-label="Ruta de navegación" className="text-sm text-muted">
-        <ol className="flex flex-wrap gap-1">
-          <li>
-            <Link href="/" className="hover:underline">
-              Inicio
-            </Link>{" "}
-            /
-          </li>
-          <li>
-            <Link href="/ofertas-de-viajes" className="hover:underline">
-              Ofertas de viajes
-            </Link>{" "}
-            /
-          </li>
-          <li aria-current="page" className="text-ink">
-            {tour.area ?? tour.title}
-          </li>
-        </ol>
-      </nav>
+      <div className="container-detail">
+        <nav aria-label="Ruta de navegación" className="text-meta text-muted">
+          <ol className="flex flex-wrap gap-1">
+            <li>
+              <Link href="/" className="underline-offset-2 hover:underline">
+                Inicio
+              </Link>{" "}
+              /
+            </li>
+            <li>
+              <Link href="/ofertas-de-viajes" className="underline-offset-2 hover:underline">
+                Ofertas de viajes
+              </Link>{" "}
+              /
+            </li>
+            <li aria-current="page" className="text-ink">
+              {tour.area ?? tour.title}
+            </li>
+          </ol>
+        </nav>
 
-      <header className="mt-3">
-        {tour.area && <Badge tone="brand">{tour.area}</Badge>}
-        <h1 className="mt-2 text-2xl md:text-4xl">{tour.title}</h1>
-      </header>
-
-      <Gallery tour={tour} />
-
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
-        <div className="min-w-0 space-y-10">
-          <KeyFacts tour={tour} />
-          {tour.summary && <p className="text-lg">{tour.summary}</p>}
-          {tour.description && tour.description.content.length > 0 && (
-            <Section title="La excursión">
-              <RichText doc={tour.description} />
-            </Section>
+        <header className="mt-3">
+          <h1 className="text-display-lg md:text-display-xl">{tour.title}</h1>
+          {tour.area && (
+            <p className="mt-1 flex items-center gap-1 text-meta text-muted">
+              <MapPin aria-hidden size={16} />
+              {tour.area} · salida desde Barcelona
+            </p>
           )}
+        </header>
 
-          {tour.highlights.length > 0 && (
-            <Section title="Lo más destacado">
-              <ul className="grid gap-2 sm:grid-cols-2">
-                {tour.highlights.map((h) => (
-                  <li key={h} className="flex gap-2">
-                    <span aria-hidden className="text-success">
-                      ✓
-                    </span>
-                    {h}
-                  </li>
-                ))}
-              </ul>
-            </Section>
-          )}
+        <Gallery images={tour.images} title={tour.title} />
 
-          {tour.itinerary.length > 0 && (
-            <Section title="Itinerario">
-              <ol className="relative space-y-6 border-l-2 border-blue/30 pl-6">
-                {tour.itinerary.map((step, i) => (
-                  <li key={`${i}-${step.title}`} className="relative">
-                    <span
-                      aria-hidden
-                      className="absolute top-0.5 -left-[33px] flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-blue"
-                    />
-                    {step.timeLabel && (
-                      <p className="text-sm font-bold text-blue">{step.timeLabel}</p>
-                    )}
-                    <h3 className="text-base">{step.title}</h3>
-                    {step.body && <p className="mt-1 text-muted">{step.body}</p>}
-                  </li>
-                ))}
-              </ol>
-            </Section>
-          )}
+        <div className="mt-8 grid gap-x-16 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="min-w-0 divide-y divide-border">
+            <div className="pb-8">
+              <KeyFacts tour={tour} />
+              {tour.summary && <p className="mt-6 text-base">{tour.summary}</p>}
+            </div>
 
-          <div className="grid gap-6 sm:grid-cols-2">
-            {tour.inclusions.length > 0 && (
-              <Section title="Incluye">
-                <List items={tour.inclusions} mark="✓" markClass="text-success" />
+            {tour.description && tour.description.content.length > 0 && (
+              <Section title="La excursión">
+                <RichText doc={tour.description} />
               </Section>
             )}
-            {tour.exclusions.length > 0 && (
-              <Section title="No incluye">
-                <List items={tour.exclusions} mark="✕" markClass="text-danger" />
+
+            {tour.highlights.length > 0 && (
+              <Section title="Lo más destacado">
+                <List items={tour.highlights} kind="yes" columns />
+              </Section>
+            )}
+
+            {tour.itinerary.length > 0 && (
+              <Section title="Itinerario">
+                <ol className="divide-y divide-border">
+                  {tour.itinerary.map((step, i) => (
+                    <li key={`${i}-${step.title}`} className="flex gap-4 py-4 first:pt-0 last:pb-0">
+                      <span
+                        aria-hidden
+                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-alt text-meta font-semibold"
+                      >
+                        {i + 1}
+                      </span>
+                      <div className="min-w-0">
+                        {step.timeLabel && (
+                          <p className="text-caption font-semibold text-muted">{step.timeLabel}</p>
+                        )}
+                        <h3 className="text-base">{step.title}</h3>
+                        {step.body && <p className="mt-1 text-meta text-muted">{step.body}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </Section>
+            )}
+
+            {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
+              <div className="grid gap-x-8 sm:grid-cols-2">
+                {tour.inclusions.length > 0 && (
+                  <Section title="Incluye">
+                    <List items={tour.inclusions} kind="yes" />
+                  </Section>
+                )}
+                {tour.exclusions.length > 0 && (
+                  <Section title="No incluye">
+                    <List items={tour.exclusions} kind="no" />
+                  </Section>
+                )}
+              </div>
+            )}
+
+            {tour.packingList.length > 0 && (
+              <Section title="Qué llevar">
+                <List items={tour.packingList} kind="dot" />
+              </Section>
+            )}
+
+            <Section title="Punto de encuentro">
+              <p>{tour.meetingPoint ?? site.meetingPoint}</p>
+              {next && (
+                <p className="mt-1 text-meta text-muted">
+                  Salida a las {formatTime(next.startsAt)}.
+                </p>
+              )}
+              <a
+                href={tour.mapUrl ?? site.meetingPointMapHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-block font-semibold underline underline-offset-2"
+              >
+                Ver en Google Maps
+              </a>
+            </Section>
+
+            {tour.faqs.length > 0 && (
+              <Section title="Preguntas frecuentes">
+                <Accordion
+                  items={tour.faqs.map((f, i) => ({
+                    id: String(i),
+                    title: f.question,
+                    content: f.answer,
+                  }))}
+                />
               </Section>
             )}
           </div>
 
-          {tour.packingList.length > 0 && (
-            <Section title="Qué llevar">
-              <List items={tour.packingList} mark="•" markClass="text-blue" />
-            </Section>
-          )}
-
-          <Section title="Punto de encuentro">
-            <p>{tour.meetingPoint ?? site.meetingPoint}</p>
-            {next && <p className="mt-1 text-muted">Salida a las {formatTime(next.startsAt)}.</p>}
-            <a
-              href={tour.mapUrl ?? site.meetingPointMapHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-block font-bold text-blue hover:underline"
-            >
-              Ver en Google Maps
-            </a>
-          </Section>
-
-          {tour.faqs.length > 0 && (
-            <Section title="Preguntas frecuentes">
-              <Accordion
-                items={tour.faqs.map((f, i) => ({
-                  id: String(i),
-                  title: f.question,
-                  content: f.answer,
-                }))}
-              />
-            </Section>
-          )}
+          <aside
+            id="reservar"
+            aria-label="Reserva"
+            className="scroll-mt-24 border-t border-border pt-8 lg:sticky lg:top-28 lg:self-start lg:border-0 lg:pt-0"
+          >
+            <BookingPanel tour={tour} />
+          </aside>
         </div>
-
-        <aside className="order-first lg:sticky lg:top-20 lg:order-none lg:self-start">
-          <BookingPanel tour={tour} />
-        </aside>
       </div>
 
       {related.length > 0 && (
-        <section aria-labelledby="related-heading" className="mt-14">
-          <h2 id="related-heading" className="text-2xl">
+        <section
+          aria-labelledby="related-heading"
+          className="container-detail mt-16 border-t border-border py-16"
+        >
+          <h2 id="related-heading" className="text-display-lg">
             Otras excursiones
           </h2>
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((t) => (
               <li key={t.slug} className="flex">
                 <TourCard tour={t} />
@@ -222,27 +241,41 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
           </ul>
         </section>
       )}
+
+      <MobileBookingBar tour={tour} />
     </article>
   );
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section>
-      <h2 className="mb-3 text-xl">{title}</h2>
+    <section className="py-8">
+      <h2 className="mb-4 text-display-sm">{title}</h2>
       {children}
     </section>
   );
 }
 
-function List({ items, mark, markClass }: { items: string[]; mark: string; markClass: string }) {
+function List({
+  items,
+  kind,
+  columns = false,
+}: {
+  items: string[];
+  kind: "yes" | "no" | "dot";
+  columns?: boolean;
+}) {
   return (
-    <ul className="space-y-2">
+    <ul className={columns ? "grid gap-3 sm:grid-cols-2" : "space-y-3"}>
       {items.map((item) => (
-        <li key={item} className="flex gap-2">
-          <span aria-hidden className={markClass}>
-            {mark}
-          </span>
+        <li key={item} className="flex gap-3">
+          {kind === "yes" && (
+            <Check aria-hidden size={20} className="mt-0.5 shrink-0 text-success" />
+          )}
+          {kind === "no" && <X aria-hidden size={20} className="mt-0.5 shrink-0 text-danger" />}
+          {kind === "dot" && (
+            <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-ink" />
+          )}
           {item}
         </li>
       ))}
@@ -250,30 +283,27 @@ function List({ items, mark, markClass }: { items: string[]; mark: string; markC
   );
 }
 
-function Gallery({ tour }: { tour: TourDetail }) {
-  const [main, ...rest] = tour.images;
-  if (!main) return null;
-  const thumbs = rest.slice(0, 4);
+/** Mobile only: price and a jump to the dates, stuck to the bottom while the tour is in view. */
+function MobileBookingBar({ tour }: { tour: TourDetail }) {
+  const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
   return (
-    <div className="mt-4 grid gap-2 md:grid-cols-4 md:grid-rows-2">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface-alt md:col-span-2 md:row-span-2 md:aspect-auto">
-        <Image
-          src={main.url}
-          alt={main.alt}
-          fill
-          priority
-          sizes="(min-width: 768px) 570px, 100vw"
-          className="object-cover"
-        />
+    <div className="sticky bottom-0 z-30 mt-8 border-t border-border bg-white lg:hidden">
+      <div className="container-detail flex items-center justify-between gap-4 py-3">
+        <p>
+          {price !== null ? (
+            <>
+              <span className="text-meta text-muted">Desde </span>
+              <span className="font-semibold">{formatPrice(price)}</span>
+              <span className="text-meta text-muted"> / persona</span>
+            </>
+          ) : (
+            <span className="text-meta text-muted">Nuevas fechas próximamente</span>
+          )}
+        </p>
+        <ButtonLink href="#reservar" size="md">
+          Ver fechas
+        </ButtonLink>
       </div>
-      {thumbs.map((img) => (
-        <div
-          key={img.url}
-          className="relative hidden aspect-[4/3] overflow-hidden rounded-card bg-surface-alt md:block"
-        >
-          <Image src={img.url} alt={img.alt} fill sizes="285px" className="object-cover" />
-        </div>
-      ))}
     </div>
   );
 }
@@ -282,24 +312,28 @@ function KeyFacts({ tour }: { tour: TourDetail }) {
   const next = tour.departures[0];
   const minutes = tour.durationMinutes ?? (next ? departureMinutes(next) : null);
   const facts = [
-    { label: "Zona", value: tour.area },
+    { icon: MapPin, label: "Zona", value: tour.area },
     {
+      icon: Clock,
       label: "Horario",
       value: next
         ? `Salida ${formatTime(next.startsAt)}${next.endsAt ? ` · regreso aprox. ${formatTime(next.endsAt)}` : ""}`
         : null,
     },
-    { label: "Duración", value: minutes ? formatDuration(minutes) : null },
-    { label: "Dificultad", value: tour.difficulty },
-    { label: "Salida desde", value: "Estació del Nord, Barcelona" },
-  ].filter((f): f is { label: string; value: string } => Boolean(f.value));
+    { icon: Timer, label: "Duración", value: minutes ? formatDuration(minutes) : null },
+    { icon: Mountain, label: "Dificultad", value: tour.difficulty },
+    { icon: Bus, label: "Salida desde", value: "Estació del Nord, Barcelona" },
+  ].filter((f): f is typeof f & { value: string } => Boolean(f.value));
 
   return (
-    <dl className="grid grid-cols-2 gap-4 rounded-panel bg-surface-alt p-4 sm:grid-cols-3">
-      {facts.map((f) => (
-        <div key={f.label}>
-          <dt className="text-sm text-muted">{f.label}</dt>
-          <dd className="font-bold">{f.value}</dd>
+    <dl className="grid gap-5 sm:grid-cols-2">
+      {facts.map(({ icon: Icon, label, value }) => (
+        <div key={label} className="relative pl-10">
+          <dt className="text-meta text-muted">
+            <Icon aria-hidden size={24} strokeWidth={1.5} className="absolute top-1 left-0" />
+            {label}
+          </dt>
+          <dd className="font-semibold">{value}</dd>
         </div>
       ))}
     </dl>
@@ -309,19 +343,19 @@ function KeyFacts({ tour }: { tour: TourDetail }) {
 function BookingPanel({ tour }: { tour: TourDetail }) {
   const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
   return (
-    <Card className="p-5">
+    <div className="rounded-card border border-border bg-white p-6 shadow-float">
       {price !== null && (
         <p>
-          <span className="text-sm text-muted">Desde </span>
-          <span className="text-3xl font-bold">{formatPrice(price)}</span>
-          <span className="text-sm text-muted"> / persona</span>
+          <span className="text-meta text-muted">Desde </span>
+          <span className="text-display-lg font-semibold">{formatPrice(price)}</span>
+          <span className="text-meta text-muted"> / persona</span>
         </p>
       )}
       {/* Seats are read live per request; the cached list shows meanwhile. */}
       <Suspense fallback={<CachedDates tour={tour} />}>
         <LiveAvailability tour={tour} />
       </Suspense>
-    </Card>
+    </div>
   );
 }
 
@@ -335,9 +369,9 @@ async function LiveAvailability({ tour }: { tour: TourDetail }) {
 function CachedDates({ tour }: { tour: TourDetail }) {
   if (tour.departures.length === 0) return <NoDates tour={tour} soldOut={false} />;
   return (
-    <ul className="mt-4 divide-y divide-border" aria-busy="true">
+    <ul className="mt-4 divide-y divide-border text-meta" aria-busy="true">
       {tour.departures.slice(0, 8).map((d) => (
-        <li key={d.id} className="py-2 first-letter:uppercase">
+        <li key={d.id} className="py-3 first-letter:uppercase">
           {formatDateLong(d.startsAt)}
         </li>
       ))}
@@ -359,7 +393,10 @@ function NoDates({ tour, soldOut }: { tour: TourDetail; soldOut: boolean }) {
           label="Avísame por WhatsApp"
           message={`Hola, me interesa la excursión "${tour.title}". ¿Cuándo es la próxima salida?`}
         />
-        <Link href="/ofertas-de-viajes" className="text-center font-bold text-blue hover:underline">
+        <Link
+          href="/ofertas-de-viajes"
+          className="text-center font-semibold underline underline-offset-2"
+        >
           Ver otras excursiones
         </Link>
       </div>

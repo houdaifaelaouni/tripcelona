@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { CheckoutForm } from "@/components/booking/checkout-form";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { ButtonLink } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { FormAlert } from "@/components/forms/form-bits";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getCheckoutDeparture, getLiveDepartures } from "@/lib/booking/queries";
 import { QUOTE_ERRORS, quoteDeparture } from "@/lib/booking/quote";
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage({ searchParams }: PageProps<"/reservar">) {
   return (
-    <div className="container-site py-8 md:py-12">
-      <h1 className="text-3xl">Reserva tu excursión</h1>
+    <div className="container-detail py-8 md:py-12">
+      <h1 className="text-display-lg md:text-display-xl">Reserva tu excursión</h1>
       <Suspense fallback={<PageSkeleton />}>
         <Checkout searchParams={searchParams} />
       </Suspense>
@@ -54,50 +54,52 @@ async function Checkout({
   }
 
   return (
-    <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_360px]">
-      <Card className="order-last p-5 md:p-6 lg:order-none">
-        <h2 className="mb-4 text-xl">Tus datos</h2>
+    <div className="mt-8 grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <section className="order-last lg:order-none" aria-labelledby="datos-heading">
+        <h2 id="datos-heading" className="mb-6 text-display-sm">
+          Tus datos
+        </h2>
         <CheckoutForm
           departureId={departure.id}
           unitCents={quote.unitCents}
           seatsLeft={quote.seatsLeft}
           initialTravellers={travellers}
         />
-      </Card>
-      <aside>
-        <Card className="p-5">
-          <p className="text-sm text-muted">{departure.tour.area}</p>
-          <h2 className="text-lg">{departure.tour.title}</h2>
-          <dl className="mt-4 space-y-2">
-            <div>
-              <dt className="text-sm text-muted">Fecha</dt>
-              <dd className="font-bold first-letter:uppercase">
+      </section>
+      <aside className="lg:sticky lg:top-28 lg:self-start">
+        <div className="rounded-card border border-border bg-white p-6 shadow-float">
+          <p className="text-meta text-muted">{departure.tour.area}</p>
+          <h2 className="text-base font-semibold">{departure.tour.title}</h2>
+          <dl className="mt-4 divide-y divide-border border-t border-border">
+            <div className="py-3">
+              <dt className="text-meta text-muted">Fecha</dt>
+              <dd className="font-semibold first-letter:uppercase">
                 {formatDateLong(departure.startsAt)}
               </dd>
             </div>
-            <div>
-              <dt className="text-sm text-muted">Horario</dt>
-              <dd className="font-bold">
+            <div className="py-3">
+              <dt className="text-meta text-muted">Horario</dt>
+              <dd className="font-semibold">
                 Salida {formatTime(departure.startsAt)}
                 {departure.endsAt && ` · regreso aprox. ${formatTime(departure.endsAt)}`}
               </dd>
             </div>
-            <div>
-              <dt className="text-sm text-muted">Punto de encuentro</dt>
+            <div className="py-3">
+              <dt className="text-meta text-muted">Punto de encuentro</dt>
               <dd>{departure.tour.meetingPoint ?? site.meetingPoint}</dd>
             </div>
-            <div>
-              <dt className="text-sm text-muted">Precio por persona</dt>
-              <dd className="font-bold">{formatPrice(quote.unitCents)}</dd>
+            <div className="py-3">
+              <dt className="text-meta text-muted">Precio por persona</dt>
+              <dd className="font-semibold">{formatPrice(quote.unitCents)}</dd>
             </div>
           </dl>
           <Link
             href={`/excursiones/${departure.tour.slug}`}
-            className="mt-4 inline-block text-sm font-bold text-blue hover:underline"
+            className="mt-2 inline-block text-meta font-semibold underline underline-offset-2"
           >
             Cambiar fecha
           </Link>
-        </Card>
+        </div>
       </aside>
     </div>
   );
@@ -128,13 +130,8 @@ function Unavailable({
 }) {
   return (
     <div className="mt-6 max-w-xl">
-      <p
-        role="alert"
-        className="rounded-control border border-danger bg-danger/5 p-3 font-bold text-danger"
-      >
-        {message}
-      </p>
-      <h2 className="mt-6 text-lg">{tour.title}</h2>
+      <FormAlert message={message} />
+      <h2 className="mt-6 text-display-sm">{tour.title}</h2>
       {others.length > 0 ? (
         <>
           <p className="mt-1 text-muted">Estas fechas todavía tienen plazas:</p>
@@ -143,11 +140,11 @@ function Unavailable({
               <li key={d.id}>
                 <Link
                   href={`/reservar?salida=${d.id}`}
-                  className="font-bold text-blue hover:underline first-letter:uppercase"
+                  className="font-semibold underline underline-offset-2 first-letter:uppercase"
                 >
                   {formatDateLong(d.startsAt)}
                 </Link>{" "}
-                <span className="text-sm text-muted">· {d.seatsLeft} plazas</span>
+                <span className="text-meta text-muted">· {d.seatsLeft} plazas</span>
               </li>
             ))}
           </ul>

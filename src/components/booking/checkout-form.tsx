@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { Input } from "@/components/ui/field";
+import { Checkbox, Input, Textarea } from "@/components/ui/field";
+import { QuantityStepper } from "@/components/ui/quantity-stepper";
+import { FormAlert } from "@/components/forms/form-bits";
 import { buttonClasses } from "@/components/ui/button";
 import { startCheckout } from "@/lib/booking/actions";
 import { MAX_TRAVELLERS, type CheckoutState } from "@/lib/booking/schema";
@@ -30,7 +32,7 @@ export function CheckoutForm({
   );
 
   return (
-    <form action={action} noValidate className="space-y-4">
+    <form action={action} noValidate className="space-y-5">
       <input type="hidden" name="departureId" value={departureId} />
       {/* Honeypot (FR-41): hidden from people and assistive tech. */}
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -40,28 +42,24 @@ export function CheckoutForm({
         </label>
       </div>
 
-      {state.status === "error" && (
-        <div
-          role="alert"
-          className="rounded-control border border-danger bg-danger/5 p-3 font-bold text-danger"
-        >
-          {state.message}
-        </div>
-      )}
+      {state.status === "error" && <FormAlert message={state.message} />}
 
-      <Input
-        label="Viajeros"
-        name="travellers"
-        type="number"
-        inputMode="numeric"
-        min={1}
-        max={max}
-        required
-        value={travellers}
-        onChange={(e) => setTravellers(Number(e.target.value))}
-        error={errors.travellers}
-        hint={`Quedan ${seatsLeft} plazas en esta salida.`}
-      />
+      <div className="rounded-card border border-border p-4">
+        <QuantityStepper
+          label="Viajeros"
+          hint={`Quedan ${seatsLeft} plazas en esta salida.`}
+          name="travellers"
+          min={1}
+          max={max}
+          value={travellers}
+          onChange={setTravellers}
+        />
+        {errors.travellers && (
+          <p className="mt-2 text-meta text-danger" role="alert">
+            {errors.travellers}
+          </p>
+        )}
+      </div>
       <Input
         label="Nombre y apellidos"
         name="name"
@@ -89,56 +87,41 @@ export function CheckoutForm({
         defaultValue={values.phone}
         error={errors.phone}
       />
-      <div className="flex flex-col gap-1">
-        <label htmlFor="pickupNote" className="text-sm font-bold">
-          Comentarios <span className="font-normal text-muted">(opcional)</span>
-        </label>
-        <textarea
-          id="pickupNote"
-          name="pickupNote"
-          rows={3}
-          maxLength={500}
-          defaultValue={values.pickupNote}
-          className="rounded-control border border-border-strong px-3 py-2 hover:border-blue"
-          aria-describedby="pickupNote-hint"
-        />
-        <p id="pickupNote-hint" className="text-sm text-muted">
-          Alergias, movilidad reducida o cualquier cosa que debamos saber.
-        </p>
-      </div>
+      <Textarea
+        label="Comentarios (opcional)"
+        name="pickupNote"
+        rows={3}
+        maxLength={500}
+        defaultValue={values.pickupNote}
+        hint="Alergias, movilidad reducida o cualquier cosa que debamos saber."
+      />
 
-      <div>
-        <label className="flex items-start gap-2">
-          <input
-            type="checkbox"
-            name="terms"
-            required
-            className="mt-1 h-4 w-4 accent-blue"
-            aria-invalid={errors.terms ? true : undefined}
-            aria-describedby={errors.terms ? "terms-error" : undefined}
-          />
-          <span>
+      <Checkbox
+        name="terms"
+        required
+        error={errors.terms}
+        label={
+          <>
             He leído y acepto las{" "}
             <Link
               href="/condiciones-de-contratacion"
               target="_blank"
-              className="text-blue underline"
+              className="font-semibold underline underline-offset-2"
             >
               condiciones de contratación
             </Link>{" "}
             y la{" "}
-            <Link href="/politica-de-privacidad" target="_blank" className="text-blue underline">
+            <Link
+              href="/politica-de-privacidad"
+              target="_blank"
+              className="font-semibold underline underline-offset-2"
+            >
               política de privacidad
             </Link>
             .
-          </span>
-        </label>
-        {errors.terms && (
-          <p id="terms-error" className="mt-1 text-sm text-danger" role="alert">
-            {errors.terms}
-          </p>
-        )}
-      </div>
+          </>
+        }
+      />
 
       <p
         className="flex items-baseline justify-between border-t border-border pt-4"
@@ -147,7 +130,7 @@ export function CheckoutForm({
         <span className="text-muted">
           Total ({travellers > 0 ? travellers : "–"} × {formatPrice(unitCents)})
         </span>
-        <span className="text-2xl font-bold">
+        <span className="text-display-sm font-semibold">
           {travellers > 0 && travellers <= max ? formatPrice(unitCents * travellers) : "–"}
         </span>
       </p>
@@ -155,7 +138,7 @@ export function CheckoutForm({
       <button type="submit" disabled={pending} className={buttonClasses({ size: "lg" }, "w-full")}>
         {pending ? "Reservando plazas…" : "Continuar al pago"}
       </button>
-      <p className="text-center text-sm text-muted">
+      <p className="text-center text-meta text-muted">
         Guardamos tus plazas 15 minutos mientras completas el pago.
       </p>
     </form>
