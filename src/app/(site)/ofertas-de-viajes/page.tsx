@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { HowItWorks } from "@/components/home/alive";
@@ -25,23 +24,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/ofertas-de-viajes" },
 };
 
-export default async function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
-  const tours = await getPublishedTours();
-  const banner =
-    tours.flatMap((tour) => tour.gallery ?? (tour.image ? [tour.image] : []))[0] ?? null;
-
+export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
   return (
     <>
       <section aria-labelledby="catalogo-heading" className="border-b border-secondary">
-        {banner && (
-          <div className="relative h-52 w-full overflow-hidden bg-secondary md:h-80">
-            <Image src={banner.url} alt="" fill priority sizes="100vw" className="object-cover" />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-navy-dark/60 to-navy-dark/5"
-            />
-          </div>
-        )}
         <div className="container-site py-10 md:py-12">
           <p className="text-sm font-semibold text-brand-secondary md:text-md">
             Day trips desde Barcelona

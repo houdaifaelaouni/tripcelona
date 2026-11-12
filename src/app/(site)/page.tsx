@@ -32,7 +32,6 @@ export default async function Home() {
       (b.departures[0] ? Date.parse(b.departures[0].startsAt) : Infinity),
   );
   const cards = bySoonest.slice(0, 6);
-  const heroImage = cards[0]?.gallery?.[0] ?? cards[0]?.image ?? null;
 
   // One photo per tour, in departure order, for the collage and the band.
   const photos: TourImage[] = [];
@@ -47,7 +46,7 @@ export default async function Home() {
   return (
     <>
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
-      <Hero image={heroImage} />
+      <Hero />
       <FeatureStrip />
 
       <section aria-labelledby="proximas-heading" className="container-site py-16 md:py-24">

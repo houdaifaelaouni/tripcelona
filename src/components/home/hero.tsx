@@ -1,33 +1,19 @@
-import Image from "next/image";
 import Link from "next/link";
 import { HeroIntro } from "@/components/motion/reveal";
 import { buttonClasses } from "@/components/ui/button";
-import type { TourImage } from "@/lib/tours/types";
 import { HeroMountains } from "./illustrations";
 
 /**
- * Full-bleed hero over a real tour photo (the next departure), with the
- * headline, pitch and the two main paths: the catalog and custom tours.
- * The poster image is the LCP element, so it is prioritised; the fixed
- * min-height reserves its space.
+ * Hero with the headline, pitch and the two main paths: the catalog and
+ * custom tours, over the brand navy gradient and the mountain illustration.
+ * The fixed min-height reserves its space so nothing shifts on load.
  */
-export function Hero({ image }: { image: TourImage | null }) {
+export function Hero() {
   return (
     <section className="relative isolate flex min-h-[560px] items-end overflow-hidden bg-navy text-white md:min-h-[680px]">
-      {image && (
-        <Image
-          src={image.url}
-          alt={image.alt}
-          fill
-          priority
-          sizes="100vw"
-          className="-z-20 object-cover"
-        />
-      )}
-      {/* Overlay keeps white text at AA contrast over any photo. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-dark via-navy-dark/75 to-navy-dark/20"
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-dark via-navy-dark/85 to-navy"
       />
       <HeroMountains className="absolute inset-x-0 bottom-0 -z-10 h-40 w-full opacity-80 md:h-56" />
 
