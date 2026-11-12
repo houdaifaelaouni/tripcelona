@@ -40,6 +40,13 @@ export function formatTime(iso: string): string {
   }).format(new Date(iso));
 }
 
+/** "sáb" */
+export function weekdayShort(iso: string): string {
+  return new Intl.DateTimeFormat("es-ES", { weekday: "short", timeZone: TZ })
+    .format(new Date(iso))
+    .replace(".", "");
+}
+
 /** Month number (1-12) of an instant in Madrid time. */
 export function madridMonth(iso: string): number {
   return Number(

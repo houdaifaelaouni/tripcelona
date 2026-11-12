@@ -12,6 +12,8 @@ export type TourImage = { url: string; alt: string };
 export type TourSummary = {
   slug: string;
   title: string;
+  /** Short one-line pitch shown on cards. */
+  summary: string | null;
   area: string | null;
   areaSlug: string | null;
   difficulty: string | null;

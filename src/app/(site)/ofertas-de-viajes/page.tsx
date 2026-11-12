@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { HowItWorks } from "@/components/home/alive";
 import { CatalogFilters } from "@/components/tours/catalog-filters";
 import { CatalogEmptyState } from "@/components/tours/empty-state";
 import { TourCard } from "@/components/tours/tour-card";
+import { ButtonLink } from "@/components/ui/button";
 import { CardGridSkeleton } from "@/components/ui/page-skeleton";
 import { cn } from "@/lib/cn";
 import { destinations } from "@/lib/site";
@@ -22,20 +25,52 @@ export const metadata: Metadata = {
   alternates: { canonical: "/ofertas-de-viajes" },
 };
 
-export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
+export default async function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
+  const tours = await getPublishedTours();
+  const banner =
+    tours.flatMap((tour) => tour.gallery ?? (tour.image ? [tour.image] : []))[0] ?? null;
+
   return (
-    <div className="container-site py-12 md:py-16">
-      <p className="text-sm font-semibold text-brand-secondary md:text-md">Excursiones</p>
-      <h1 className="mt-3 text-4xl leading-[1.15] font-semibold tracking-tight text-primary md:text-5xl">
-        Ofertas de viajes
-      </h1>
-      <p className="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
-        Excursiones de un día cada domingo desde Estació del Nord, Barcelona.
+    <>
+      <section aria-labelledby="catalogo-heading" className="border-b border-secondary">
+        {banner && (
+          <div className="relative h-52 w-full overflow-hidden bg-secondary md:h-80">
+            <Image src={banner.url} alt="" fill priority sizes="100vw" className="object-cover" />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-navy-dark/60 to-navy-dark/5"
+            />
+          </div>
+        )}
+        <div className="container-site py-10 md:py-12">
+          <p className="text-sm font-semibold text-brand-secondary md:text-md">
+            Day trips desde Barcelona
+          </p>
+          <h1
+            id="catalogo-heading"
+            className="mt-3 text-4xl leading-[1.15] font-semibold tracking-tight text-primary md:text-5xl"
+          >
+            Viajes
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
+            Salidas de un día en autocar desde Barcelona, con guía local durante todo el recorrido.
+          </p>
+        </div>
+      </section>
+
+      <div className="container-site py-10 md:py-14">
+        <Suspense fallback={<CardGridSkeleton />}>
+          <CatalogResults searchParams={searchParams} />
+        </Suspense>
+      </div>
+
+      <HowItWorks />
+      <p className="container-site pb-16 text-center md:pb-24">
+        <ButtonLink href="/preguntas-frecuentes" variant="ghost">
+          Resolver dudas en las preguntas frecuentes
+        </ButtonLink>
       </p>
-      <Suspense fallback={<CardGridSkeleton />}>
-        <CatalogResults searchParams={searchParams} />
-      </Suspense>
-    </div>
+    </>
   );
 }
 
@@ -49,7 +84,7 @@ async function CatalogResults({
 
   return (
     <>
-      <nav aria-label="Destinos" className="mt-8 -mx-4 overflow-x-auto px-4 pb-1">
+      <nav aria-label="Destinos" className="-mx-4 overflow-x-auto px-4 pb-1">
         <ul className="flex w-max gap-2">
           {[{ label: "Todos", area: undefined }, ...destinations].map((d) => {
             const active = filters.zona === d.area;

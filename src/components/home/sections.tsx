@@ -1,27 +1,20 @@
 /*
  * Home page sections in Untitled UI marketing layouts (MIT, © 2025 Untitled
  * UI, https://github.com/untitleduico/react; see THIRD_PARTY_NOTICES.md):
- * section header, feature grid with featured icons, destination tiles and a
- * CTA band. Built from scratch where the original block is PRO-only. Copy
- * only states facts already published on the site.
+ * section header, the "why us" split with a photo collage, the groups band
+ * and the contact block. Copy only states facts already published on the
+ * site.
  */
-import {
-  Bus,
-  CalendarDays,
-  CreditCard,
-  MapPin,
-  MessageCircle,
-  Phone,
-  UserCheck,
-  Users,
-} from "lucide-react";
+import { Check, MapPin, MessageCircle, Phone } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { site } from "@/lib/site";
-import { Reveal } from "@/components/motion/reveal";
+import { cn } from "@/lib/cn";
+import type { TourImage } from "@/lib/tours/types";
 import { CoachIllustration } from "./illustrations";
 import { ContactForm } from "@/components/forms/contact-form";
 
@@ -55,62 +48,68 @@ export function SectionHeader({
   );
 }
 
-const features = [
-  {
-    icon: Bus,
-    title: "Transporte incluido",
-    body: "Ida y vuelta en autocar desde Barcelona. Solo tienes que llegar a la hora de salida.",
-  },
-  {
-    icon: UserCheck,
-    title: "Guía local",
-    body: "Un guía que conoce la zona acompaña al grupo durante toda la excursión.",
-  },
-  {
-    icon: MapPin,
-    title: "Punto de salida céntrico",
-    body: `Salimos desde ${site.meetingPoint}.`,
-  },
-  {
-    icon: CalendarDays,
-    title: "Excursiones de un día",
-    body: "Salidas los domingos: vuelves a Barcelona el mismo día.",
-  },
-  {
-    icon: CreditCard,
-    title: "Pago seguro con tarjeta",
-    body: "Reserva tu plaza online con pago seguro y recibe la confirmación por email.",
-  },
-  {
-    icon: Users,
-    title: "Tours para grupos",
-    body: "¿Vais en grupo? Cuéntanos qué buscáis y preparamos una propuesta a medida.",
-  },
+/** Reasons already implied by the hero, the strip and the catalogue. */
+const reasons = [
+  "Excursiones de un día con transporte ida y vuelta y guía local incluidos.",
+  "Salidas desde un punto céntrico de Barcelona: sin coche, sin atascos y sin buscar aparcamiento.",
+  "Organización cuidada para que aprovechéis cada momento del viaje.",
+  "Reserva online con pago seguro y confirmación por email.",
+  "Trato directo con el equipo que organiza el viaje, sin intermediarios.",
 ];
 
-export function WhyUs() {
+export function WhyUs({ photos }: { photos: TourImage[] }) {
+  const collage = photos.slice(0, 3);
   return (
-    <section aria-labelledby="por-que-heading" className="bg-secondary py-16 md:py-24">
-      <div className="container-site">
-        <SectionHeader
-          id="por-que-heading"
-          eyebrow="Por qué Tripcelona"
-          title="Tú disfrutas del día, nosotros nos ocupamos del resto"
-          lead="Transporte, guía local y logística incluidos en cada excursión."
-        />
-        <Reveal>
-          <ul className="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
-              <li key={f.title} data-reveal className="flex flex-col gap-4">
-                <FeaturedIcon icon={f.icon} color="brand" theme="light" size="lg" />
-                <div>
-                  <h3 className="text-lg font-semibold text-primary">{f.title}</h3>
-                  <p className="mt-1 text-md text-tertiary">{f.body}</p>
-                </div>
+    <section aria-labelledby="por-que-heading" className="container-site py-16 md:py-24">
+      <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
+        <div>
+          <p className="text-sm font-semibold text-brand-secondary md:text-md">
+            Nuestra forma de viajar
+          </p>
+          <h2
+            id="por-que-heading"
+            className="mt-3 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl"
+          >
+            ¿Por qué Tripcelona?
+          </h2>
+          <ul className="mt-8 space-y-4">
+            {reasons.map((reason) => (
+              <li key={reason} className="flex gap-3 text-md text-secondary">
+                <Check
+                  aria-hidden
+                  strokeWidth={2}
+                  className="mt-0.5 size-5 shrink-0 text-brand-secondary"
+                />
+                <span>{reason}</span>
               </li>
             ))}
           </ul>
-        </Reveal>
+          <Link href="/sobre-nosotros" className={buttonClasses({ size: "lg" }, "mt-9")}>
+            Conoce al equipo
+          </Link>
+        </div>
+
+        {collage.length > 0 && (
+          <div className="grid grid-cols-2 gap-4 sm:gap-5">
+            {collage.map((photo, i) => (
+              <figure
+                key={`${photo.url}-${i}`}
+                className={cn(
+                  "relative overflow-hidden rounded-card bg-secondary",
+                  i === 0 ? "col-span-2 aspect-[16/10]" : "aspect-[4/5]",
+                )}
+              >
+                <Image
+                  src={photo.url}
+                  alt={photo.alt}
+                  fill
+                  sizes="(min-width: 1128px) 30vw, (min-width: 744px) 45vw, 92vw"
+                  className="object-cover"
+                />
+              </figure>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -119,18 +118,20 @@ export function WhyUs() {
 export function GroupsCta({ whatsappHref }: { whatsappHref: string }) {
   return (
     <section aria-labelledby="grupos-heading" className="container-site pb-16 md:pb-24">
-      <div className="relative overflow-hidden rounded-2xl bg-brand-section px-6 py-12 text-white md:px-16 md:py-16">
+      <div className="relative overflow-hidden rounded-panel bg-brand-section px-6 py-12 text-white md:px-16 md:py-16">
         <CoachIllustration className="pointer-events-none absolute -right-6 -bottom-6 hidden w-64 opacity-90 xl:block" />
         <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between xl:pr-56">
           <div className="max-w-2xl">
+            <p className="text-sm font-semibold text-white/75">Colegios, institutos y grupos</p>
             <h2
               id="grupos-heading"
-              className="text-3xl leading-[1.2] font-semibold tracking-tight md:text-4xl"
+              className="mt-3 text-3xl leading-[1.2] font-semibold tracking-tight md:text-4xl"
             >
-              ¿Organizas una salida en grupo?
+              ¿Vienes con tu grupo?
             </h2>
             <p className="mt-4 text-lg text-white/80">
-              Empresas, asociaciones, colegios o amigos: diseñamos el tour a vuestra medida.
+              Diseñamos el itinerario, el transporte y las visitas a la medida de tu grupo.
+              Cuéntanos qué necesitáis y te preparamos una propuesta.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -176,7 +177,10 @@ export function ContactSection({
     },
   ];
   return (
-    <section aria-labelledby="hablemos-heading" className="bg-secondary py-16 md:py-24">
+    <section
+      aria-labelledby="hablemos-heading"
+      className="border-t border-secondary py-16 md:py-24"
+    >
       <div className="container-site grid gap-12 lg:grid-cols-2">
         <div>
           <SectionHeader
@@ -205,7 +209,7 @@ export function ContactSection({
             ))}
           </ul>
         </div>
-        <div className="rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset md:p-8">
+        <div className="rounded-panel bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset md:p-8">
           <ContactForm />
         </div>
       </div>

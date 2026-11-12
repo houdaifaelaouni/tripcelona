@@ -27,6 +27,7 @@ function tour(
   return {
     slug,
     title: slug,
+    summary: null,
     area: areaSlug,
     areaSlug,
     difficulty: null,

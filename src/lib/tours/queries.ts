@@ -9,7 +9,7 @@ import type { Departure, TourDetail, TourImage, TourSummary } from "./types";
 export const TOURS_TAG = "tours";
 
 const SUMMARY_SELECT = `
-  slug, title, area, area_slug, difficulty, duration_minutes, price_from_cents,
+  slug, title, summary, area, area_slug, difficulty, duration_minutes, price_from_cents,
   tour_departures ( id, starts_at, ends_at, capacity, seats_taken, price_cents, status ),
   tour_images ( storage_path, alt, sort_order, media ( bucket, path, source_url ) )
 `;
@@ -58,6 +58,7 @@ function toSummary(
   row: {
     slug: string;
     title: string;
+    summary: string | null;
     area: string | null;
     area_slug: string | null;
     difficulty: string | null;
@@ -72,6 +73,7 @@ function toSummary(
   return {
     slug: row.slug,
     title: row.title,
+    summary: row.summary,
     area: row.area,
     areaSlug: row.area_slug,
     difficulty: row.difficulty,
