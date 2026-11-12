@@ -1,98 +1,118 @@
-import { Hero } from "@/components/home/hero";
-import { JsonLd } from "@/components/seo/json-ld";
-import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/json-ld";
-import { ButtonLink } from "@/components/ui/button";
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { HowItWorks } from "@/components/home/alive";
 import { TourCard } from "@/components/tours/tour-card";
+import { ButtonLink } from "@/components/ui/button";
+import { cn } from "@/lib/cn";
+import { destinations } from "@/lib/site";
+import { catalogHref } from "@/lib/tours/filters";
 import { getPublishedTours } from "@/lib/tours/queries";
-import { getSiteSettings } from "@/lib/settings";
-import { DeparturesTable, DestinationsMap, HowItWorks, Stats } from "@/components/home/alive";
-import { Reveal } from "@/components/motion/reveal";
-import { PhotoGallery, type GalleryPhoto } from "@/components/home/photo-gallery";
-import { ContactSection, GroupsCta, SectionHeader, WhyUs } from "@/components/home/sections";
 
-// TODO(PO): hero video (tripcelona-hero-pirineo.mp4, re-encoded ≤ 6 MB) and a
-// poster image are needed from the owner; until then the hero shows the brand
-// gradient. Pass them as <Hero videoSrc posterSrc /> once uploaded to Storage.
+export const metadata: Metadata = {
+  title: "Excursiones desde Barcelona | Tripcelona",
+  description:
+    "Excursiones en grupo cada domingo desde Estació del Nord: Pirineo, Garrotxa, Osona y Alquézar.",
+  alternates: { canonical: "/" },
+};
+
 export default async function Home() {
-  const [tours, site] = await Promise.all([getPublishedTours(), getSiteSettings()]);
+  const tours = await getPublishedTours();
+  const banner =
+    tours.flatMap((tour) => tour.gallery ?? (tour.image ? [tour.image] : []))[0] ?? null;
   const bySoonest = [...tours].sort(
     (a, b) =>
       (a.departures[0] ? Date.parse(a.departures[0].startsAt) : Infinity) -
       (b.departures[0] ? Date.parse(b.departures[0].startsAt) : Infinity),
   );
 
-  // Round-robin through tours so the gallery mixes destinations.
-  const photos: GalleryPhoto[] = [];
-  const lists = tours.map((t) =>
-    (t.gallery ?? (t.image ? [t.image] : [])).map((img) => ({ t, img })),
-  );
-  for (let i = 0; photos.length < 12 && lists.some((l) => l[i]); i++) {
-    for (const l of lists) {
-      const item = l[i];
-      if (item && photos.length < 12) {
-        photos.push({
-          url: item.img.url,
-          alt: item.img.alt,
-          title: item.t.title,
-          area: item.t.area,
-          href: `/excursiones/${item.t.slug}`,
-        });
-      }
-    }
-  }
-
   return (
     <>
-      <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
-      <Hero />
-      <Stats tours={tours} />
-      <section aria-labelledby="proximas-heading" className="container-site py-16 md:py-24">
-        <SectionHeader
-          id="proximas-heading"
-          eyebrow="Calendario"
-          title="Próximas salidas"
-          lead="Reserva tu plaza online en pocos minutos."
-          action={
+      <section aria-labelledby="home-heading" className="border-b border-secondary">
+        {banner && (
+          <div className="relative h-52 w-full overflow-hidden bg-secondary md:h-80">
+            <Image src={banner.url} alt="" fill priority sizes="100vw" className="object-cover" />
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-navy-dark/60 to-navy-dark/5"
+            />
+          </div>
+        )}
+        <div className="container-site py-10 md:py-12">
+          <p className="text-sm font-semibold text-brand-secondary md:text-md">
+            Day trips desde Barcelona
+          </p>
+          <h1
+            id="home-heading"
+            className="mt-3 text-4xl leading-[1.15] font-semibold tracking-tight text-primary md:text-5xl"
+          >
+            Viajes
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
+            Salidas de un día en autocar desde Barcelona, con guía local durante todo el recorrido.
+          </p>
+        </div>
+      </section>
+
+      <section aria-label="Explorar por destino" className="container-site py-10 md:py-14">
+        <nav aria-label="Destinos" className="-mx-4 overflow-x-auto px-4 pb-1">
+          <ul className="flex w-max gap-2">
+            {[{ label: "Todos", area: undefined }, ...destinations].map((destination) => {
+              const active = destination.area === undefined;
+              return (
+                <li key={destination.label}>
+                  <Link
+                    href={catalogHref({ zona: destination.area })}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "inline-flex h-10 items-center rounded-lg px-3.5 text-sm font-semibold whitespace-nowrap shadow-xs ring-1 transition-colors ring-inset",
+                      active
+                        ? "bg-brand-secondary text-brand-secondary ring-brand"
+                        : "bg-primary text-secondary ring-primary hover:bg-primary_hover",
+                    )}
+                  >
+                    {destination.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        <section aria-labelledby="tours-heading" className="mt-8">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <h2 id="tours-heading" className="text-lg font-semibold text-primary">
+              {bySoonest.length === 1 ? "1 excursión" : `${bySoonest.length} excursiones`}
+            </h2>
             <ButtonLink href="/ofertas-de-viajes" variant="outline">
               Ver todas las ofertas
             </ButtonLink>
-          }
-        />
-        <Reveal>
-          <ul className="mt-12 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-            {bySoonest.map((tour) => (
-              <li key={tour.slug} data-reveal className="flex">
-                <TourCard tour={tour} />
-              </li>
-            ))}
-          </ul>
-        </Reveal>
-      </section>
-      <DeparturesTable tours={tours} />
-      <HowItWorks />
-      {photos.length > 0 && (
-        <section aria-labelledby="galeria-heading" className="overflow-hidden py-16 md:py-24">
-          <div className="container-site">
-            <SectionHeader
-              id="galeria-heading"
-              eyebrow="Galería"
-              title="Así son nuestras excursiones"
-              lead="Desliza para ver fotos de cada destino. Toca una para ver la excursión."
-            />
           </div>
-          <div className="mt-10">
-            <PhotoGallery photos={photos} />
-          </div>
+          {bySoonest.length === 0 ? (
+            <div className="rounded-2xl bg-secondary px-6 py-12 text-center">
+              <h3 className="text-lg font-semibold text-primary">Estamos preparando nuevas salidas</h3>
+              <p className="mt-2 text-tertiary">
+                Vuelve pronto para descubrir nuestros próximos viajes.
+              </p>
+            </div>
+          ) : (
+            <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
+              {bySoonest.map((tour, index) => (
+                <li key={tour.slug} className="flex">
+                  <TourCard tour={tour} priority={index < 2} />
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
-      )}
-      <DestinationsMap />
-      <GroupsCta whatsappHref={site.whatsappHref} />
-      <WhyUs />
-      <ContactSection
-        phoneHref={site.phoneHref}
-        phoneDisplay={site.phoneDisplay}
-        whatsappHref={site.whatsappHref}
-      />
+      </section>
+
+      <HowItWorks />
+      <p className="container-site pb-16 text-center md:pb-24">
+        <ButtonLink href="/preguntas-frecuentes" variant="ghost">
+          Resolver dudas en las preguntas frecuentes
+        </ButtonLink>
+      </p>
     </>
   );
 }
