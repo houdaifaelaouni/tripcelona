@@ -112,6 +112,6 @@ test("keyboard: the catalog chips and sort control are links in tab order", asyn
   await page.keyboard.press("Enter");
   await page.waitForURL(/zona=/);
   await expect(
-    page.getByRole("navigation", { name: "Destinos" }).locator("[aria-current=page]"),
+    page.getByRole("navigation", { name: "Filtrar por destino" }).locator("[aria-current=page]"),
   ).toHaveCount(1);
 });
