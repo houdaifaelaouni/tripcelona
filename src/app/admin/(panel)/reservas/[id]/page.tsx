@@ -145,7 +145,9 @@ export default async function BookingDetail({
                       ? "Tarjeta (Redsys)"
                       : p.provider === "paycomet"
                         ? "Tarjeta (PAYCOMET)"
-                        : "Manual"}
+                        : p.provider === "stripe"
+                          ? "Tarjeta (Stripe)"
+                          : "Manual"}
                   </td>
                   <td className={td}>{p.provider_ref}</td>
                   <td className={td}>{formatPrice(p.amount_cents)}</td>

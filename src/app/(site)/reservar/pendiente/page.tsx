@@ -109,7 +109,12 @@ async function Pending({
           </Button>
           <p className="mt-2 text-sm text-tertiary">
             Pago seguro en la pasarela del banco (
-            {provider === "paycomet" ? "Banco Sabadell" : "Redsys"}), con verificación 3D Secure.
+            {provider === "stripe"
+              ? "Stripe"
+              : provider === "paycomet"
+                ? "Banco Sabadell"
+                : "Redsys"}
+            ), con verificación 3D Secure.
           </p>
         </form>
       ) : (

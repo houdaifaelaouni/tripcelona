@@ -195,7 +195,7 @@ export async function loadHealthInput(
     db
       .from("payments")
       .select("bookings(reference, booking_emails(kind, status))")
-      .in("provider", ["redsys", "paycomet"])
+      .in("provider", ["redsys", "paycomet", "stripe"])
       .eq("status", "succeeded")
       .gte("updated_at", since)
       .lte("updated_at", staleBefore),

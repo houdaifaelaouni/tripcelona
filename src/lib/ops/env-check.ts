@@ -27,6 +27,8 @@ const PAYCOMET_REQUIRED = [
   "PAYCOMET_PASSWORD",
 ] as const;
 
+const STRIPE_REQUIRED = ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"] as const;
+
 const REQUIRED = [
   "NEXT_PUBLIC_SITE_URL",
   "NEXT_PUBLIC_SUPABASE_URL",
@@ -61,12 +63,18 @@ export function checkEnv(env: Record<string, string | undefined>, target: EnvTar
     if (!get(name)) error(name, "missing");
   }
 
-  // The card gateway: Redsys unless PAYMENT_PROVIDER=paycomet.
+  // The card gateway: Redsys unless PAYMENT_PROVIDER=paycomet or stripe.
   const provider = get("PAYMENT_PROVIDER") || "redsys";
-  if (provider !== "redsys" && provider !== "paycomet") {
-    error("PAYMENT_PROVIDER", "must be 'redsys' or 'paycomet'");
+  if (provider !== "redsys" && provider !== "paycomet" && provider !== "stripe") {
+    error("PAYMENT_PROVIDER", "must be 'redsys', 'paycomet' or 'stripe'");
   }
-  for (const name of provider === "paycomet" ? PAYCOMET_REQUIRED : REDSYS_REQUIRED) {
+  const required =
+    provider === "stripe"
+      ? STRIPE_REQUIRED
+      : provider === "paycomet"
+        ? PAYCOMET_REQUIRED
+        : REDSYS_REQUIRED;
+  for (const name of required) {
     if (!get(name)) error(name, "missing");
   }
 
