@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import type { NavLink } from "@/lib/site-content-shared";
 import { Menu, Phone, X } from "lucide-react";
@@ -24,6 +26,27 @@ export function MobileNav({
     if (open && !el.open) el.showModal();
     if (!open && el.open) el.close();
   }, [open]);
+
+  // Menu entries slide in one after another each time the drawer opens.
+  useGSAP(
+    () => {
+      if (!open) return;
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from("nav li, dialog > div:last-child a", {
+          x: 24,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power3.out",
+          stagger: 0.04,
+          delay: 0.1,
+          clearProps: "opacity,transform",
+        });
+      });
+      return () => mm.revert();
+    },
+    { dependencies: [open], scope: dialogRef },
+  );
 
   return (
     <div className="lg:hidden">
