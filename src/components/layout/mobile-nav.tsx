@@ -2,12 +2,20 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { primaryNav } from "@/lib/site";
+import type { NavLink } from "@/lib/site-content-shared";
 import { Menu, Phone, X } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { iconButtonClasses } from "@/components/ui/icon-button";
 
-export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whatsappHref: string }) {
+export function MobileNav({
+  nav: primaryNav,
+  ...site
+}: {
+  nav: NavLink[];
+  phoneDisplay: string;
+  phoneHref: string;
+  whatsappHref: string;
+}) {
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {

@@ -88,10 +88,14 @@ export function LandingHero({
   photo,
   next,
   fromCents,
+  title,
+  lead,
 }: {
   photo: { url: string; alt: string } | null;
   next: NextTrip;
   fromCents: number | null;
+  title: string;
+  lead: string;
 }) {
   return (
     <section aria-labelledby="home-heading" className="relative overflow-hidden">
@@ -113,11 +117,10 @@ export function LandingHero({
             id="home-heading"
             className="mt-6 text-[2.5rem] leading-[1.06] font-semibold tracking-[-0.035em] text-primary md:text-6xl md:leading-[1.04]"
           >
-            Excursiones de un día desde Barcelona
+            {title}
           </h1>
           <p className="mt-5 max-w-xl text-lg text-tertiary md:text-xl md:leading-relaxed">
-            El Pirineo, los volcanes de la Garrotxa y pueblos medievales de Cataluña. Tú eliges
-            destino; nosotros ponemos el autocar, el guía y la logística.
+            {lead}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link href="#tours-heading" className={buttonClasses({ size: "lg" })}>
@@ -252,41 +255,18 @@ export function StatsRow({ tours }: { tours: TourSummary[] }) {
   );
 }
 
-const reasons = [
-  {
-    icon: Bus,
-    title: "Sin coche ni aparcamiento",
-    body: "Autocar de ida y vuelta desde el centro de Barcelona.",
-  },
-  {
-    icon: UserCheck,
-    title: "Guía local",
-    body: "Te acompaña durante toda la excursión y conoce cada rincón.",
-  },
-  {
-    icon: MapPin,
-    title: "Salida céntrica",
-    body: `Quedamos en ${site.meetingPoint}.`,
-  },
-  {
-    icon: CalendarCheck,
-    title: "Vuelves el mismo día",
-    body: "Salidas en domingo, con regreso a Barcelona por la tarde.",
-  },
-  {
-    icon: CreditCard,
-    title: "Reserva en dos minutos",
-    body: "Pago seguro con tarjeta y confirmación por email al momento.",
-  },
-  {
-    icon: Users,
-    title: "También para grupos",
-    body: "Empresas, colegios o amigos: preparamos un tour a medida.",
-  },
-];
+const reasonIcons = [Bus, UserCheck, MapPin, CalendarCheck, CreditCard, Users];
 
 /** Content section (image + feature list). */
-export function WhyTripcelona({ photo }: { photo: { url: string; alt: string } | null }) {
+export function WhyTripcelona({
+  photo,
+  title,
+  reasons,
+}: {
+  photo: { url: string; alt: string } | null;
+  title: string;
+  reasons: { title: string; body: string }[];
+}) {
   return (
     <section aria-labelledby="por-que-heading" className="border-t border-secondary py-16 md:py-24">
       <div className="container-site grid items-center gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
@@ -311,24 +291,23 @@ export function WhyTripcelona({ photo }: { photo: { url: string; alt: string } |
           )}
         </div>
         <div>
-          <SectionHeader
-            id="por-que-heading"
-            eyebrow="Por qué Tripcelona"
-            title="Tú disfrutas del día, nosotros nos ocupamos del resto"
-          />
+          <SectionHeader id="por-que-heading" eyebrow="Por qué Tripcelona" title={title} />
           <Reveal>
             <ul className="mt-10 grid gap-x-8 gap-y-7 sm:grid-cols-2">
-              {reasons.map(({ icon: Icon, title, body }) => (
-                <li key={title} data-reveal className="flex gap-4">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-primary text-fg-brand-primary ring-1 ring-brand-200/60 ring-inset">
-                    <Icon aria-hidden className="size-5" />
-                  </span>
-                  <div>
-                    <h3 className="text-md font-semibold tracking-tight text-primary">{title}</h3>
-                    <p className="mt-1 text-sm text-tertiary">{body}</p>
-                  </div>
-                </li>
-              ))}
+              {reasons.map(({ title, body }, i) => {
+                const Icon = reasonIcons[i % reasonIcons.length];
+                return (
+                  <li key={title} data-reveal className="flex gap-4">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-primary text-fg-brand-primary ring-1 ring-brand-200/60 ring-inset">
+                      <Icon aria-hidden className="size-5" />
+                    </span>
+                    <div>
+                      <h3 className="text-md font-semibold tracking-tight text-primary">{title}</h3>
+                      <p className="mt-1 text-sm text-tertiary">{body}</p>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </Reveal>
           <Link href="/ofertas-de-viajes" className={buttonClasses({ size: "lg" }, "mt-10")}>
@@ -397,19 +376,17 @@ export function HomeFaq({
   );
 }
 
-const groupPoints = [
-  "Fecha y destino a vuestra medida",
-  "Autocar y guía para todo el grupo",
-  "Presupuesto sin compromiso",
-];
-
 /** Call to action (dark panel + photo) for group trips. */
 export function GroupsBanner({
   photo,
   whatsappHref,
+  title,
+  groupPoints,
 }: {
   photo: { url: string; alt: string } | null;
   whatsappHref: string;
+  title: string;
+  groupPoints: string[];
 }) {
   return (
     <section aria-labelledby="grupos-heading" className="container-site pb-16 md:pb-24">
@@ -422,7 +399,7 @@ export function GroupsBanner({
             id="grupos-heading"
             className="mt-3 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] md:text-[2.5rem]"
           >
-            ¿Organizas una salida en grupo?
+            {title}
           </h2>
           <ul className="mt-6 space-y-2.5 text-md text-white/80">
             {groupPoints.map((p) => (

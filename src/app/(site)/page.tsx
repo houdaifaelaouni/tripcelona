@@ -15,23 +15,23 @@ import { ContactSection } from "@/components/home/sections";
 import { Testimonials } from "@/components/home/testimonials";
 import { getApprovedReviews, getPublishedFaqs } from "@/lib/content/queries";
 import { getSiteSettings } from "@/lib/settings";
+import { getSiteContent } from "@/lib/site-content";
 import { TourCard } from "@/components/tours/tour-card";
 import { ButtonLink } from "@/components/ui/button";
 import { getPublishedTours } from "@/lib/tours/queries";
 
-export const metadata: Metadata = {
-  title: "Excursiones desde Barcelona | Tripcelona",
-  description:
-    "Excursiones en grupo cada domingo desde Estació del Nord: Pirineo, Garrotxa, Osona y Alquézar.",
-  alternates: { canonical: "/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { home } = await getSiteContent();
+  return { title: home.seoTitle, description: home.seoDescription, alternates: { canonical: "/" } };
+}
 
 export default async function Home() {
-  const [tours, faqs, reviews, site] = await Promise.all([
+  const [tours, faqs, reviews, site, { home }] = await Promise.all([
     getPublishedTours(),
     getPublishedFaqs().catch(() => []),
     getApprovedReviews().catch(() => []),
     getSiteSettings(),
+    getSiteContent(),
   ]);
   const photos = tours.flatMap((tour) => (tour.image ? [tour.image] : []));
   const photo = (i: number) => photos[i % Math.max(photos.length, 1)] ?? null;
@@ -45,7 +45,13 @@ export default async function Home() {
   return (
     <>
       <AnnouncementBar next={next} />
-      <LandingHero photo={photo(0)} next={next} fromCents={minPriceCents(tours)} />
+      <LandingHero
+        photo={photo(0)}
+        next={next}
+        fromCents={minPriceCents(tours)}
+        title={home.heroTitle}
+        lead={home.heroLead}
+      />
       <DestinationStrip />
 
       <section aria-labelledby="tours-heading" className="container-site py-16 md:py-24">
@@ -91,11 +97,16 @@ export default async function Home() {
       </section>
 
       <StatsRow tours={tours} />
-      <WhyTripcelona photo={photo(1)} />
-      <HowItWorks />
+      <WhyTripcelona photo={photo(1)} title={home.whyTitle} reasons={home.reasons} />
+      <HowItWorks title={home.stepsTitle} steps={home.steps} />
       <DeparturesTable tours={tours} />
       <Testimonials reviews={reviews} />
-      <GroupsBanner photo={photo(2)} whatsappHref={site.whatsappHref} />
+      <GroupsBanner
+        photo={photo(2)}
+        whatsappHref={site.whatsappHref}
+        title={home.groupsTitle}
+        groupPoints={home.groupPoints}
+      />
       <HomeFaq faqs={faqs.slice(0, 6)} whatsappHref={site.whatsappHref} />
       <ContactSection
         phoneHref={site.phoneHref}

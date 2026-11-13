@@ -12,8 +12,10 @@ import {
   Calendar,
   File04,
   HelpCircle,
+  Home02,
   Image01,
   Inbox01,
+  Link01,
   LinkExternal01,
   LogOut01,
   Map01,
@@ -55,6 +57,8 @@ const GROUPS: { label: string; items: Item[] }[] = [
   {
     label: "Contenido",
     items: [
+      { href: "/admin/inicio", label: "Página de inicio", icon: Home02 },
+      { href: "/admin/navegacion", label: "Menú y pie", icon: Link01 },
       { href: "/admin/blog", label: "Blog", icon: BookOpen01 },
       { href: "/admin/paginas", label: "Páginas", icon: File04 },
       { href: "/admin/faqs", label: "Preguntas frecuentes", icon: HelpCircle },
