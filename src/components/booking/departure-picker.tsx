@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { buttonClasses } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { cn } from "@/lib/cn";
@@ -120,6 +121,7 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
       <button type="submit" className={buttonClasses({ size: "lg" }, "mt-4 w-full")}>
         Reservar
       </button>
+      {current && <AddToCartButton departureId={current.id} travellers={travellers} />}
     </form>
   );
 }

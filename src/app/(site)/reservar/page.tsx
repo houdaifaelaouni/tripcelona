@@ -3,6 +3,7 @@ import Link from "next/link";
 import { TicketArt } from "@/components/art/art";
 import { PageHero } from "@/components/layout/page-hero";
 import { Suspense } from "react";
+import { CartCheckout } from "@/components/cart/cart-checkout";
 import { CheckoutForm } from "@/components/booking/checkout-form";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { ButtonLink } from "@/components/ui/button";
@@ -47,6 +48,7 @@ async function Checkout({
   searchParams: PageProps<"/reservar">["searchParams"];
 }) {
   const params = await searchParams;
+  if (first(params.carrito) === "1") return <CartCheckout />;
   const departureId = first(params.salida) ?? "";
   const travellers = Number.parseInt(first(params.personas) ?? "1", 10) || 1;
   const departure = departureId ? await getCheckoutDeparture(departureId) : null;

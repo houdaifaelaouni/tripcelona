@@ -1,8 +1,15 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createPendingBooking } from "./create";
-import { checkoutSchema, fieldErrors, type CheckoutField, type CheckoutState } from "./schema";
+import { createPendingBooking, createPendingCart } from "./create";
+import {
+  cartCheckoutSchema,
+  checkoutSchema,
+  fieldErrors,
+  type CartCheckoutState,
+  type CheckoutField,
+  type CheckoutState,
+} from "./schema";
 
 function echo(form: FormData): Partial<Record<CheckoutField, string>> {
   const keys: CheckoutField[] = [
@@ -55,4 +62,39 @@ export async function startCheckout(_prev: CheckoutState, form: FormData): Promi
 
   // Unguessable id in the URL (references are sequential).
   redirect(`/reservar/pendiente?id=${result.bookingId}`);
+}
+
+/**
+ * Cart checkout: one pending booking per excursion, all held and paid in one
+ * payment (createPendingCart is all-or-nothing). Single-line carts are
+ * ordinary bookings.
+ */
+export async function startCartCheckout(
+  _prev: CartCheckoutState,
+  form: FormData,
+): Promise<CartCheckoutState> {
+  const values = Object.fromEntries(
+    (["name", "email", "phone", "pickupNote"] as CheckoutField[]).map((k) => [
+      k,
+      String(form.get(k) ?? ""),
+    ]),
+  );
+  const parsed = cartCheckoutSchema.safeParse(Object.fromEntries(form));
+  if (!parsed.success) {
+    const errs = fieldErrors(parsed.error as never);
+    return {
+      status: "error",
+      message:
+        parsed.error.issues.find((i) => i.path[0] === "items")?.message ??
+        "Revisa los campos marcados.",
+      fieldErrors: errs,
+      values,
+    };
+  }
+  const { items, name, email, phone, pickupNote } = parsed.data;
+  const result = await createPendingCart(items, { name, email, phone, pickupNote });
+  if (!result.ok) {
+    return { status: "error", message: result.message, fieldErrors: {}, values };
+  }
+  redirect(`/reservar/pendiente?id=${result.anchorBookingId}`);
 }

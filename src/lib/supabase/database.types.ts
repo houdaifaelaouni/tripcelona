@@ -140,6 +140,7 @@ export type Database = {
       };
       bookings: {
         Row: {
+          cart_id: string | null;
           created_at: string;
           customer_name: string;
           departure_id: string;
@@ -157,6 +158,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          cart_id?: string | null;
           created_at?: string;
           customer_name: string;
           departure_id: string;
@@ -173,6 +175,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          cart_id?: string | null;
           created_at?: string;
           customer_name?: string;
           departure_id?: string;
@@ -475,6 +478,7 @@ export type Database = {
         Row: {
           amount_cents: number;
           booking_id: string;
+          cart_id: string | null;
           created_at: string;
           id: string;
           provider: string;
@@ -482,6 +486,7 @@ export type Database = {
           raw_event: Json | null;
           refund_raw: Json | null;
           refunded_at: string | null;
+          refunded_cents: number;
           status: Database["public"]["Enums"]["payment_status"];
           updated_at: string;
         };
@@ -489,6 +494,7 @@ export type Database = {
         Insert: {
           amount_cents: number;
           booking_id: string;
+          cart_id?: string | null;
           created_at?: string;
           id?: string;
           provider: string;
@@ -496,12 +502,14 @@ export type Database = {
           raw_event?: Json | null;
           refund_raw?: Json | null;
           refunded_at?: string | null;
+          refunded_cents?: number;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
         };
         Update: {
           amount_cents?: number;
           booking_id?: string;
+          cart_id?: string | null;
           created_at?: string;
           id?: string;
           provider?: string;
@@ -509,6 +517,7 @@ export type Database = {
           raw_event?: Json | null;
           refund_raw?: Json | null;
           refunded_at?: string | null;
+          refunded_cents?: number;
           status?: Database["public"]["Enums"]["payment_status"];
           updated_at?: string;
         };

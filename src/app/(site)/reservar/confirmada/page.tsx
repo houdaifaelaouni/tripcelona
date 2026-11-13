@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { BookingSummary } from "@/components/booking/booking-summary";
+import { ClearCart } from "@/components/cart/clear-cart";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { ButtonLink } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -73,8 +74,16 @@ async function Confirmed({
   }
 
   const { tour } = booking;
+  const meetingPoints = booking.cart
+    ? booking.cart.lines.map((l) => ({
+        key: l.id,
+        label: l.title,
+        point: l.meetingPoint ?? site.meetingPoint,
+      }))
+    : [{ key: booking.id, label: null, point: tour.meetingPoint ?? site.meetingPoint }];
   return (
     <>
+      <ClearCart />
       <span className="flex size-14 items-center justify-center rounded-full bg-success/10 text-success">
         <CircleCheck aria-hidden size={28} />
       </span>
@@ -92,7 +101,12 @@ async function Confirmed({
 
       <section className="mt-8">
         <h2 className="text-display-sm">Punto de encuentro</h2>
-        <p className="mt-1">{tour.meetingPoint ?? site.meetingPoint}</p>
+        {meetingPoints.map((m) => (
+          <p key={m.key} className="mt-1">
+            {m.label && <strong>{m.label}: </strong>}
+            {m.point}
+          </p>
+        ))}
         {tour.mapUrl && (
           <a
             className="mt-1 inline-block text-blue underline"

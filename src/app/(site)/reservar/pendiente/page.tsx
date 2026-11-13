@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { ClearCart } from "@/components/cart/clear-cart";
 import { FormAlert } from "@/components/forms/form-bits";
 import { BookingSummary } from "@/components/booking/booking-summary";
 import { WhatsAppCta } from "@/components/tours/empty-state";
@@ -88,6 +89,7 @@ async function Pending({
   const canPay = provider !== null;
   return (
     <>
+      <ClearCart />
       <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         Revisa y paga tu reserva
       </h1>

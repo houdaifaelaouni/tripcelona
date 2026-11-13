@@ -11,6 +11,8 @@ export type NewBooking = {
   email: string;
   phone: string;
   pickupNote?: string;
+  /** Set when the booking belongs to a cart that is paid in one go. */
+  cartId?: string;
 };
 
 export type CreateBookingResult =
@@ -79,6 +81,7 @@ export async function createPendingBooking(input: NewBooking): Promise<CreateBoo
       total_cents: quote.totalCents, // server-computed, never from the client
       pickup_note: input.pickupNote || null,
       terms_accepted_at: new Date().toISOString(),
+      cart_id: input.cartId ?? null,
     })
     .select("id, reference")
     .single();
@@ -94,5 +97,49 @@ export async function createPendingBooking(input: NewBooking): Promise<CreateBoo
     reference: booking.reference,
     holdId,
     totalCents: quote.totalCents,
+  };
+}
+
+export type CartItem = { departureId: string; travellers: number };
+export const MAX_CART_ITEMS = 6;
+
+export type CreateCartResult =
+  | { ok: true; anchorBookingId: string; bookingIds: string[]; totalCents: number }
+  | { ok: false; message: string; itemIndex: number; seatsLeft?: number };
+
+/**
+ * Checkout of a whole cart: one pending booking per excursion, all sharing a
+ * cart id so they are paid in one payment. All or nothing: if one excursion
+ * cannot be held, the seats already taken for the others are given back. A
+ * cart with a single line is an ordinary booking (no cart id).
+ */
+export async function createPendingCart(
+  items: CartItem[],
+  customer: Omit<NewBooking, "departureId" | "travellers" | "cartId">,
+): Promise<CreateCartResult> {
+  // The same departure twice becomes one line.
+  const merged = new Map<string, number>();
+  for (const i of items) merged.set(i.departureId, (merged.get(i.departureId) ?? 0) + i.travellers);
+  const lines = [...merged].map(([departureId, travellers]) => ({ departureId, travellers }));
+  const cartId = lines.length > 1 ? crypto.randomUUID() : undefined;
+
+  const db = createAdminClient();
+  const created: { id: string; totalCents: number }[] = [];
+  for (const [index, line] of lines.entries()) {
+    const r = await createPendingBooking({ ...customer, ...line, cartId });
+    if (!r.ok) {
+      for (const b of created) {
+        await db.rpc("release_booking_seats", { p_booking_id: b.id });
+        await db.from("bookings").update({ status: "cancelled" }).eq("id", b.id);
+      }
+      return { ok: false, message: r.message, itemIndex: index, seatsLeft: r.seatsLeft };
+    }
+    created.push({ id: r.bookingId, totalCents: r.totalCents });
+  }
+  return {
+    ok: true,
+    anchorBookingId: created[0].id,
+    bookingIds: created.map((b) => b.id),
+    totalCents: created.reduce((n, b) => n + b.totalCents, 0),
   };
 }
