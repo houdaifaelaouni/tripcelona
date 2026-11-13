@@ -83,6 +83,9 @@ test("main admin screens pass axe and the toast can be dismissed", async ({ page
     "/admin/blog",
     "/admin/ajustes",
     "/admin/inicio",
+    "/admin/pagos",
+    "/admin/actividad",
+    "/admin/redirecciones",
     "/admin/navegacion",
     "/admin/cuenta",
   ]) {
@@ -190,4 +193,20 @@ test("staff edit the home texts and menu, then restore the originals", async ({ 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Excursiones de un día desde Barcelona",
   );
+});
+
+test("owner downloads CSV exports and gets a 401 when signed out", async ({ page, request }) => {
+  const anon = await request.get("/admin/exportar/reservas", { maxRedirects: 0 });
+  expect([301, 302, 303, 307, 308, 401]).toContain(anon.status());
+
+  await page.goto("/admin/reservas");
+  await page.waitForURL(/\/admin\/login/);
+  await page.locator("input[name=email]").fill(E2E.ownerEmail);
+  await page.locator("input[name=password]").fill(e2eOwnerPassword());
+  await page.locator("button[type=submit]").click();
+  await page.waitForURL(/\/admin\/reservas$/);
+  const res = await page.request.get("/admin/exportar/reservas");
+  expect(res.status()).toBe(200);
+  expect(res.headers()["content-type"]).toContain("text/csv");
+  expect(await res.text()).toContain("Referencia");
 });

@@ -7,9 +7,11 @@
  * account card. Phones and tablets get the Untitled mobile header + drawer.
  */
 import {
+  Activity,
   BarChartSquare02,
   BookOpen01,
   Calendar,
+  CreditCard01,
   File04,
   HelpCircle,
   Home02,
@@ -22,6 +24,7 @@ import {
   Menu02,
   MessageSquare01,
   Settings01,
+  SwitchHorizontal01,
   User01,
   Users01,
   X as CloseIcon,
@@ -64,6 +67,19 @@ const GROUPS: { label: string; items: Item[] }[] = [
       { href: "/admin/faqs", label: "Preguntas frecuentes", icon: HelpCircle },
       { href: "/admin/opiniones", label: "Opiniones", icon: MessageSquare01 },
       { href: "/admin/medios", label: "Medios", icon: Image01 },
+    ],
+  },
+  {
+    label: "Operaciones",
+    items: [
+      { href: "/admin/pagos", label: "Pagos", icon: CreditCard01, ownerOnly: true },
+      { href: "/admin/actividad", label: "Actividad", icon: Activity, ownerOnly: true },
+      {
+        href: "/admin/redirecciones",
+        label: "Redirecciones",
+        icon: SwitchHorizontal01,
+        ownerOnly: true,
+      },
     ],
   },
   {

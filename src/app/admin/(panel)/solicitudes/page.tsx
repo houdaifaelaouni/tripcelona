@@ -11,6 +11,7 @@ import {
   td,
   th,
 } from "@/components/admin/ui";
+import { ButtonLink } from "@/components/admin/button";
 import { cn } from "@/lib/cn";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
@@ -43,7 +44,14 @@ export default async function Inbox({ searchParams }: PageProps<"/admin/solicitu
 
   return (
     <>
-      <PageTitle description="Presupuestos de grupo y mensajes del formulario de contacto.">
+      <PageTitle
+        description="Presupuestos de grupo y mensajes del formulario de contacto."
+        actions={
+          <ButtonLink href={`/admin/exportar/solicitudes?tipo=${tab}`} variant="secondary">
+            Descargar CSV
+          </ButtonLink>
+        }
+      >
         Solicitudes
       </PageTitle>
       <Flash ok={sp.ok} error={sp.error} />
