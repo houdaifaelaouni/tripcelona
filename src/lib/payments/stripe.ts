@@ -24,7 +24,6 @@ export function buildCheckoutSession(payment: {
   p.set("cancel_url", payment.koUrl);
   p.set("locale", "es");
   p.set("expires_at", String(payment.expiresAt));
-  p.append("payment_method_types[]", "card");
   p.set("line_items[0][quantity]", "1");
   p.set("line_items[0][price_data][currency]", "eur");
   p.set("line_items[0][price_data][unit_amount]", String(payment.amountCents));
