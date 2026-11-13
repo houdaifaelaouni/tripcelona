@@ -74,7 +74,7 @@ export function assessHealth(input: HealthInput): HealthReport {
       severity: "P0",
       title: "Notificaciones de pago que no cuadran",
       detail:
-        "Redsys avisó de pagos con un importe distinto o de pedidos que no existen. Revisa la configuración de Redsys (comercio y terminal) y estos pedidos en el portal del banco.",
+        "La pasarela de pago avisó de pagos con un importe distinto o de pedidos que no existen. Revisa la configuración de la pasarela (comercio y terminal) y estos pedidos en el portal del banco.",
       refs: [...new Set(suspicious.map((e) => e.provider_ref))],
     });
   }
@@ -195,7 +195,7 @@ export async function loadHealthInput(
     db
       .from("payments")
       .select("bookings(reference, booking_emails(kind, status))")
-      .eq("provider", "redsys")
+      .in("provider", ["redsys", "paycomet"])
       .eq("status", "succeeded")
       .gte("updated_at", since)
       .lte("updated_at", staleBefore),

@@ -7,7 +7,7 @@ import { WhatsAppCta } from "@/components/tours/empty-state";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getBookingDetails } from "@/lib/booking/details";
-import { redsysConfig } from "@/lib/payments/config";
+import { activeProvider } from "@/lib/payments/config";
 
 export const metadata: Metadata = { title: "Pago de tu reserva", robots: { index: false } };
 
@@ -84,7 +84,8 @@ async function Pending({
     );
   }
 
-  const canPay = redsysConfig() !== null;
+  const provider = activeProvider();
+  const canPay = provider !== null;
   return (
     <>
       <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
@@ -101,13 +102,14 @@ async function Pending({
       )}
       <BookingSummary booking={booking} />
       {canPay ? (
-        <form method="post" action="/api/pagos/redsys/iniciar" className="mt-6">
+        <form method="post" action="/api/pagos/iniciar" className="mt-6">
           <input type="hidden" name="bookingId" value={booking.id} />
           <Button type="submit" size="lg" className="w-full sm:w-auto">
             Pagar con tarjeta
           </Button>
           <p className="mt-2 text-sm text-tertiary">
-            Pago seguro en la pasarela del banco (Redsys), con verificación 3D Secure.
+            Pago seguro en la pasarela del banco (
+            {provider === "paycomet" ? "Banco Sabadell" : "Redsys"}), con verificación 3D Secure.
           </p>
         </form>
       ) : (

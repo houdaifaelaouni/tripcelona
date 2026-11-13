@@ -1,5 +1,6 @@
 import "server-only";
 import { siteUrl } from "@/lib/seo/site-url";
+import { PAYCOMET_BASE_URL, type PaycometCredentials } from "./paycomet";
 import { REDSYS_URLS, type RedsysCredentials } from "./redsys";
 
 export type RedsysConfig = RedsysCredentials & {
@@ -29,6 +30,41 @@ export function redsysConfig(): RedsysConfig | null {
     redirectUrl: override ? `${override}/sis/realizarPago` : urls.redirect,
     restUrl: override ? `${override}/sis/rest/trataPeticionREST` : urls.rest,
   };
+}
+
+export type PaycometConfig = PaycometCredentials & { baseUrl: string };
+
+/**
+ * PAYCOMET settings from env (Vercel). Null when not configured. The
+ * terminal number picks sandbox or live. PAYCOMET_BASE_URL only exists to
+ * point local end-to-end checks at a fake gateway; it is ignored in
+ * production builds.
+ */
+export function paycometConfig(): PaycometConfig | null {
+  const apiKey = process.env.PAYCOMET_API_KEY;
+  const terminal = process.env.PAYCOMET_TERMINAL;
+  const customerCode = process.env.PAYCOMET_CUSTOMER_CODE;
+  const password = process.env.PAYCOMET_PASSWORD;
+  if (!apiKey || !terminal || !customerCode || !password) return null;
+  const override =
+    process.env.VERCEL_ENV !== "production"
+      ? process.env.PAYCOMET_BASE_URL?.replace(/\/$/, "")
+      : "";
+  return { apiKey, terminal, customerCode, password, baseUrl: override || PAYCOMET_BASE_URL };
+}
+
+export type PaymentProvider = "redsys" | "paycomet";
+
+/**
+ * Which gateway takes new card payments. PAYMENT_PROVIDER picks it (default
+ * redsys, so nothing changes until it is set to "paycomet"); null when the
+ * chosen one is not configured. Refunds always go to the gateway that took
+ * the payment, whatever this says.
+ */
+export function activeProvider(): PaymentProvider | null {
+  const wanted = process.env.PAYMENT_PROVIDER === "paycomet" ? "paycomet" : "redsys";
+  if (wanted === "paycomet") return paycometConfig() ? "paycomet" : null;
+  return redsysConfig() ? "redsys" : null;
 }
 
 export const paymentUrls = (bookingId: string) => ({

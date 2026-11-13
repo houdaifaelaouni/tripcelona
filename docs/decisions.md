@@ -99,3 +99,6 @@ Decisions from PRD §14. Sprint 1 (US-01) closes D1–D3; D4–D10 are tracked h
 |---|---|---|
 | 2026-11-10 | Log created; D1–D10 recorded as OPEN | Build agent |
 | 2026-11-10 | D1 closed: PayTPV / Redsys | HOUDAIFA |
+
+## D1 update, 2026-11-13: PAYCOMET added
+The owner's bank contract is a TPV Virtual Banco Sabadell on the PAYCOMET platform. The site now supports PAYCOMET beside Redsys, chosen by `PAYMENT_PROVIDER` (default `redsys`). Setup and flow: [payments-paycomet.md](payments-paycomet.md).
