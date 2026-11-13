@@ -1,6 +1,7 @@
 import "server-only";
 import { siteUrl } from "@/lib/seo/site-url";
 import { PAYCOMET_BASE_URL, type PaycometCredentials } from "./paycomet";
+import { STRIPE_BASE_URL, type StripeCredentials } from "./stripe";
 import { REDSYS_URLS, type RedsysCredentials } from "./redsys";
 
 export type RedsysConfig = RedsysCredentials & {
@@ -53,16 +54,31 @@ export function paycometConfig(): PaycometConfig | null {
   return { apiKey, terminal, customerCode, password, baseUrl: override || PAYCOMET_BASE_URL };
 }
 
-export type PaymentProvider = "redsys" | "paycomet";
+export type StripeConfig = StripeCredentials & { baseUrl: string };
+
+/** Stripe settings from env (Vercel). Null when the secret key or webhook secret is missing. */
+export function stripeConfig(): StripeConfig | null {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secretKey || !webhookSecret) return null;
+  const override =
+    process.env.VERCEL_ENV !== "production" ? process.env.STRIPE_BASE_URL?.replace(/\/$/, "") : "";
+  return { secretKey, webhookSecret, baseUrl: override || STRIPE_BASE_URL };
+}
+
+export type PaymentProvider = "redsys" | "paycomet" | "stripe";
 
 /**
  * Which gateway takes new card payments. PAYMENT_PROVIDER picks it (default
- * redsys, so nothing changes until it is set to "paycomet"); null when the
+ * redsys, so nothing changes until it is set to "paycomet" or "stripe"); null when the
  * chosen one is not configured. Refunds always go to the gateway that took
  * the payment, whatever this says.
  */
 export function activeProvider(): PaymentProvider | null {
-  const wanted = process.env.PAYMENT_PROVIDER === "paycomet" ? "paycomet" : "redsys";
+  const wanted = ["paycomet", "stripe"].includes(process.env.PAYMENT_PROVIDER ?? "")
+    ? process.env.PAYMENT_PROVIDER
+    : "redsys";
+  if (wanted === "stripe") return stripeConfig() ? "stripe" : null;
   if (wanted === "paycomet") return paycometConfig() ? "paycomet" : null;
   return redsysConfig() ? "redsys" : null;
 }

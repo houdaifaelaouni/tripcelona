@@ -51,9 +51,17 @@ describe("checkEnv", () => {
         "production",
       ),
     ).toEqual([]);
-    expect(names({ ...production, PAYMENT_PROVIDER: "stripe" }, "production")).toContain(
+    expect(names({ ...production, PAYMENT_PROVIDER: "bizum" }, "production")).toContain(
       "PAYMENT_PROVIDER",
     );
+  });
+
+  it("asks for the Stripe keys when Stripe is the chosen gateway", () => {
+    const env = { ...production, PAYMENT_PROVIDER: "stripe" };
+    expect(names(env, "production")).toEqual(["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"]);
+    expect(
+      names({ ...env, STRIPE_SECRET_KEY: "k", STRIPE_WEBHOOK_SECRET: "w" }, "production"),
+    ).toEqual([]);
   });
 
   it("reports every missing required variable", () => {

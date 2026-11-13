@@ -1,7 +1,12 @@
 import "server-only";
 import { sendBookingEmail } from "@/lib/email/booking-emails";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { activeProvider, paycometConfig, paymentUrls, redsysConfig } from "./config";
+import { activeProvider, paycometConfig, paymentUrls, redsysConfig, stripeConfig } from "./config";
+import {
+  buildCheckoutSession,
+  interpretEvent as interpretStripeEvent,
+  verifyWebhook as verifyStripeWebhook,
+} from "./stripe";
 import {
   buildFormRequest as buildPaycometForm,
   buildRefundRequest as buildPaycometRefund,
@@ -39,7 +44,7 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
   const { data: booking } = await db
     .from("bookings")
     .select(
-      "id, reference, status, departure_id, travellers, total_cents, customer_name, tour_departures(tours(title))",
+      "id, reference, status, departure_id, travellers, total_cents, customer_name, email, tour_departures(tours(title))",
     )
     .eq("id", bookingId)
     .maybeSingle();
@@ -49,7 +54,7 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
   if (!(await ensureHold(booking.id, booking.departure_id, booking.travellers)))
     return { ok: false, reason: "no_seats" };
 
-  const order = provider === "paycomet" ? newPaycometOrder() : newOrderId();
+  const order = provider === "paycomet" ? newPaycometOrder() : newOrderId(); // Stripe reuses the same shape
   const { error } = await db.from("payments").insert({
     booking_id: booking.id,
     provider,
@@ -60,6 +65,26 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
 
   const description = `${booking.reference} · ${booking.tour_departures.tours.title}`;
   const urls = paymentUrls(booking.id);
+
+  if (provider === "stripe") {
+    const url = await createStripeSession(stripeConfig()!, {
+      order,
+      amountCents: booking.total_cents,
+      description,
+      email: booking.email,
+      okUrl: urls.okUrl,
+      koUrl: urls.koUrl,
+    });
+    if (!url) {
+      await db
+        .from("payments")
+        .update({ status: "failed" })
+        .eq("provider", "stripe")
+        .eq("provider_ref", order);
+      return { ok: false, reason: "not_configured" };
+    }
+    return { ok: true, kind: "redirect", url };
+  }
 
   if (provider === "paycomet") {
     const paycomet = paycometConfig()!;
@@ -93,6 +118,36 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
     ...urls,
   });
   return { ok: true, kind: "form", action: config.redirectUrl, fields };
+}
+
+/** POST /v1/checkout/sessions: Stripe answers with the URL of its hosted payment page. */
+async function createStripeSession(
+  config: NonNullable<ReturnType<typeof stripeConfig>>,
+  payment: Omit<Parameters<typeof buildCheckoutSession>[0], "expiresAt">,
+): Promise<string | null> {
+  try {
+    const res = await fetch(`${config.baseUrl}/v1/checkout/sessions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${config.secretKey}`,
+        // The same order never creates two sessions if the customer double-clicks.
+        "Idempotency-Key": `checkout-${payment.order}`,
+      },
+      // Stripe needs at least 30 minutes; the seat hold is shorter, so a late
+      // payment is caught by the amount/seat checks and refunded automatically.
+      body: buildCheckoutSession({
+        ...payment,
+        expiresAt: Math.floor(Date.now() / 1000) + 31 * 60,
+      }),
+    });
+    const json = (await res.json()) as { url?: string; error?: { message?: string } };
+    if (res.ok && json.url) return json.url;
+    console.error(`[stripe] checkout refused: HTTP ${res.status} ${json.error?.message ?? ""}`);
+  } catch (error) {
+    console.error(`[stripe] checkout request failed: ${String(error)}`);
+  }
+  return null;
 }
 
 /** POST /v1/form: PAYCOMET answers with the URL of its hosted payment page. */
@@ -172,7 +227,7 @@ export type NotificationOutcome =
 
 /** What a verified gateway notification says, whatever the gateway. */
 type VerifiedResult = {
-  provider: "redsys" | "paycomet";
+  provider: "redsys" | "paycomet" | "stripe";
   order: string;
   eventKey: string;
   authorized: boolean;
@@ -206,6 +261,23 @@ export async function handleRedsysNotification(message: {
     amountCents: result.amountCents,
     payload: result.params,
   });
+}
+
+/**
+ * Handle a Stripe webhook. `rawBody` must be the untouched request text: the
+ * signature covers the exact bytes. Unrelated event types are acknowledged.
+ */
+export async function handleStripeWebhook(
+  rawBody: string,
+  signature: string | null,
+): Promise<NotificationOutcome> {
+  const config = stripeConfig();
+  if (!config) return "not_configured";
+  const event = verifyStripeWebhook(config.webhookSecret, rawBody, signature);
+  if (!event) return "invalid_signature";
+  const result = interpretStripeEvent(event);
+  if (!result) return "ignored";
+  return applyVerifiedResult({ provider: "stripe", ...result });
 }
 
 /**
@@ -279,7 +351,7 @@ async function applyVerifiedResult(result: VerifiedResult): Promise<Notification
   } else {
     // Money was taken but the booking cannot use it: give it back.
     const refund = await refundPayment(payment.id);
-    const portal = result.provider === "paycomet" ? "PAYCOMET" : "Redsys";
+    const portal = { paycomet: "PAYCOMET", stripe: "Stripe", redsys: "Redsys" }[result.provider];
     await sendBookingEmail(payment.booking_id, "owner_alert", {
       force: true,
       note: `Cobro devuelto automáticamente (${typed}${refund.ok ? "" : `, DEVOLUCIÓN FALLIDA: revisar en ${portal}`})`,
@@ -324,6 +396,7 @@ export async function refundPayment(paymentId: string): Promise<RefundResult> {
   }
 
   if (payment.provider === "paycomet") return refundPaycomet(payment);
+  if (payment.provider === "stripe") return refundStripe(payment);
 
   const config = redsysConfig();
   if (!config) return { ok: false, error: "Redsys is not configured" };
@@ -359,6 +432,50 @@ export async function refundPayment(paymentId: string): Promise<RefundResult> {
       refunded_at: new Date().toISOString(),
       refund_raw: verified.params,
     })
+    .eq("id", payment.id);
+  return { ok: true };
+}
+
+/** Refund through Stripe (POST /v1/refunds on the payment intent kept from the webhook). */
+async function refundStripe(payment: {
+  id: string;
+  provider_ref: string;
+  amount_cents: number;
+  raw_event: unknown;
+}): Promise<RefundResult> {
+  const config = stripeConfig();
+  if (!config) return { ok: false, error: "Stripe is not configured" };
+  const event = (payment.raw_event ?? {}) as Record<string, string>;
+  if (!event.payment_intent) return { ok: false, error: "Stripe payment intent not recorded" };
+  const charged = Number(event.amount_total);
+  const amountCents = Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents;
+
+  let body: { id?: string; status?: string; error?: { message?: string } };
+  try {
+    const res = await fetch(`${config.baseUrl}/v1/refunds`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${config.secretKey}`,
+        "Idempotency-Key": `refund-${payment.id}`,
+      },
+      body: new URLSearchParams({
+        payment_intent: event.payment_intent,
+        amount: String(amountCents),
+      }),
+    });
+    body = (await res.json()) as typeof body;
+    if (!res.ok) return { ok: false, error: `Stripe ${body.error?.message ?? res.status}` };
+  } catch (error) {
+    return { ok: false, error: `Stripe unreachable: ${String(error)}` };
+  }
+  if (body.status === "failed" || body.status === "canceled")
+    return { ok: false, error: `Stripe refund ${body.status}` };
+
+  const db = createAdminClient();
+  await db
+    .from("payments")
+    .update({ status: "refunded", refunded_at: new Date().toISOString(), refund_raw: body })
     .eq("id", payment.id);
   return { ok: true };
 }

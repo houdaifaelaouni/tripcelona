@@ -167,6 +167,7 @@ test("staff edit the home texts and menu, then restore the originals", async ({ 
   await page.locator("button[type=submit]").click();
   await page.waitForURL(/\/admin\/inicio$/);
 
+  await page.waitForLoadState("networkidle");
   await page.locator("input[name=heroTitle]").fill("Título editado desde el panel");
   await page.getByRole("button", { name: "Guardar cambios" }).click();
   await page.waitForURL(/ok=guardado/);
@@ -175,7 +176,10 @@ test("staff edit the home texts and menu, then restore the originals", async ({ 
 
   // A malformed line is refused with a message and nothing changes.
   await page.goto("/admin/navegacion");
-  await page.locator("textarea[name=nav]").fill("Solo texto sin enlace");
+  await page.waitForLoadState("networkidle"); // let the page hydrate before typing
+  const nav = page.locator("textarea[name=nav]");
+  await nav.fill("Solo texto sin enlace");
+  await expect(nav).toHaveValue("Solo texto sin enlace");
   await page.getByRole("button", { name: "Guardar cambios" }).click();
   await page.waitForURL(/error=/);
 
