@@ -38,6 +38,7 @@ import { NavItemBase } from "@/components/uui/application/app-navigation/base-co
 import { Avatar } from "@/components/uui/base/avatar/avatar";
 import { cx } from "@/components/uui/utils/cx";
 import { signOut } from "@/lib/admin/auth-actions";
+import { Logo } from "@/components/brand/logo";
 
 type Item = { href: string; label: string; icon: typeof Map01; ownerOnly?: boolean };
 const GROUPS: { label: string; items: Item[] }[] = [
@@ -80,17 +81,11 @@ export function AdminRouter({ children }: { children: ReactNode }) {
 
 export function SidebarBrand() {
   return (
-    <Link
-      href="/admin"
-      className="flex items-center gap-2.5 rounded-md text-md font-semibold tracking-tight text-primary"
-    >
-      <span
-        aria-hidden
-        className="flex size-7 items-center justify-center rounded-md bg-brand-solid text-sm font-semibold text-white"
-      >
-        T
+    <Link href="/admin" className="flex items-center gap-2 rounded-md">
+      <Logo className="text-md" markClassName="size-7" />
+      <span className="rounded-md bg-tertiary px-1.5 py-0.5 text-[11px] font-medium text-tertiary">
+        Admin
       </span>
-      Tripcelona
     </Link>
   );
 }
