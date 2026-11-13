@@ -150,26 +150,15 @@ export function DestinationsMap() {
   );
 }
 
-const steps = [
-  { icon: Search, title: "Elige tu excursión", body: "Mira las próximas salidas y elige fecha." },
-  {
-    icon: CreditCard,
-    title: "Reserva online",
-    body: "Indica cuántas personas sois y paga con tarjeta.",
-  },
-  {
-    icon: MailCheck,
-    title: "Recibe la confirmación",
-    body: "Te llega por email con todos los detalles.",
-  },
-  {
-    icon: CalendarCheck,
-    title: "¡A disfrutar!",
-    body: "Te esperamos en el punto de salida el día de la excursión.",
-  },
-];
+const stepIcons = [Search, CreditCard, MailCheck, CalendarCheck];
 
-export function HowItWorks() {
+export function HowItWorks({
+  title,
+  steps,
+}: {
+  title: string;
+  steps: { title: string; body: string }[];
+}) {
   return (
     <section aria-labelledby="como-heading" className="border-t border-secondary py-16 md:py-24">
       <div className="container-site">
@@ -177,7 +166,7 @@ export function HowItWorks() {
           <SectionHeader
             id="como-heading"
             eyebrow="Cómo funciona"
-            title="Reservar es muy fácil"
+            title={title}
             lead="Cuatro pasos y tu plaza está asegurada."
           />
           <div
@@ -189,22 +178,25 @@ export function HowItWorks() {
         </div>
         <Reveal>
           <ol className="mt-12 grid gap-px overflow-hidden rounded-xl bg-border-secondary ring-1 ring-secondary sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s, i) => (
-              <li key={s.title} data-reveal className="flex flex-col gap-6 bg-primary p-6">
-                <div className="flex items-center justify-between">
-                  <span className="flex size-9 items-center justify-center rounded-lg bg-brand-primary text-fg-brand-primary ring-1 ring-brand-200/60 ring-inset">
-                    <s.icon aria-hidden className="size-[18px]" />
-                  </span>
-                  <span className="font-mono text-xs text-quaternary">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-md font-semibold tracking-tight text-primary">{s.title}</h3>
-                  <p className="mt-1.5 text-sm text-tertiary">{s.body}</p>
-                </div>
-              </li>
-            ))}
+            {steps.map((s, i) => {
+              const Icon = stepIcons[i % stepIcons.length];
+              return (
+                <li key={s.title} data-reveal className="flex flex-col gap-6 bg-primary p-6">
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-9 items-center justify-center rounded-lg bg-brand-primary text-fg-brand-primary ring-1 ring-brand-200/60 ring-inset">
+                      <Icon aria-hidden className="size-[18px]" />
+                    </span>
+                    <span className="font-mono text-xs text-quaternary">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="text-md font-semibold tracking-tight text-primary">{s.title}</h3>
+                    <p className="mt-1.5 text-sm text-tertiary">{s.body}</p>
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         </Reveal>
       </div>

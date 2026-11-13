@@ -82,6 +82,8 @@ test("main admin screens pass axe and the toast can be dismissed", async ({ page
     "/admin/solicitudes",
     "/admin/blog",
     "/admin/ajustes",
+    "/admin/inicio",
+    "/admin/navegacion",
     "/admin/cuenta",
   ]) {
     await page.goto(path);
@@ -155,4 +157,33 @@ test("staff create a new tour and set its URL", async ({ page }) => {
   await page.waitForURL(/ok=foto_anadida/);
   await expect(page.locator("#fotos").getByText("Principal", { exact: true })).toBeVisible();
   await expect(page.locator("#fotos").getByRole("button", { name: "Quitar foto 1" })).toBeVisible();
+});
+
+test("staff edit the home texts and menu, then restore the originals", async ({ page }) => {
+  await page.goto("/admin/inicio");
+  await page.waitForURL(/\/admin\/login/);
+  await page.locator("input[name=email]").fill(E2E.ownerEmail);
+  await page.locator("input[name=password]").fill(e2eOwnerPassword());
+  await page.locator("button[type=submit]").click();
+  await page.waitForURL(/\/admin\/inicio$/);
+
+  await page.locator("input[name=heroTitle]").fill("Título editado desde el panel");
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await page.waitForURL(/ok=guardado/);
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Título editado desde el panel");
+
+  // A malformed line is refused with a message and nothing changes.
+  await page.goto("/admin/navegacion");
+  await page.locator("textarea[name=nav]").fill("Solo texto sin enlace");
+  await page.getByRole("button", { name: "Guardar cambios" }).click();
+  await page.waitForURL(/error=/);
+
+  await page.goto("/admin/inicio");
+  await page.getByRole("button", { name: "Restaurar textos originales" }).click();
+  await page.waitForURL(/ok=restaurado/);
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Excursiones de un día desde Barcelona",
+  );
 });

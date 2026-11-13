@@ -20,6 +20,7 @@ const MESSAGES: Record<string, string> = {
   eliminado: "Eliminado.",
   subido: "Imagen subida.",
   estado: "Solicitud actualizada.",
+  restaurado: "Textos originales restaurados.",
   ajustes: "Ajustes guardados. La web ya muestra los nuevos datos.",
 };
 

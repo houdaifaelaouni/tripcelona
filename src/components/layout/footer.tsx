@@ -5,7 +5,8 @@ import { Logo } from "@/components/brand/logo";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { SOCIAL_LABELS, SOCIAL_NETWORKS, getSiteSettings } from "@/lib/settings";
-import { footerColumns, site as siteDefaults } from "@/lib/site";
+import { getSiteContent } from "@/lib/site-content";
+import { site as siteDefaults } from "@/lib/site";
 import { getPublishedTours } from "@/lib/tours/queries";
 
 /** Card brands the bank terminal accepts, shown as supplied by the owner. */
@@ -23,7 +24,12 @@ const PAYMENT_METHODS = [
  * then a one-line legal band. Hairlines separate the three rows.
  */
 export async function Footer() {
-  const [site, tours] = await Promise.all([getSiteSettings(), getPublishedTours().catch(() => [])]);
+  const [site, tours, content] = await Promise.all([
+    getSiteSettings(),
+    getPublishedTours().catch(() => []),
+    getSiteContent(),
+  ]);
+  const footerColumns = content.footer;
   const socials = SOCIAL_NETWORKS.filter((n) => site.socials[n]);
   const openDepartures = tours.reduce(
     (sum, t) => sum + t.departures.filter((d) => d.status === "open").length,

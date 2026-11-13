@@ -2,7 +2,7 @@ import { ChevronDown, Phone, Ticket } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import Link from "next/link";
 import { getSiteSettings } from "@/lib/settings";
-import { primaryNav } from "@/lib/site";
+import { getSiteContent } from "@/lib/site-content";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { iconButtonClasses } from "@/components/ui/icon-button";
 import { buttonClasses } from "@/components/ui/button";
@@ -23,7 +23,8 @@ const action = iconButtonClasses(
 );
 
 export async function Header() {
-  const site = await getSiteSettings();
+  const [site, content] = await Promise.all([getSiteSettings(), getSiteContent()]);
+  const primaryNav = content.nav;
   return (
     <header className="sticky top-0 z-40 border-b border-secondary bg-primary/85 text-primary backdrop-blur-md backdrop-saturate-150">
       <div className="container-site grid h-16 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
@@ -104,6 +105,7 @@ export async function Header() {
             Ver excursiones
           </Link>
           <MobileNav
+            nav={primaryNav}
             phoneDisplay={site.phoneDisplay}
             phoneHref={site.phoneHref}
             whatsappHref={site.whatsappHref}
