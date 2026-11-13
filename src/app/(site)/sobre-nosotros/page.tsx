@@ -58,7 +58,10 @@ async function AboutBody() {
       <header className="relative overflow-hidden bg-secondary">
         <div className="container-site grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
           <HeroIntro>
-            <p data-intro className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
+            <p
+              data-intro
+              className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary"
+            >
               01/ Sobre nosotros
             </p>
             <h1
@@ -96,7 +99,10 @@ async function AboutBody() {
         </div>
       </header>
 
-      <section aria-labelledby="historia-heading" className="rounded-t-[2.5rem] bg-primary py-16 md:py-24">
+      <section
+        aria-labelledby="historia-heading"
+        className="rounded-t-[2.5rem] bg-primary py-16 md:py-24"
+      >
         <div className="container-site grid items-center gap-12 lg:grid-cols-[1fr_auto_1fr] lg:gap-14">
           <div>
             <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
