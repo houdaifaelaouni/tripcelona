@@ -72,7 +72,7 @@ async function Wizard({
 }) {
   const [{ excursion }, tours, settings] = await Promise.all([
     searchParams,
-    getPublishedTours(),
+    getPublishedTours(locale),
     getSiteSettings(),
   ]);
   const options = tours.map((tour) => ({

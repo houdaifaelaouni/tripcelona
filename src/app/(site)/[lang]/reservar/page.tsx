@@ -55,7 +55,7 @@ async function Checkout({
   if (!isLocale(locale)) notFound();
   const t = createT(locale);
   const params = await searchParams;
-  if (first(params.carrito) === "1") return <CartCheckout provider={activeProvider()} />;
+  if (first(params.carrito) === "1") return <CartCheckout provider={await activeProvider()} />;
   const departureId = first(params.salida) ?? "";
   const travellers = Number.parseInt(first(params.personas) ?? "1", 10) || 1;
   const departure = departureId ? await getCheckoutDeparture(departureId) : null;
@@ -84,7 +84,7 @@ async function Checkout({
         unitCents={quote.unitCents}
         seatsLeft={quote.seatsLeft}
         initialTravellers={travellers}
-        provider={activeProvider()}
+        provider={await activeProvider()}
         summary={
           <div className="mt-4">
             <p className="text-sm text-tertiary">

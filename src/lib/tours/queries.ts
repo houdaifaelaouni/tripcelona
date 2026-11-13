@@ -2,6 +2,8 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { createPublicClient } from "@/lib/supabase/public";
 import { sanitizeDoc } from "@/lib/content/rich-text";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
+import { loadOverlay, str, strList } from "@/lib/i18n/overlay";
 import { mediaUrl } from "./media";
 import type { Departure, TourDetail, TourImage, TourSummary } from "./types";
 
@@ -9,7 +11,7 @@ import type { Departure, TourDetail, TourImage, TourSummary } from "./types";
 export const TOURS_TAG = "tours";
 
 const SUMMARY_SELECT = `
-  slug, title, area, area_slug, difficulty, duration_minutes, price_from_cents,
+  id, slug, title, area, area_slug, difficulty, duration_minutes, price_from_cents,
   tour_departures ( id, starts_at, ends_at, capacity, seats_taken, price_cents, status ),
   tour_images ( storage_path, alt, sort_order, media ( bucket, path, source_url ) )
 `;
@@ -67,14 +69,16 @@ function toSummary(
     tour_images: ImageRow[];
   },
   now: number,
+  tr: Record<string, unknown> = {},
 ): TourSummary {
-  const images = toImages(row.tour_images, row.title);
+  const title = str(tr.title, row.title);
+  const images = toImages(row.tour_images, title);
   return {
     slug: row.slug,
-    title: row.title,
-    area: row.area,
+    title,
+    area: str(tr.area, row.area),
     areaSlug: row.area_slug,
-    difficulty: row.difficulty,
+    difficulty: str(tr.difficulty, row.difficulty),
     durationMinutes: row.duration_minutes,
     priceFromCents: row.price_from_cents,
     image: images[0] ?? null,
@@ -88,7 +92,7 @@ function strings(v: unknown): string[] {
 }
 
 /** All published tours with upcoming departures. Cached; refreshed hourly or on publish. */
-export async function getPublishedTours(): Promise<TourSummary[]> {
+export async function getPublishedTours(locale: Locale = defaultLocale): Promise<TourSummary[]> {
   "use cache";
   cacheTag(TOURS_TAG);
   cacheLife("hours");
@@ -100,7 +104,13 @@ export async function getPublishedTours(): Promise<TourSummary[]> {
     .order("title");
   if (error) throw new Error(`Failed to load tours: ${error.message}`);
   const now = Date.now();
-  return (data ?? []).map((row) => toSummary(row as Parameters<typeof toSummary>[0], now));
+  const rows = (data ?? []) as unknown as (Parameters<typeof toSummary>[0] & { id: string })[];
+  const overlay = await loadOverlay(
+    "tour",
+    rows.map((r) => r.id),
+    locale,
+  );
+  return rows.map((row) => toSummary(row, now, overlay.get(row.id)));
 }
 
 export async function getTourSlugs(): Promise<string[]> {
@@ -116,7 +126,10 @@ export async function getTourSlugs(): Promise<string[]> {
   return (data ?? []).map((r) => r.slug);
 }
 
-export async function getTourBySlug(slug: string): Promise<TourDetail | null> {
+export async function getTourBySlug(
+  slug: string,
+  locale: Locale = defaultLocale,
+): Promise<TourDetail | null> {
   "use cache";
   cacheTag(TOURS_TAG, `tour:${slug}`);
   cacheLife("hours");
@@ -127,8 +140,8 @@ export async function getTourBySlug(slug: string): Promise<TourDetail | null> {
       `${SUMMARY_SELECT},
        summary, description, highlights, inclusions, exclusions, packing_list, meeting_point, map_url,
        seo_title, seo_description,
-       tour_itinerary ( sort_order, time_label, title, body ),
-       tour_faqs ( sort_order, question, answer )`,
+       tour_itinerary ( id, sort_order, time_label, title, body ),
+       tour_faqs ( id, sort_order, question, answer )`,
     )
     .eq("status", "published")
     .eq("slug", slug)
@@ -136,26 +149,54 @@ export async function getTourBySlug(slug: string): Promise<TourDetail | null> {
   if (error) throw new Error(`Failed to load tour ${slug}: ${error.message}`);
   if (!data) return null;
 
-  const summary = toSummary(data as Parameters<typeof toSummary>[0], Date.now());
+  const [tourTr, itineraryTr, faqTr] = await Promise.all([
+    loadOverlay("tour", [data.id], locale),
+    loadOverlay(
+      "tour_itinerary",
+      data.tour_itinerary.map((r) => r.id),
+      locale,
+    ),
+    loadOverlay(
+      "tour_faq",
+      data.tour_faqs.map((r) => r.id),
+      locale,
+    ),
+  ]);
+  const tr = tourTr.get(data.id) ?? {};
+  const summary = toSummary(data as unknown as Parameters<typeof toSummary>[0], Date.now(), tr);
   return {
     ...summary,
-    summary: data.summary,
-    description: data.description ? sanitizeDoc(data.description) : null,
-    highlights: strings(data.highlights),
-    inclusions: strings(data.inclusions),
-    exclusions: strings(data.exclusions),
-    packingList: strings(data.packing_list),
-    meetingPoint: data.meeting_point,
+    summary: str(tr.summary, data.summary),
+    description: tr.description
+      ? sanitizeDoc(tr.description)
+      : data.description
+        ? sanitizeDoc(data.description)
+        : null,
+    highlights: strList(tr.highlights, strings(data.highlights)),
+    inclusions: strList(tr.inclusions, strings(data.inclusions)),
+    exclusions: strList(tr.exclusions, strings(data.exclusions)),
+    packingList: strList(tr.packing_list, strings(data.packing_list)),
+    meetingPoint: str(tr.meeting_point, data.meeting_point),
     mapUrl: data.map_url,
-    seoTitle: data.seo_title,
-    seoDescription: data.seo_description,
-    images: toImages(data.tour_images as ImageRow[], data.title),
+    seoTitle: str(tr.seo_title, data.seo_title),
+    seoDescription: str(tr.seo_description, data.seo_description),
+    images: toImages(data.tour_images as ImageRow[], summary.title),
     itinerary: [...data.tour_itinerary]
       .sort((a, b) => a.sort_order - b.sort_order)
-      .map((s) => ({ title: s.title, timeLabel: s.time_label, body: s.body })),
+      .map((s) => {
+        const t = itineraryTr.get(s.id) ?? {};
+        return {
+          title: str(t.title, s.title),
+          timeLabel: str(t.time_label, s.time_label),
+          body: str(t.body, s.body),
+        };
+      }),
     faqs: [...data.tour_faqs]
       .sort((a, b) => a.sort_order - b.sort_order)
-      .map((f) => ({ question: f.question, answer: f.answer })),
+      .map((f) => {
+        const t = faqTr.get(f.id) ?? {};
+        return { question: str(t.question, f.question), answer: str(t.answer, f.answer) };
+      }),
   };
 }
 

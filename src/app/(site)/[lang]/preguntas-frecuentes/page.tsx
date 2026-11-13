@@ -30,7 +30,7 @@ export default async function FaqPage({ params }: PageProps<"/[lang]/preguntas-f
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = createT(lang);
-  const faqs = await getPublishedFaqs();
+  const faqs = await getPublishedFaqs(lang);
   const schema = faqJsonLd(faqs);
   return (
     <>

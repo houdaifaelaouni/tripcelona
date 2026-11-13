@@ -23,7 +23,7 @@ export async function generateMetadata({
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const t = createT(lang);
-  const page = await getPageBySlug("sobre-nosotros");
+  const page = await getPageBySlug("sobre-nosotros", lang);
   return {
     title: page?.seoTitle ?? t("Sobre nosotros"),
     description:
@@ -84,7 +84,7 @@ async function AboutBody({ params }: { params: PageProps<"/[lang]/sobre-nosotros
   const { lang: locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = createT(locale);
-  const [tours, site] = await Promise.all([getPublishedTours(), getSiteSettings()]);
+  const [tours, site] = await Promise.all([getPublishedTours(locale), getSiteSettings()]);
   const photos = tours.flatMap((tour) => (tour.image ? [tour.image] : []));
   const photo = (i: number) => photos[i % Math.max(photos.length, 1)] ?? null;
   const gallery: GalleryPhoto[] = tours.flatMap((tour) =>

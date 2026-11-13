@@ -42,8 +42,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   if (!isLocale(locale)) notFound();
   const t = createT(locale);
   const [tours, faqs, reviews, site, { home }] = await Promise.all([
-    getPublishedTours(),
-    getPublishedFaqs().catch(() => []),
+    getPublishedTours(locale),
+    getPublishedFaqs(locale).catch(() => []),
     getApprovedReviews().catch(() => []),
     getSiteSettings(),
     getSiteContent(),

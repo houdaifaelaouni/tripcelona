@@ -30,7 +30,7 @@ export default async function BlogIndex({ params }: PageProps<"/[lang]/blog">) {
     dateStyle: "long",
     timeZone: "Europe/Madrid",
   });
-  const posts = await getPublishedPosts();
+  const posts = await getPublishedPosts(lang);
   return (
     <>
       <PageHero

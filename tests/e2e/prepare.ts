@@ -46,6 +46,16 @@ async function main() {
     if (depError) throw new Error(depError.message);
   }
 
+  // A translated title for the i18n test: database text follows the language.
+  const { error: trError } = await db.from("content_translations").upsert({
+    entity: "tour",
+    entity_id: tour.id,
+    locale: "en",
+    field: "title",
+    value: E2E.tourTitleEn,
+  });
+  if (trError) throw new Error(trError.message);
+
   // A second date, so the cart test can hold two excursions at once.
   const secondNote = `${E2E.departureNote} 2`;
   const { data: second } = await db

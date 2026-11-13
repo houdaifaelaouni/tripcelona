@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/[lang]/[slug]">): Promise<Metadata> {
   const { slug, lang } = await params;
   if (!isLocale(lang)) notFound();
-  const page = await getPageBySlug(slug);
+  const page = await getPageBySlug(slug, lang);
   if (!page) notFound();
   return {
     title: page.seoTitle ?? page.title,
@@ -55,7 +55,7 @@ async function ContentPageBody({ params }: { params: PageProps<"/[lang]/[slug]">
     dateStyle: "long",
     timeZone: "Europe/Madrid",
   });
-  const page = await getPageBySlug(slug);
+  const page = await getPageBySlug(slug, locale);
   if (!page) notFound();
   const settings = await getSiteSettings();
 

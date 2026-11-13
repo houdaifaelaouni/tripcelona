@@ -201,6 +201,34 @@ export type Database = {
           },
         ];
       };
+      content_translations: {
+        Row: {
+          entity: string;
+          entity_id: string;
+          field: string;
+          locale: string;
+          updated_at: string;
+          value: NonNullable<Json>;
+        };
+        ComputedFields: never;
+        Insert: {
+          entity: string;
+          entity_id: string;
+          field: string;
+          locale: string;
+          updated_at?: string;
+          value: NonNullable<Json>;
+        };
+        Update: {
+          entity?: string;
+          entity_id?: string;
+          field?: string;
+          locale?: string;
+          updated_at?: string;
+          value?: NonNullable<Json>;
+        };
+        Relationships: [];
+      };
       events: {
         Row: {
           created_at: string;
@@ -440,6 +468,28 @@ export type Database = {
           status?: Database["public"]["Enums"]["content_status"];
           title?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      payment_credentials: {
+        Row: {
+          name: string;
+          updated_at: string;
+          updated_by: string | null;
+          value: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          name: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          value: string;
+        };
+        Update: {
+          name?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          value?: string;
         };
         Relationships: [];
       };
