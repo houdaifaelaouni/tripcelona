@@ -73,7 +73,8 @@ export function FormCard({ title, children }: { title: string; children: ReactNo
   );
 }
 
-const GATEWAY: Record<PaymentProvider, string> = {
+const GATEWAY: Record<PaymentProvider | "choice", string> = {
+  choice: "Pago seguro con tarjeta",
   stripe: "Pago seguro con Stripe",
   redsys: "Pago seguro con Redsys",
   paycomet: "Pago seguro con PAYCOMET",
@@ -83,7 +84,7 @@ const GATEWAY: Record<PaymentProvider, string> = {
  * The payment method card. The site takes card payments through one gateway
  * at a time (PAYMENT_PROVIDER), so this shows that single option as selected.
  */
-export function PaymentMethodCard({ provider }: { provider: PaymentProvider | null }) {
+export function PaymentMethodCard({ provider }: { provider: PaymentProvider | "choice" | null }) {
   const t = useT();
   return (
     <fieldset className="mt-6">

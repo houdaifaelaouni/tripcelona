@@ -204,6 +204,7 @@ export default async function Payments({ searchParams }: PageProps<"/admin/pagos
                 hint={source("PAYMENT_PROVIDER")}
               >
                 <option value="">No cambiar (ahora: {wanted})</option>
+                <option value="both">Stripe y PAYCOMET (el cliente elige)</option>
                 <option value="stripe">Stripe</option>
                 <option value="paycomet">PAYCOMET (Banco Sabadell)</option>
                 <option value="redsys">Redsys</option>

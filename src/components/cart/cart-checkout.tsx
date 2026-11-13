@@ -14,7 +14,7 @@ import { cartTotal, useCartLines } from "./use-cart-lines";
 import { FormCard, PaymentMethodCard } from "@/components/booking/checkout-ui";
 import type { PaymentProvider } from "@/lib/payments/config";
 
-export function CartCheckout({ provider }: { provider: PaymentProvider | null }) {
+export function CartCheckout({ provider }: { provider: PaymentProvider | "choice" | null }) {
   const items = useCart();
   const { lines, loading, empty } = useCartLines();
   const locale = useLocale();

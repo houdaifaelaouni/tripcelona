@@ -8,7 +8,7 @@ import { WhatsAppCta } from "@/components/tours/empty-state";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getBookingDetails } from "@/lib/booking/details";
-import { activeProvider } from "@/lib/payments/config";
+import { availableProviders } from "@/lib/payments/config";
 import { createT } from "@/lib/i18n/translate";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { notFound } from "next/navigation";
@@ -20,6 +20,8 @@ export async function generateMetadata({
   const title = "Pago de tu reserva";
   return { title: isLocale(lang) ? createT(lang)(title) : title, robots: { index: false } };
 }
+
+const GATEWAY_NAME = { stripe: "Stripe", paycomet: "Banco Sabadell", redsys: "Redsys" } as const;
 
 const NOTICES: Record<string, string> = {
   error: "El pago no se ha completado. Puedes intentarlo de nuevo, con la misma u otra tarjeta.",
@@ -107,8 +109,9 @@ async function Pending({
     );
   }
 
-  const provider = await activeProvider();
-  const canPay = provider !== null;
+  const providers = await availableProviders();
+  const provider = providers[0];
+  const canPay = providers.length > 0;
   return (
     <>
       <ClearCart />
@@ -130,18 +133,34 @@ async function Pending({
         <form method="post" action="/api/pagos/iniciar" className="mt-6">
           <input type="hidden" name="bookingId" value={booking.id} />
           <input type="hidden" name="locale" value={locale} />
+          {providers.length > 1 && (
+            <fieldset className="mb-4 space-y-2">
+              <legend className="mb-2 text-sm font-semibold text-primary">
+                {t("Elige la pasarela de pago")}
+              </legend>
+              {providers.map((p, i) => (
+                <label
+                  key={p}
+                  className="flex cursor-pointer items-center gap-3 rounded-xl bg-primary p-3 ring-1 ring-secondary ring-inset has-[:checked]:ring-2 has-[:checked]:ring-brand"
+                >
+                  <input type="radio" name="provider" value={p} defaultChecked={i === 0} />
+                  <span className="font-medium text-primary">{GATEWAY_NAME[p]}</span>
+                </label>
+              ))}
+            </fieldset>
+          )}
           <Button type="submit" size="lg" className="w-full sm:w-auto">
             {t("Pagar con tarjeta")}
           </Button>
           <p className="mt-2 text-sm text-tertiary">
-            {t("Pago seguro en la pasarela del banco ({provider}), con verificación 3D Secure.", {
-              provider:
-                provider === "stripe"
-                  ? "Stripe"
-                  : provider === "paycomet"
-                    ? "Banco Sabadell"
-                    : "Redsys",
-            })}
+            {providers.length > 1
+              ? t("Pago seguro con 3D Secure en la pasarela que elijas.")
+              : t(
+                  "Pago seguro en la pasarela del banco ({provider}), con verificación 3D Secure.",
+                  {
+                    provider: GATEWAY_NAME[provider],
+                  },
+                )}
           </p>
         </form>
       ) : (

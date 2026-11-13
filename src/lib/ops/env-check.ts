@@ -65,15 +65,17 @@ export function checkEnv(env: Record<string, string | undefined>, target: EnvTar
 
   // The card gateway: Redsys unless PAYMENT_PROVIDER=paycomet or stripe.
   const provider = get("PAYMENT_PROVIDER") || "redsys";
-  if (provider !== "redsys" && provider !== "paycomet" && provider !== "stripe") {
-    error("PAYMENT_PROVIDER", "must be 'redsys', 'paycomet' or 'stripe'");
+  if (!["redsys", "paycomet", "stripe", "both"].includes(provider)) {
+    error("PAYMENT_PROVIDER", "must be 'redsys', 'paycomet', 'stripe' or 'both'");
   }
   const required =
-    provider === "stripe"
-      ? STRIPE_REQUIRED
-      : provider === "paycomet"
-        ? PAYCOMET_REQUIRED
-        : REDSYS_REQUIRED;
+    provider === "both"
+      ? [...STRIPE_REQUIRED, ...PAYCOMET_REQUIRED]
+      : provider === "stripe"
+        ? STRIPE_REQUIRED
+        : provider === "paycomet"
+          ? PAYCOMET_REQUIRED
+          : REDSYS_REQUIRED;
   for (const name of required) {
     if (!get(name)) error(name, "missing");
   }

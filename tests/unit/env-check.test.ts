@@ -56,6 +56,18 @@ describe("checkEnv", () => {
     );
   });
 
+  it("asks for both gateways' keys when the customer may choose", () => {
+    const env = { ...production, PAYMENT_PROVIDER: "both" };
+    expect(names(env, "production")).toEqual([
+      "STRIPE_SECRET_KEY",
+      "STRIPE_WEBHOOK_SECRET",
+      "PAYCOMET_API_KEY",
+      "PAYCOMET_TERMINAL",
+      "PAYCOMET_CUSTOMER_CODE",
+      "PAYCOMET_PASSWORD",
+    ]);
+  });
+
   it("asks for the Stripe keys when Stripe is the chosen gateway", () => {
     const env = { ...production, PAYMENT_PROVIDER: "stripe" };
     expect(names(env, "production")).toEqual(["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"]);
