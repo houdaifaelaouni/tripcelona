@@ -3,6 +3,9 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { dictionaryFor, createT } from "@/lib/i18n/translate";
 import { locales } from "@/lib/i18n/config";
+import { HOME_DEFAULTS } from "@/lib/site-content-shared";
+import { MONTHS_ES } from "@/lib/search";
+import { DURATION_BUCKETS, PRICE_BUCKETS } from "@/lib/tours/filters";
 import { destinations, footerColumns, primaryNav } from "@/lib/site";
 
 /** Every t("literal") in the public source, found without running it. */
@@ -30,6 +33,18 @@ const dynamic = [
   ...primaryNav.flatMap((i) => [i.label, ...(i.children ?? []).map((c) => c.label)]),
   ...footerColumns.flatMap((c) => [c.title, ...c.links.map((l) => l.label)]),
   ...destinations.map((d) => d.label),
+  ...MONTHS_ES,
+  ...Object.values(DURATION_BUCKETS).map((b) => b.label),
+  ...Object.values(PRICE_BUCKETS).map((b) => b.label),
+  HOME_DEFAULTS.heroTitle,
+  HOME_DEFAULTS.heroLead,
+  HOME_DEFAULTS.whyTitle,
+  HOME_DEFAULTS.stepsTitle,
+  HOME_DEFAULTS.groupsTitle,
+  HOME_DEFAULTS.seoTitle,
+  HOME_DEFAULTS.seoDescription,
+  ...HOME_DEFAULTS.groupPoints,
+  ...[...HOME_DEFAULTS.reasons, ...HOME_DEFAULTS.steps].flatMap((p) => [p.title, p.body]),
 ];
 
 describe("translations", () => {

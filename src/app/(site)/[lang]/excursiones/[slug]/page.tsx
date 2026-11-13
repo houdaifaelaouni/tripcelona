@@ -33,6 +33,9 @@ import { TourCard } from "@/components/tours/tour-card";
 import { Accordion } from "@/components/ui/accordion";
 import { ButtonLink } from "@/components/ui/button";
 import { site } from "@/lib/site";
+import { createT } from "@/lib/i18n/translate";
+import { alternatesFor } from "@/lib/i18n/seo";
+import { isLocale, localizePath, type Locale } from "@/lib/i18n/config";
 import {
   departureMinutes,
   formatDateLong,
@@ -56,18 +59,25 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps<"/[lang]/excursiones/[slug]">): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const t = createT(lang);
   const tour = await getTourBySlug(slug);
   if (!tour) notFound(); // before streaming starts, so unknown slugs get a real 404 status
   return {
     title: tour.seoTitle ?? tour.title,
     description:
       tour.seoDescription ??
-      `${tour.title}. Excursión de un día en grupo desde Barcelona${tour.area ? ` a ${tour.area}` : ""}.`,
-    alternates: { canonical: `/excursiones/${tour.slug}` },
+      (tour.area
+        ? t("{title}. Excursión de un día en grupo desde Barcelona a {area}.", {
+            title: tour.title,
+            area: tour.area,
+          })
+        : t("{title}. Excursión de un día en grupo desde Barcelona.", { title: tour.title })),
+    alternates: alternatesFor(`/excursiones/${tour.slug}`, lang),
     openGraph: {
       title: tour.seoTitle ?? tour.title,
-      url: `/excursiones/${tour.slug}`,
+      url: localizePath(`/excursiones/${tour.slug}`, lang),
       images: tour.image ? [{ url: tour.image.url, alt: tour.image.alt }] : undefined,
     },
   };
@@ -91,7 +101,9 @@ async function TourPageBody({
 }: {
   params: PageProps<"/[lang]/excursiones/[slug]">["params"];
 }) {
-  const { slug } = await params;
+  const { slug, lang: locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const t = createT(locale);
   const tour = await getTourBySlug(slug);
   if (!tour) notFound();
   const [published, reviews] = await Promise.all([
@@ -107,25 +119,25 @@ async function TourPageBody({
         data={[
           tourJsonLd(tour),
           breadcrumbJsonLd([
-            { name: "Inicio", path: "/" },
-            { name: "Ofertas de viajes", path: "/ofertas-de-viajes" },
-            { name: tour.title, path: `/excursiones/${tour.slug}` },
+            { name: t("Inicio"), path: localizePath("/", locale) },
+            { name: t("Ofertas de viajes"), path: localizePath("/ofertas-de-viajes", locale) },
+            { name: tour.title, path: localizePath(`/excursiones/${tour.slug}`, locale) },
           ]),
           ...(faqJsonLd(tour.faqs) ? [faqJsonLd(tour.faqs)!] : []),
         ]}
       />
       <div className="container-detail">
-        <nav aria-label="Ruta de navegación" className="text-sm font-medium text-tertiary">
+        <nav aria-label={t("Ruta de navegación")} className="text-sm font-medium text-tertiary">
           <ol className="flex flex-wrap gap-1">
             <li>
               <Link href="/" className="underline-offset-2 hover:underline">
-                Inicio
+                {t("Inicio")}
               </Link>{" "}
               /
             </li>
             <li>
               <Link href="/ofertas-de-viajes" className="underline-offset-2 hover:underline">
-                Ofertas de viajes
+                {t("Ofertas de viajes")}
               </Link>{" "}
               /
             </li>
@@ -144,7 +156,7 @@ async function TourPageBody({
               {tour.area && (
                 <p className="mt-1 flex items-center gap-1 text-sm text-tertiary">
                   <MapPin aria-hidden size={16} />
-                  {tour.area} · salida desde Barcelona
+                  {tour.area} · {t("salida desde Barcelona")}
                 </p>
               )}
             </header>
@@ -153,19 +165,19 @@ async function TourPageBody({
 
           <aside
             id="reservar"
-            aria-label="Reserva"
+            aria-label={t("Reserva")}
             className="order-3 mt-6 scroll-mt-24 border-t border-secondary pt-8 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-start lg:border-0 lg:pt-0 lg:sticky lg:top-28"
           >
-            <BookingPanel tour={tour} />
+            <BookingPanel tour={tour} locale={locale} />
           </aside>
 
           <div className="min-w-0 divide-y divide-secondary lg:col-start-1">
             <div className="pb-8">
-              <KeyFacts tour={tour} />
+              <KeyFacts tour={tour} locale={locale} />
               {tour.summary && <p className="mt-6 text-lg text-tertiary">{tour.summary}</p>}
             </div>
 
-            <Section title="Programa del viaje">
+            <Section title={t("Programa del viaje")}>
               <Reveal>
                 <div data-reveal className="mb-8">
                   <RouteDiagram
@@ -183,21 +195,24 @@ async function TourPageBody({
             </Section>
 
             {tour.description && tour.description.content.length > 0 && (
-              <Section title="Sobre el destino">
+              <Section title={t("Sobre el destino")}>
                 <RichText doc={tour.description} />
               </Section>
             )}
 
             {tour.highlights.length > 0 && (
-              <Section title="Lo más destacado">
+              <Section title={t("Lo más destacado")}>
                 <List items={tour.highlights} kind="yes" columns />
               </Section>
             )}
 
-            <section aria-label="Incluye, punto de encuentro y antes de reservar" className="py-8">
+            <section
+              aria-label={t("Incluye, punto de encuentro y antes de reservar")}
+              className="py-8"
+            >
               <Reveal>
                 <div className="grid gap-4 md:grid-cols-3">
-                  <InfoCard title="Qué incluye">
+                  <InfoCard title={t("Qué incluye")}>
                     {tour.inclusions.length > 0 ? (
                       <ul className="space-y-2 text-sm text-tertiary">
                         {tour.inclusions.slice(0, 6).map((item) => (
@@ -211,16 +226,16 @@ async function TourPageBody({
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-sm text-tertiary">Autocar y guía incluidos.</p>
+                      <p className="text-sm text-tertiary">{t("Autocar y guía incluidos.")}</p>
                     )}
                   </InfoCard>
-                  <InfoCard title="Punto de encuentro" tinted>
+                  <InfoCard title={t("Punto de encuentro")} tinted>
                     <p className="text-sm text-secondary">
                       {tour.meetingPoint ?? site.meetingPoint}
                     </p>
                     {next && (
                       <p className="mt-2 text-sm text-tertiary">
-                        Salida a las {formatTime(next.startsAt)}.
+                        {t("Salida a las {time}.", { time: formatTime(next.startsAt, locale) })}
                       </p>
                     )}
                     <a
@@ -229,15 +244,15 @@ async function TourPageBody({
                       rel="noopener noreferrer"
                       className="mt-3 inline-block text-sm font-semibold text-brand-secondary underline-offset-2 hover:underline"
                     >
-                      Ver en Google Maps
+                      {t("Ver en Google Maps")}
                     </a>
                   </InfoCard>
-                  <InfoCard title="Antes de reservar">
+                  <InfoCard title={t("Antes de reservar")}>
                     <ul className="space-y-2 text-sm font-medium text-primary">
                       {[
-                        ["Política de cancelación", "/politica-de-devoluciones"],
-                        ["Preguntas frecuentes", "/preguntas-frecuentes"],
-                        ["¿Dudas? Escríbenos", "/contactanos"],
+                        [t("Política de cancelación"), "/politica-de-devoluciones"],
+                        [t("Preguntas frecuentes"), "/preguntas-frecuentes"],
+                        [t("¿Dudas? Escríbenos"), "/contactanos"],
                       ].map(([label, href]) => (
                         <li key={href}>
                           <Link
@@ -259,19 +274,19 @@ async function TourPageBody({
             </section>
 
             {tour.exclusions.length > 0 && (
-              <Section title="No incluye">
+              <Section title={t("No incluye")}>
                 <List items={tour.exclusions} kind="no" />
               </Section>
             )}
 
             {tour.packingList.length > 0 && (
-              <Section title="Qué llevar">
+              <Section title={t("Qué llevar")}>
                 <List items={tour.packingList} kind="dot" />
               </Section>
             )}
 
             {tour.faqs.length > 0 && (
-              <Section title="Preguntas frecuentes">
+              <Section title={t("Preguntas frecuentes")}>
                 <Accordion
                   items={tour.faqs.map((f, i) => ({
                     id: String(i),
@@ -296,19 +311,19 @@ async function TourPageBody({
             id="related-heading"
             className="text-2xl font-semibold tracking-tight text-primary md:text-3xl"
           >
-            Otras excursiones
+            {t("Otras excursiones")}
           </h2>
           <ul className="mt-8 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((t) => (
-              <li key={t.slug} className="flex">
-                <TourCard tour={t} />
+            {related.map((r) => (
+              <li key={r.slug} className="flex">
+                <TourCard tour={r} locale={locale} />
               </li>
             ))}
           </ul>
         </section>
       )}
 
-      <MobileBookingBar tour={tour} />
+      <MobileBookingBar tour={tour} locale={locale} />
     </article>
   );
 }
@@ -379,7 +394,8 @@ function List({
 }
 
 /** Mobile only: price and a jump to the dates, stuck to the bottom while the tour is in view. */
-function MobileBookingBar({ tour }: { tour: TourDetail }) {
+function MobileBookingBar({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  const t = createT(locale);
   const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
   return (
     <div className="sticky bottom-0 z-30 mt-8 border-t border-secondary bg-primary shadow-lg lg:hidden">
@@ -387,37 +403,38 @@ function MobileBookingBar({ tour }: { tour: TourDetail }) {
         <p>
           {price !== null ? (
             <>
-              <span className="text-sm text-tertiary">Desde </span>
-              <span className="font-semibold">{formatPrice(price)}</span>
-              <span className="text-sm text-tertiary"> / persona</span>
+              <span className="text-sm text-tertiary">{t("Desde")} </span>
+              <span className="font-semibold">{formatPrice(price, locale)}</span>
+              <span className="text-sm text-tertiary"> / {t("persona")}</span>
             </>
           ) : (
-            <span className="text-sm text-tertiary">Nuevas fechas próximamente</span>
+            <span className="text-sm text-tertiary">{t("Nuevas fechas próximamente")}</span>
           )}
         </p>
         <ButtonLink href="#reservar" size="md">
-          Ver fechas
+          {t("Ver fechas")}
         </ButtonLink>
       </div>
     </div>
   );
 }
 
-function KeyFacts({ tour }: { tour: TourDetail }) {
+function KeyFacts({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  const t = createT(locale);
   const next = tour.departures[0];
   const minutes = tour.durationMinutes ?? (next ? departureMinutes(next) : null);
   const facts = [
-    { icon: MapPin, label: "Zona", value: tour.area },
+    { icon: MapPin, label: t("Zona"), value: tour.area },
     {
       icon: Clock,
-      label: "Horario",
+      label: t("Horario"),
       value: next
-        ? `Salida ${formatTime(next.startsAt)}${next.endsAt ? ` · regreso aprox. ${formatTime(next.endsAt)}` : ""}`
+        ? `${t("Salida {time}", { time: formatTime(next.startsAt, locale) })}${next.endsAt ? ` · ${t("regreso aprox. {time}", { time: formatTime(next.endsAt, locale) })}` : ""}`
         : null,
     },
-    { icon: Timer, label: "Duración", value: minutes ? formatDuration(minutes) : null },
-    { icon: Mountain, label: "Dificultad", value: tour.difficulty },
-    { icon: Bus, label: "Salida desde", value: "Estació del Nord, Barcelona" },
+    { icon: Timer, label: t("Duración"), value: minutes ? formatDuration(minutes) : null },
+    { icon: Mountain, label: t("Dificultad"), value: tour.difficulty ? t(tour.difficulty) : null },
+    { icon: Bus, label: t("Salida desde"), value: "Estació del Nord, Barcelona" },
   ].filter((f): f is typeof f & { value: string } => Boolean(f.value));
 
   return (
@@ -444,33 +461,36 @@ function KeyFacts({ tour }: { tour: TourDetail }) {
   );
 }
 
-function BookingPanel({ tour }: { tour: TourDetail }) {
+function BookingPanel({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  const t = createT(locale);
   const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
   return (
     <div className="rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset">
       {price !== null && (
         <p>
-          <span className="text-sm text-tertiary">Desde </span>
-          <span className="text-display-xs font-semibold text-primary">{formatPrice(price)}</span>
-          <span className="text-sm text-tertiary"> / persona</span>
+          <span className="text-sm text-tertiary">{t("Desde")} </span>
+          <span className="text-display-xs font-semibold text-primary">
+            {formatPrice(price, locale)}
+          </span>
+          <span className="text-sm text-tertiary"> / {t("persona")}</span>
         </p>
       )}
       {/* Seats are read live per request; the cached list shows meanwhile. */}
-      <Suspense fallback={<CachedDates tour={tour} />}>
-        <LiveAvailability tour={tour} />
+      <Suspense fallback={<CachedDates tour={tour} locale={locale} />}>
+        <LiveAvailability tour={tour} locale={locale} />
       </Suspense>
       <ul className="mt-6 space-y-2 border-t border-secondary pt-5 text-sm text-tertiary">
         <li className="flex items-center gap-2">
           <CreditCard aria-hidden className="size-4 text-fg-quaternary" />
-          Pago seguro con tarjeta
+          {t("Pago seguro con tarjeta")}
         </li>
         <li className="flex items-center gap-2">
           <Mail aria-hidden className="size-4 text-fg-quaternary" />
-          Confirmación por email
+          {t("Confirmación por email")}
         </li>
       </ul>
       <div className="mt-5 border-t border-secondary pt-5">
-        <ul className="flex flex-wrap items-center gap-2" aria-label="Tarjetas aceptadas">
+        <ul className="flex flex-wrap items-center gap-2" aria-label={t("Tarjetas aceptadas")}>
           {PAYMENT_METHODS.map((m) => (
             <li key={m.name}>
               <Image
@@ -491,52 +511,64 @@ function BookingPanel({ tour }: { tour: TourDetail }) {
             height={BADGES[0].height}
             className="size-12 shrink-0"
           />
-          <p className="text-xs text-tertiary">Distinción Tripadvisor.</p>
+          <p className="text-xs text-tertiary">{t("Distinción Tripadvisor.")}</p>
         </div>
       </div>
     </div>
   );
 }
 
-async function LiveAvailability({ tour }: { tour: TourDetail }) {
+async function LiveAvailability({ tour, locale }: { tour: TourDetail; locale: Locale }) {
   const departures = (await getLiveDepartures(tour.slug)).slice(0, 8);
   const bookable = departures.some((d) => d.status === "open" && d.seatsLeft > 0);
-  if (!bookable) return <NoDates tour={tour} soldOut={departures.length > 0} />;
+  if (!bookable) return <NoDates tour={tour} soldOut={departures.length > 0} locale={locale} />;
   return <DeparturePicker departures={departures} />;
 }
 
-function CachedDates({ tour }: { tour: TourDetail }) {
-  if (tour.departures.length === 0) return <NoDates tour={tour} soldOut={false} />;
+function CachedDates({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  if (tour.departures.length === 0) return <NoDates tour={tour} soldOut={false} locale={locale} />;
   return (
     <ul className="mt-4 divide-y divide-secondary text-sm" aria-busy="true">
       {tour.departures.slice(0, 8).map((d) => (
         <li key={d.id} className="py-3 first-letter:uppercase">
-          {formatDateLong(d.startsAt)}
+          {formatDateLong(d.startsAt, locale)}
         </li>
       ))}
     </ul>
   );
 }
 
-function NoDates({ tour, soldOut }: { tour: TourDetail; soldOut: boolean }) {
+function NoDates({
+  tour,
+  soldOut,
+  locale,
+}: {
+  tour: TourDetail;
+  soldOut: boolean;
+  locale: Locale;
+}) {
+  const t = createT(locale);
   return (
     <div className="mt-4">
       <p className="text-tertiary">
         {soldOut
-          ? "Todas las fechas publicadas están completas."
-          : "Estamos preparando nuevas fechas para esta excursión."}{" "}
-        Escríbenos y te avisamos de la próxima salida.
+          ? t("Todas las fechas publicadas están completas.")
+          : t("Estamos preparando nuevas fechas para esta excursión.")}{" "}
+        {t("Escríbenos y te avisamos de la próxima salida.")}
       </p>
       <div className="mt-3 flex flex-col gap-2">
         <WhatsAppCta
           label="Avísame por WhatsApp"
-          message={`Hola, me interesa la excursión "${tour.title}". ¿Cuándo es la próxima salida?`}
+          locale={locale}
+          message={t("Hola, me interesa la excursión «{title}». ¿Cuándo es la próxima salida?", {
+            title: tour.title,
+          })}
         />
         <Link
           href="/ofertas-de-viajes"
           className="text-center font-semibold underline underline-offset-2"
         >
-          Ver otras excursiones
+          {t("Ver otras excursiones")}
         </Link>
       </div>
     </div>
