@@ -46,16 +46,6 @@ export const destinations = [
 
 export const footerColumns: { title: string; links: { label: string; href: string }[] }[] = [
   {
-    title: "Acerca de Tripcelona",
-    links: [
-      { label: "Inicio", href: "/" },
-      { label: "Ofertas de viajes", href: "/ofertas-de-viajes" },
-      { label: "Sobre nosotros", href: "/sobre-nosotros" },
-      { label: "Contáctanos", href: "/contactanos" },
-      { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
-    ],
-  },
-  {
     title: "Destinos",
     links: [
       {
@@ -74,13 +64,40 @@ export const footerColumns: { title: string; links: { label: string; href: strin
         label: "Rupit y Tavertet",
         href: "/excursiones/la-magia-rural-de-cataluna-escapada-a-rupit-y-tavertet",
       },
+      {
+        label: "Alquézar",
+        href: "/excursiones/el-canon-del-vero-alquezar-y-la-ruta-de-las-pasarelas",
+      },
     ],
   },
   {
-    title: "Información legal",
+    title: "Reservas",
+    links: [
+      { label: "Todas las excursiones", href: "/ofertas-de-viajes" },
+      { label: "Viajes para grupos", href: "/crea-tu-tour" },
+      { label: "Mi reserva", href: "/reservar" },
+    ],
+  },
+  {
+    title: "Tripcelona",
+    links: [
+      { label: "Inicio", href: "/" },
+      { label: "Sobre nosotros", href: "/sobre-nosotros" },
+      { label: "Blog", href: "/blog" },
+    ],
+  },
+  {
+    title: "Ayuda",
+    links: [
+      { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
+      { label: "Contáctanos", href: "/contactanos" },
+      { label: "Cancelación y devoluciones", href: "/politica-de-devoluciones" },
+    ],
+  },
+  {
+    title: "Legal",
     links: [
       { label: "Política de privacidad", href: "/politica-de-privacidad" },
-      { label: "Cancelación y devoluciones", href: "/politica-de-devoluciones" },
       { label: "Condiciones de contratación", href: "/condiciones-de-contratacion" },
       { label: "Política de cookies", href: "/politica-de-cookies" },
       { label: "Aviso legal", href: "/aviso-legal" },

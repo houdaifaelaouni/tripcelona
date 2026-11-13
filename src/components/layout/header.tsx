@@ -1,4 +1,5 @@
-import { ChevronDown, Mountain, Phone, Ticket } from "lucide-react";
+import { ChevronDown, Phone, Ticket } from "lucide-react";
+import { Logo } from "@/components/brand/logo";
 import Link from "next/link";
 import { getSiteSettings } from "@/lib/settings";
 import { primaryNav } from "@/lib/site";
@@ -26,18 +27,8 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-secondary bg-primary/85 text-primary backdrop-blur-md backdrop-saturate-150">
       <div className="container-site grid h-16 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
-        {/* TODO(PO): replace the wordmark with the SVG logo (access checklist). */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 justify-self-start text-lg font-semibold tracking-tight text-primary"
-        >
-          <span
-            aria-hidden
-            className="flex size-7 items-center justify-center rounded-md bg-brand-solid text-white [&>svg]:size-4"
-          >
-            <Mountain />
-          </span>
-          Tripcelona
+        <Link href="/" className="flex items-center justify-self-start rounded-md">
+          <Logo className="h-12" priority />
           <span className="sr-only"> - Excursiones en grupo por Cataluña, inicio</span>
         </Link>
 
