@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ChatArt, FaqArt } from "@/components/art/art";
 import { FaqList } from "@/components/content/faq-list";
 import { CtaBand } from "@/components/layout/cta-band";
 import { PageHero } from "@/components/layout/page-hero";
@@ -25,7 +24,6 @@ export default async function FaqPage() {
         eyebrow="Ayuda"
         title="Preguntas frecuentes"
         intro="Reservas, pagos, punto de encuentro y qué pasa si llueve."
-        art={<FaqArt />}
       />
       <div className="container-site py-10 md:py-14">
         <div className="max-w-3xl">
@@ -35,7 +33,6 @@ export default async function FaqPage() {
       <CtaBand
         title="¿No encuentras tu respuesta?"
         text="Escríbenos y te respondemos lo antes posible."
-        art={<ChatArt />}
       >
         <WhatsAppCta message="Hola, tengo una pregunta sobre vuestras excursiones." />
       </CtaBand>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ChatArt, PinArt } from "@/components/art/art";
 import { PageHero } from "@/components/layout/page-hero";
 import Link from "next/link";
 import { ContactForm } from "@/components/forms/contact-form";
@@ -23,7 +22,6 @@ export default async function ContactPage() {
         eyebrow="Contacto"
         title="¿En qué podemos ayudarte?"
         intro="Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura."
-        art={<ChatArt />}
       />
       <div className="container-site grid gap-8 py-10 md:py-14 lg:grid-cols-[1fr_320px]">
         <section
@@ -73,12 +71,6 @@ export default async function ContactPage() {
             >
               {s.meetingPoint}
             </a>
-          </div>
-          <div
-            data-art-host
-            className="hidden max-w-[260px] rounded-2xl bg-white p-2 ring-1 ring-secondary lg:block"
-          >
-            <PinArt />
           </div>
           <p>
             <Link href="/preguntas-frecuentes" className="text-blue underline">

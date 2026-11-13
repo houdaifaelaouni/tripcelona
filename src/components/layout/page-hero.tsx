@@ -10,14 +10,12 @@ export function PageHero({
   eyebrow,
   title,
   intro,
-  art,
   children,
   compact,
 }: {
   eyebrow: string;
   title: string;
   intro?: ReactNode;
-  art: ReactNode;
   children?: ReactNode;
   compact?: boolean;
 }) {
@@ -29,7 +27,7 @@ export function PageHero({
       />
       <div
         className={cn(
-          "container-site relative grid items-center gap-8 md:grid-cols-[1.25fr_1fr] md:gap-12",
+          "container-site relative max-w-3xl",
           compact ? "py-8 md:py-10" : "py-10 md:py-14",
         )}
       >
@@ -54,12 +52,6 @@ export function PageHero({
             </div>
           )}
         </HeroIntro>
-        <div
-          data-art-host
-          className="mx-auto hidden w-full max-w-[340px] rounded-3xl bg-white p-3 shadow-lg ring-1 ring-secondary transition-transform duration-300 hover:-translate-y-1 motion-reduce:transition-none md:block"
-        >
-          {art}
-        </div>
       </div>
     </header>
   );

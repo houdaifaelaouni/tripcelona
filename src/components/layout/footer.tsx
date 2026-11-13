@@ -22,7 +22,6 @@ const PAYMENT_METHODS = [
 const BADGES = [
   { name: "Tripadvisor", src: "/brand/badges/tripadvisor.png", width: 86, height: 86 },
   { name: "Insignia de diseño web", src: "/brand/badges/award-pencil.png", width: 86, height: 86 },
-  { name: "CSS Design Awards", src: "/brand/badges/css-design-awards.png", width: 164, height: 25 },
 ] as const;
 
 /**

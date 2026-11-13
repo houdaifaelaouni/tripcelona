@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { JournalArt } from "@/components/art/art";
 import { PageHero } from "@/components/layout/page-hero";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { Suspense } from "react";
@@ -66,7 +65,6 @@ async function ContentPageBody({ params }: { params: PageProps<"/[slug]">["param
         compact
         eyebrow={page.kind === "legal" ? "Información legal" : "Tripcelona"}
         title={page.title}
-        art={<JournalArt />}
       />
       <div className="container-site py-10 md:py-14">
         <RichText

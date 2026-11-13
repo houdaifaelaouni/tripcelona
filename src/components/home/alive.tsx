@@ -6,7 +6,6 @@
  */
 import { CalendarCheck, CreditCard, MailCheck, MapPin, Search } from "lucide-react";
 import Link from "next/link";
-import { CalendarArt, TicketArt } from "@/components/art/art";
 import { CountUp, DrawOnScroll, Reveal } from "@/components/motion/reveal";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import { Badge } from "@/components/ui/card";
@@ -169,12 +168,6 @@ export function HowItWorks({
             title={title}
             lead="Cuatro pasos y tu plaza está asegurada."
           />
-          <div
-            data-art-host
-            className="hidden w-56 shrink-0 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-secondary transition-transform duration-300 hover:-translate-y-1 md:block"
-          >
-            <TicketArt />
-          </div>
         </div>
         <Reveal>
           <ol className="mt-12 grid gap-px overflow-hidden rounded-xl bg-border-secondary ring-1 ring-secondary sm:grid-cols-2 lg:grid-cols-4">
@@ -250,12 +243,6 @@ export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
           title="Calendario de salidas"
           lead="Fechas, plazas y precios de las próximas excursiones."
         />
-        <div
-          data-art-host
-          className="hidden w-56 shrink-0 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-secondary transition-transform duration-300 hover:-translate-y-1 md:block"
-        >
-          <CalendarArt />
-        </div>
       </div>
       <Reveal className="mt-10">
         <div

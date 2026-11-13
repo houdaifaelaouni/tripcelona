@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { RouteArt } from "@/components/art/art";
 import { PageHero } from "@/components/layout/page-hero";
 import { QuoteWizard } from "@/components/forms/quote-wizard";
 import { WhatsAppCta } from "@/components/tours/empty-state";
@@ -24,7 +23,6 @@ export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) 
         eyebrow="Grupos y empresas"
         title="Crea tu tour a medida"
         intro="¿Vienes con tu empresa, tu asociación o un grupo de amigos? Elige un plan, la fecha y los extras, y te enviamos una propuesta personalizada en 24–48 horas."
-        art={<RouteArt />}
       />
       <div className="container-site grid gap-8 py-10 md:py-14 lg:grid-cols-[1fr_300px]">
         <section className="rounded-2xl border border-secondary bg-white p-5 md:p-6">
