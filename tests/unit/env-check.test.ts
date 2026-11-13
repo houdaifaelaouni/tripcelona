@@ -60,8 +60,11 @@ describe("checkEnv", () => {
     const env = { ...production, PAYMENT_PROVIDER: "stripe" };
     expect(names(env, "production")).toEqual(["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"]);
     expect(
-      names({ ...env, STRIPE_SECRET_KEY: "k", STRIPE_WEBHOOK_SECRET: "w" }, "production"),
+      names({ ...env, STRIPE_SECRET_KEY: "sk_live_x", STRIPE_WEBHOOK_SECRET: "w" }, "production"),
     ).toEqual([]);
+    expect(
+      names({ ...env, STRIPE_SECRET_KEY: "pk_live_x", STRIPE_WEBHOOK_SECRET: "w" }, "production"),
+    ).toEqual(["STRIPE_SECRET_KEY"]);
   });
 
   it("reports every missing required variable", () => {

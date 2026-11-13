@@ -77,6 +77,14 @@ export function checkEnv(env: Record<string, string | undefined>, target: EnvTar
   for (const name of required) {
     if (!get(name)) error(name, "missing");
   }
+  if (provider === "stripe") {
+    const key = get("STRIPE_SECRET_KEY");
+    if (key && !/^(sk|rk)_(live|test)_/.test(key))
+      error(
+        "STRIPE_SECRET_KEY",
+        "must be a secret key (sk_… or rk_…), not the publishable pk_… key",
+      );
+  }
 
   for (const name of ["NEXT_PUBLIC_SITE_URL", "NEXT_PUBLIC_SUPABASE_URL"]) {
     const value = get(name);
