@@ -12,15 +12,26 @@ import { getPageBySlug } from "@/lib/content/queries";
 import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { getSiteSettings } from "@/lib/settings";
 import { getPublishedTours } from "@/lib/tours/queries";
+import { createT } from "@/lib/i18n/translate";
+import { alternatesFor } from "@/lib/i18n/seo";
+import { isLocale, localizePath, type Locale } from "@/lib/i18n/config";
+import { notFound } from "next/navigation";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]/sobre-nosotros">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = createT(lang);
   const page = await getPageBySlug("sobre-nosotros");
   return {
-    title: page?.seoTitle ?? "Sobre nosotros",
+    title: page?.seoTitle ?? t("Sobre nosotros"),
     description:
       page?.seoDescription ??
-      "Tripcelona organiza excursiones y viajes para grandes grupos desde Barcelona, con logística, transporte y soporte local.",
-    alternates: { canonical: "/sobre-nosotros" },
+      t(
+        "Tripcelona organiza excursiones y viajes para grandes grupos desde Barcelona, con logística, transporte y soporte local.",
+      ),
+    alternates: alternatesFor("/sobre-nosotros", lang),
   };
 }
 
@@ -61,27 +72,30 @@ const included = [
   "Soporte logístico 24/7",
 ];
 
-export default function AboutPage() {
+export default function AboutPage({ params }: PageProps<"/[lang]/sobre-nosotros">) {
   return (
     <Suspense fallback={<PageSkeleton />}>
-      <AboutBody />
+      <AboutBody params={params} />
     </Suspense>
   );
 }
 
-async function AboutBody() {
+async function AboutBody({ params }: { params: PageProps<"/[lang]/sobre-nosotros">["params"] }) {
+  const { lang: locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const t = createT(locale);
   const [tours, site] = await Promise.all([getPublishedTours(), getSiteSettings()]);
-  const photos = tours.flatMap((t) => (t.image ? [t.image] : []));
+  const photos = tours.flatMap((tour) => (tour.image ? [tour.image] : []));
   const photo = (i: number) => photos[i % Math.max(photos.length, 1)] ?? null;
-  const gallery: GalleryPhoto[] = tours.flatMap((t) =>
-    t.image
+  const gallery: GalleryPhoto[] = tours.flatMap((tour) =>
+    tour.image
       ? [
           {
-            url: t.image.url,
-            alt: t.image.alt,
-            title: t.title,
-            area: t.area,
-            href: `/excursiones/${t.slug}`,
+            url: tour.image.url,
+            alt: tour.image.alt,
+            title: tour.title,
+            area: tour.area,
+            href: `/excursiones/${tour.slug}`,
           },
         ]
       : [],
@@ -91,8 +105,8 @@ async function AboutBody() {
     <>
       <JsonLd
         data={breadcrumbJsonLd([
-          { name: "Inicio", path: "/" },
-          { name: "Sobre nosotros", path: "/sobre-nosotros" },
+          { name: t("Inicio"), path: localizePath("/", locale) },
+          { name: t("Sobre nosotros"), path: localizePath("/sobre-nosotros", locale) },
         ])}
       />
 
@@ -103,23 +117,23 @@ async function AboutBody() {
               data-intro
               className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary"
             >
-              01/ Quiénes somos
+              {t("01/ Quiénes somos")}
             </p>
             <h1
               data-intro
               className="mt-4 text-4xl leading-[1.08] font-semibold tracking-[-0.035em] text-primary md:text-[3.25rem]"
             >
-              Viajar sin complicaciones
+              {t("Viajar sin complicaciones")}
             </h1>
             <p data-intro className="mt-5 max-w-lg text-lg text-tertiary">
-              Viajar y explorar juntos: la logística de élite para tu gran grupo.
+              {t("Viajar y explorar juntos: la logística de élite para tu gran grupo.")}
             </p>
             <div data-intro className="mt-7 flex flex-wrap gap-3">
               <ButtonLink href="/crea-tu-tour" size="lg">
-                Pedir presupuesto
+                {t("Pedir presupuesto")}
               </ButtonLink>
               <ButtonLink href="/ofertas-de-viajes" size="lg" variant="outline">
-                Ver excursiones
+                {t("Ver excursiones")}
               </ButtonLink>
             </div>
           </HeroIntro>
@@ -142,8 +156,8 @@ async function AboutBody() {
         <div className="container-site">
           <SectionHeader
             id="confianza-heading"
-            eyebrow="02/ Lo que puedes esperar"
-            title="Confía en nosotros: tu viaje está cubierto"
+            eyebrow={t("02/ Lo que puedes esperar")}
+            title={t("Confía en nosotros: tu viaje está cubierto")}
           />
           <Reveal>
             <ul className="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
@@ -153,8 +167,10 @@ async function AboutBody() {
                     <Icon aria-hidden className="size-5" />
                   </span>
                   <div>
-                    <h3 className="text-md font-semibold tracking-tight text-primary">{title}</h3>
-                    <p className="mt-1.5 text-sm text-tertiary">{body}</p>
+                    <h3 className="text-md font-semibold tracking-tight text-primary">
+                      {t(title)}
+                    </h3>
+                    <p className="mt-1.5 text-sm text-tertiary">{t(body)}</p>
                   </div>
                 </li>
               ))}
@@ -171,18 +187,18 @@ async function AboutBody() {
               className="rounded-2xl bg-primary p-7 ring-1 ring-secondary ring-inset md:p-9"
             >
               <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
-                Nuestra visión
+                {t("Nuestra visión")}
               </p>
               <h2
                 id="vision-heading"
                 className="mt-3 text-2xl leading-[1.2] font-semibold tracking-[-0.03em] text-primary md:text-3xl"
               >
-                Inspirar aventuras colectivas con logística de élite en Barcelona
+                {t("Inspirar aventuras colectivas con logística de élite en Barcelona")}
               </h2>
               <p className="mt-4 text-tertiary">
-                Nuestra visión como empresa de excursiones es transformar la manera en que los
-                grandes grupos descubren Barcelona. Queremos que cada aventura sea una experiencia
-                de exploración cohesionada.
+                {t(
+                  "Nuestra visión como empresa de excursiones es transformar la manera en que los grandes grupos descubren Barcelona. Queremos que cada aventura sea una experiencia de exploración cohesionada.",
+                )}
               </p>
             </article>
             <article
@@ -190,16 +206,15 @@ async function AboutBody() {
               className="rounded-2xl bg-primary p-7 ring-1 ring-secondary ring-inset md:p-9"
             >
               <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
-                Nuestra misión
+                {t("Nuestra misión")}
               </p>
               <h2 className="mt-3 text-2xl leading-[1.2] font-semibold tracking-[-0.03em] text-primary md:text-3xl">
-                Soluciones de viaje a medida y rutas de exploración impecables
+                {t("Soluciones de viaje a medida y rutas de exploración impecables")}
               </h2>
               <p className="mt-4 text-tertiary">
-                Nuestra misión es doble: primero, asegurar que cada ruta de exploración esté
-                diseñada a medida, priorizando el team building. Segundo, garantizar una logística
-                impecable para grupos grandes, cubriendo transporte y seguridad con los más altos
-                estándares.
+                {t(
+                  "Nuestra misión es doble: primero, asegurar que cada ruta de exploración esté diseñada a medida, priorizando el team building. Segundo, garantizar una logística impecable para grupos grandes, cubriendo transporte y seguridad con los más altos estándares.",
+                )}
               </p>
             </article>
           </Reveal>
@@ -221,18 +236,18 @@ async function AboutBody() {
           </div>
           <div>
             <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
-              03/ Para tu grupo
+              {t("03/ Para tu grupo")}
             </p>
             <h2
               id="ruta-heading"
               className="mt-3 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]"
             >
-              La ruta de exploración definitiva
+              {t("La ruta de exploración definitiva")}
             </h2>
             <p className="mt-5 text-lg text-tertiary">
-              Tripcelona conecta a tu gran grupo con la esencia oculta de Barcelona. Confía en
-              nuestros expertos locales para diseñar una experiencia de exploración personalizada,
-              inolvidable y con logística garantizada para todos.
+              {t(
+                "Tripcelona conecta a tu gran grupo con la esencia oculta de Barcelona. Confía en nuestros expertos locales para diseñar una experiencia de exploración personalizada, inolvidable y con logística garantizada para todos.",
+              )}
             </p>
             <Reveal>
               <ul className="mt-8 grid gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -241,14 +256,14 @@ async function AboutBody() {
                     <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-primary text-fg-brand-primary">
                       <Check aria-hidden className="size-3.5" />
                     </span>
-                    {item}
+                    {t(item)}
                   </li>
                 ))}
               </ul>
             </Reveal>
             <div className="mt-9 flex flex-wrap gap-3">
               <ButtonLink href="/crea-tu-tour" size="lg">
-                Pedir presupuesto
+                {t("Pedir presupuesto")}
               </ButtonLink>
               <ButtonLink href={site.phoneHref} size="lg" variant="outline">
                 {site.phoneDisplay}
@@ -266,8 +281,8 @@ async function AboutBody() {
           <div className="container-site">
             <SectionHeader
               id="galeria-heading"
-              eyebrow="Galería de aventuras"
-              title="Nuestra galería"
+              eyebrow={t("Galería de aventuras")}
+              title={t("Nuestra galería")}
             />
           </div>
           <PhotoGallery photos={gallery} />

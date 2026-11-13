@@ -25,9 +25,12 @@ export type GalleryPhoto = {
   href: string;
 };
 
+import { useT } from "@/components/i18n/provider";
+
 const pad = (n: number) => String(n).padStart(2, "0");
 
 export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
+  const t = useT();
   const root = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLUListElement>(null);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
@@ -99,7 +102,7 @@ export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
         <button
           type="button"
           onClick={() => go(-1)}
-          aria-label="Foto anterior"
+          aria-label={t("Foto anterior")}
           className="flex size-11 items-center justify-center rounded-full bg-primary text-fg-secondary shadow-xs ring-1 ring-primary transition ring-inset hover:bg-primary_hover"
         >
           <ArrowLeft aria-hidden className="size-5" />
@@ -107,7 +110,7 @@ export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
         <button
           type="button"
           onClick={() => go(1)}
-          aria-label="Foto siguiente"
+          aria-label={t("Foto siguiente")}
           className="flex size-11 items-center justify-center rounded-full bg-brand-solid text-white shadow-xs-skeuomorphic transition hover:bg-brand-solid_hover"
         >
           <ArrowRight aria-hidden className="size-5" />
@@ -116,7 +119,7 @@ export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
       <ul
         ref={track}
         tabIndex={0}
-        aria-label="Galería de fotos de las excursiones"
+        aria-label={t("Galería de fotos de las excursiones")}
         onPointerDown={onDown}
         onPointerMove={onMove}
         onPointerUp={onUp}

@@ -461,4 +461,65 @@ export const en: Dictionary = {
   "Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en contacto.":
     "Fill in the form and one of our travel and logistics experts will get in touch.",
   Llámanos: "Call us",
+  "Tripcelona organiza excursiones y viajes para grandes grupos desde Barcelona, con logística, transporte y soporte local.":
+    "Tripcelona organises trips and excursions for large groups from Barcelona, with logistics, transport and local support.",
+  "Cancelación flexible para grupos": "Flexible cancellation for groups",
+  "Políticas claras y transparentes para grandes grupos. Te ofrecemos condiciones de cancelación flexibles adaptadas a las necesidades logísticas de vuestro número de viajeros.":
+    "Clear, transparent policies for large groups. We offer flexible cancellation terms adapted to the logistical needs of your number of travellers.",
+  "Reserva 100% asegurada": "100% secured booking",
+  "Proceso de pago seguro y cifrado para todas las transacciones. Tu inversión está protegida, y garantizamos la confirmación inmediata de todos los servicios.":
+    "Secure, encrypted payment for every transaction. Your money is protected, and we guarantee immediate confirmation of all services.",
+  "Salud y seguridad prioritaria": "Health and safety first",
+  "Protocolos rigurosos y guías capacitados en primeros auxilios. Nos ocupamos del bienestar de cada uno de los miembros del grupo durante toda la aventura.":
+    "Rigorous protocols and guides trained in first aid. We look after the wellbeing of every member of the group throughout the adventure.",
+  "Calidad y servicio de confianza": "Quality and trusted service",
+  "Altamente valorados por nuestros clientes corporativos y de incentivos. Nuestro compromiso es con la excelencia en la gestión y ejecución de grandes eventos.":
+    "Highly rated by our corporate and incentive clients. We are committed to excellence in managing and delivering large events.",
+  "Asistencia local permanente": "Permanent local assistance",
+  "Un equipo de apoyo dedicado en Barcelona para tu grupo. Soporte 24/7 y asistencia local inmediata ante cualquier imprevisto logístico o de coordinación.":
+    "A dedicated support team in Barcelona for your group. 24/7 support and immediate local assistance for any logistical or coordination issue.",
+  "Alojamiento para grupos": "Accommodation for groups",
+  "Experiencias de exploración exclusivas": "Exclusive exploration experiences",
+  "Planificación de viajes a medida": "Tailor-made trip planning",
+  "Transporte privado incluido": "Private transport included",
+  "Recomendaciones locales genuinas": "Genuine local recommendations",
+  "Soporte logístico 24/7": "24/7 logistics support",
+  "01/ Quiénes somos": "01/ Who we are",
+  "Viajar sin complicaciones": "Travel without hassle",
+  "Viajar y explorar juntos: la logística de élite para tu gran grupo.":
+    "Travelling and exploring together: elite logistics for your large group.",
+  "02/ Lo que puedes esperar": "02/ What you can expect",
+  "Confía en nosotros: tu viaje está cubierto": "Trust us: your trip is covered",
+  "Nuestra visión": "Our vision",
+  "Inspirar aventuras colectivas con logística de élite en Barcelona":
+    "Inspiring group adventures with elite logistics in Barcelona",
+  "Nuestra visión como empresa de excursiones es transformar la manera en que los grandes grupos descubren Barcelona. Queremos que cada aventura sea una experiencia de exploración cohesionada.":
+    "Our vision as an excursion company is to transform the way large groups discover Barcelona. We want every adventure to be a cohesive exploration experience.",
+  "Nuestra misión": "Our mission",
+  "Soluciones de viaje a medida y rutas de exploración impecables":
+    "Tailor-made travel solutions and flawless exploration routes",
+  "Nuestra misión es doble: primero, asegurar que cada ruta de exploración esté diseñada a medida, priorizando el team building. Segundo, garantizar una logística impecable para grupos grandes, cubriendo transporte y seguridad con los más altos estándares.":
+    "Our mission is twofold: first, to make sure every exploration route is tailor-made, prioritising team building. Second, to guarantee flawless logistics for large groups, covering transport and safety to the highest standards.",
+  "03/ Para tu grupo": "03/ For your group",
+  "La ruta de exploración definitiva": "The ultimate exploration route",
+  "Tripcelona conecta a tu gran grupo con la esencia oculta de Barcelona. Confía en nuestros expertos locales para diseñar una experiencia de exploración personalizada, inolvidable y con logística garantizada para todos.":
+    "Tripcelona connects your large group with the hidden essence of Barcelona. Trust our local experts to design a personalised, unforgettable exploration experience with guaranteed logistics for everyone.",
+  "Galería de aventuras": "Adventure gallery",
+  "Nuestra galería": "Our gallery",
+  "Foto anterior": "Previous photo",
+  "Foto siguiente": "Next photo",
+  "Galería de fotos de las excursiones": "Photo gallery of our trips",
+  "Blog: ideas y guías para excursiones desde Barcelona":
+    "Blog: ideas and guides for day trips from Barcelona",
+  "Guías de destinos, consejos y qué llevar en tus excursiones de un día desde Barcelona.":
+    "Destination guides, tips and what to bring on your day trips from Barcelona.",
+  "Ideas y guías para tus excursiones": "Ideas and guides for your trips",
+  "Guías de destinos y consejos para tus excursiones.":
+    "Destination guides and tips for your trips.",
+  "Pronto publicaremos nuevas guías.": "We will publish new guides soon.",
+  "{n} min de lectura": "{n} min read",
+  "Migas de pan": "Breadcrumb",
+  Etiquetas: "Tags",
+  "Información legal": "Legal information",
+  "Versión publicada en esta web el {date}.": "Version published on this website on {date}.",
 };

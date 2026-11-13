@@ -3,7 +3,7 @@ import type { Locale } from "@/lib/i18n/config";
 const TZ = "Europe/Madrid";
 
 /** Intl tag per site language; dates and prices follow the visitor's language. */
-const INTL: Record<Locale, string> = {
+export const INTL: Record<Locale, string> = {
   es: "es-ES",
   en: "en-GB",
   fr: "fr-FR",

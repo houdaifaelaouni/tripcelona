@@ -3,29 +3,45 @@ import Image from "next/image";
 import Link from "@/components/i18n/link";
 import { PageHero } from "@/components/layout/page-hero";
 import { getPublishedPosts } from "@/lib/content/queries";
+import { createT } from "@/lib/i18n/translate";
+import { alternatesFor } from "@/lib/i18n/seo";
+import { isLocale, localizePath } from "@/lib/i18n/config";
+import { notFound } from "next/navigation";
+import { INTL } from "@/lib/tours/format";
 
-export const metadata: Metadata = {
-  title: "Blog: ideas y guías para excursiones desde Barcelona",
-  description:
-    "Guías de destinos, consejos y qué llevar en tus excursiones de un día desde Barcelona.",
-  alternates: { canonical: "/blog" },
-};
+export async function generateMetadata({ params }: PageProps<"/[lang]/blog">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = createT(lang);
+  return {
+    title: t("Blog: ideas y guías para excursiones desde Barcelona"),
+    description: t(
+      "Guías de destinos, consejos y qué llevar en tus excursiones de un día desde Barcelona.",
+    ),
+    alternates: alternatesFor("/blog", lang),
+  };
+}
 
-const dateFmt = new Intl.DateTimeFormat("es-ES", { dateStyle: "long", timeZone: "Europe/Madrid" });
-
-export default async function BlogIndex() {
+export default async function BlogIndex({ params }: PageProps<"/[lang]/blog">) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const t = createT(lang);
+  const dateFmt = new Intl.DateTimeFormat(INTL[lang], {
+    dateStyle: "long",
+    timeZone: "Europe/Madrid",
+  });
   const posts = await getPublishedPosts();
   return (
     <>
       <PageHero
-        eyebrow="Blog"
-        title="Ideas y guías para tus excursiones"
-        intro="Guías de destinos y consejos para tus excursiones."
+        eyebrow={t("Blog")}
+        title={t("Ideas y guías para tus excursiones")}
+        intro={t("Guías de destinos y consejos para tus excursiones.")}
       />
       <div className="container-site py-10 md:py-14">
         {posts.length === 0 ? (
           <p className="mt-8 rounded-2xl bg-secondary px-6 py-12 text-center text-tertiary">
-            Pronto publicaremos nuevas guías.
+            {t("Pronto publicaremos nuevas guías.")}
           </p>
         ) : (
           <ul className="mt-8 grid gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -50,7 +66,9 @@ export default async function BlogIndex() {
                           {dateFmt.format(new Date(p.publishedAt))}
                         </time>
                       )}
-                      {p.readingMinutes ? ` · ${p.readingMinutes} min de lectura` : ""}
+                      {p.readingMinutes
+                        ? ` · ${t("{n} min de lectura", { n: p.readingMinutes })}`
+                        : ""}
                     </p>
                     <h2 className="mt-1 line-clamp-2 text-base font-semibold">
                       <Link

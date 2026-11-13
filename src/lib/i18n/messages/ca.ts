@@ -466,4 +466,65 @@ export const ca: Dictionary = {
   "Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en contacto.":
     "Omple el formulari i un dels nostres experts en viatges i logística es posarà en contacte.",
   Llámanos: "Truca'ns",
+  "Tripcelona organiza excursiones y viajes para grandes grupos desde Barcelona, con logística, transporte y soporte local.":
+    "Tripcelona organitza excursions i viatges per a grans grups des de Barcelona, amb logística, transport i suport local.",
+  "Cancelación flexible para grupos": "Cancel·lació flexible per a grups",
+  "Políticas claras y transparentes para grandes grupos. Te ofrecemos condiciones de cancelación flexibles adaptadas a las necesidades logísticas de vuestro número de viajeros.":
+    "Polítiques clares i transparents per a grans grups. T'oferim condicions de cancel·lació flexibles adaptades a les necessitats logístiques del vostre nombre de viatgers.",
+  "Reserva 100% asegurada": "Reserva 100% assegurada",
+  "Proceso de pago seguro y cifrado para todas las transacciones. Tu inversión está protegida, y garantizamos la confirmación inmediata de todos los servicios.":
+    "Procés de pagament segur i xifrat per a totes les transaccions. La teva inversió està protegida i garantim la confirmació immediata de tots els serveis.",
+  "Salud y seguridad prioritaria": "Salut i seguretat prioritàries",
+  "Protocolos rigurosos y guías capacitados en primeros auxilios. Nos ocupamos del bienestar de cada uno de los miembros del grupo durante toda la aventura.":
+    "Protocols rigorosos i guies formats en primers auxilis. Ens ocupem del benestar de cadascun dels membres del grup durant tota l'aventura.",
+  "Calidad y servicio de confianza": "Qualitat i servei de confiança",
+  "Altamente valorados por nuestros clientes corporativos y de incentivos. Nuestro compromiso es con la excelencia en la gestión y ejecución de grandes eventos.":
+    "Molt ben valorats pels nostres clients corporatius i d'incentius. El nostre compromís és amb l'excel·lència en la gestió i execució de grans esdeveniments.",
+  "Asistencia local permanente": "Assistència local permanent",
+  "Un equipo de apoyo dedicado en Barcelona para tu grupo. Soporte 24/7 y asistencia local inmediata ante cualquier imprevisto logístico o de coordinación.":
+    "Un equip de suport dedicat a Barcelona per al teu grup. Suport 24/7 i assistència local immediata davant qualsevol imprevist logístic o de coordinació.",
+  "Alojamiento para grupos": "Allotjament per a grups",
+  "Experiencias de exploración exclusivas": "Experiències d'exploració exclusives",
+  "Planificación de viajes a medida": "Planificació de viatges a mida",
+  "Transporte privado incluido": "Transport privat inclòs",
+  "Recomendaciones locales genuinas": "Recomanacions locals genuïnes",
+  "Soporte logístico 24/7": "Suport logístic 24/7",
+  "01/ Quiénes somos": "01/ Qui som",
+  "Viajar sin complicaciones": "Viatjar sense complicacions",
+  "Viajar y explorar juntos: la logística de élite para tu gran grupo.":
+    "Viatjar i explorar junts: la logística d'elit per al teu gran grup.",
+  "02/ Lo que puedes esperar": "02/ El que pots esperar",
+  "Confía en nosotros: tu viaje está cubierto": "Confia en nosaltres: el teu viatge està cobert",
+  "Nuestra visión": "La nostra visió",
+  "Inspirar aventuras colectivas con logística de élite en Barcelona":
+    "Inspirar aventures col·lectives amb logística d'elit a Barcelona",
+  "Nuestra visión como empresa de excursiones es transformar la manera en que los grandes grupos descubren Barcelona. Queremos que cada aventura sea una experiencia de exploración cohesionada.":
+    "La nostra visió com a empresa d'excursions és transformar la manera com els grans grups descobreixen Barcelona. Volem que cada aventura sigui una experiència d'exploració cohesionada.",
+  "Nuestra misión": "La nostra missió",
+  "Soluciones de viaje a medida y rutas de exploración impecables":
+    "Solucions de viatge a mida i rutes d'exploració impecables",
+  "Nuestra misión es doble: primero, asegurar que cada ruta de exploración esté diseñada a medida, priorizando el team building. Segundo, garantizar una logística impecable para grupos grandes, cubriendo transporte y seguridad con los más altos estándares.":
+    "La nostra missió és doble: primer, assegurar que cada ruta d'exploració estigui dissenyada a mida, prioritzant el team building. Segon, garantir una logística impecable per a grups grans, cobrint transport i seguretat amb els estàndards més alts.",
+  "03/ Para tu grupo": "03/ Per al teu grup",
+  "La ruta de exploración definitiva": "La ruta d'exploració definitiva",
+  "Tripcelona conecta a tu gran grupo con la esencia oculta de Barcelona. Confía en nuestros expertos locales para diseñar una experiencia de exploración personalizada, inolvidable y con logística garantizada para todos.":
+    "Tripcelona connecta el teu gran grup amb l'essència amagada de Barcelona. Confia en els nostres experts locals per dissenyar una experiència d'exploració personalitzada, inoblidable i amb logística garantida per a tothom.",
+  "Galería de aventuras": "Galeria d'aventures",
+  "Nuestra galería": "La nostra galeria",
+  "Foto anterior": "Foto anterior",
+  "Foto siguiente": "Foto següent",
+  "Galería de fotos de las excursiones": "Galeria de fotos de les excursions",
+  "Blog: ideas y guías para excursiones desde Barcelona":
+    "Blog: idees i guies per a excursions des de Barcelona",
+  "Guías de destinos, consejos y qué llevar en tus excursiones de un día desde Barcelona.":
+    "Guies de destinacions, consells i què portar a les teves excursions d'un dia des de Barcelona.",
+  "Ideas y guías para tus excursiones": "Idees i guies per a les teves excursions",
+  "Guías de destinos y consejos para tus excursiones.":
+    "Guies de destinacions i consells per a les teves excursions.",
+  "Pronto publicaremos nuevas guías.": "Aviat publicarem noves guies.",
+  "{n} min de lectura": "{n} min de lectura",
+  "Migas de pan": "Ruta de navegació",
+  Etiquetas: "Etiquetes",
+  "Información legal": "Informació legal",
+  "Versión publicada en esta web el {date}.": "Versió publicada en aquesta web el {date}.",
 };
