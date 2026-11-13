@@ -3,6 +3,7 @@
 import { ChevronDown, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/field";
+import { useT } from "@/components/i18n/provider";
 
 type Faq = { id: string; category: string | null; question: string; answer: string };
 
@@ -10,6 +11,7 @@ const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,
 
 /** FR-71: FAQ accordion grouped by category, with instant search. Works without JS (all open to search via the browser). */
 export function FaqList({ faqs }: { faqs: Faq[] }) {
+  const t = useT();
   const [q, setQ] = useState("");
   const shown = useMemo(() => {
     const term = fold(q.trim());
@@ -26,7 +28,7 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
   }, [shown]);
 
   if (faqs.length === 0) {
-    return <p className="text-tertiary">Pronto publicaremos las preguntas frecuentes.</p>;
+    return <p className="text-tertiary">{t("Pronto publicaremos las preguntas frecuentes.")}</p>;
   }
 
   return (
@@ -39,19 +41,19 @@ export function FaqList({ faqs }: { faqs: Faq[] }) {
         />
         <Input
           className="rounded-full pl-11"
-          label="Buscar en las preguntas"
+          label={t("Buscar en las preguntas")}
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Ej.: cancelación, mascotas, punto de encuentro"
+          placeholder={t("Ej.: cancelación, mascotas, punto de encuentro")}
         />
       </div>
       <p className="sr-only" aria-live="polite">
-        {q ? `${shown.length} preguntas encontradas` : ""}
+        {q ? t("{n} preguntas encontradas", { n: shown.length }) : ""}
       </p>
       {shown.length === 0 && (
         <p className="mt-6 text-tertiary">
-          No hay preguntas con «{q}». Prueba con otra palabra o escríbenos.
+          {t("No hay preguntas con «{q}». Prueba con otra palabra o escríbenos.", { q })}
         </p>
       )}
       {groups.map(([category, items]) => (

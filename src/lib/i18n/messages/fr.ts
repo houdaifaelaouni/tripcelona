@@ -439,4 +439,43 @@ export const fr: Dictionary = {
   Excursión: "Excursion",
   Salida: "Départ",
   "Tu carrito": "Votre panier",
+  "Reserva confirmada": "Réservation confirmée",
+  "Estamos confirmando tu pago…": "Nous confirmons votre paiement…",
+  "El banco nos está enviando la confirmación. Esta página se actualiza sola en unos segundos.":
+    "La banque nous envoie la confirmation. Cette page se met à jour toute seule en quelques secondes.",
+  "Reserva reembolsada": "Réservation remboursée",
+  "Pago recibido": "Paiement reçu",
+  "¡Reserva confirmada!": "Réservation confirmée !",
+  "Te hemos enviado la confirmación a": "Nous avons envoyé la confirmation à",
+  "Si no la ves, revisa la carpeta de spam.":
+    "Si vous ne la voyez pas, vérifiez vos courriers indésirables.",
+  "Ver en el mapa": "Voir sur la carte",
+  "Añadir al calendario": "Ajouter au calendrier",
+  "Contactar por WhatsApp": "Contacter sur WhatsApp",
+  "Hola, tengo la reserva {ref}.": "Bonjour, j'ai la réservation {ref}.",
+  "Pronto publicaremos las preguntas frecuentes.":
+    "Nous publierons bientôt les questions fréquentes.",
+  "Buscar en las preguntas": "Rechercher dans les questions",
+  "Ej.: cancelación, mascotas, punto de encuentro":
+    "Ex. : annulation, animaux, point de rendez-vous",
+  "{n} preguntas encontradas": "{n} questions trouvées",
+  "No hay preguntas con «{q}». Prueba con otra palabra o escríbenos.":
+    "Aucune question avec «{q}». Essayez un autre mot ou écrivez-nous.",
+  "Reservas, pagos, punto de encuentro, cancelaciones y qué pasa si llueve: respuestas sobre nuestras excursiones en grupo.":
+    "Réservations, paiements, point de rendez-vous, annulations et que faire s'il pleut : réponses sur nos excursions en groupe.",
+  "Reservas, pagos, punto de encuentro y qué pasa si llueve.":
+    "Réservations, paiements, point de rendez-vous et que faire s'il pleut.",
+  "¿No encuentras tu respuesta?": "Vous ne trouvez pas votre réponse ?",
+  "Escríbenos y te respondemos lo antes posible.":
+    "Écrivez-nous et nous vous répondrons au plus vite.",
+  "Hola, tengo una pregunta sobre vuestras excursiones.":
+    "Bonjour, j'ai une question sur vos excursions.",
+  "Escríbenos, llámanos o envíanos un WhatsApp para reservas y excursiones para grupos.":
+    "Écrivez-nous, appelez-nous ou envoyez-nous un WhatsApp pour les réservations et les excursions de groupe.",
+  "¿En qué podemos ayudarte?": "Comment pouvons-nous vous aider ?",
+  "Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.":
+    "Nous sommes là pour votre groupe 24 heures sur 24, 7 jours sur 7, prêts pour l'aventure.",
+  "Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en contacto.":
+    "Remplissez le formulaire et l'un de nos experts en voyages et en logistique vous contactera.",
+  Llámanos: "Appelez-nous",
 };

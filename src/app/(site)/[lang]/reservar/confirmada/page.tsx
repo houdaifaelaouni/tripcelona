@@ -9,35 +9,52 @@ import { ButtonLink } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getBookingDetails } from "@/lib/booking/details";
 import { site } from "@/lib/site";
+import { createT } from "@/lib/i18n/translate";
+import { isLocale } from "@/lib/i18n/config";
+import { notFound } from "next/navigation";
 
-export const metadata: Metadata = { title: "Reserva confirmada", robots: { index: false } };
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]/reservar/confirmada">): Promise<Metadata> {
+  const { lang } = await params;
+  const title = "Reserva confirmada";
+  return { title: isLocale(lang) ? createT(lang)(title) : title, robots: { index: false } };
+}
 
 /**
  * Redsys URLOK. The browser can arrive before the bank's notification, so a
  * pending booking shows a "confirming" state that refreshes itself.
  */
-export default function ConfirmedPage({ searchParams }: PageProps<"/[lang]/reservar/confirmada">) {
+export default function ConfirmedPage({
+  params,
+  searchParams,
+}: PageProps<"/[lang]/reservar/confirmada">) {
   return (
     <div className="container-site max-w-2xl py-8 md:py-16">
       <Suspense fallback={<PageSkeleton />}>
-        <Confirmed searchParams={searchParams} />
+        <Confirmed params={params} searchParams={searchParams} />
       </Suspense>
     </div>
   );
 }
 
 async function Confirmed({
+  params,
   searchParams,
 }: {
+  params: PageProps<"/[lang]/reservar/confirmada">["params"];
   searchParams: PageProps<"/[lang]/reservar/confirmada">["searchParams"];
 }) {
   await connection();
+  const { lang: locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const t = createT(locale);
   const raw = (await searchParams).id;
   const booking = await getBookingDetails({ id: (Array.isArray(raw) ? raw[0] : raw) ?? "" });
   if (!booking)
     return (
       <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        No encontramos esta reserva
+        {t("No encontramos esta reserva")}
       </h1>
     );
 
@@ -46,13 +63,14 @@ async function Confirmed({
       <>
         <meta httpEquiv="refresh" content="5" />
         <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-          Estamos confirmando tu pago…
+          {t("Estamos confirmando tu pago…")}
         </h1>
         <p className="mt-2 text-tertiary" role="status">
-          El banco nos está enviando la confirmación. Esta página se actualiza sola en unos
-          segundos.
+          {t(
+            "El banco nos está enviando la confirmación. Esta página se actualiza sola en unos segundos.",
+          )}
         </p>
-        <BookingSummary booking={booking} />
+        <BookingSummary booking={booking} locale={locale} />
       </>
     );
   }
@@ -61,12 +79,15 @@ async function Confirmed({
     return (
       <>
         <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-          Reserva {booking.status === "refunded" ? "reembolsada" : "cancelada"}
+          {booking.status === "refunded" ? t("Reserva reembolsada") : t("Reserva cancelada")}
         </h1>
-        <BookingSummary booking={booking} />
+        <BookingSummary booking={booking} locale={locale} />
         <div className="mt-6">
           <WhatsAppCta
-            message={`Hola, tengo una pregunta sobre la reserva ${booking.reference}.`}
+            locale={locale}
+            message={t("Hola, tengo una pregunta sobre la reserva {ref}.", {
+              ref: booking.reference,
+            })}
           />
         </div>
       </>
@@ -88,19 +109,20 @@ async function Confirmed({
         <CircleCheck aria-hidden size={28} />
       </span>
       <p className="mt-4 text-sm font-semibold tracking-wide text-success uppercase">
-        Pago recibido
+        {t("Pago recibido")}
       </p>
       <h1 className="mt-1 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        ¡Reserva confirmada!
+        {t("¡Reserva confirmada!")}
       </h1>
       <p className="mt-2 text-tertiary">
-        Te hemos enviado la confirmación a <strong className="text-primary">{booking.email}</strong>
-        . Si no la ves, revisa la carpeta de spam.
+        {t("Te hemos enviado la confirmación a")}{" "}
+        <strong className="text-primary">{booking.email}</strong>.{" "}
+        {t("Si no la ves, revisa la carpeta de spam.")}
       </p>
-      <BookingSummary booking={booking} />
+      <BookingSummary booking={booking} locale={locale} />
 
       <section className="mt-8">
-        <h2 className="text-display-sm">Punto de encuentro</h2>
+        <h2 className="text-display-sm">{t("Punto de encuentro")}</h2>
         {meetingPoints.map((m) => (
           <p key={m.key} className="mt-1">
             {m.label && <strong>{m.label}: </strong>}
@@ -114,14 +136,14 @@ async function Confirmed({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Ver en el mapa
+            {t("Ver en el mapa")}
           </a>
         )}
       </section>
 
       {tour.packingList.length > 0 && (
         <section className="mt-6">
-          <h2 className="text-display-sm">Qué llevar</h2>
+          <h2 className="text-display-sm">{t("Qué llevar")}</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             {tour.packingList.map((item) => (
               <li key={item}>{item}</li>
@@ -132,11 +154,12 @@ async function Confirmed({
 
       <div className="mt-8 flex flex-wrap gap-3">
         <ButtonLink href={`/reservar/confirmada/calendario?id=${booking.id}`} variant="secondary">
-          Añadir al calendario
+          {t("Añadir al calendario")}
         </ButtonLink>
         <WhatsAppCta
           label="Contactar por WhatsApp"
-          message={`Hola, tengo la reserva ${booking.reference}.`}
+          locale={locale}
+          message={t("Hola, tengo la reserva {ref}.", { ref: booking.reference })}
         />
       </div>
     </>

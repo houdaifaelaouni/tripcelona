@@ -434,4 +434,39 @@ export const it: Dictionary = {
   Excursión: "Escursione",
   Salida: "Partenza",
   "Tu carrito": "Il tuo carrello",
+  "Reserva confirmada": "Prenotazione confermata",
+  "Estamos confirmando tu pago…": "Stiamo confermando il tuo pagamento…",
+  "El banco nos está enviando la confirmación. Esta página se actualiza sola en unos segundos.":
+    "La banca ci sta inviando la conferma. Questa pagina si aggiorna da sola in pochi secondi.",
+  "Reserva reembolsada": "Prenotazione rimborsata",
+  "Pago recibido": "Pagamento ricevuto",
+  "¡Reserva confirmada!": "Prenotazione confermata!",
+  "Te hemos enviado la confirmación a": "Abbiamo inviato la conferma a",
+  "Si no la ves, revisa la carpeta de spam.": "Se non la vedi, controlla la cartella spam.",
+  "Ver en el mapa": "Vedi sulla mappa",
+  "Añadir al calendario": "Aggiungi al calendario",
+  "Contactar por WhatsApp": "Contatta su WhatsApp",
+  "Hola, tengo la reserva {ref}.": "Salve, ho la prenotazione {ref}.",
+  "Pronto publicaremos las preguntas frecuentes.": "Pubblicheremo presto le domande frequenti.",
+  "Buscar en las preguntas": "Cerca nelle domande",
+  "Ej.: cancelación, mascotas, punto de encuentro": "Es.: cancellazione, animali, punto d'incontro",
+  "{n} preguntas encontradas": "{n} domande trovate",
+  "No hay preguntas con «{q}». Prueba con otra palabra o escríbenos.":
+    "Nessuna domanda con «{q}». Prova con un'altra parola o scrivici.",
+  "Reservas, pagos, punto de encuentro, cancelaciones y qué pasa si llueve: respuestas sobre nuestras excursiones en grupo.":
+    "Prenotazioni, pagamenti, punto d'incontro, cancellazioni e cosa succede se piove: risposte sulle nostre gite di gruppo.",
+  "Reservas, pagos, punto de encuentro y qué pasa si llueve.":
+    "Prenotazioni, pagamenti, punto d'incontro e cosa succede se piove.",
+  "¿No encuentras tu respuesta?": "Non trovi la tua risposta?",
+  "Escríbenos y te respondemos lo antes posible.": "Scrivici e ti risponderemo il prima possibile.",
+  "Hola, tengo una pregunta sobre vuestras excursiones.":
+    "Salve, ho una domanda sulle vostre escursioni.",
+  "Escríbenos, llámanos o envíanos un WhatsApp para reservas y excursiones para grupos.":
+    "Scrivici, chiamaci o inviaci un WhatsApp per prenotazioni e gite di gruppo.",
+  "¿En qué podemos ayudarte?": "Come possiamo aiutarti?",
+  "Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.":
+    "Siamo qui per il tuo gruppo 24 ore su 24, 7 giorni su 7, pronti per l'avventura.",
+  "Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en contacto.":
+    "Compila il modulo e uno dei nostri esperti di viaggi e logistica ti contatterà.",
+  Llámanos: "Chiamaci",
 };

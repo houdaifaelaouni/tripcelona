@@ -5,23 +5,40 @@ import { ContactForm } from "@/components/forms/contact-form";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { getSiteSettings } from "@/lib/settings";
 import { site } from "@/lib/site";
+import { createT } from "@/lib/i18n/translate";
+import { alternatesFor } from "@/lib/i18n/seo";
+import { isLocale } from "@/lib/i18n/config";
+import { notFound } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Contacto",
-  description:
-    "Escríbenos, llámanos o envíanos un WhatsApp para reservas y excursiones para grupos.",
-  alternates: { canonical: "/contactanos" },
-};
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]/contactanos">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = createT(lang);
+  return {
+    title: t("Contacto"),
+    description: t(
+      "Escríbenos, llámanos o envíanos un WhatsApp para reservas y excursiones para grupos.",
+    ),
+    alternates: alternatesFor("/contactanos", lang),
+  };
+}
 
 // Copy from the live page (WordPress export, 2026-11-10).
-export default async function ContactPage() {
+export default async function ContactPage({ params }: PageProps<"/[lang]/contactanos">) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const t = createT(lang);
   const s = await getSiteSettings();
   return (
     <>
       <PageHero
-        eyebrow="Contacto"
-        title="¿En qué podemos ayudarte?"
-        intro="Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura."
+        eyebrow={t("Contacto")}
+        title={t("¿En qué podemos ayudarte?")}
+        intro={t(
+          "Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.",
+        )}
       />
       <div className="container-site grid gap-8 py-10 md:py-14 lg:grid-cols-[1fr_320px]">
         <section
@@ -29,14 +46,15 @@ export default async function ContactPage() {
           className="rounded-2xl border border-secondary bg-white p-5 md:p-6"
         >
           <h2 id="form-title" className="mb-4 text-display-sm">
-            Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en
-            contacto.
+            {t(
+              "Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en contacto.",
+            )}
           </h2>
           <ContactForm />
         </section>
         <aside className="space-y-6">
           <div>
-            <h2 className="text-display-sm">Llámanos</h2>
+            <h2 className="text-display-sm">{t("Llámanos")}</h2>
             <a href={s.phoneHref} className="mt-1 block font-semibold text-blue underline">
               {s.phoneDisplay}
             </a>
@@ -47,12 +65,13 @@ export default async function ContactPage() {
               <WhatsAppCta
                 message="Hola Tripcelona, quiero información sobre vuestras excursiones."
                 label="Escríbenos por WhatsApp"
+                locale={lang}
               />
             </div>
           </div>
           {s.email && (
             <div>
-              <h2 className="text-display-sm">Email</h2>
+              <h2 className="text-display-sm">{t("Email")}</h2>
               <a
                 href={`mailto:${s.email}`}
                 className="mt-1 block font-semibold text-blue underline"
@@ -62,7 +81,7 @@ export default async function ContactPage() {
             </div>
           )}
           <div>
-            <h2 className="text-display-sm">Punto de salida</h2>
+            <h2 className="text-display-sm">{t("Punto de salida")}</h2>
             <a
               href={site.meetingPointMapHref}
               target="_blank"
@@ -74,7 +93,7 @@ export default async function ContactPage() {
           </div>
           <p>
             <Link href="/preguntas-frecuentes" className="text-blue underline">
-              Preguntas frecuentes
+              {t("Preguntas frecuentes")}
             </Link>
           </p>
         </aside>

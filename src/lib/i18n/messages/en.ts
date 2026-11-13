@@ -424,4 +424,41 @@ export const en: Dictionary = {
   Excursión: "Trip",
   Salida: "Departure",
   "Tu carrito": "Your cart",
+  "Reserva confirmada": "Booking confirmed",
+  "Estamos confirmando tu pago…": "We are confirming your payment…",
+  "El banco nos está enviando la confirmación. Esta página se actualiza sola en unos segundos.":
+    "The bank is sending us the confirmation. This page refreshes by itself in a few seconds.",
+  "Reserva reembolsada": "Booking refunded",
+  "Pago recibido": "Payment received",
+  "¡Reserva confirmada!": "Booking confirmed!",
+  "Te hemos enviado la confirmación a": "We have sent the confirmation to",
+  "Si no la ves, revisa la carpeta de spam.": "If you don't see it, check your spam folder.",
+  "Ver en el mapa": "View on the map",
+  "Añadir al calendario": "Add to calendar",
+  "Contactar por WhatsApp": "Contact on WhatsApp",
+  "Hola, tengo la reserva {ref}.": "Hello, I have booking {ref}.",
+  "Pronto publicaremos las preguntas frecuentes.":
+    "We will publish the frequently asked questions soon.",
+  "Buscar en las preguntas": "Search the questions",
+  "Ej.: cancelación, mascotas, punto de encuentro": "E.g. cancellation, pets, meeting point",
+  "{n} preguntas encontradas": "{n} questions found",
+  "No hay preguntas con «{q}». Prueba con otra palabra o escríbenos.":
+    "No questions match «{q}». Try another word or write to us.",
+  "Reservas, pagos, punto de encuentro, cancelaciones y qué pasa si llueve: respuestas sobre nuestras excursiones en grupo.":
+    "Bookings, payments, meeting point, cancellations and what happens if it rains: answers about our group trips.",
+  "Reservas, pagos, punto de encuentro y qué pasa si llueve.":
+    "Bookings, payments, meeting point and what happens if it rains.",
+  "¿No encuentras tu respuesta?": "Can't find your answer?",
+  "Escríbenos y te respondemos lo antes posible.":
+    "Write to us and we will reply as soon as possible.",
+  "Hola, tengo una pregunta sobre vuestras excursiones.":
+    "Hello, I have a question about your trips.",
+  "Escríbenos, llámanos o envíanos un WhatsApp para reservas y excursiones para grupos.":
+    "Write to us, call us or send us a WhatsApp for bookings and group trips.",
+  "¿En qué podemos ayudarte?": "How can we help you?",
+  "Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.":
+    "We are here for your group 24 hours a day, 7 days a week, ready for the adventure.",
+  "Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en contacto.":
+    "Fill in the form and one of our travel and logistics experts will get in touch.",
+  Llámanos: "Call us",
 };

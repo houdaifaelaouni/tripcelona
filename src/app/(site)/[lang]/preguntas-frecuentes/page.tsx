@@ -6,24 +6,39 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { getPublishedFaqs } from "@/lib/content/queries";
 import { faqJsonLd } from "@/lib/seo/json-ld";
+import { createT } from "@/lib/i18n/translate";
+import { alternatesFor } from "@/lib/i18n/seo";
+import { isLocale } from "@/lib/i18n/config";
+import { notFound } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Preguntas frecuentes",
-  description:
-    "Reservas, pagos, punto de encuentro, cancelaciones y qué pasa si llueve: respuestas sobre nuestras excursiones en grupo.",
-  alternates: { canonical: "/preguntas-frecuentes" },
-};
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]/preguntas-frecuentes">): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = createT(lang);
+  return {
+    title: t("Preguntas frecuentes"),
+    description: t(
+      "Reservas, pagos, punto de encuentro, cancelaciones y qué pasa si llueve: respuestas sobre nuestras excursiones en grupo.",
+    ),
+    alternates: alternatesFor("/preguntas-frecuentes", lang),
+  };
+}
 
-export default async function FaqPage() {
+export default async function FaqPage({ params }: PageProps<"/[lang]/preguntas-frecuentes">) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const t = createT(lang);
   const faqs = await getPublishedFaqs();
   const schema = faqJsonLd(faqs);
   return (
     <>
       {schema && <JsonLd data={schema} />}
       <PageHero
-        eyebrow="Ayuda"
-        title="Preguntas frecuentes"
-        intro="Reservas, pagos, punto de encuentro y qué pasa si llueve."
+        eyebrow={t("Ayuda")}
+        title={t("Preguntas frecuentes")}
+        intro={t("Reservas, pagos, punto de encuentro y qué pasa si llueve.")}
       />
       <div className="container-site py-10 md:py-14">
         <div className="max-w-3xl">
@@ -31,10 +46,10 @@ export default async function FaqPage() {
         </div>
       </div>
       <CtaBand
-        title="¿No encuentras tu respuesta?"
-        text="Escríbenos y te respondemos lo antes posible."
+        title={t("¿No encuentras tu respuesta?")}
+        text={t("Escríbenos y te respondemos lo antes posible.")}
       >
-        <WhatsAppCta message="Hola, tengo una pregunta sobre vuestras excursiones." />
+        <WhatsAppCta message="Hola, tengo una pregunta sobre vuestras excursiones." locale={lang} />
       </CtaBand>
     </>
   );

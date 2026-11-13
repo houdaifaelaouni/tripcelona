@@ -431,4 +431,39 @@ export const ca: Dictionary = {
   Excursión: "Excursió",
   Salida: "Sortida",
   "Tu carrito": "El teu cistell",
+  "Reserva confirmada": "Reserva confirmada",
+  "Estamos confirmando tu pago…": "Estem confirmant el teu pagament…",
+  "El banco nos está enviando la confirmación. Esta página se actualiza sola en unos segundos.":
+    "El banc ens està enviant la confirmació. Aquesta pàgina s'actualitza sola en uns segons.",
+  "Reserva reembolsada": "Reserva reemborsada",
+  "Pago recibido": "Pagament rebut",
+  "¡Reserva confirmada!": "Reserva confirmada!",
+  "Te hemos enviado la confirmación a": "Hem enviat la confirmació a",
+  "Si no la ves, revisa la carpeta de spam.": "Si no la veus, revisa la carpeta de correu brossa.",
+  "Ver en el mapa": "Veure al mapa",
+  "Añadir al calendario": "Afegir al calendari",
+  "Contactar por WhatsApp": "Contactar per WhatsApp",
+  "Hola, tengo la reserva {ref}.": "Hola, tinc la reserva {ref}.",
+  "Pronto publicaremos las preguntas frecuentes.": "Aviat publicarem les preguntes freqüents.",
+  "Buscar en las preguntas": "Cercar a les preguntes",
+  "Ej.: cancelación, mascotas, punto de encuentro": "Ex.: cancel·lació, mascotes, punt de trobada",
+  "{n} preguntas encontradas": "{n} preguntes trobades",
+  "No hay preguntas con «{q}». Prueba con otra palabra o escríbenos.":
+    "No hi ha preguntes amb «{q}». Prova amb una altra paraula o escriu-nos.",
+  "Reservas, pagos, punto de encuentro, cancelaciones y qué pasa si llueve: respuestas sobre nuestras excursiones en grupo.":
+    "Reserves, pagaments, punt de trobada, cancel·lacions i què passa si plou: respostes sobre les nostres excursions en grup.",
+  "Reservas, pagos, punto de encuentro y qué pasa si llueve.":
+    "Reserves, pagaments, punt de trobada i què passa si plou.",
+  "¿No encuentras tu respuesta?": "No trobes la teva resposta?",
+  "Escríbenos y te respondemos lo antes posible.": "Escriu-nos i et responem com més aviat millor.",
+  "Hola, tengo una pregunta sobre vuestras excursiones.":
+    "Hola, tinc una pregunta sobre les vostres excursions.",
+  "Escríbenos, llámanos o envíanos un WhatsApp para reservas y excursiones para grupos.":
+    "Escriu-nos, truca'ns o envia'ns un WhatsApp per a reserves i excursions per a grups.",
+  "¿En qué podemos ayudarte?": "En què et podem ajudar?",
+  "Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.":
+    "Som aquí per al teu grup 24 hores, 7 dies a la setmana, a punt per a l'aventura.",
+  "Completa el formulario y uno de nuestros expertos en viajes y logística se pondrá en contacto.":
+    "Omple el formulari i un dels nostres experts en viatges i logística es posarà en contacte.",
+  Llámanos: "Truca'ns",
 };
