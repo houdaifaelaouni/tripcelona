@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "@/components/i18n/provider";
+import { useLocale, useT } from "@/components/i18n/provider";
 import Link from "@/components/i18n/link";
 import { useActionState, useState, type ReactNode } from "react";
 import { Checkbox, Input, Textarea } from "@/components/ui/field";
@@ -29,6 +29,7 @@ export function CheckoutForm({
   provider: PaymentProvider | null;
 }) {
   const locale = useLocale();
+  const t = useT();
   const [state, action, pending] = useActionState<CheckoutState, FormData>(startCheckout, {
     status: "idle",
   });
@@ -50,7 +51,7 @@ export function CheckoutForm({
       {/* Honeypot (FR-41): hidden from people and assistive tech. */}
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>
-          Empresa
+          {t("Empresa")}
           <input type="text" name="company" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
@@ -61,8 +62,8 @@ export function CheckoutForm({
         <FormCard title="Detalles de facturación">
           <div className="rounded-xl border border-secondary p-4">
             <QuantityStepper
-              label="Viajeros"
-              hint={`Quedan ${seatsLeft} plazas en esta salida.`}
+              label={t("Viajeros")}
+              hint={t("Quedan {n} plazas en esta salida.", { n: seatsLeft })}
               name="travellers"
               min={1}
               max={max}
@@ -71,64 +72,66 @@ export function CheckoutForm({
             />
             {errors.travellers && (
               <p className="mt-2 text-sm text-error-primary" role="alert">
-                {errors.travellers}
+                {t(errors.travellers)}
               </p>
             )}
           </div>
           <Input
-            label="Nombre y apellidos"
+            label={t("Nombre y apellidos")}
             name="name"
             autoComplete="name"
             required
             defaultValue={values.name}
-            error={errors.name}
+            error={errors.name ? t(errors.name) : undefined}
           />
           <Input
-            label="Teléfono"
+            label={t("Teléfono")}
             name="phone"
             type="tel"
             autoComplete="tel"
             required
             defaultValue={values.phone}
-            error={errors.phone}
+            error={errors.phone ? t(errors.phone) : undefined}
           />
           <Input
-            label="Dirección de correo electrónico"
+            label={t("Dirección de correo electrónico")}
             name="email"
             type="email"
             autoComplete="email"
             required
             defaultValue={values.email}
-            error={errors.email}
-            hint="Te enviaremos aquí la confirmación."
+            error={errors.email ? t(errors.email) : undefined}
+            hint={t("Te enviaremos aquí la confirmación.")}
           />
         </FormCard>
 
         <FormCard title="Información adicional">
           <Textarea
-            label="Notas del pedido (opcional)"
+            label={t("Notas del pedido (opcional)")}
             name="pickupNote"
             rows={3}
             maxLength={500}
             defaultValue={values.pickupNote}
-            hint="Alergias, movilidad reducida o cualquier cosa que debamos saber."
+            hint={t("Alergias, movilidad reducida o cualquier cosa que debamos saber.")}
           />
         </FormCard>
       </div>
 
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <div className="rounded-3xl bg-secondary p-6 ring-1 ring-secondary ring-inset md:p-7">
-          <h2 className="text-xl font-semibold tracking-tight text-primary">Tu pedido</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-primary">{t("Tu pedido")}</h2>
           {summary}
           <p
             className="mt-4 flex items-baseline justify-between border-t border-dashed border-primary pt-4"
             aria-live="polite"
           >
             <span className="font-semibold text-primary">
-              Total ({travellers > 0 ? travellers : "–"} × {formatPrice(unitCents)})
+              {t("Total")} ({travellers > 0 ? travellers : "–"} × {formatPrice(unitCents, locale)})
             </span>
             <span className="text-display-xs font-semibold text-primary">
-              {travellers > 0 && travellers <= max ? formatPrice(unitCents * travellers) : "–"}
+              {travellers > 0 && travellers <= max
+                ? formatPrice(unitCents * travellers, locale)
+                : "–"}
             </span>
           </p>
 
@@ -138,24 +141,24 @@ export function CheckoutForm({
             <Checkbox
               name="terms"
               required
-              error={errors.terms}
+              error={errors.terms ? t(errors.terms) : undefined}
               label={
                 <>
-                  He leído y acepto las{" "}
+                  {t("He leído y acepto las")}{" "}
                   <Link
                     href="/condiciones-de-contratacion"
                     target="_blank"
                     className="font-semibold underline underline-offset-2"
                   >
-                    condiciones de contratación
+                    {t("condiciones de contratación")}
                   </Link>{" "}
-                  y la{" "}
+                  {t("y la")}{" "}
                   <Link
                     href="/politica-de-privacidad"
                     target="_blank"
                     className="font-semibold underline underline-offset-2"
                   >
-                    política de privacidad
+                    {t("política de privacidad")}
                   </Link>
                   .
                 </>
@@ -168,10 +171,10 @@ export function CheckoutForm({
             disabled={pending}
             className={buttonClasses({ size: "lg", shape: "pill" }, "mt-5 w-full")}
           >
-            {pending ? "Reservando plazas…" : "Realizar el pedido"}
+            {pending ? t("Reservando plazas…") : t("Realizar el pedido")}
           </button>
           <p className="mt-3 text-center text-sm text-tertiary">
-            Guardamos tus plazas 15 minutos mientras completas el pago.
+            {t("Guardamos tus plazas 15 minutos mientras completas el pago.")}
           </p>
         </div>
       </aside>

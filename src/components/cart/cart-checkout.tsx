@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "@/components/i18n/provider";
+import { useLocale, useT } from "@/components/i18n/provider";
 import Link from "@/components/i18n/link";
 import { useActionState } from "react";
 import { FormAlert } from "@/components/forms/form-bits";
@@ -18,6 +18,7 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
   const items = useCart();
   const { lines, loading, empty } = useCartLines();
   const locale = useLocale();
+  const t = useT();
   const [state, action, pending] = useActionState<CartCheckoutState, FormData>(startCartCheckout, {
     status: "idle",
   });
@@ -27,9 +28,9 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
   if (empty) {
     return (
       <div className="max-w-xl">
-        <p className="text-tertiary">Tu carrito está vacío.</p>
+        <p className="text-tertiary">{t("Tu carrito está vacío.")}</p>
         <Link href="/ofertas-de-viajes" className={buttonClasses({}, "mt-4")}>
-          Ver excursiones
+          {t("Ver excursiones")}
         </Link>
       </div>
     );
@@ -48,7 +49,7 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
       <input type="hidden" name="locale" value={locale} />
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>
-          Empresa
+          {t("Empresa")}
           <input type="text" name="company" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
@@ -57,41 +58,41 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
         {state.status === "error" && <FormAlert message={state.message} />}
         <FormCard title="Detalles de facturación">
           <Input
-            label="Nombre y apellidos"
+            label={t("Nombre y apellidos")}
             name="name"
             autoComplete="name"
             required
             defaultValue={values.name}
-            error={errors.name}
+            error={errors.name ? t(errors.name) : undefined}
           />
           <Input
-            label="Teléfono"
+            label={t("Teléfono")}
             name="phone"
             type="tel"
             autoComplete="tel"
             required
             defaultValue={values.phone}
-            error={errors.phone}
+            error={errors.phone ? t(errors.phone) : undefined}
           />
           <Input
-            label="Dirección de correo electrónico"
+            label={t("Dirección de correo electrónico")}
             name="email"
             type="email"
             autoComplete="email"
             required
             defaultValue={values.email}
-            error={errors.email}
-            hint="Te enviaremos aquí la confirmación de cada excursión."
+            error={errors.email ? t(errors.email) : undefined}
+            hint={t("Te enviaremos aquí la confirmación de cada excursión.")}
           />
         </FormCard>
         <FormCard title="Información adicional">
           <Textarea
-            label="Notas del pedido (opcional)"
+            label={t("Notas del pedido (opcional)")}
             name="pickupNote"
             rows={3}
             maxLength={500}
             defaultValue={values.pickupNote}
-            hint="Alergias, movilidad reducida o cualquier cosa que debamos saber."
+            hint={t("Alergias, movilidad reducida o cualquier cosa que debamos saber.")}
           />
         </FormCard>
       </div>
@@ -99,7 +100,8 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <div className="rounded-3xl bg-secondary p-6 ring-1 ring-secondary ring-inset md:p-7">
           <h2 className="text-xl font-semibold tracking-tight text-primary">
-            Tu pedido ({items.length} {items.length === 1 ? "excursión" : "excursiones"})
+            {t("Tu pedido")} ({items.length}{" "}
+            {items.length === 1 ? t("excursión") : t("excursiones")})
           </h2>
           <ul className="mt-4 divide-y divide-secondary border-t border-secondary">
             {lines.map((l) => (
@@ -107,16 +109,16 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
                 <p className="font-semibold text-primary">{l.title}</p>
                 {l.startsAt && (
                   <p className="text-sm text-tertiary first-letter:uppercase">
-                    {formatDateLong(l.startsAt)}
+                    {formatDateLong(l.startsAt, locale)}
                   </p>
                 )}
                 <p className="text-sm text-tertiary">
-                  {l.travellers} × {formatPrice(l.unitCents)} ·{" "}
+                  {l.travellers} × {formatPrice(l.unitCents, locale)} ·{" "}
                   <strong className="text-primary">
-                    {formatPrice(l.unitCents * l.travellers)}
+                    {formatPrice(l.unitCents * l.travellers, locale)}
                   </strong>
                 </p>
-                {l.problem && <p className="text-sm text-error-primary">{l.problem}</p>}
+                {l.problem && <p className="text-sm text-error-primary">{t(l.problem)}</p>}
               </li>
             ))}
           </ul>
@@ -124,15 +126,15 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
             href="/carrito"
             className="mt-1 inline-block text-sm font-semibold text-brand-secondary underline underline-offset-2"
           >
-            Modificar carrito
+            {t("Modificar carrito")}
           </Link>
           <p
             className="mt-4 flex items-baseline justify-between border-t border-dashed border-primary pt-4"
             aria-live="polite"
           >
-            <span className="font-semibold text-primary">Total</span>
+            <span className="font-semibold text-primary">{t("Total")}</span>
             <span className="text-display-xs font-semibold text-primary">
-              {loading ? "–" : formatPrice(total)}
+              {loading ? "–" : formatPrice(total, locale)}
             </span>
           </p>
 
@@ -142,24 +144,24 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
             <Checkbox
               name="terms"
               required
-              error={errors.terms}
+              error={errors.terms ? t(errors.terms) : undefined}
               label={
                 <>
-                  He leído y acepto las{" "}
+                  {t("He leído y acepto las")}{" "}
                   <Link
                     href="/condiciones-de-contratacion"
                     target="_blank"
                     className="font-semibold underline underline-offset-2"
                   >
-                    condiciones de contratación
+                    {t("condiciones de contratación")}
                   </Link>{" "}
-                  y la{" "}
+                  {t("y la")}{" "}
                   <Link
                     href="/politica-de-privacidad"
                     target="_blank"
                     className="font-semibold underline underline-offset-2"
                   >
-                    política de privacidad
+                    {t("política de privacidad")}
                   </Link>
                   .
                 </>
@@ -172,19 +174,19 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
             disabled={pending || loading || blocked}
             className={buttonClasses({ size: "lg", shape: "pill" }, "mt-5 w-full")}
           >
-            {pending ? "Reservando plazas…" : "Realizar el pedido"}
+            {pending ? t("Reservando plazas…") : t("Realizar el pedido")}
           </button>
           {blocked && (
             <p className="mt-3 text-center text-sm text-error-primary">
-              Alguna excursión ya no está disponible.{" "}
+              {t("Alguna excursión ya no está disponible.")}{" "}
               <Link href="/carrito" className="font-semibold underline underline-offset-2">
-                Revisa el carrito
+                {t("Revisa el carrito")}
               </Link>
               .
             </p>
           )}
           <p className="mt-3 text-center text-sm text-tertiary">
-            Guardamos tus plazas 15 minutos mientras completas el pago.
+            {t("Guardamos tus plazas 15 minutos mientras completas el pago.")}
           </p>
         </div>
       </aside>

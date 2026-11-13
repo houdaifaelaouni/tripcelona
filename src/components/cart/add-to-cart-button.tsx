@@ -4,6 +4,7 @@ import Link from "@/components/i18n/link";
 import { useState } from "react";
 import { buttonClasses } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart/store";
+import { useT } from "@/components/i18n/provider";
 
 export function AddToCartButton({
   departureId,
@@ -12,6 +13,7 @@ export function AddToCartButton({
   departureId: string;
   travellers: number;
 }) {
+  const t = useT();
   const [result, setResult] = useState<"added" | "full" | null>(null);
   return (
     <div className="mt-2">
@@ -20,23 +22,23 @@ export function AddToCartButton({
         className={buttonClasses({ size: "lg", variant: "outline" }, "w-full")}
         onClick={() => setResult(addToCart(departureId, travellers))}
       >
-        Añadir al carrito
+        {t("Añadir al carrito")}
       </button>
       <p className="mt-2 text-sm" role="status" aria-live="polite">
         {result === "added" && (
           <span className="text-tertiary">
-            Añadido.{" "}
+            {t("Añadido.")}{" "}
             <Link
               href="/carrito"
               className="font-semibold text-primary underline underline-offset-2"
             >
-              Ver carrito
+              {t("Ver carrito")}
             </Link>
           </span>
         )}
         {result === "full" && (
           <span className="text-error-primary">
-            El carrito admite hasta 6 excursiones distintas. Paga o quita alguna primero.
+            {t("El carrito admite hasta 6 excursiones distintas. Paga o quita alguna primero.")}
           </span>
         )}
       </p>

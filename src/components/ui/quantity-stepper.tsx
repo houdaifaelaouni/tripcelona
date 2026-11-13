@@ -9,6 +9,7 @@
 import { Minus, Plus } from "lucide-react";
 import { useId, useState } from "react";
 import { cn } from "@/lib/cn";
+import { useT } from "@/components/i18n/provider";
 import { iconButtonClasses } from "@/components/ui/icon-button";
 
 export function QuantityStepper({
@@ -33,6 +34,7 @@ export function QuantityStepper({
   className?: string;
 }) {
   const id = useId();
+  const t = useT();
   const [internal, setInternal] = useState(defaultValue);
   const current = value ?? internal;
 
@@ -53,7 +55,7 @@ export function QuantityStepper({
       <div role="group" aria-labelledby={`${id}-label`} className="flex items-center gap-3">
         <button
           type="button"
-          aria-label={`Quitar uno (${label})`}
+          aria-label={t("Quitar uno ({label})", { label })}
           disabled={current <= min}
           onClick={() => update(current - 1)}
           className={iconButtonClasses("outline", "sm", "disabled:opacity-30")}
@@ -65,7 +67,7 @@ export function QuantityStepper({
         </output>
         <button
           type="button"
-          aria-label={`Añadir uno (${label})`}
+          aria-label={t("Añadir uno ({label})", { label })}
           disabled={current >= max}
           onClick={() => update(current + 1)}
           className={iconButtonClasses("outline", "sm", "disabled:opacity-30")}

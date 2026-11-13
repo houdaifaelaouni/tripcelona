@@ -1,7 +1,16 @@
 import type { BookingDetails } from "@/lib/booking/details";
 import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
+import { createT } from "@/lib/i18n/translate";
+import type { Locale } from "@/lib/i18n/config";
 
-export function BookingSummary({ booking }: { booking: BookingDetails }) {
+export function BookingSummary({
+  booking,
+  locale = "es",
+}: {
+  booking: BookingDetails;
+  locale?: Locale;
+}) {
+  const t = createT(locale);
   const { departure, tour, cart } = booking;
   if (cart) {
     return (
@@ -12,19 +21,25 @@ export function BookingSummary({ booking }: { booking: BookingDetails }) {
               <div className="min-w-0">
                 <p className="font-semibold">{l.title}</p>
                 <p className="text-sm text-tertiary">
-                  <span className="first-letter:uppercase">{formatDateLong(l.startsAt)}</span> ·
-                  salida {formatTime(l.startsAt)} · {l.travellers}{" "}
-                  {l.travellers === 1 ? "viajero" : "viajeros"}
+                  <span className="first-letter:uppercase">
+                    {formatDateLong(l.startsAt, locale)}
+                  </span>{" "}
+                  · {t("Salida {time}", { time: formatTime(l.startsAt, locale) })} · {l.travellers}{" "}
+                  {l.travellers === 1 ? t("viajero") : t("viajeros")}
                 </p>
-                <p className="text-sm text-tertiary">Referencia {l.reference}</p>
+                <p className="text-sm text-tertiary">
+                  {t("Referencia")} {l.reference}
+                </p>
               </div>
-              <p className="font-semibold whitespace-nowrap">{formatPrice(l.totalCents)}</p>
+              <p className="font-semibold whitespace-nowrap">{formatPrice(l.totalCents, locale)}</p>
             </li>
           ))}
         </ul>
         <div className="mt-3 flex items-baseline justify-between border-t border-secondary pt-4">
-          <span className="text-sm text-tertiary">Total</span>
-          <span className="text-display-lg font-semibold">{formatPrice(cart.totalCents)}</span>
+          <span className="text-sm text-tertiary">{t("Total")}</span>
+          <span className="text-display-lg font-semibold">
+            {formatPrice(cart.totalCents, locale)}
+          </span>
         </div>
       </div>
     );
@@ -32,20 +47,24 @@ export function BookingSummary({ booking }: { booking: BookingDetails }) {
   return (
     <div className="mt-6 rounded-xl border border-secondary bg-white p-6 shadow-lg">
       <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
-        <Item label="Referencia" value={booking.reference} />
-        <Item label="Excursión" value={tour.title} />
-        <Item label="Fecha" value={formatDateLong(departure.startsAt)} capitalize />
+        <Item label={t("Referencia")} value={booking.reference} />
+        <Item label={t("Excursión")} value={tour.title} />
+        <Item label={t("Fecha")} value={formatDateLong(departure.startsAt, locale)} capitalize />
         <Item
-          label="Salida"
+          label={t("Salida")}
           value={
-            formatTime(departure.startsAt) +
-            (departure.endsAt ? ` · regreso aprox. ${formatTime(departure.endsAt)}` : "")
+            formatTime(departure.startsAt, locale) +
+            (departure.endsAt
+              ? ` · ${t("regreso aprox. {time}", { time: formatTime(departure.endsAt, locale) })}`
+              : "")
           }
         />
-        <Item label="Viajeros" value={String(booking.travellers)} />
+        <Item label={t("Viajeros")} value={String(booking.travellers)} />
         <div>
-          <dt className="text-sm text-tertiary">Total</dt>
-          <dd className="text-display-lg font-semibold">{formatPrice(booking.totalCents)}</dd>
+          <dt className="text-sm text-tertiary">{t("Total")}</dt>
+          <dd className="text-display-lg font-semibold">
+            {formatPrice(booking.totalCents, locale)}
+          </dd>
         </div>
       </dl>
     </div>

@@ -297,4 +297,146 @@ export const fr: Dictionary = {
   "Hola, me interesa la excursión «{title}». ¿Cuándo es la próxima salida?":
     "Bonjour, l'excursion «{title}» m'intéresse. Quand est le prochain départ ?",
   "Ver otras excursiones": "Voir d'autres excursions",
+  "Quitar uno ({label})": "Retirer un ({label})",
+  "Añadir uno ({label})": "Ajouter un ({label})",
+  "Mostrar las {n} fotos": "Afficher les {n} photos",
+  "Fotos: {title}": "Photos : {title}",
+  "Cerrar fotos": "Fermer les photos",
+  "Añadir al carrito": "Ajouter au panier",
+  "Añadido.": "Ajouté.",
+  "Ver carrito": "Voir le panier",
+  "El carrito admite hasta 6 excursiones distintas. Paga o quita alguna primero.":
+    "Le panier accepte jusqu'à 6 excursions différentes. Payez-en ou retirez-en une d'abord.",
+  "Elige fecha": "Choisissez une date",
+  "¡Quedan {n}!": "Plus que {n} !",
+  "{n} plazas": "{n} places",
+  Viajeros: "Voyageurs",
+  Total: "Total",
+  "Finalizar compra": "Finaliser la commande",
+  "Progreso de la compra": "Progression de la commande",
+  "Datos y pago": "Coordonnées et paiement",
+  Confirmación: "Confirmation",
+  "Detalles de facturación": "Détails de facturation",
+  "Información adicional": "Informations complémentaires",
+  "Pago seguro con Stripe": "Paiement sécurisé avec Stripe",
+  "Pago seguro con Redsys": "Paiement sécurisé avec Redsys",
+  "Pago seguro con PAYCOMET": "Paiement sécurisé avec PAYCOMET",
+  "Método de pago": "Mode de paiement",
+  "Tarjeta de crédito o débito": "Carte de crédit ou de débit",
+  "Pago con tarjeta no disponible ahora mismo":
+    "Le paiement par carte n'est pas disponible pour le moment",
+  Empresa: "Entreprise",
+  "Quedan {n} plazas en esta salida.": "Il reste {n} places sur ce départ.",
+  "Nombre y apellidos": "Nom et prénom",
+  "Dirección de correo electrónico": "Adresse e-mail",
+  "Te enviaremos aquí la confirmación.": "Nous vous enverrons la confirmation ici.",
+  "Te enviaremos aquí la confirmación de cada excursión.":
+    "Nous vous enverrons ici la confirmation de chaque excursion.",
+  "Notas del pedido (opcional)": "Notes sur la commande (facultatif)",
+  "Alergias, movilidad reducida o cualquier cosa que debamos saber.":
+    "Allergies, mobilité réduite ou tout ce que nous devons savoir.",
+  "Tu pedido": "Votre commande",
+  "He leído y acepto las": "J'ai lu et j'accepte les",
+  "condiciones de contratación": "conditions de vente",
+  "y la": "et la",
+  "Reservando plazas…": "Réservation des places…",
+  "Realizar el pedido": "Passer la commande",
+  "Guardamos tus plazas 15 minutos mientras completas el pago.":
+    "Nous gardons vos places 15 minutes pendant que vous finalisez le paiement.",
+  "Tu carrito está vacío.": "Votre panier est vide.",
+  excursión: "excursion",
+  excursiones: "excursions",
+  "Modificar carrito": "Modifier le panier",
+  "Alguna excursión ya no está disponible.": "Une excursion n'est plus disponible.",
+  "Revisa el carrito": "Vérifiez le panier",
+  "Tu carrito está vacío. Elige una excursión y una fecha.":
+    "Votre panier est vide. Choisissez une excursion et une date.",
+  "Quitar {title} del carrito": "Retirer {title} du panier",
+  "Quita o ajusta las excursiones marcadas para continuar.":
+    "Retirez ou ajustez les excursions signalées pour continuer.",
+  "Continuar al pago": "Passer au paiement",
+  "Un solo pago para todas las excursiones.": "Un seul paiement pour toutes les excursions.",
+  "Seguir viendo excursiones": "Continuer à voir les excursions",
+  "Alguien acaba de reservar las últimas plazas. Elige otra fecha.":
+    "Quelqu'un vient de réserver les dernières places. Choisissez une autre date.",
+  "Esta salida ya no está disponible.": "Ce départ n'est plus disponible.",
+  "Esta salida está completa.": "Ce départ est complet.",
+  "Salida completa.": "Départ complet.",
+  "Solo quedan {n} plazas.": "Il ne reste que {n} places.",
+  "Quedan {n} plazas.": "Il reste {n} places.",
+  "Excursión no disponible": "Excursion indisponible",
+  "La salida seleccionada no es válida.": "Le départ sélectionné n'est pas valide.",
+  "Indica el número de viajeros.": "Indiquez le nombre de voyageurs.",
+  "Indica un número entero de viajeros.": "Indiquez un nombre entier de voyageurs.",
+  "Mínimo {n} viajero.": "Minimum {n} voyageur.",
+  "Para más de {n} personas, pide un presupuesto de grupo.":
+    "Pour plus de {n} personnes, demandez un devis de groupe.",
+  "Escribe un email válido.": "Saisissez un e-mail valide.",
+  "Escribe un teléfono válido, con prefijo si no es español.":
+    "Saisissez un numéro valide, avec l'indicatif s'il n'est pas espagnol.",
+  "Máximo {n} caracteres.": "Maximum {n} caractères.",
+  "Debes aceptar las condiciones de contratación.": "Vous devez accepter les conditions de vente.",
+  "El carrito no es válido.": "Le panier n'est pas valide.",
+  "Revisa los campos marcados.": "Vérifiez les champs signalés.",
+  "Has enviado varios formularios seguidos. Espera unos minutos o escríbenos por WhatsApp.":
+    "Vous avez envoyé plusieurs formulaires de suite. Attendez quelques minutes ou écrivez-nous sur WhatsApp.",
+  "No hemos podido guardar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.":
+    "Nous n'avons pas pu enregistrer votre message. Réessayez ou écrivez-nous sur WhatsApp.",
+  "Elige una excursión de la lista.": "Choisissez une excursion dans la liste.",
+  "Debes aceptar la política de privacidad.":
+    "Vous devez accepter la politique de confidentialité.",
+  "Email no válido.": "E-mail non valide.",
+  "Cuéntanos un poco más (mínimo {n} caracteres).":
+    "Dites-nous-en un peu plus (minimum {n} caractères).",
+  "Elige una excursión o «destino a medida».":
+    "Choisissez une excursion ou «destination sur mesure».",
+  "Número de personas no válido.": "Nombre de personnes non valide.",
+  "Número entero.": "Nombre entier.",
+  "Mínimo {n} persona.": "Minimum {n} personne.",
+  "Para más de {n} personas, escríbenos.": "Pour plus de {n} personnes, écrivez-nous.",
+  "Teléfono o WhatsApp para contactarte.": "Téléphone ou WhatsApp pour vous contacter.",
+  Fecha: "Date",
+  "regreso {time}": "retour {time}",
+  "Cambiar fecha": "Changer la date",
+  "Primero elige una excursión y una fecha. Si prefieres, te ayudamos por WhatsApp.":
+    "Choisissez d'abord une excursion et une date. Si vous préférez, nous vous aidons sur WhatsApp.",
+  "Hola, quiero reservar una excursión.": "Bonjour, je souhaite réserver une excursion.",
+  "Estas fechas todavía tienen plazas:": "Ces dates ont encore des places :",
+  "No hay otras fechas con plazas ahora mismo.":
+    "Il n'y a pas d'autres dates avec des places pour le moment.",
+  "Hola, me interesa «{title}» pero la fecha está completa.":
+    "Bonjour, «{title}» m'intéresse mais la date est complète.",
+  "El pago no se ha completado. Puedes intentarlo de nuevo, con la misma u otra tarjeta.":
+    "Le paiement n'a pas abouti. Vous pouvez réessayer, avec la même carte ou une autre.",
+  "Lo sentimos: mientras tanto se han agotado las plazas de esta salida.":
+    "Désolé : entre-temps, les places de ce départ sont épuisées.",
+  "El pago con tarjeta no está disponible ahora mismo.":
+    "Le paiement par carte n'est pas disponible pour le moment.",
+  "Esta reserva ya no está pendiente de pago.":
+    "Cette réservation n'est plus en attente de paiement.",
+  "No encontramos esta reserva.": "Nous n'avons pas trouvé cette réservation.",
+  "Pago de tu reserva": "Paiement de votre réservation",
+  "No encontramos esta reserva": "Nous n'avons pas trouvé cette réservation",
+  "Ver confirmación": "Voir la confirmation",
+  "Esta reserva ya está pagada": "Cette réservation est déjà payée",
+  "Reserva cancelada": "Réservation annulée",
+  "La reserva {ref} ya no está activa.": "La réservation {ref} n'est plus active.",
+  "Hola, tengo una pregunta sobre la reserva {ref}.":
+    "Bonjour, j'ai une question sur la réservation {ref}.",
+  "Revisa y paga tu reserva": "Vérifiez et réglez votre réservation",
+  "Guardamos tus plazas durante 15 minutos. La reserva se confirma en cuanto el banco autoriza el pago.":
+    "Nous gardons vos places pendant 15 minutes. La réservation est confirmée dès que la banque autorise le paiement.",
+  "Pagar con tarjeta": "Payer par carte",
+  "Pago seguro en la pasarela del banco ({provider}), con verificación 3D Secure.":
+    "Paiement sécurisé sur la passerelle de la banque ({provider}), avec vérification 3D Secure.",
+  "El pago online no está disponible ahora mismo. Escríbenos por WhatsApp con tu referencia y te ayudamos a completar la reserva.":
+    "Le paiement en ligne n'est pas disponible pour le moment. Écrivez-nous sur WhatsApp avec votre référence et nous vous aiderons à finaliser la réservation.",
+  "Hola, tengo la reserva {ref} pendiente de pago.":
+    "Bonjour, j'ai la réservation {ref} en attente de paiement.",
+  viajero: "voyageur",
+  viajeros: "voyageurs",
+  Referencia: "Référence",
+  Excursión: "Excursion",
+  Salida: "Départ",
+  "Tu carrito": "Votre panier",
 };
