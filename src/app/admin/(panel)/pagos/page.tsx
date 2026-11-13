@@ -57,7 +57,6 @@ export default async function Payments() {
   const active = activeProvider();
   const wanted = process.env.PAYMENT_PROVIDER || "redsys";
   const db = await createClient();
-  const since = new Date(Date.now() - 30 * 864e5).toISOString();
 
   const [{ data: recent }, { data: events }] = await Promise.all([
     db
@@ -65,7 +64,6 @@ export default async function Payments() {
       .select(
         "id, provider, provider_ref, amount_cents, status, created_at, bookings(id, reference)",
       )
-      .gte("created_at", since)
       .order("created_at", { ascending: false })
       .limit(50),
     db
@@ -83,7 +81,7 @@ export default async function Payments() {
 
   return (
     <>
-      <PageTitle description="Estado de la pasarela de pago y últimos cobros (30 días).">
+      <PageTitle description="Estado de la pasarela de pago y los últimos 50 pagos.">
         Pagos
       </PageTitle>
 
