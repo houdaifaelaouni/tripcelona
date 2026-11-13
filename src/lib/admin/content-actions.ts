@@ -237,3 +237,45 @@ export async function deleteFaq(id: string) {
   updateTag(CONTENT_TAG);
   backWith("/admin/faqs", { ok: "eliminado" });
 }
+
+// Reviews (opiniones) -----------------------------------------------------------
+
+const reviewSchema = z.object({
+  author: z.string().trim().min(2, "Escribe el nombre de quien opina.").max(120),
+  source: z
+    .string()
+    .trim()
+    .min(2, "Indica de dónde viene la opinión (grupo, centro, Google...).")
+    .max(160),
+  text: z.string().trim().min(10, "Escribe la opinión.").max(3000),
+  rating: z
+    .string()
+    .optional()
+    .transform((v) => (v ? Number(v) : null))
+    .pipe(z.number().int().min(1).max(5).nullable()),
+  status: z.enum(["pending", "approved", "hidden"]),
+});
+
+export async function saveReview(id: string | null, form: FormData) {
+  const staff = await assertStaff("any");
+  const parsed = reviewSchema.safeParse(Object.fromEntries(form));
+  if (!parsed.success) backWith("/admin/opiniones", { error: firstError(parsed.error) });
+  const db = await createClient();
+  const { data, error } = id
+    ? await db.from("reviews").update(parsed.data).eq("id", id).select("id").single()
+    : await db.from("reviews").insert(parsed.data).select("id").single();
+  if (error) backWith("/admin/opiniones", { error: dbError(error.message) });
+  await audit(staff.id, id ? "review.update" : "review.create", "reviews", data.id);
+  updateTag(CONTENT_TAG);
+  backWith("/admin/opiniones", { ok: "guardado" });
+}
+
+export async function deleteReview(id: string) {
+  const staff = await assertStaff("any");
+  const db = await createClient();
+  const { error } = await db.from("reviews").delete().eq("id", id);
+  if (error) backWith("/admin/opiniones", { error: dbError(error.message) });
+  await audit(staff.id, "review.delete", "reviews", id);
+  updateTag(CONTENT_TAG);
+  backWith("/admin/opiniones", { ok: "eliminado" });
+}

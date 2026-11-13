@@ -12,7 +12,8 @@ import {
   WhyTripcelona,
 } from "@/components/home/landing";
 import { ContactSection } from "@/components/home/sections";
-import { getPublishedFaqs } from "@/lib/content/queries";
+import { Testimonials } from "@/components/home/testimonials";
+import { getApprovedReviews, getPublishedFaqs } from "@/lib/content/queries";
 import { getSiteSettings } from "@/lib/settings";
 import { TourCard } from "@/components/tours/tour-card";
 import { ButtonLink } from "@/components/ui/button";
@@ -26,9 +27,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [tours, faqs, site] = await Promise.all([
+  const [tours, faqs, reviews, site] = await Promise.all([
     getPublishedTours(),
     getPublishedFaqs().catch(() => []),
+    getApprovedReviews().catch(() => []),
     getSiteSettings(),
   ]);
   const photos = tours.flatMap((tour) => (tour.image ? [tour.image] : []));
@@ -92,6 +94,7 @@ export default async function Home() {
       <WhyTripcelona photo={photo(1)} />
       <HowItWorks />
       <DeparturesTable tours={tours} />
+      <Testimonials reviews={reviews} />
       <GroupsBanner photo={photo(2)} whatsappHref={site.whatsappHref} />
       <HomeFaq faqs={faqs.slice(0, 6)} whatsappHref={site.whatsappHref} />
       <ContactSection
