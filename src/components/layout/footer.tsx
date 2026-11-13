@@ -19,6 +19,13 @@ const PAYMENT_METHODS = [
   { name: "Discover", src: "/brand/payments/discover.png" },
 ] as const;
 
+/** Award badges, shown exactly as supplied by the owner. */
+const BADGES = [
+  { name: "Tripadvisor", src: "/brand/badges/tripadvisor.png", width: 86, height: 86 },
+  { name: "Insignia de diseño web", src: "/brand/badges/award-pencil.png", width: 86, height: 86 },
+  { name: "CSS Design Awards", src: "/brand/badges/css-design-awards.png", width: 164, height: 25 },
+] as const;
+
 /**
  * Light footer: brand block and a contact card on top, five link columns,
  * then a one-line legal band. Hairlines separate the three rows.
@@ -122,6 +129,25 @@ export async function Footer() {
               </li>
             ))}
           </ul>
+          <div className="flex flex-col gap-3 sm:ml-auto sm:flex-row sm:items-center sm:gap-5">
+            <p className="text-sm font-medium text-secondary">Reconocimientos</p>
+            <ul
+              className="flex flex-wrap items-center gap-4 "
+              aria-label="Premios y reconocimientos"
+            >
+              {BADGES.map((b) => (
+                <li key={b.name}>
+                  <Image
+                    src={b.src}
+                    alt={b.name}
+                    width={b.width}
+                    height={b.height}
+                    className="h-10 w-auto"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-secondary py-8 text-sm text-tertiary md:flex-row md:items-center md:justify-between">

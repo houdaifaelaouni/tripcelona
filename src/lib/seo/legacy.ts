@@ -18,7 +18,6 @@ const LEGACY_POSTS = new Set([
 const EXACT: Record<string, string> = {
   "/blogs": "/blog",
   "/cart": "/reservar",
-  "/carrito": "/reservar",
   "/checkout": "/reservar",
   "/finalizar-compra": "/reservar",
   "/my-account": "/",
@@ -63,6 +62,7 @@ export const OWN_ROUTES = new Set([
   "admin",
   "api",
   "blog",
+  "carrito",
   "contactanos",
   "crea-tu-tour",
   "excursiones",

@@ -1,4 +1,4 @@
-import { ChevronDown, Phone, Ticket } from "lucide-react";
+import { ChevronDown, Phone } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import Link from "next/link";
 import { getSiteSettings } from "@/lib/settings";
@@ -7,6 +7,7 @@ import { WhatsAppIcon } from "@/components/ui/icons";
 import { iconButtonClasses } from "@/components/ui/icon-button";
 import { buttonClasses } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
+import { CartLink } from "@/components/cart/cart-link";
 import { MobileNav } from "./mobile-nav";
 
 /*
@@ -95,9 +96,7 @@ export async function Header() {
           >
             <WhatsAppIcon />
           </a>
-          <Link href="/reservar" className={action} aria-label="Mi reserva">
-            <Ticket size={18} aria-hidden />
-          </Link>
+          <CartLink />
           <Link
             href="/ofertas-de-viajes"
             className={buttonClasses({ size: "sm" }, "hidden whitespace-nowrap md:inline-flex")}

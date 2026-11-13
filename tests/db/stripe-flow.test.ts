@@ -67,6 +67,7 @@ const fetchMock = vi.fn(async (url: string, init: RequestInit) => {
 
 beforeAll(async () => {
   vi.stubGlobal("fetch", fetchMock);
+  await db.from("payment_events").delete().eq("provider", "stripe");
   const { data: tour } = await db
     .from("tours")
     .insert({ slug, title: "Stripe flow", status: "published" })
@@ -101,6 +102,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   vi.unstubAllGlobals();
+  await db.from("payment_events").delete().eq("provider", "stripe");
   await db.from("payments").delete().eq("booking_id", bookingId);
   await db.from("bookings").delete().eq("id", bookingId);
   await db.from("tours").delete().eq("slug", slug);

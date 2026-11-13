@@ -52,4 +52,42 @@ test.describe("booking", () => {
     expect(await ics.text()).toContain("BEGIN:VEVENT");
     expect(csp, "CSP violations during booking").toEqual([]);
   });
+  test("cart: two dates, one payment, both confirmed", async ({ page }) => {
+    await page.goto(`/excursiones/${E2E.tourSlug}`);
+    const open = page.locator("label:has(input[name=salida]:not([disabled]))");
+    test.skip((await open.count()) < 2, "needs two open departures");
+
+    await open.first().click();
+    await page.getByRole("button", { name: "Añadir al carrito" }).click();
+    await expect(page.getByRole("link", { name: "Ver carrito" })).toBeVisible();
+    await open.last().click();
+    await page.getByRole("button", { name: "Añadir al carrito" }).click();
+    await expect(page.getByRole("link", { name: /Carrito, 2 excursiones/ })).toBeVisible();
+
+    await page.getByRole("link", { name: "Ver carrito" }).click();
+    await page.waitForURL("**/carrito");
+    await expect(page.getByRole("heading", { name: "Tu carrito" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Continuar al pago" })).toBeVisible();
+    await page.getByRole("link", { name: "Continuar al pago" }).click();
+    await page.waitForURL(/\/reservar\?carrito=1/);
+
+    await page.waitForLoadState("networkidle");
+    await page.locator("input[name=name]").fill("Carrito E2E");
+    await page.locator("input[name=email]").fill("e2e-cart@example.com");
+    await page.locator("input[name=phone]").fill("+34 600 000 001");
+    await page.locator("input[name=terms]").check();
+    await page.getByRole("button", { name: "Continuar al pago" }).click();
+    await page.waitForURL(/\/reservar\/pendiente/);
+    await expect(page.getByText("Referencia").first()).toBeVisible();
+
+    await page.getByRole("button", { name: "Pagar con tarjeta" }).click();
+    await page.getByRole("button", { name: "Autorizar" }).click();
+    await page.waitForURL(/\/reservar\/confirmada/);
+    await expect(page.getByText("¡Reserva confirmada!")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/Referencia TC-/)).toHaveCount(2);
+
+    // The cart is emptied once the bookings exist.
+    await page.goto("/carrito");
+    await expect(page.getByText("Tu carrito está vacío")).toBeVisible();
+  });
 });

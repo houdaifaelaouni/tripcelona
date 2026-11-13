@@ -46,6 +46,29 @@ async function main() {
     if (depError) throw new Error(depError.message);
   }
 
+  // A second date, so the cart test can hold two excursions at once.
+  const secondNote = `${E2E.departureNote} 2`;
+  const { data: second } = await db
+    .from("tour_departures")
+    .select("id")
+    .eq("tour_id", tour.id)
+    .eq("notes", secondNote)
+    .gt("starts_at", new Date(Date.now() + 7 * 86_400_000).toISOString())
+    .limit(1);
+  if (!second?.length) {
+    const start = new Date(Date.now() + 33 * 86_400_000);
+    start.setUTCHours(7, 0, 0, 0);
+    const { error: depError } = await db.from("tour_departures").insert({
+      tour_id: tour.id,
+      starts_at: start.toISOString(),
+      ends_at: new Date(start.getTime() + 11 * 3_600_000).toISOString(),
+      capacity: 40,
+      price_cents: 5500,
+      notes: secondNote,
+    });
+    if (depError) throw new Error(depError.message);
+  }
+
   const { userId } = await grantStaff(E2E.ownerEmail, "owner", { password: e2eOwnerPassword() });
   // grantStaff keeps an existing account's password; the e2e owner always gets the current one.
   const { error: pwError } = await db.auth.admin.updateUserById(userId, {

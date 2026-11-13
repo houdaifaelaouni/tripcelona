@@ -12,7 +12,13 @@ import {
   th,
 } from "@/components/admin/ui";
 import { requireStaff } from "@/lib/auth/staff";
-import { activeProvider, paycometConfig, redsysConfig, stripeConfig } from "@/lib/payments/config";
+import {
+  activeProvider,
+  paycometConfig,
+  redsysConfig,
+  stripeConfig,
+  stripeKeyProblem,
+} from "@/lib/payments/config";
 import { siteUrl } from "@/lib/seo/site-url";
 import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/lib/tours/format";
@@ -138,7 +144,12 @@ export default async function Payments() {
                 return (
                   <tr key={k}>
                     <td className={td}>{p.label}</td>
-                    <td className={td}>{p.configured() ? "Configuradas" : "Faltan"}</td>
+                    <td className={td}>
+                      {p.configured() ? "Configuradas" : "Faltan"}
+                      {k === "stripe" && stripeKeyProblem() && (
+                        <span className="mt-1 block text-error-primary">{stripeKeyProblem()}</span>
+                      )}
+                    </td>
                     <td className={td}>{active === k ? "Sí" : "No"}</td>
                     <td className={td}>{last ? when(last) : "Nunca"}</td>
                     <td className={`${td} font-mono text-xs`}>{siteUrl() + p.hook}</td>

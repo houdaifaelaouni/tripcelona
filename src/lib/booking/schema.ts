@@ -49,3 +49,40 @@ export function fieldErrors(
   }
   return out;
 }
+
+/** Cart checkout: the customer's data once, the lines as JSON (ids and counts only). */
+export const MAX_CART_LINES = 6;
+export const cartCheckoutSchema = checkoutSchema
+  .omit({ departureId: true, travellers: true })
+  .extend({
+    items: z
+      .string()
+      .transform((v, ctx) => {
+        try {
+          return JSON.parse(v) as unknown;
+        } catch {
+          ctx.addIssue({ code: "custom", message: "El carrito no es válido." });
+          return z.NEVER;
+        }
+      })
+      .pipe(
+        z
+          .array(
+            z.object({
+              departureId: z.uuid(),
+              travellers: z.number().int().min(1).max(MAX_TRAVELLERS),
+            }),
+          )
+          .min(1, "Tu carrito está vacío.")
+          .max(MAX_CART_LINES),
+      ),
+  });
+
+export type CartCheckoutState =
+  | { status: "idle" }
+  | {
+      status: "error";
+      message: string;
+      fieldErrors: Partial<Record<CheckoutField, string>>;
+      values: Partial<Record<CheckoutField, string>>;
+    };

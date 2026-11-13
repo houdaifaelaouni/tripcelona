@@ -56,11 +56,22 @@ export function paycometConfig(): PaycometConfig | null {
 
 export type StripeConfig = StripeCredentials & { baseUrl: string };
 
+/** A readable reason when STRIPE_SECRET_KEY is the wrong kind of key, else null. */
+export function stripeKeyProblem(key = process.env.STRIPE_SECRET_KEY): string | null {
+  if (!key) return null;
+  if (key.startsWith("pk_"))
+    return "STRIPE_SECRET_KEY contiene la clave pública (pk_…). Pon la clave secreta (sk_… o rk_…).";
+  if (!/^(sk|rk)_(live|test)_/.test(key))
+    return "STRIPE_SECRET_KEY no parece una clave secreta de Stripe (sk_live_… o rk_live_…).";
+  return null;
+}
+
 /** Stripe settings from env (Vercel). Null when the secret key or webhook secret is missing. */
 export function stripeConfig(): StripeConfig | null {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secretKey || !webhookSecret) return null;
+  if (stripeKeyProblem()) return null;
   const override =
     process.env.VERCEL_ENV !== "production" ? process.env.STRIPE_BASE_URL?.replace(/\/$/, "") : "";
   return { secretKey, webhookSecret, baseUrl: override || STRIPE_BASE_URL };

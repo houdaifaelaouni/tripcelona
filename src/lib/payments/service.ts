@@ -44,32 +44,52 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
   const { data: booking } = await db
     .from("bookings")
     .select(
-      "id, reference, status, departure_id, travellers, total_cents, customer_name, email, tour_departures(tours(title))",
+      "id, reference, status, departure_id, travellers, total_cents, customer_name, email, cart_id, tour_departures(tours(title))",
     )
     .eq("id", bookingId)
     .maybeSingle();
   if (!booking) return { ok: false, reason: "not_found" };
   if (booking.status !== "pending") return { ok: false, reason: "not_pending" };
 
-  if (!(await ensureHold(booking.id, booking.departure_id, booking.travellers)))
-    return { ok: false, reason: "no_seats" };
+  // A cart is paid in one go: every booking in it must still be pending and held.
+  let lines = [booking];
+  if (booking.cart_id) {
+    const { data: cart } = await db
+      .from("bookings")
+      .select(
+        "id, reference, status, departure_id, travellers, total_cents, customer_name, email, cart_id, tour_departures(tours(title))",
+      )
+      .eq("cart_id", booking.cart_id)
+      .order("created_at");
+    lines = cart ?? [booking];
+    if (lines.some((l) => l.status !== "pending")) return { ok: false, reason: "not_pending" };
+  }
+  for (const line of lines) {
+    if (!(await ensureHold(line.id, line.departure_id, line.travellers)))
+      return { ok: false, reason: "no_seats" };
+  }
+  const totalCents = lines.reduce((n, l) => n + l.total_cents, 0);
 
   const order = provider === "paycomet" ? newPaycometOrder() : newOrderId(); // Stripe reuses the same shape
   const { error } = await db.from("payments").insert({
     booking_id: booking.id,
+    cart_id: booking.cart_id,
     provider,
     provider_ref: order,
-    amount_cents: booking.total_cents,
+    amount_cents: totalCents,
   });
   if (error) throw new Error(`Could not create payment: ${error.message}`);
 
-  const description = `${booking.reference} · ${booking.tour_departures.tours.title}`;
+  const description =
+    lines.length === 1
+      ? `${booking.reference} · ${booking.tour_departures.tours.title}`
+      : `${lines.length} excursiones · ${lines.map((l) => l.reference).join(", ")}`;
   const urls = paymentUrls(booking.id);
 
   if (provider === "stripe") {
     const url = await createStripeSession(stripeConfig()!, {
       order,
-      amountCents: booking.total_cents,
+      amountCents: totalCents,
       description,
       email: booking.email,
       okUrl: urls.okUrl,
@@ -92,7 +112,7 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
       paycomet,
       buildPaycometForm(paycomet, {
         order,
-        amountCents: booking.total_cents,
+        amountCents: totalCents,
         description,
         okUrl: urls.okUrl,
         koUrl: urls.koUrl,
@@ -112,7 +132,7 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
   const config = redsysConfig()!;
   const fields = buildPaymentRequest(config, {
     order,
-    amountCents: booking.total_cents,
+    amountCents: totalCents,
     description,
     holder: booking.customer_name,
     ...urls,
@@ -337,15 +357,29 @@ async function applyVerifiedResult(result: VerifiedResult): Promise<Notification
 
   const { data: payment } = await db
     .from("payments")
-    .select("id, booking_id")
+    .select("id, booking_id, cart_id")
     .eq("provider", result.provider)
     .eq("provider_ref", result.order)
     .single();
   if (!payment) return typed;
 
   if (typed === "paid") {
-    await sendBookingEmail(payment.booking_id, "confirmation");
-    await sendBookingEmail(payment.booking_id, "owner_alert");
+    // A cart payment confirms several bookings: each gets its own email.
+    const ids = payment.cart_id
+      ? (
+          (
+            await db
+              .from("bookings")
+              .select("id")
+              .eq("cart_id", payment.cart_id)
+              .order("created_at")
+          ).data ?? []
+        ).map((b) => b.id)
+      : [payment.booking_id];
+    for (const id of ids) {
+      await sendBookingEmail(id, "confirmation");
+      await sendBookingEmail(id, "owner_alert");
+    }
   } else if (typed === "failed") {
     await sendBookingEmail(payment.booking_id, "payment_failed");
   } else {
@@ -362,16 +396,51 @@ async function applyVerifiedResult(result: VerifiedResult): Promise<Notification
 
 export type RefundResult = { ok: true } | { ok: false; error: string };
 
+type PaymentRow = {
+  id: string;
+  provider_ref: string;
+  amount_cents: number;
+  refunded_cents: number;
+  raw_event: unknown;
+};
+
+/**
+ * Record a refund the gateway accepted. A whole-payment refund closes the
+ * payment; a partial one (a single booking of a cart) only adds to
+ * refunded_cents and closes the payment once everything has gone back.
+ */
+async function recordRefund(
+  payment: Pick<PaymentRow, "id" | "amount_cents" | "refunded_cents">,
+  partialCents: number | undefined,
+  raw: unknown,
+) {
+  const refunded =
+    partialCents === undefined ? payment.amount_cents : payment.refunded_cents + partialCents;
+  await createAdminClient()
+    .from("payments")
+    .update({
+      refunded_cents: refunded,
+      status: refunded >= payment.amount_cents ? "refunded" : "succeeded",
+      refunded_at: new Date().toISOString(),
+      refund_raw: raw as never,
+    })
+    .eq("id", payment.id);
+}
+
 /**
  * Refund one succeeded payment through the Redsys REST API (transaction type
  * 3). Idempotent: an already refunded payment returns ok without calling
  * Redsys again.
  */
-export async function refundPayment(paymentId: string): Promise<RefundResult> {
+export async function refundPayment(
+  paymentId: string,
+  /** Refund only this much (one booking of a cart); omitted = the whole payment. */
+  partialCents?: number,
+): Promise<RefundResult> {
   const db = createAdminClient();
   const { data: payment } = await db
     .from("payments")
-    .select("id, provider, provider_ref, amount_cents, status, raw_event")
+    .select("id, provider, provider_ref, amount_cents, refunded_cents, status, raw_event")
     .eq("id", paymentId)
     .single();
   if (!payment) return { ok: false, error: "Payment not found" };
@@ -381,29 +450,23 @@ export async function refundPayment(paymentId: string): Promise<RefundResult> {
   // Cash/transfer bookings taken in the admin: the owner returns the money
   // outside the site, so there is no gateway call, only the record.
   if (payment.provider === "manual") {
-    await db
-      .from("payments")
-      .update({
-        status: "refunded",
-        refunded_at: new Date().toISOString(),
-        refund_raw: {
-          method: "manual",
-          note: "Devolución fuera de la web (efectivo/transferencia)",
-        },
-      })
-      .eq("id", payment.id);
+    await recordRefund(payment, partialCents, {
+      method: "manual",
+      note: "Devolución fuera de la web (efectivo/transferencia)",
+    });
     return { ok: true };
   }
 
-  if (payment.provider === "paycomet") return refundPaycomet(payment);
-  if (payment.provider === "stripe") return refundStripe(payment);
+  if (payment.provider === "paycomet") return refundPaycomet(payment, partialCents);
+  if (payment.provider === "stripe") return refundStripe(payment, partialCents);
 
   const config = redsysConfig();
   if (!config) return { ok: false, error: "Redsys is not configured" };
 
   // Refund what Redsys actually charged (differs only on amount_mismatch).
   const charged = Number((payment.raw_event as Record<string, string> | null)?.Ds_Amount);
-  const amountCents = Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents;
+  const amountCents =
+    partialCents ?? (Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents);
 
   let body: Record<string, string>;
   try {
@@ -425,30 +488,19 @@ export async function refundPayment(paymentId: string): Promise<RefundResult> {
   if (!isRefundAccepted(verified))
     return { ok: false, error: `Redsys refused the refund (Ds_Response ${verified.response})` };
 
-  await db
-    .from("payments")
-    .update({
-      status: "refunded",
-      refunded_at: new Date().toISOString(),
-      refund_raw: verified.params,
-    })
-    .eq("id", payment.id);
+  await recordRefund(payment, partialCents, verified.params);
   return { ok: true };
 }
 
 /** Refund through Stripe (POST /v1/refunds on the payment intent kept from the webhook). */
-async function refundStripe(payment: {
-  id: string;
-  provider_ref: string;
-  amount_cents: number;
-  raw_event: unknown;
-}): Promise<RefundResult> {
+async function refundStripe(payment: PaymentRow, partialCents?: number): Promise<RefundResult> {
   const config = stripeConfig();
   if (!config) return { ok: false, error: "Stripe is not configured" };
   const event = (payment.raw_event ?? {}) as Record<string, string>;
   if (!event.payment_intent) return { ok: false, error: "Stripe payment intent not recorded" };
   const charged = Number(event.amount_total);
-  const amountCents = Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents;
+  const amountCents =
+    partialCents ?? (Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents);
 
   let body: { id?: string; status?: string; error?: { message?: string } };
   try {
@@ -457,7 +509,7 @@ async function refundStripe(payment: {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Bearer ${config.secretKey}`,
-        "Idempotency-Key": `refund-${payment.id}`,
+        "Idempotency-Key": `refund-${payment.id}-${payment.refunded_cents}-${amountCents}`,
       },
       body: new URLSearchParams({
         payment_intent: event.payment_intent,
@@ -472,11 +524,7 @@ async function refundStripe(payment: {
   if (body.status === "failed" || body.status === "canceled")
     return { ok: false, error: `Stripe refund ${body.status}` };
 
-  const db = createAdminClient();
-  await db
-    .from("payments")
-    .update({ status: "refunded", refunded_at: new Date().toISOString(), refund_raw: body })
-    .eq("id", payment.id);
+  await recordRefund(payment, partialCents, body);
   return { ok: true };
 }
 
@@ -485,19 +533,15 @@ async function refundStripe(payment: {
  * bank authorisation code from the paid notification, which is kept in the
  * payment's raw_event.
  */
-async function refundPaycomet(payment: {
-  id: string;
-  provider_ref: string;
-  amount_cents: number;
-  raw_event: unknown;
-}): Promise<RefundResult> {
+async function refundPaycomet(payment: PaymentRow, partialCents?: number): Promise<RefundResult> {
   const config = paycometConfig();
   if (!config) return { ok: false, error: "PAYCOMET is not configured" };
   const event = (payment.raw_event ?? {}) as Record<string, string>;
   if (!event.AuthCode) return { ok: false, error: "PAYCOMET authorisation code not recorded" };
   // Refund what was charged (differs from the booking only on amount_mismatch).
   const charged = Number(event.Amount);
-  const amountCents = Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents;
+  const amountCents =
+    partialCents ?? (Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents);
 
   let body: { errorCode?: number; error?: { message?: string } };
   try {
@@ -526,11 +570,7 @@ async function refundPaycomet(payment: {
   }
   if (body.errorCode) return { ok: false, error: `PAYCOMET ${body.errorCode}` };
 
-  const db = createAdminClient();
-  await db
-    .from("payments")
-    .update({ status: "refunded", refunded_at: new Date().toISOString(), refund_raw: body })
-    .eq("id", payment.id);
+  await recordRefund(payment, partialCents, body);
   return { ok: true };
 }
 
@@ -540,14 +580,32 @@ export async function refundBooking(
   options: { releaseSeats: boolean; notify: boolean; scope: "departure" | "booking" },
 ): Promise<RefundResult> {
   const db = createAdminClient();
+  const { data: booking } = await db
+    .from("bookings")
+    .select("status, total_cents, cart_id")
+    .eq("id", bookingId)
+    .single();
+  if (!booking) return { ok: false, error: "Booking not found" };
+  // A booking in a cart is covered by the cart's payment, which may be anchored on another booking.
   const { data: payments } = await db
     .from("payments")
-    .select("id")
-    .eq("booking_id", bookingId)
+    .select("id, cart_id")
+    .or(
+      booking.cart_id
+        ? `booking_id.eq.${bookingId},cart_id.eq.${booking.cart_id}`
+        : `booking_id.eq.${bookingId}`,
+    )
     .in("status", ["succeeded", "refunded"]);
   for (const p of payments ?? []) {
-    const r = await refundPayment(p.id);
-    if (!r.ok) return r;
+    if (p.cart_id) {
+      // Only this booking's share goes back, and only once.
+      if (booking.status === "refunded") continue;
+      const r = await refundPayment(p.id, booking.total_cents);
+      if (!r.ok) return r;
+    } else {
+      const r = await refundPayment(p.id);
+      if (!r.ok) return r;
+    }
   }
   await db.from("bookings").update({ status: "refunded" }).eq("id", bookingId);
   if (options.releaseSeats) await db.rpc("release_booking_seats", { p_booking_id: bookingId });
