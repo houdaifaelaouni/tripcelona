@@ -47,7 +47,7 @@ describe("Stripe events", () => {
   it("ignores other event types", () => {
     expect(interpretEvent(JSON.parse(event("charge.refunded", paid)))).toBeNull();
   });
-  it("builds a card-only EUR session with the order reference", () => {
+  it("builds an EUR session with the order reference", () => {
     const p = buildCheckoutSession({
       order: "ORDER1",
       amountCents: 16500,
