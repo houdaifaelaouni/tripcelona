@@ -24,18 +24,18 @@ const root =
   "group relative inline-flex cursor-pointer items-center justify-center gap-1.5 text-center whitespace-nowrap outline-brand transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0";
 
 const SIZES: Record<Size, string> = {
-  sm: "rounded-lg px-3 py-2 text-sm font-semibold before:rounded-[7px]",
-  md: "rounded-lg px-3.5 py-2.5 text-sm font-semibold before:rounded-[7px]",
-  lg: "rounded-lg px-4 py-2.5 text-md font-semibold before:rounded-[7px]",
+  sm: "rounded-lg px-3 py-1.5 text-sm font-medium before:rounded-[7px] [&_svg]:size-4",
+  md: "rounded-lg px-3.5 py-2 text-sm font-medium before:rounded-[7px] [&_svg]:size-4",
+  lg: "rounded-lg px-4 py-2.5 text-md font-medium before:rounded-[7px]",
 };
 
 const COLORS: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-solid text-white shadow-xs-skeuomorphic ring-1 ring-transparent ring-inset hover:bg-brand-solid_hover before:inset-px before:border before:border-white/12 before:mask-b-from-0% [&_svg]:text-white/70",
+    "bg-brand-solid text-white shadow-xs-skeuomorphic ring-1 ring-transparent ring-inset hover:bg-brand-solid_hover [&_svg]:text-white/80",
   secondary:
-    "bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover [&_svg]:text-fg-quaternary",
+    "bg-primary text-primary shadow-xs ring-1 ring-primary ring-inset hover:bg-secondary [&_svg]:text-fg-quaternary",
   outline:
-    "bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover [&_svg]:text-fg-quaternary",
+    "bg-primary text-primary shadow-xs ring-1 ring-primary ring-inset hover:bg-secondary [&_svg]:text-fg-quaternary",
   tertiary:
     "text-tertiary hover:bg-primary_hover hover:text-tertiary_hover [&_svg]:text-fg-quaternary",
   ghost:

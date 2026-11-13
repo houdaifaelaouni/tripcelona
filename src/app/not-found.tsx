@@ -12,7 +12,7 @@ export default function NotFound() {
       <main id="contenido" tabIndex={-1} className="flex flex-1 flex-col outline-none">
         <section className="container-site py-16 md:py-24">
           <p className="text-sm font-semibold text-tertiary">Error 404</p>
-          <h1 className="mt-2 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+          <h1 className="mt-2 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
             No encontramos esta página
           </h1>
           <p className="mt-3 max-w-xl text-tertiary">

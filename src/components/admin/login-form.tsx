@@ -17,7 +17,7 @@ export function LoginForm({ next, notice }: { next: string; notice?: string }) {
   if (mode === "reset") {
     return (
       <div>
-        <h1 className="text-2xl leading-8 font-semibold text-primary md:text-3xl md:leading-9">
+        <h1 className="text-2xl leading-8 font-semibold tracking-[-0.025em] text-primary md:text-3xl md:leading-9">
           Crear o recuperar contraseña
         </h1>
         <form action={reset} className="mt-8 flex flex-col gap-5">
@@ -44,7 +44,7 @@ export function LoginForm({ next, notice }: { next: string; notice?: string }) {
 
   return (
     <div>
-      <h1 className="text-2xl leading-8 font-semibold text-primary md:text-3xl md:leading-9">
+      <h1 className="text-2xl leading-8 font-semibold tracking-[-0.025em] text-primary md:text-3xl md:leading-9">
         Iniciar sesión
       </h1>
       <p className="mt-3 text-md text-tertiary">

@@ -41,14 +41,14 @@ export function SectionHeader({
   return (
     <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
       <div className="max-w-3xl">
-        <p className="text-sm font-semibold text-brand-secondary md:text-md">{eyebrow}</p>
+        <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">{eyebrow}</p>
         <h2
           id={id}
-          className="mt-3 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl"
+          className="mt-3 text-3xl leading-[1.15] font-semibold text-primary md:text-4xl md:leading-[1.15]"
         >
           {title}
         </h2>
-        {lead && <p className="mt-4 text-lg text-tertiary md:text-xl">{lead}</p>}
+        {lead && <p className="mt-4 text-lg text-tertiary">{lead}</p>}
       </div>
       {action}
     </div>
@@ -123,21 +123,15 @@ export function GroupsCta({ whatsappHref }: { whatsappHref: string }) {
         <CoachIllustration className="pointer-events-none absolute -right-6 -bottom-6 hidden w-64 opacity-90 xl:block" />
         <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between xl:pr-56">
           <div className="max-w-2xl">
-            <h2
-              id="grupos-heading"
-              className="text-3xl leading-[1.2] font-semibold tracking-tight md:text-4xl"
-            >
+            <h2 id="grupos-heading" className="text-3xl leading-[1.15] font-semibold md:text-4xl">
               ¿Organizas una salida en grupo?
             </h2>
-            <p className="mt-4 text-lg text-white/80">
+            <p className="mt-4 text-lg text-white/70">
               Empresas, asociaciones, colegios o amigos: diseñamos el tour a vuestra medida.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/crea-tu-tour"
-              className={buttonClasses({ size: "lg" }, "bg-white text-navy hover:bg-brand-50")}
-            >
+            <Link href="/crea-tu-tour" className={buttonClasses({ size: "lg" })}>
               Crea tu tour
             </Link>
             <a
@@ -205,7 +199,7 @@ export function ContactSection({
             ))}
           </ul>
         </div>
-        <div className="rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset md:p-8">
+        <div className="rounded-xl bg-primary p-6 ring-1 ring-secondary ring-inset md:p-8">
           <ContactForm />
         </div>
       </div>

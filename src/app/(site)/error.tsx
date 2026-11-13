@@ -17,7 +17,7 @@ export default function Error({
 
   return (
     <section className="container-site py-16 md:py-24" role="alert">
-      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         Algo ha fallado
       </h1>
       <p className="mt-3 max-w-xl text-tertiary">

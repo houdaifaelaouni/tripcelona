@@ -24,7 +24,7 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
         className={iconButtonClasses(
           "soft",
           "md",
-          "bg-primary text-fg-quaternary ring-1 ring-primary ring-inset shadow-xs hover:bg-primary_hover",
+          "size-9 rounded-lg bg-primary text-fg-tertiary ring-1 ring-secondary ring-inset hover:bg-secondary hover:text-fg-primary",
         )}
         aria-label="Abrir menú"
         aria-haspopup="dialog"
@@ -37,10 +37,10 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
         ref={dialogRef}
         onClose={() => setOpen(false)}
         aria-label="Menú"
-        className="m-0 ml-auto h-dvh max-h-dvh w-[min(22rem,88vw)] max-w-none rounded-l-2xl bg-white p-0 text-primary backdrop:bg-ink/50"
+        className="m-0 ml-auto h-dvh max-h-dvh w-[min(22rem,88vw)] max-w-none rounded-l-2xl bg-white p-0 text-primary backdrop:bg-ink/40 backdrop:backdrop-blur-sm"
       >
-        <div className="flex h-20 items-center justify-between border-b border-secondary px-6">
-          <span className="text-display-sm font-semibold">Menú</span>
+        <div className="flex h-16 items-center justify-between border-b border-secondary px-6">
+          <span className="text-lg font-semibold tracking-tight">Menú</span>
           <button
             type="button"
             className={iconButtonClasses("soft", "md")}
@@ -62,7 +62,7 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="block rounded-lg px-3 py-3 font-semibold hover:bg-secondary"
+                  className="block rounded-lg px-3 py-2.5 font-medium hover:bg-secondary"
                 >
                   {item.label}
                 </Link>
@@ -85,14 +85,17 @@ export function MobileNav(site: { phoneDisplay: string; phoneHref: string; whats
           </ul>
         </nav>
         <div className="flex flex-col gap-2 border-t border-secondary p-6">
-          <a href={site.phoneHref} className="flex items-center gap-2 py-2 font-semibold text-blue">
+          <a
+            href={site.phoneHref}
+            className="flex items-center gap-2 py-2 font-medium text-brand-secondary"
+          >
             <Phone size={18} aria-hidden /> {site.phoneDisplay}
           </a>
           <a
             href={site.whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 py-2 font-semibold text-whatsapp"
+            className="flex items-center gap-2 py-2 font-medium text-whatsapp"
           >
             <WhatsAppIcon /> WhatsApp
           </a>

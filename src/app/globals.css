@@ -18,22 +18,28 @@
 }
 
 /*
- * Design tokens — PRD Appendix B (booking.md direction).
- * Use these through Tailwind utilities (bg-navy, text-ink, rounded-card, ...)
- * rather than raw hex values in components.
+ * Brand (2026-11 rebrand): a restrained light-mode system. White canvas,
+ * a cool surface ladder (#f7f8f8, #f1f2f4) and hairlines (#e6e8eb,
+ * #d0d6e0) carry hierarchy instead of shadows. One chromatic accent,
+ * Tripcelona blue #2563eb (hover #1d4fd8), used for primary actions, links
+ * and focus rings only. Display type is Inter 600 with negative tracking.
+ *
+ * Legacy names (navy, yellow, blue...) are kept so older markup keeps
+ * working: "navy" is now the ink tone, "yellow" the focus/accent blue.
+ * Use these through Tailwind utilities rather than raw hex values.
  */
 @theme {
-  --color-navy: #003580;
-  --color-navy-dark: #00224f;
-  --color-yellow: #feba02;
-  --color-blue: #0071c2;
-  --color-blue-dark: #005999;
-  --color-ink: #1a1a1a;
-  --color-muted: #595959;
-  --color-border: #e7e7e7;
-  --color-border-strong: #bdbdbd;
+  --color-navy: #0f1011;
+  --color-navy-dark: #08090a;
+  --color-yellow: #3b76f6;
+  --color-blue: #2563eb;
+  --color-blue-dark: #1d4fd8;
+  --color-ink: #0f1011;
+  --color-muted: #52565e;
+  --color-border: #e6e8eb;
+  --color-border-strong: #d0d6e0;
   --color-surface: #ffffff;
-  --color-surface-alt: #f5f7fa;
+  --color-surface-alt: #f7f8f8;
   --color-danger: #c00;
   --color-success: #008234;
   --color-whatsapp: #117c38; /* 5.3:1 with white text (WCAG AA) */
@@ -43,11 +49,23 @@
    * (design-file rules, Tripcelona colours above are unchanged).
    */
   --radius-control: 8px; /* buttons, inputs */
-  --radius-card: 14px; /* cards, photos */
-  --radius-panel: 20px; /* large panels, sheets */
+  --radius-card: 12px; /* cards, photos */
+  --radius-panel: 16px; /* large panels, sheets */
   --radius-strip: 32px; /* chip strips */
 
   --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Display ramp: tracking tightens as size grows (about -4% at the top). */
+  --tracking-tight: -0.022em;
+  --tracking-tighter: -0.035em;
+  --text-3xl--letter-spacing: -0.6px;
+  --text-4xl--letter-spacing: -1px;
+  --text-5xl--letter-spacing: -1.8px;
+  --text-6xl--letter-spacing: -2.4px;
+  --text-7xl--letter-spacing: -3px;
+  --text-display-md--letter-spacing: -0.4px;
+  --text-display-xl--letter-spacing: -0.6px;
 
   --text-base: 16px;
   --text-base--line-height: 1.5;
@@ -69,8 +87,7 @@
   --text-display-xl--line-height: 1.43;
 
   /* One elevation tier (hover-floated cards, dropdowns, sticky panels). */
-  --shadow-float:
-    0 0 0 1px rgb(0 0 0 / 0.02), 0 2px 6px rgb(0 0 0 / 0.04), 0 4px 8px rgb(0 0 0 / 0.1);
+  --shadow-float: 0 0 0 1px rgb(15 16 17 / 0.06), 0 8px 24px -8px rgb(15 16 17 / 0.12);
 
   --container-site: 1280px;
   --container-detail: 1080px;
@@ -92,23 +109,33 @@
     background: var(--color-surface);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    letter-spacing: -0.003em;
+    /* Inter: single-storey a/straight l alternates for a crisper UI voice. */
+    font-feature-settings: "cv11", "ss01", "ss03";
   }
 
   h1,
   h2 {
-    font-weight: 700;
-    line-height: 1.2;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.022em;
   }
 
   h3,
   h4 {
     font-weight: 600;
     line-height: 1.25;
+    letter-spacing: -0.012em;
+  }
+
+  ::selection {
+    background: var(--color-brand-100);
+    color: var(--color-ink);
   }
 
   /* One visible focus style everywhere (WCAG 2.2 AA 2.4.7 / 2.4.11). */
   :focus-visible {
-    outline: 3px solid var(--color-yellow);
+    outline: 2px solid var(--color-blue);
     outline-offset: 2px;
   }
 
@@ -163,13 +190,13 @@
     margin-top: 1.5em;
   }
   .rich-text a {
-    color: var(--color-ink);
-    font-weight: 600;
+    color: var(--color-blue);
+    font-weight: 500;
     text-decoration: underline;
     text-underline-offset: 2px;
   }
   .rich-text a:hover {
-    color: var(--color-blue);
+    color: var(--color-blue-dark);
   }
   .rich-text ul,
   .rich-text ol {
@@ -185,7 +212,7 @@
     margin-top: 0.35em;
   }
   .rich-text blockquote {
-    border-left: 3px solid var(--color-ink);
+    border-left: 2px solid var(--color-blue);
     padding-left: 1em;
     font-size: var(--text-display-sm);
     line-height: 1.4;
@@ -240,7 +267,7 @@
  */
 select:not([multiple]):not([size]):not(.appearance-none) {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23535862' stroke-width='1.67' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5l5 5 5-5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%235c6068' stroke-width='1.67' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1.125rem;

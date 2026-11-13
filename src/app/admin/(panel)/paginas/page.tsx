@@ -52,7 +52,7 @@ export default async function PagesAdmin({ searchParams }: PageProps<"/admin/pag
               <tr key={p.id}>
                 <td className={td}>
                   <Link
-                    className="font-semibold text-brand-secondary hover:underline"
+                    className="font-medium text-primary hover:text-brand-secondary"
                     href={`/admin/paginas/${p.id}`}
                   >
                     {p.title}

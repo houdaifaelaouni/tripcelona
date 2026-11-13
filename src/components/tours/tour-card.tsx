@@ -12,7 +12,7 @@ import {
 import type { Departure, TourSummary } from "@/lib/tours/types";
 
 /**
- * Catalog / home card (FR-10) in the Untitled UI blog-card layout (MIT, see
+ * Catalog / home card (FR-10): hairline card after the Untitled UI blog-card layout (MIT, see
  * THIRD_PARTY_NOTICES.md): photo with a date tile, area badge, title, next
  * departure, price-from and an arrow link. The whole card is one link
  * through the stretched title link.
@@ -35,7 +35,7 @@ export function TourCard({
   const date = next ? dateParts(next.startsAt) : null;
 
   return (
-    <article className="group relative flex w-full flex-col overflow-hidden rounded-2xl bg-primary shadow-xs ring-1 ring-secondary ring-inset transition-shadow hover:shadow-lg">
+    <article className="group relative flex w-full flex-col overflow-hidden rounded-xl bg-primary ring-1 ring-secondary ring-inset transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
         {tour.image && (
           <Image
@@ -50,12 +50,14 @@ export function TourCard({
         {date && (
           <div
             aria-hidden
-            className="absolute top-3 left-3 flex min-w-14 flex-col items-center rounded-xl bg-primary px-2.5 py-1.5 text-center shadow-md"
+            className="absolute top-3 left-3 flex min-w-12 flex-col items-center rounded-lg bg-primary/95 px-2 py-1 text-center ring-1 ring-black/5 backdrop-blur"
           >
-            <span className="text-xs font-semibold text-brand-secondary uppercase">
+            <span className="text-[11px] font-medium tracking-[0.06em] text-brand-secondary uppercase">
               {date.month}
             </span>
-            <span className="text-xl leading-6 font-bold text-primary">{date.day}</span>
+            <span className="text-lg leading-6 font-semibold tracking-tight text-primary">
+              {date.day}
+            </span>
           </div>
         )}
         {fewSeats && (
@@ -65,15 +67,20 @@ export function TourCard({
         )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
-        {tour.area && <p className="text-sm font-semibold text-brand-secondary">{tour.area}</p>}
-        <h3 className="flex items-start justify-between gap-4 text-lg font-semibold text-primary">
+        {tour.area && (
+          <p className="text-[13px] font-medium tracking-[0.02em] text-quaternary">{tour.area}</p>
+        )}
+        <h3 className="flex items-start justify-between gap-4 text-lg leading-snug font-semibold tracking-tight text-primary">
           <Link
             href={href}
-            className="line-clamp-2 after:absolute after:inset-0 after:rounded-2xl focus-visible:outline-none group-hover:underline group-focus-within:underline"
+            className="line-clamp-2 after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-focus-within:underline"
           >
             {tour.title}
           </Link>
-          <ArrowUpRight aria-hidden className="mt-0.5 size-5 shrink-0 text-fg-quaternary" />
+          <ArrowUpRight
+            aria-hidden
+            className="mt-0.5 size-5 shrink-0 text-fg-quaternary transition-colors group-hover:text-fg-brand-primary"
+          />
         </h3>
         <ul className="flex flex-col gap-1.5 text-sm text-tertiary">
           <li className="flex items-center gap-2">
@@ -99,7 +106,9 @@ export function TourCard({
         {price !== null && (
           <p className="mt-auto border-t border-secondary pt-3">
             <span className="text-sm text-tertiary">Desde </span>
-            <span className="text-lg font-semibold text-primary">{formatPrice(price)}</span>
+            <span className="text-lg font-semibold tracking-tight text-primary">
+              {formatPrice(price)}
+            </span>
             <span className="text-sm text-tertiary"> / persona</span>
           </p>
         )}

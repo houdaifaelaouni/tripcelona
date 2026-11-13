@@ -18,7 +18,7 @@ export default async function FaqPage() {
   return (
     <div className="container-site py-8 md:py-16">
       {schema && <JsonLd data={schema} />}
-      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         Preguntas frecuentes
       </h1>
       <div className="mt-6 max-w-3xl">

@@ -8,8 +8,8 @@ import { Badge } from "@/components/uui/base/badges/badges";
 import { cx, sortCx } from "@/components/uui/utils/cx";
 
 const styles = sortCx({
-  root: "group relative flex max-h-9 w-full cursor-pointer items-center rounded-md bg-primary outline-focus-ring transition duration-100 ease-linear select-none hover:bg-primary_hover focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2",
-  rootSelected: "bg-secondary hover:bg-secondary_hover",
+  root: "group relative flex max-h-8 w-full cursor-pointer items-center rounded-md outline-focus-ring transition duration-100 ease-linear select-none hover:bg-tertiary focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2",
+  rootSelected: "bg-primary shadow-xs ring-1 ring-secondary ring-inset hover:bg-primary",
 });
 
 /**
@@ -62,8 +62,8 @@ export const NavItemBase = (props: NavItemBaseProps) => {
     <Icon
       aria-hidden="true"
       className={cx(
-        "mr-2 size-5 shrink-0 text-fg-quaternary transition-inherit-all group-hover/item:text-fg-quaternary_hover",
-        current && "text-fg-quaternary_hover",
+        "mr-2.5 size-4 shrink-0 text-fg-quaternary transition-inherit-all group-hover/item:text-fg-tertiary",
+        current && "text-fg-brand-primary group-hover/item:text-fg-brand-primary",
       )}
     />
   );
@@ -80,9 +80,9 @@ export const NavItemBase = (props: NavItemBaseProps) => {
   const labelElement = (
     <span
       className={cx(
-        "flex-1 text-sm font-semibold text-secondary transition-inherit-all group-hover/item:text-secondary_hover",
+        "flex-1 text-sm font-medium text-tertiary transition-inherit-all group-hover/item:text-primary",
         truncate && "truncate",
-        current && "text-secondary_hover",
+        current && "text-primary",
       )}
     >
       {children}

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage({ searchParams }: PageProps<"/reservar">) {
   return (
     <div className="container-detail py-8 md:py-12">
-      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         Reserva tu excursión
       </h1>
       <Suspense fallback={<PageSkeleton />}>

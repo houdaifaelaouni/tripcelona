@@ -82,11 +82,11 @@ export function SidebarBrand() {
   return (
     <Link
       href="/admin"
-      className="flex items-center gap-2.5 rounded-md text-md font-semibold text-primary"
+      className="flex items-center gap-2.5 rounded-md text-md font-semibold tracking-tight text-primary"
     >
       <span
         aria-hidden
-        className="flex size-8 items-center justify-center rounded-lg bg-brand-800 text-sm font-bold text-white shadow-xs-skeuomorphic"
+        className="flex size-7 items-center justify-center rounded-md bg-brand-solid text-sm font-semibold text-white"
       >
         T
       </span>
@@ -100,7 +100,7 @@ type Staff = { role: "owner" | "editor"; email: string; name: string | null };
 function SidebarContent({ staff }: { staff: Staff }) {
   const path = usePathname();
   return (
-    <aside className="flex h-full w-full max-w-full flex-col overflow-auto bg-primary pt-5 shadow-xs ring-secondary ring-inset lg:w-[276px] lg:rounded-xl lg:ring-1">
+    <aside className="flex h-full w-full max-w-full flex-col overflow-auto bg-secondary pt-5 lg:w-[248px] lg:border-r lg:border-secondary">
       <div className="px-5">
         <SidebarBrand />
       </div>
@@ -111,10 +111,10 @@ function SidebarContent({ staff }: { staff: Staff }) {
             if (!items.length) return null;
             return (
               <li key={group.label}>
-                <p className="px-5 pb-1 text-xs font-bold text-quaternary uppercase">
+                <p className="px-5 pb-1.5 text-[11px] font-medium tracking-[0.06em] text-quaternary uppercase">
                   {group.label}
                 </p>
-                <ul className="px-4 pb-5">
+                <ul className="px-3 pb-5">
                   {items.map((item) => (
                     <li key={item.href} className="py-px">
                       <NavItemBase
@@ -133,11 +133,11 @@ function SidebarContent({ staff }: { staff: Staff }) {
           })}
         </ul>
       </nav>
-      <div className="mt-auto flex flex-col gap-4 px-4 pb-4">
+      <div className="mt-auto flex flex-col gap-3 px-3 pb-3">
         <NavItemBase type="link" href="/" icon={LinkExternal01} target="_blank">
           Ver web
         </NavItemBase>
-        <div className="relative flex items-center gap-3 rounded-xl p-3 ring-1 ring-secondary ring-inset">
+        <div className="relative flex items-center gap-3 rounded-lg bg-primary p-2.5 ring-1 ring-secondary ring-inset">
           <Avatar size="md" initials={(staff.name ?? staff.email).slice(0, 1).toUpperCase()} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-primary" title={staff.email}>
@@ -205,9 +205,7 @@ export function AdminSidebar({ staff }: { staff: Staff }) {
           )}
         </AriaModalOverlay>
       </AriaDialogTrigger>
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:py-1 lg:pl-1">
-        {content}
-      </div>
+      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">{content}</div>
     </>
   );
 }

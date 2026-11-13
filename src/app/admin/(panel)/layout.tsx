@@ -25,7 +25,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
   return (
     <AdminRouter>
       <AdminSidebar staff={{ role: staff.role, email: staff.email, name: staff.name ?? null }} />
-      <div className="lg:pl-[284px]">
+      <div className="lg:pl-[248px]">
         <main id="contenido" tabIndex={-1} className="px-4 pt-6 pb-12 outline-none md:px-8 md:pt-8">
           <div className="mx-auto max-w-[1180px]">{children}</div>
         </main>
