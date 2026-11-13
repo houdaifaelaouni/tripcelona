@@ -1,4 +1,7 @@
+"use client";
+
 import { CircleAlert, CircleCheck } from "lucide-react";
+import { useT } from "@/components/i18n/provider";
 import Link from "@/components/i18n/link";
 import { Checkbox } from "@/components/ui/field";
 
@@ -15,21 +18,22 @@ export function Honeypot() {
 }
 
 export function PrivacyConsent({ error }: { error?: string }) {
+  const t = useT();
   return (
     <Checkbox
       id="privacy"
       name="privacy"
       required
-      error={error}
+      error={error ? t(error) : undefined}
       label={
         <>
-          He leído y acepto la{" "}
+          {t("He leído y acepto la")}{" "}
           <Link
             href="/politica-de-privacidad"
             target="_blank"
             className="font-semibold underline underline-offset-2"
           >
-            política de privacidad
+            {t("política de privacidad")}
           </Link>
           .
         </>
@@ -39,13 +43,14 @@ export function PrivacyConsent({ error }: { error?: string }) {
 }
 
 export function FormAlert({ message }: { message: string }) {
+  const t = useT();
   return (
     <div
       role="alert"
       className="flex items-start gap-3 rounded-xl border border-danger/30 bg-danger/5 p-4 text-error-primary"
     >
       <CircleAlert aria-hidden size={20} className="mt-0.5 shrink-0" />
-      <p className="font-semibold">{message}</p>
+      <p className="font-semibold">{t(message)}</p>
     </div>
   );
 }

@@ -1,16 +1,14 @@
 /*
- * Extra home sections: destinations map, "Cómo funciona" steps, live
- * stats and the departures table. Untitled UI layouts (MIT, see
+ * Extra home sections: "Cómo funciona" steps and the departures table. Untitled UI layouts (MIT, see
  * THIRD_PARTY_NOTICES.md), animated with GSAP via components/motion.
  * Every number comes from published tours; nothing is invented.
  */
-import { CalendarCheck, CreditCard, MailCheck, MapPin, Search } from "lucide-react";
+import { CalendarCheck, CreditCard, MailCheck, Search } from "lucide-react";
 import Link from "@/components/i18n/link";
-import { CountUp, DrawOnScroll, Reveal } from "@/components/motion/reveal";
-import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
+import { Reveal } from "@/components/motion/reveal";
 import { Badge } from "@/components/ui/card";
-import { buildCatalogUrl } from "@/lib/search";
-import { destinations, site } from "@/lib/site";
+import { createT } from "@/lib/i18n/translate";
+import type { Locale } from "@/lib/i18n/config";
 import { cn } from "@/lib/cn";
 import {
   dateParts,
@@ -22,158 +20,27 @@ import {
 import type { TourSummary } from "@/lib/tours/types";
 import { SectionHeader } from "./sections";
 
-/* Schematic positions (viewBox 600x420), projected from real lon/lat. */
-const BCN = { x: 394, y: 307 };
-const points: Record<string, { x: number; y: number; dx: number; anchor: "start" | "end" }> = {
-  "la-garrotxa": { x: 451, y: 153, dx: 12, anchor: "start" },
-  ripolles: { x: 397, y: 128, dx: -12, anchor: "end" },
-  pallars: { x: 209, y: 81, dx: 12, anchor: "start" },
-  osona: { x: 433, y: 189, dx: 12, anchor: "start" },
-  huesca: { x: 68, y: 161, dx: 12, anchor: "start" },
-};
-
-function routePath(to: { x: number; y: number }) {
-  const cx = (BCN.x + to.x) / 2 - (to.y - BCN.y) * 0.15;
-  const cy = (BCN.y + to.y) / 2 - 30;
-  return `M${BCN.x} ${BCN.y} Q${cx} ${cy} ${to.x} ${to.y}`;
-}
-
-export function DestinationsMap() {
-  return (
-    <section aria-labelledby="mapa-heading" className="container-site py-16 md:py-24">
-      <SectionHeader
-        id="mapa-heading"
-        eyebrow="Destinos"
-        title="Todas las rutas salen de Barcelona"
-        lead={`Salida desde ${site.meetingPoint}. Elige destino y nosotros te llevamos.`}
-      />
-      <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
-        <DrawOnScroll className="overflow-hidden rounded-2xl bg-brand-primary_alt ring-1 ring-secondary ring-inset">
-          <svg
-            viewBox="0 0 600 420"
-            role="img"
-            aria-labelledby="mapa-title"
-            className="h-auto w-full"
-          >
-            <title id="mapa-title">
-              Esquema de las rutas desde Barcelona a {destinations.map((d) => d.label).join(", ")}
-            </title>
-            {/* Sea */}
-            <path
-              d="M564 134 C540 200 470 260 394 307 C330 340 280 355 250 370 L180 420 L600 420 L600 134 Z"
-              fill="#dbe8fe"
-            />
-            <text x="462" y="390" fontSize="13" fill="#6094fa" fontStyle="italic">
-              Mar Mediterráneo
-            </text>
-            {/* Pyrenees ridge */}
-            <path
-              d="M30 70 L60 52 L90 72 L120 46 L150 70 L190 40 L230 66 L270 44 L310 70 L350 50 L390 76 L430 58 L470 84 L510 70 L560 100"
-              fill="none"
-              stroke="#93b8fd"
-              strokeWidth="2"
-              strokeLinejoin="round"
-            />
-            <text x="250" y="30" fontSize="13" fill="#6094fa" fontWeight="600">
-              Pirineo
-            </text>
-            {/* Routes */}
-            {destinations.map((d) => (
-              <path
-                key={d.area}
-                data-draw
-                d={routePath(points[d.area])}
-                fill="none"
-                stroke="#2563eb"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeDasharray="6 6"
-              />
-            ))}
-            {/* Destinations */}
-            {destinations.map((d) => {
-              const p = points[d.area];
-              return (
-                <g key={d.area}>
-                  <circle
-                    data-pop
-                    cx={p.x}
-                    cy={p.y}
-                    r="7"
-                    fill="#ffffff"
-                    stroke="#2563eb"
-                    strokeWidth="3"
-                  />
-                  <text
-                    x={p.x + p.dx}
-                    y={p.y + 4}
-                    textAnchor={p.anchor}
-                    fontSize="12"
-                    fontWeight="600"
-                    fill="#0f1011"
-                  >
-                    {d.label.split(" y ")[0]}
-                  </text>
-                </g>
-              );
-            })}
-            {/* Barcelona */}
-            <circle cx={BCN.x} cy={BCN.y} r="18" fill="#2563eb" opacity="0.15" />
-            <circle data-pop cx={BCN.x} cy={BCN.y} r="9" fill="#0f1011" />
-            <text x={BCN.x - 14} y={BCN.y + 30} fontSize="14" fontWeight="700" fill="#0f1011">
-              Barcelona
-            </text>
-            <text x="16" y="408" fontSize="11" fill="#6094fa">
-              Esquema orientativo, no a escala
-            </text>
-          </svg>
-        </DrawOnScroll>
-        <Reveal>
-          <ul className="space-y-3">
-            {destinations.map((d) => (
-              <li key={d.area} data-reveal>
-                <Link
-                  href={buildCatalogUrl({ area: d.area, month: "", travellers: "" })}
-                  className="group flex items-center gap-4 rounded-xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition-shadow ring-inset hover:shadow-md"
-                >
-                  <FeaturedIcon icon={MapPin} color="brand" theme="light" size="md" />
-                  <span className="flex-1 font-semibold text-primary group-hover:underline">
-                    {d.label}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="text-fg-quaternary transition-transform group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 const stepIcons = [Search, CreditCard, MailCheck, CalendarCheck];
 
 export function HowItWorks({
   title,
   steps,
+  locale,
 }: {
   title: string;
   steps: { title: string; body: string }[];
+  locale: Locale;
 }) {
+  const t = createT(locale);
   return (
     <section aria-labelledby="como-heading" className="border-t border-secondary py-16 md:py-24">
       <div className="container-site">
         <div className="flex items-center justify-between gap-10">
           <SectionHeader
             id="como-heading"
-            eyebrow="Cómo funciona"
-            title={title}
-            lead="Cuatro pasos y tu plaza está asegurada."
+            eyebrow={t("Cómo funciona")}
+            title={t(title)}
+            lead={t("Cuatro pasos y tu plaza está asegurada.")}
           />
         </div>
         <Reveal>
@@ -191,8 +58,10 @@ export function HowItWorks({
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-md font-semibold tracking-tight text-primary">{s.title}</h3>
-                    <p className="mt-1.5 text-sm text-tertiary">{s.body}</p>
+                    <h3 className="text-md font-semibold tracking-tight text-primary">
+                      {t(s.title)}
+                    </h3>
+                    <p className="mt-1.5 text-sm text-tertiary">{t(s.body)}</p>
                   </div>
                 </li>
               );
@@ -200,36 +69,6 @@ export function HowItWorks({
           </ol>
         </Reveal>
       </div>
-    </section>
-  );
-}
-
-export function Stats({ tours }: { tours: TourSummary[] }) {
-  const open = tours.flatMap((t) => t.departures.filter((d) => d.status === "open"));
-  const prices = tours.map((t) => t.priceFromCents).filter((p): p is number => p !== null);
-  const minPrice = prices.length ? Math.min(...prices) / 100 : null;
-  const stats = [
-    { value: tours.length, suffix: "", label: "Excursiones publicadas" },
-    { value: destinations.length, suffix: "", label: "Destinos en Cataluña y Aragón" },
-    { value: open.length, suffix: "", label: "Próximas salidas abiertas" },
-    ...(minPrice !== null
-      ? [{ value: minPrice, suffix: " €", label: "Precio desde, por persona" }]
-      : []),
-  ];
-  return (
-    <section aria-label="Tripcelona en cifras" className="container-site py-12 md:py-16">
-      <Reveal>
-        <dl className="grid grid-cols-2 gap-6 rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset md:p-10 lg:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} data-reveal className="flex flex-col-reverse gap-2 text-center">
-              <dt className="text-md font-medium text-tertiary">{s.label}</dt>
-              <dd className="text-4xl font-semibold tracking-tight text-brand-secondary md:text-5xl">
-                <CountUp value={s.value} suffix={s.suffix} />
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </Reveal>
     </section>
   );
 }
@@ -253,9 +92,12 @@ function Punches({ className }: { className?: string }) {
 }
 
 /** Upcoming departures as tickets: date stub, trip, price and seats, torn along a dashed line. */
-export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
+export function DeparturesTable({ tours, locale }: { tours: TourSummary[]; locale: Locale }) {
+  const t = createT(locale);
   const rows = tours
-    .flatMap((t) => t.departures.filter((d) => d.status !== "cancelled").map((d) => ({ t, d })))
+    .flatMap((tour) =>
+      tour.departures.filter((d) => d.status !== "cancelled").map((d) => ({ tour, d })),
+    )
     .sort((a, b) => Date.parse(a.d.startsAt) - Date.parse(b.d.startsAt))
     .slice(0, 8);
   if (rows.length === 0) return null;
@@ -264,16 +106,16 @@ export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
       <div className="flex items-center justify-between gap-10">
         <SectionHeader
           id="calendario-heading"
-          eyebrow="Calendario"
-          title="Calendario de salidas"
-          lead="Fechas, plazas y precios de las próximas excursiones."
+          eyebrow={t("Calendario")}
+          title={t("Calendario de salidas")}
+          lead={t("Fechas, plazas y precios de las próximas excursiones.")}
         />
       </div>
       <Reveal className="mt-10">
         <ul className="grid gap-4 lg:grid-cols-2">
-          {rows.map(({ t, d }) => {
+          {rows.map(({ tour, d }) => {
             const full = d.status === "sold_out" || d.seatsLeft <= 0;
-            const date = dateParts(d.startsAt);
+            const date = dateParts(d.startsAt, locale);
             return (
               <li key={d.id} data-reveal>
                 <article
@@ -290,23 +132,27 @@ export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
                     <span className="text-4xl leading-none font-semibold tracking-tight text-primary sm:text-[2.5rem]">
                       {date.day}
                     </span>
-                    <span className="text-sm font-medium sm:mt-1">{formatTime(d.startsAt)}</span>
+                    <span className="text-sm font-medium sm:mt-1">
+                      {formatTime(d.startsAt, locale)}
+                    </span>
                     <Punches />
                   </div>
 
                   {/* Trip */}
                   <div className="relative flex min-w-0 flex-col justify-center gap-1 border-b border-dashed border-primary px-5 py-4 sm:border-r sm:border-b-0">
                     <p className="text-xs font-medium text-quaternary">
-                      <span className="first-letter:uppercase">{formatDateShort(d.startsAt)}</span>
-                      {t.area ? ` · ${t.area}` : ""}
-                      {t.durationMinutes ? ` · ${formatDuration(t.durationMinutes)}` : ""}
+                      <span className="first-letter:uppercase">
+                        {formatDateShort(d.startsAt, locale)}
+                      </span>
+                      {tour.area ? ` · ${tour.area}` : ""}
+                      {tour.durationMinutes ? ` · ${formatDuration(tour.durationMinutes)}` : ""}
                     </p>
                     <h3 className="text-base leading-snug font-semibold tracking-tight text-primary">
                       <Link
-                        href={`/excursiones/${t.slug}`}
+                        href={`/excursiones/${tour.slug}`}
                         className="after:absolute after:inset-0 hover:underline"
                       >
-                        {t.title}
+                        {tour.title}
                       </Link>
                     </h3>
                     <Punches />
@@ -315,14 +161,14 @@ export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
                   {/* Price and seats */}
                   <div className="flex items-center justify-between gap-4 px-5 py-4 sm:min-w-36 sm:flex-col sm:items-end sm:justify-center sm:gap-2">
                     <p className="text-2xl font-semibold tracking-tight whitespace-nowrap text-primary">
-                      {formatPrice(d.priceCents)}
+                      {formatPrice(d.priceCents, locale)}
                     </p>
                     {full ? (
-                      <Badge tone="danger">Completo</Badge>
+                      <Badge tone="danger">{t("Completo")}</Badge>
                     ) : d.seatsLeft <= 10 ? (
-                      <Badge tone="accent">Quedan {d.seatsLeft}</Badge>
+                      <Badge tone="accent">{t("Quedan {n}", { n: d.seatsLeft })}</Badge>
                     ) : (
-                      <Badge tone="success">{d.seatsLeft} libres</Badge>
+                      <Badge tone="success">{t("{n} libres", { n: d.seatsLeft })}</Badge>
                     )}
                   </div>
                 </article>

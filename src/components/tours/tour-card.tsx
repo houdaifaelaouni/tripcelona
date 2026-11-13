@@ -10,6 +10,8 @@ import {
   formatTime,
 } from "@/lib/tours/format";
 import type { Departure, TourSummary } from "@/lib/tours/types";
+import { createT } from "@/lib/i18n/translate";
+import type { Locale } from "@/lib/i18n/config";
 
 /**
  * Catalog / home card (FR-10): hairline card after the Untitled UI blog-card layout (MIT, see
@@ -21,18 +23,21 @@ export function TourCard({
   tour,
   departure,
   priority = false,
+  locale = "es",
 }: {
+  locale?: Locale;
   tour: TourSummary;
   /** Departure to highlight; defaults to the next upcoming one. */
   departure?: Departure | null;
   priority?: boolean;
 }) {
+  const t = createT(locale);
   const next = departure ?? tour.departures.find((d) => d.status === "open") ?? null;
   const price = next?.priceCents ?? tour.priceFromCents;
   const href = `/excursiones/${tour.slug}`;
   const fewSeats = next !== null && next.seatsLeft > 0 && next.seatsLeft <= 10;
 
-  const date = next ? dateParts(next.startsAt) : null;
+  const date = next ? dateParts(next.startsAt, locale) : null;
 
   return (
     <article className="group relative flex w-full flex-col overflow-hidden rounded-xl bg-primary ring-1 ring-secondary ring-inset transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0">
@@ -62,20 +67,22 @@ export function TourCard({
         )}
         {fewSeats && (
           <div className="absolute top-3 right-3">
-            <Badge tone="accent">Últimas plazas</Badge>
+            <Badge tone="accent">{t("Últimas plazas")}</Badge>
           </div>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-5">
         {tour.area && (
-          <p className="text-[13px] font-medium tracking-[0.02em] text-quaternary">{tour.area}</p>
+          <p className="text-[13px] font-medium tracking-[0.02em] text-quaternary">
+            {t(tour.area)}
+          </p>
         )}
         <h3 className="flex items-start justify-between gap-4 text-lg leading-snug font-semibold tracking-tight text-primary">
           <Link
             href={href}
             className="line-clamp-2 after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-focus-within:underline"
           >
-            {tour.title}
+            {t(tour.title)}
           </Link>
           <ArrowUpRight
             aria-hidden
@@ -87,13 +94,19 @@ export function TourCard({
             <Calendar aria-hidden className="size-4 shrink-0 text-fg-quaternary" />
             {next ? (
               <span>
-                Próxima salida: {formatDateShort(next.startsAt)} a las {formatTime(next.startsAt)}
+                {t("Próxima salida: {date} a las {time}", {
+                  date: formatDateShort(next.startsAt, locale),
+                  time: formatTime(next.startsAt, locale),
+                })}
                 {fewSeats && (
-                  <span className="text-error-primary"> · quedan {next.seatsLeft} plazas</span>
+                  <span className="text-error-primary">
+                    {" "}
+                    · {t("quedan {n} plazas", { n: next.seatsLeft })}
+                  </span>
                 )}
               </span>
             ) : (
-              "Nuevas fechas próximamente"
+              t("Nuevas fechas próximamente")
             )}
           </li>
           {tour.durationMinutes !== null && (
@@ -105,11 +118,11 @@ export function TourCard({
         </ul>
         {price !== null && (
           <p className="mt-auto border-t border-secondary pt-3">
-            <span className="text-sm text-tertiary">Desde </span>
+            <span className="text-sm text-tertiary">{t("Desde")} </span>
             <span className="text-lg font-semibold tracking-tight text-primary">
-              {formatPrice(price)}
+              {formatPrice(price, locale)}
             </span>
-            <span className="text-sm text-tertiary"> / persona</span>
+            <span className="text-sm text-tertiary"> / {t("persona")}</span>
           </p>
         )}
       </div>
