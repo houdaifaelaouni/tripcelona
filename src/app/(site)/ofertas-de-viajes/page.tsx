@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CoachArt } from "@/components/art/art";
 import { PageHero } from "@/components/layout/page-hero";
 import { Suspense } from "react";
 import { CatalogFilters } from "@/components/tours/catalog-filters";
@@ -31,7 +30,6 @@ export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-via
         eyebrow="Excursiones"
         title="Ofertas de viajes"
         intro="Excursiones de un día cada domingo desde Estació del Nord, Barcelona."
-        art={<CoachArt />}
       />
       <div className="container-site py-10 md:py-14">
         <Suspense fallback={<CardGridSkeleton />}>

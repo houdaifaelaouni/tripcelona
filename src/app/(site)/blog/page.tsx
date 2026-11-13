@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { JournalArt } from "@/components/art/art";
 import { PageHero } from "@/components/layout/page-hero";
 import { getPublishedPosts } from "@/lib/content/queries";
 
@@ -22,7 +21,6 @@ export default async function BlogIndex() {
         eyebrow="Blog"
         title="Ideas y guías para tus excursiones"
         intro="Guías de destinos y consejos para tus excursiones."
-        art={<JournalArt />}
       />
       <div className="container-site py-10 md:py-14">
         {posts.length === 0 ? (

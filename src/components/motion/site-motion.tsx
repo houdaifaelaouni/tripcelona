@@ -14,7 +14,7 @@
  *
  * Opt-outs / hooks (plain attributes, no props):
  *   data-no-motion   skip this element and everything inside it
- *   data-reveal / data-intro / data-art-host keep their own animations
+ *   data-reveal / data-intro keep their own animations
  */
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";

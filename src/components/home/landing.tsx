@@ -20,11 +20,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { CoachArt, HikerArt } from "@/components/art/art";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { Reveal } from "@/components/motion/reveal";
-import { destinations, site } from "@/lib/site";
+import { destinations } from "@/lib/site";
 import { catalogHref } from "@/lib/tours/filters";
 import { dateParts, formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 import type { Departure, TourSummary } from "@/lib/tours/types";
@@ -112,9 +111,7 @@ export function LandingHero({
     >
       {photo ? (
         <Image src={photo.url} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
-      ) : (
-        <CoachArt className="absolute inset-0 -z-20 size-full object-cover" />
-      )}
+      ) : null}
       {videoSrc && (
         <video
           className="absolute inset-0 -z-20 size-full object-cover motion-reduce:hidden"
@@ -260,9 +257,7 @@ export function DestinationStrip({
                       sizes="(min-width: 1024px) 20vw, 50vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
                     />
-                  ) : (
-                    <HikerArt className="absolute inset-0 size-full object-cover" />
-                  )}
+                  ) : null}
                   <span
                     aria-hidden
                     className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent"
@@ -336,11 +331,7 @@ export function WhyTripcelona({
   return (
     <section aria-labelledby="por-que-heading" className="border-t border-secondary py-16 md:py-24">
       <div className="container-site grid items-center gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
-        <div
-          data-art-host
-          className="relative order-last aspect-[4/5] overflow-hidden rounded-2xl bg-brand-primary ring-1 ring-secondary ring-inset lg:order-first"
-        >
-          {!photo && <HikerArt className="absolute inset-0 size-full object-cover" />}
+        <div className="relative order-last aspect-[4/5] overflow-hidden rounded-2xl bg-brand-primary ring-1 ring-secondary ring-inset lg:order-first">
           {photo && (
             <Image
               src={photo.url}
@@ -349,11 +340,6 @@ export function WhyTripcelona({
               sizes="(min-width: 1128px) 520px, 100vw"
               className="object-cover"
             />
-          )}
-          {photo && (
-            <div className="absolute bottom-4 left-4 w-44 rounded-2xl bg-white p-1.5 shadow-lg ring-1 ring-secondary">
-              <HikerArt />
-            </div>
           )}
         </div>
         <div>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { TicketArt } from "@/components/art/art";
 import { PageHero } from "@/components/layout/page-hero";
 import { Suspense } from "react";
 import { CartCheckout } from "@/components/cart/cart-checkout";
@@ -27,7 +26,6 @@ export default function CheckoutPage({ searchParams }: PageProps<"/reservar">) {
         eyebrow="Reserva segura"
         title="Reserva tu excursión"
         intro="Elige plazas, paga con tarjeta y recibe la confirmación al instante."
-        art={<TicketArt />}
       />
       <div className="container-detail py-8 md:py-12">
         <Suspense fallback={<PageSkeleton />}>
