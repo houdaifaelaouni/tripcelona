@@ -107,7 +107,7 @@ async function Pending({
     );
   }
 
-  const provider = activeProvider();
+  const provider = await activeProvider();
   const canPay = provider !== null;
   return (
     <>

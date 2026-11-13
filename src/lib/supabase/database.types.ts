@@ -471,6 +471,28 @@ export type Database = {
         };
         Relationships: [];
       };
+      payment_credentials: {
+        Row: {
+          name: string;
+          updated_at: string;
+          updated_by: string | null;
+          value: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          name: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          value: string;
+        };
+        Update: {
+          name?: string;
+          updated_at?: string;
+          updated_by?: string | null;
+          value?: string;
+        };
+        Relationships: [];
+      };
       payment_events: {
         Row: {
           event_key: string;

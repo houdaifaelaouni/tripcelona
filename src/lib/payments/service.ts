@@ -41,7 +41,7 @@ export async function startPayment(
   bookingId: string,
   locale: Locale = "es",
 ): Promise<StartPaymentResult> {
-  const provider = activeProvider();
+  const provider = await activeProvider();
   if (!provider) return { ok: false, reason: "not_configured" };
   const db = createAdminClient();
 
@@ -91,7 +91,7 @@ export async function startPayment(
   const urls = paymentUrls(booking.id, locale);
 
   if (provider === "stripe") {
-    const url = await createStripeSession(stripeConfig()!, {
+    const url = await createStripeSession((await stripeConfig())!, {
       order,
       amountCents: totalCents,
       description,
@@ -111,7 +111,7 @@ export async function startPayment(
   }
 
   if (provider === "paycomet") {
-    const paycomet = paycometConfig()!;
+    const paycomet = (await paycometConfig())!;
     const url = await createPaycometForm(
       paycomet,
       buildPaycometForm(paycomet, {
@@ -133,7 +133,7 @@ export async function startPayment(
     return { ok: true, kind: "redirect", url };
   }
 
-  const config = redsysConfig()!;
+  const config = (await redsysConfig())!;
   const fields = buildPaymentRequest(config, {
     order,
     amountCents: totalCents,
@@ -146,7 +146,7 @@ export async function startPayment(
 
 /** POST /v1/checkout/sessions: Stripe answers with the URL of its hosted payment page. */
 async function createStripeSession(
-  config: NonNullable<ReturnType<typeof stripeConfig>>,
+  config: NonNullable<Awaited<ReturnType<typeof stripeConfig>>>,
   payment: Omit<Parameters<typeof buildCheckoutSession>[0], "expiresAt">,
 ): Promise<string | null> {
   try {
@@ -176,7 +176,7 @@ async function createStripeSession(
 
 /** POST /v1/form: PAYCOMET answers with the URL of its hosted payment page. */
 async function createPaycometForm(
-  config: NonNullable<ReturnType<typeof paycometConfig>>,
+  config: NonNullable<Awaited<ReturnType<typeof paycometConfig>>>,
   body: ReturnType<typeof buildPaycometForm>,
 ): Promise<string | null> {
   try {
@@ -268,7 +268,7 @@ export async function handleRedsysNotification(message: {
   Ds_MerchantParameters?: string | null;
   Ds_Signature?: string | null;
 }): Promise<NotificationOutcome> {
-  const config = redsysConfig();
+  const config = await redsysConfig();
   if (!config) return "not_configured";
   const result = verifySignedMessage(config.secretKey, message);
   if (!result) return "invalid_signature";
@@ -295,7 +295,7 @@ export async function handleStripeWebhook(
   rawBody: string,
   signature: string | null,
 ): Promise<NotificationOutcome> {
-  const config = stripeConfig();
+  const config = await stripeConfig();
   if (!config) return "not_configured";
   const event = verifyStripeWebhook(config.webhookSecret, rawBody, signature);
   if (!event) return "invalid_signature";
@@ -312,7 +312,7 @@ export async function handleStripeWebhook(
 export async function handlePaycometNotification(
   fields: Record<string, string | null | undefined>,
 ): Promise<NotificationOutcome> {
-  const config = paycometConfig();
+  const config = await paycometConfig();
   if (!config) return "not_configured";
   const result = verifyPaycometNotification(config, fields);
   if (!result) return "invalid_signature";
@@ -464,7 +464,7 @@ export async function refundPayment(
   if (payment.provider === "paycomet") return refundPaycomet(payment, partialCents);
   if (payment.provider === "stripe") return refundStripe(payment, partialCents);
 
-  const config = redsysConfig();
+  const config = await redsysConfig();
   if (!config) return { ok: false, error: "Redsys is not configured" };
 
   // Refund what Redsys actually charged (differs only on amount_mismatch).
@@ -498,7 +498,7 @@ export async function refundPayment(
 
 /** Refund through Stripe (POST /v1/refunds on the payment intent kept from the webhook). */
 async function refundStripe(payment: PaymentRow, partialCents?: number): Promise<RefundResult> {
-  const config = stripeConfig();
+  const config = await stripeConfig();
   if (!config) return { ok: false, error: "Stripe is not configured" };
   const event = (payment.raw_event ?? {}) as Record<string, string>;
   if (!event.payment_intent) return { ok: false, error: "Stripe payment intent not recorded" };
@@ -538,7 +538,7 @@ async function refundStripe(payment: PaymentRow, partialCents?: number): Promise
  * payment's raw_event.
  */
 async function refundPaycomet(payment: PaymentRow, partialCents?: number): Promise<RefundResult> {
-  const config = paycometConfig();
+  const config = await paycometConfig();
   if (!config) return { ok: false, error: "PAYCOMET is not configured" };
   const event = (payment.raw_event ?? {}) as Record<string, string>;
   if (!event.AuthCode) return { ok: false, error: "PAYCOMET authorisation code not recorded" };

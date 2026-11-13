@@ -22,6 +22,7 @@ const MESSAGES: Record<string, string> = {
   estado: "Solicitud actualizada.",
   restaurado: "Textos originales restaurados.",
   ajustes: "Ajustes guardados. La web ya muestra los nuevos datos.",
+  claves: "Claves de pago guardadas (cifradas). Ya se usan para cobrar.",
 };
 
 /**
