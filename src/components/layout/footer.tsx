@@ -9,7 +9,7 @@ import { site as siteDefaults } from "@/lib/site";
 import { getPublishedTours } from "@/lib/tours/queries";
 
 /** Card brands the bank terminal accepts, shown as supplied by the owner. */
-const PAYMENT_METHODS = [
+export const PAYMENT_METHODS = [
   { name: "Visa", src: "/brand/payments/visa.png" },
   { name: "Mastercard", src: "/brand/payments/mastercard.png" },
   { name: "American Express", src: "/brand/payments/amex.png" },
@@ -19,7 +19,7 @@ const PAYMENT_METHODS = [
 ] as const;
 
 /** Award badges, shown exactly as supplied by the owner. */
-const BADGES = [
+export const BADGES = [
   { name: "Tripadvisor", src: "/brand/badges/tripadvisor.png", width: 86, height: 86 },
   { name: "Insignia de diseño web", src: "/brand/badges/award-pencil.png", width: 86, height: 86 },
 ] as const;

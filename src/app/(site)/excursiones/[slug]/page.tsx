@@ -1,5 +1,17 @@
 import type { Metadata } from "next";
-import { Bus, Check, Clock, CreditCard, Mail, MapPin, Mountain, Timer, X } from "lucide-react";
+import {
+  ArrowRight,
+  Bus,
+  Check,
+  Clock,
+  CreditCard,
+  Mail,
+  MapPin,
+  Mountain,
+  Timer,
+  X,
+} from "lucide-react";
+import Image from "next/image";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,6 +23,12 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, tourJsonLd } from "@/lib/seo/json-ld";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { Gallery } from "@/components/tours/gallery";
+import { DayTimeline } from "@/components/tours/day-timeline";
+import { RouteDiagram } from "@/components/tours/route-diagram";
+import { Testimonials } from "@/components/home/testimonials";
+import { BADGES, PAYMENT_METHODS } from "@/components/layout/footer";
+import { Reveal } from "@/components/motion/reveal";
+import { getApprovedReviews } from "@/lib/content/queries";
 import { TourCard } from "@/components/tours/tour-card";
 import { Accordion } from "@/components/ui/accordion";
 import { ButtonLink } from "@/components/ui/button";
@@ -72,7 +90,11 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
   const { slug } = await params;
   const tour = await getTourBySlug(slug);
   if (!tour) notFound();
-  const related = relatedTours(await getPublishedTours(), tour);
+  const [published, reviews] = await Promise.all([
+    getPublishedTours(),
+    getApprovedReviews().catch(() => []),
+  ]);
+  const related = relatedTours(published, tour);
   const next = tour.departures.find((d) => d.status === "open") ?? null;
 
   return (
@@ -109,29 +131,63 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
           </ol>
         </nav>
 
-        <header className="mt-3">
-          <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-            {tour.title}
-          </h1>
-          {tour.area && (
-            <p className="mt-1 flex items-center gap-1 text-sm text-tertiary">
-              <MapPin aria-hidden size={16} />
-              {tour.area} · salida desde Barcelona
-            </p>
-          )}
-        </header>
+        <div className="mt-4 grid gap-x-12 gap-y-2 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="min-w-0">
+            <header>
+              <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
+                {tour.title}
+              </h1>
+              {tour.area && (
+                <p className="mt-1 flex items-center gap-1 text-sm text-tertiary">
+                  <MapPin aria-hidden size={16} />
+                  {tour.area} · salida desde Barcelona
+                </p>
+              )}
+            </header>
+            <Gallery images={tour.images} title={tour.title} />
+          </div>
 
-        <Gallery images={tour.images} title={tour.title} />
+          <aside
+            id="reservar"
+            aria-label="Reserva"
+            className="order-3 mt-6 scroll-mt-24 border-t border-secondary pt-8 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-start lg:border-0 lg:pt-0 lg:sticky lg:top-28"
+          >
+            <BookingPanel tour={tour} />
+          </aside>
 
-        <div className="mt-8 grid gap-x-16 lg:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="min-w-0 divide-y divide-secondary">
+          <div className="min-w-0 divide-y divide-secondary lg:col-start-1">
             <div className="pb-8">
               <KeyFacts tour={tour} />
               {tour.summary && <p className="mt-6 text-lg text-tertiary">{tour.summary}</p>}
             </div>
 
+            <Section title="Tu día de un vistazo">
+              <Reveal>
+                <div data-reveal>
+                  <RouteDiagram
+                    destination={tour.area ?? tour.title}
+                    departs={next ? formatTime(next.startsAt) : null}
+                    returns={next?.endsAt ? formatTime(next.endsAt) : null}
+                    duration={
+                      (tour.durationMinutes ?? (next ? departureMinutes(next) : null))
+                        ? formatDuration(
+                            (tour.durationMinutes ?? (next ? departureMinutes(next) : 0)) as number,
+                          )
+                        : null
+                    }
+                  />
+                </div>
+              </Reveal>
+            </Section>
+
+            {tour.itinerary.length > 0 && (
+              <Section title="Programa del día">
+                <DayTimeline stops={tour.itinerary} />
+              </Section>
+            )}
+
             {tour.description && tour.description.content.length > 0 && (
-              <Section title="La excursión">
+              <Section title="Sobre el destino">
                 <RichText doc={tour.description} />
               </Section>
             )}
@@ -142,48 +198,74 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
               </Section>
             )}
 
-            {tour.itinerary.length > 0 && (
-              <Section title="Itinerario">
-                <ol className="relative">
-                  {tour.itinerary.map((step, i) => (
-                    <li
-                      key={`${i}-${step.title}`}
-                      className="relative flex gap-4 pb-6 last:pb-0 [&:not(:last-child)]:before:absolute [&:not(:last-child)]:before:top-10 [&:not(:last-child)]:before:bottom-1 [&:not(:last-child)]:before:left-4 [&:not(:last-child)]:before:w-0.5 [&:not(:last-child)]:before:bg-border-secondary"
+            <section aria-label="Incluye, punto de encuentro y antes de reservar" className="py-8">
+              <Reveal>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <InfoCard title="Qué incluye">
+                    {tour.inclusions.length > 0 ? (
+                      <ul className="space-y-2 text-sm text-tertiary">
+                        {tour.inclusions.slice(0, 6).map((item) => (
+                          <li key={item} className="flex gap-2">
+                            <Check
+                              aria-hidden
+                              className="mt-0.5 size-4 shrink-0 text-fg-success-primary"
+                            />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-tertiary">Autocar y guía incluidos.</p>
+                    )}
+                  </InfoCard>
+                  <InfoCard title="Punto de encuentro" tinted>
+                    <p className="text-sm text-secondary">
+                      {tour.meetingPoint ?? site.meetingPoint}
+                    </p>
+                    {next && (
+                      <p className="mt-2 text-sm text-tertiary">
+                        Salida a las {formatTime(next.startsAt)}.
+                      </p>
+                    )}
+                    <a
+                      href={tour.mapUrl ?? site.meetingPointMapHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-block text-sm font-semibold text-brand-secondary underline-offset-2 hover:underline"
                     >
-                      <span
-                        aria-hidden
-                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-xs font-medium text-brand-secondary ring-1 ring-secondary ring-inset"
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="min-w-0">
-                        {step.timeLabel && (
-                          <p className="text-sm font-semibold text-brand-secondary">
-                            {step.timeLabel}
-                          </p>
-                        )}
-                        <h3 className="text-md font-semibold text-primary">{step.title}</h3>
-                        {step.body && <p className="mt-1 text-md text-tertiary">{step.body}</p>}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </Section>
-            )}
+                      Ver en Google Maps
+                    </a>
+                  </InfoCard>
+                  <InfoCard title="Antes de reservar">
+                    <ul className="space-y-2 text-sm font-medium text-primary">
+                      {[
+                        ["Política de cancelación", "/politica-de-devoluciones"],
+                        ["Preguntas frecuentes", "/preguntas-frecuentes"],
+                        ["¿Dudas? Escríbenos", "/contactanos"],
+                      ].map(([label, href]) => (
+                        <li key={href}>
+                          <Link
+                            href={href}
+                            className="group flex items-center justify-between rounded-lg px-2 py-1.5 ring-1 ring-secondary ring-inset transition hover:bg-secondary"
+                          >
+                            {label}
+                            <ArrowRight
+                              aria-hidden
+                              className="size-4 text-brand-secondary transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none"
+                            />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </InfoCard>
+                </div>
+              </Reveal>
+            </section>
 
-            {(tour.inclusions.length > 0 || tour.exclusions.length > 0) && (
-              <div className="grid gap-x-8 sm:grid-cols-2">
-                {tour.inclusions.length > 0 && (
-                  <Section title="Incluye">
-                    <List items={tour.inclusions} kind="yes" />
-                  </Section>
-                )}
-                {tour.exclusions.length > 0 && (
-                  <Section title="No incluye">
-                    <List items={tour.exclusions} kind="no" />
-                  </Section>
-                )}
-              </div>
+            {tour.exclusions.length > 0 && (
+              <Section title="No incluye">
+                <List items={tour.exclusions} kind="no" />
+              </Section>
             )}
 
             {tour.packingList.length > 0 && (
@@ -191,23 +273,6 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
                 <List items={tour.packingList} kind="dot" />
               </Section>
             )}
-
-            <Section title="Punto de encuentro">
-              <p>{tour.meetingPoint ?? site.meetingPoint}</p>
-              {next && (
-                <p className="mt-1 text-sm text-tertiary">
-                  Salida a las {formatTime(next.startsAt)}.
-                </p>
-              )}
-              <a
-                href={tour.mapUrl ?? site.meetingPointMapHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-block font-semibold text-brand-secondary underline-offset-2 hover:underline"
-              >
-                Ver en Google Maps
-              </a>
-            </Section>
 
             {tour.faqs.length > 0 && (
               <Section title="Preguntas frecuentes">
@@ -221,16 +286,10 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
               </Section>
             )}
           </div>
-
-          <aside
-            id="reservar"
-            aria-label="Reserva"
-            className="scroll-mt-24 border-t border-secondary pt-8 lg:sticky lg:top-28 lg:self-start lg:border-0 lg:pt-0"
-          >
-            <BookingPanel tour={tour} />
-          </aside>
         </div>
       </div>
+
+      <Testimonials reviews={reviews} />
 
       {related.length > 0 && (
         <section
@@ -264,6 +323,29 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h2 className="mb-5 text-xl font-semibold text-primary">{title}</h2>
       {children}
     </section>
+  );
+}
+
+function InfoCard({
+  title,
+  tinted = false,
+  children,
+}: {
+  title: string;
+  tinted?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      data-reveal
+      className={
+        "rounded-2xl p-5 shadow-xs ring-1 ring-secondary ring-inset transition-shadow duration-200 hover:shadow-md " +
+        (tinted ? "bg-brand-primary" : "bg-primary")
+      }
+    >
+      <h3 className="mb-3 text-md font-semibold text-primary">{title}</h3>
+      {children}
+    </div>
   );
 }
 
@@ -391,6 +473,31 @@ function BookingPanel({ tour }: { tour: TourDetail }) {
           Confirmación por email
         </li>
       </ul>
+      <div className="mt-5 border-t border-secondary pt-5">
+        <ul className="flex flex-wrap items-center gap-2" aria-label="Tarjetas aceptadas">
+          {PAYMENT_METHODS.map((m) => (
+            <li key={m.name}>
+              <Image
+                src={m.src}
+                alt={m.name}
+                width={72}
+                height={45}
+                className="h-6 w-auto rounded ring-1 ring-secondary ring-inset"
+              />
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 flex items-center gap-3">
+          <Image
+            src={BADGES[0].src}
+            alt={BADGES[0].name}
+            width={BADGES[0].width}
+            height={BADGES[0].height}
+            className="size-12 shrink-0"
+          />
+          <p className="text-xs text-tertiary">Distinción Tripadvisor.</p>
+        </div>
+      </div>
     </div>
   );
 }
