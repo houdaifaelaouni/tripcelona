@@ -1,6 +1,6 @@
 import { ChevronDown, Phone } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { getSiteSettings } from "@/lib/settings";
 import { getSiteContent } from "@/lib/site-content";
 import { WhatsAppIcon } from "@/components/ui/icons";
@@ -8,6 +8,9 @@ import { iconButtonClasses } from "@/components/ui/icon-button";
 import { buttonClasses } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { CartLink } from "@/components/cart/cart-link";
+import { createT } from "@/lib/i18n/translate";
+import type { Locale } from "@/lib/i18n/config";
+import { LanguageSwitcher } from "./language-switcher";
 import { MobileNav } from "./mobile-nav";
 
 /*
@@ -23,7 +26,8 @@ const action = iconButtonClasses(
   "size-9 rounded-lg bg-primary text-fg-tertiary ring-1 ring-secondary ring-inset hover:bg-secondary hover:text-fg-primary",
 );
 
-export async function Header() {
+export async function Header({ locale }: { locale: Locale }) {
+  const t = createT(locale);
   const [site, content] = await Promise.all([getSiteSettings(), getSiteContent()]);
   const primaryNav = content.nav;
   return (
@@ -31,16 +35,19 @@ export async function Header() {
       <div className="container-site grid h-16 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
         <Link href="/" className="flex items-center justify-self-start rounded-md">
           <Logo className="h-12" priority />
-          <span className="sr-only"> - Excursiones en grupo por Cataluña, inicio</span>
+          <span className="sr-only">
+            {" "}
+            - {t("Excursiones en grupo por Cataluña")}, {t("inicio")}
+          </span>
         </Link>
 
-        <nav aria-label="Principal" className="hidden lg:block">
+        <nav aria-label={t("Principal")} className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {primaryNav.map((item) =>
               item.children ? (
                 <li key={item.href} className="group relative">
                   <Link href={item.href} className={navLink}>
-                    {item.label}
+                    {t(item.label)}
                     <ChevronDown
                       size={16}
                       aria-hidden
@@ -55,7 +62,7 @@ export async function Header() {
                           href={child.href}
                           className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary hover:text-primary"
                         >
-                          {child.label}
+                          {t(child.label)}
                         </Link>
                       </li>
                     ))}
@@ -64,7 +71,7 @@ export async function Header() {
               ) : (
                 <li key={item.href}>
                   <Link href={item.href} className={navLink}>
-                    {item.label}
+                    {t(item.label)}
                   </Link>
                 </li>
               ),
@@ -83,25 +90,28 @@ export async function Header() {
           <a
             href={site.phoneHref}
             className={cn(action, "hidden md:inline-flex 2xl:hidden")}
-            aria-label={`Llamar al ${site.phoneDisplay}`}
+            aria-label={t("Llamar al {phone}", { phone: site.phoneDisplay })}
           >
             <Phone size={18} aria-hidden />
           </a>
           <a
             href={site.whatsappHref}
             className={action}
-            aria-label="Escríbenos por WhatsApp"
+            aria-label={t("Escríbenos por WhatsApp")}
             target="_blank"
             rel="noopener noreferrer"
           >
             <WhatsAppIcon />
           </a>
           <CartLink />
+          <div className="hidden md:block">
+            <LanguageSwitcher locale={locale} />
+          </div>
           <Link
             href="/ofertas-de-viajes"
             className={buttonClasses({ size: "sm" }, "hidden whitespace-nowrap md:inline-flex")}
           >
-            Ver excursiones
+            {t("Ver excursiones")}
           </Link>
           <MobileNav
             nav={primaryNav}

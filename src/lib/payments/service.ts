@@ -1,6 +1,7 @@
 import "server-only";
 import { sendBookingEmail } from "@/lib/email/booking-emails";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { Locale } from "@/lib/i18n/config";
 import { activeProvider, paycometConfig, paymentUrls, redsysConfig, stripeConfig } from "./config";
 import {
   buildCheckoutSession,
@@ -36,7 +37,10 @@ export type StartPaymentResult =
  * with a fresh order reference, and hand back what the browser needs: signed
  * form fields (Redsys) or the hosted page URL (PAYCOMET).
  */
-export async function startPayment(bookingId: string): Promise<StartPaymentResult> {
+export async function startPayment(
+  bookingId: string,
+  locale: Locale = "es",
+): Promise<StartPaymentResult> {
   const provider = activeProvider();
   if (!provider) return { ok: false, reason: "not_configured" };
   const db = createAdminClient();
@@ -84,7 +88,7 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
     lines.length === 1
       ? `${booking.reference} · ${booking.tour_departures.tours.title}`
       : `${lines.length} excursiones · ${lines.map((l) => l.reference).join(", ")}`;
-  const urls = paymentUrls(booking.id);
+  const urls = paymentUrls(booking.id, locale);
 
   if (provider === "stripe") {
     const url = await createStripeSession(stripeConfig()!, {

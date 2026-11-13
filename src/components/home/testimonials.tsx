@@ -8,6 +8,7 @@
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useRef, useState } from "react";
 import type { Review } from "@/lib/content/queries";
+import { useT } from "@/components/i18n/provider";
 import { SectionHeader } from "./sections";
 
 const LONG = 240;
@@ -22,6 +23,7 @@ function initials(name: string): string {
 }
 
 function ReviewCard({ review }: { review: Review }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const long = review.text.length > LONG;
   return (
@@ -34,7 +36,7 @@ function ReviewCard({ review }: { review: Review }) {
           <p
             className="mt-4 flex gap-0.5"
             role="img"
-            aria-label={`${review.rating} de 5 estrellas`}
+            aria-label={t("{n} de 5 estrellas", { n: review.rating })}
           >
             {Array.from({ length: 5 }, (_, i) => (
               <Star
@@ -63,7 +65,7 @@ function ReviewCard({ review }: { review: Review }) {
             onClick={() => setOpen((v) => !v)}
             className="mt-3 self-start rounded-md text-md font-medium text-brand-secondary hover:underline"
           >
-            {open ? "Leer menos" : "Leer más"}
+            {open ? t("Leer menos") : t("Leer más")}
           </button>
         )}
         <figcaption className="mt-auto flex items-center gap-3 pt-6">
@@ -84,6 +86,7 @@ function ReviewCard({ review }: { review: Review }) {
 }
 
 export function Testimonials({ reviews }: { reviews: Review[] }) {
+  const t = useT();
   const track = useRef<HTMLUListElement>(null);
   if (reviews.length === 0) return null;
 
@@ -105,14 +108,14 @@ export function Testimonials({ reviews }: { reviews: Review[] }) {
       <div className="container-site">
         <SectionHeader
           id="opiniones-heading"
-          eyebrow="Lo que dicen de nosotros"
-          title="Opiniones"
+          eyebrow={t("Lo que dicen de nosotros")}
+          title={t("Opiniones")}
           action={
             reviews.length > 1 ? (
               <div className="flex gap-3">
                 <button
                   type="button"
-                  aria-label="Opiniones anteriores"
+                  aria-label={t("Opiniones anteriores")}
                   onClick={() => scrollBy(-1)}
                   className={arrow}
                 >
@@ -120,7 +123,7 @@ export function Testimonials({ reviews }: { reviews: Review[] }) {
                 </button>
                 <button
                   type="button"
-                  aria-label="Más opiniones"
+                  aria-label={t("Más opiniones")}
                   onClick={() => scrollBy(1)}
                   className={arrow}
                 >
@@ -133,7 +136,7 @@ export function Testimonials({ reviews }: { reviews: Review[] }) {
         <ul
           ref={track}
           tabIndex={0}
-          aria-label="Opiniones de clientes"
+          aria-label={t("Opiniones de clientes")}
           className="mt-10 flex snap-x snap-mandatory items-stretch gap-6 overflow-x-auto scroll-smooth pb-6 [scrollbar-width:none] motion-reduce:scroll-auto [&::-webkit-scrollbar]:hidden"
         >
           {reviews.map((r) => (

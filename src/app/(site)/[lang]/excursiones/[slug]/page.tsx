@@ -1,0 +1,576 @@
+import type { Metadata } from "next";
+import {
+  ArrowRight,
+  Bus,
+  Check,
+  Clock,
+  CreditCard,
+  Mail,
+  MapPin,
+  Mountain,
+  Timer,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
+import Link from "@/components/i18n/link";
+import { notFound } from "next/navigation";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
+import { Suspense } from "react";
+import { DeparturePicker } from "@/components/booking/departure-picker";
+import { RichText } from "@/components/content/rich-text";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbJsonLd, faqJsonLd, tourJsonLd } from "@/lib/seo/json-ld";
+import { WhatsAppCta } from "@/components/tours/empty-state";
+import { Gallery } from "@/components/tours/gallery";
+import { DayTimeline } from "@/components/tours/day-timeline";
+import { RouteDiagram } from "@/components/tours/route-diagram";
+import { Testimonials } from "@/components/home/testimonials";
+import { BADGES, PAYMENT_METHODS } from "@/lib/brand-assets";
+import { Reveal } from "@/components/motion/reveal";
+import { getApprovedReviews } from "@/lib/content/queries";
+import { TourCard } from "@/components/tours/tour-card";
+import { Accordion } from "@/components/ui/accordion";
+import { ButtonLink } from "@/components/ui/button";
+import { site } from "@/lib/site";
+import { createT } from "@/lib/i18n/translate";
+import { alternatesFor } from "@/lib/i18n/seo";
+import { isLocale, localizePath, type Locale } from "@/lib/i18n/config";
+import {
+  departureMinutes,
+  formatDateLong,
+  formatDuration,
+  formatPrice,
+  formatTime,
+} from "@/lib/tours/format";
+import { getLiveDepartures } from "@/lib/booking/queries";
+import { getPublishedTours, getTourBySlug, getTourSlugs, relatedTours } from "@/lib/tours/queries";
+import type { TourDetail } from "@/lib/tours/types";
+
+// Cache Components needs at least one param at build time; "_" renders the
+// 404 page when there are no published tours yet (fresh database).
+const NONE = "_";
+
+export async function generateStaticParams() {
+  const slugs = await getTourSlugs();
+  return (slugs.length ? slugs : [NONE]).map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]/excursiones/[slug]">): Promise<Metadata> {
+  const { slug, lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const t = createT(lang);
+  const tour = await getTourBySlug(slug);
+  if (!tour) notFound(); // before streaming starts, so unknown slugs get a real 404 status
+  return {
+    title: tour.seoTitle ?? tour.title,
+    description:
+      tour.seoDescription ??
+      (tour.area
+        ? t("{title}. Excursión de un día en grupo desde Barcelona a {area}.", {
+            title: tour.title,
+            area: tour.area,
+          })
+        : t("{title}. Excursión de un día en grupo desde Barcelona.", { title: tour.title })),
+    alternates: alternatesFor(`/excursiones/${tour.slug}`, lang),
+    openGraph: {
+      title: tour.seoTitle ?? tour.title,
+      url: localizePath(`/excursiones/${tour.slug}`, lang),
+      images: tour.image ? [{ url: tour.image.url, alt: tour.image.alt }] : undefined,
+    },
+  };
+}
+
+/**
+ * `params` is read inside Suspense: when a cache tag used by the layout is
+ * invalidated, Next re-prerenders the route shell with fallback params, and
+ * awaiting them outside a boundary fails that render (500 on every slug).
+ */
+export default function TourPage({ params }: PageProps<"/[lang]/excursiones/[slug]">) {
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <TourPageBody params={params} />
+    </Suspense>
+  );
+}
+
+async function TourPageBody({
+  params,
+}: {
+  params: PageProps<"/[lang]/excursiones/[slug]">["params"];
+}) {
+  const { slug, lang: locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const t = createT(locale);
+  const tour = await getTourBySlug(slug);
+  if (!tour) notFound();
+  const [published, reviews] = await Promise.all([
+    getPublishedTours(),
+    getApprovedReviews().catch(() => []),
+  ]);
+  const related = relatedTours(published, tour);
+  const next = tour.departures.find((d) => d.status === "open") ?? null;
+
+  return (
+    <article className="pt-6 md:pt-8">
+      <JsonLd
+        data={[
+          tourJsonLd(tour),
+          breadcrumbJsonLd([
+            { name: t("Inicio"), path: localizePath("/", locale) },
+            { name: t("Ofertas de viajes"), path: localizePath("/ofertas-de-viajes", locale) },
+            { name: tour.title, path: localizePath(`/excursiones/${tour.slug}`, locale) },
+          ]),
+          ...(faqJsonLd(tour.faqs) ? [faqJsonLd(tour.faqs)!] : []),
+        ]}
+      />
+      <div className="container-detail">
+        <nav aria-label={t("Ruta de navegación")} className="text-sm font-medium text-tertiary">
+          <ol className="flex flex-wrap gap-1">
+            <li>
+              <Link href="/" className="underline-offset-2 hover:underline">
+                {t("Inicio")}
+              </Link>{" "}
+              /
+            </li>
+            <li>
+              <Link href="/ofertas-de-viajes" className="underline-offset-2 hover:underline">
+                {t("Ofertas de viajes")}
+              </Link>{" "}
+              /
+            </li>
+            <li aria-current="page" className="font-semibold text-brand-secondary">
+              {tour.area ?? tour.title}
+            </li>
+          </ol>
+        </nav>
+
+        <div className="mt-4 grid gap-x-12 gap-y-2 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="min-w-0">
+            <header>
+              <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
+                {tour.title}
+              </h1>
+              {tour.area && (
+                <p className="mt-1 flex items-center gap-1 text-sm text-tertiary">
+                  <MapPin aria-hidden size={16} />
+                  {tour.area} · {t("salida desde Barcelona")}
+                </p>
+              )}
+            </header>
+            <Gallery images={tour.images} title={tour.title} />
+          </div>
+
+          <aside
+            id="reservar"
+            aria-label={t("Reserva")}
+            className="order-3 mt-6 scroll-mt-24 border-t border-secondary pt-8 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-start lg:border-0 lg:pt-0 lg:sticky lg:top-28"
+          >
+            <BookingPanel tour={tour} locale={locale} />
+          </aside>
+
+          <div className="min-w-0 divide-y divide-secondary lg:col-start-1">
+            <div className="pb-8">
+              <KeyFacts tour={tour} locale={locale} />
+              {tour.summary && <p className="mt-6 text-lg text-tertiary">{tour.summary}</p>}
+            </div>
+
+            <Section title={t("Programa del viaje")}>
+              <Reveal>
+                <div data-reveal className="mb-8">
+                  <RouteDiagram
+                    stops={[
+                      "Barcelona",
+                      ...(tour.itinerary.length > 0 && tour.itinerary.length <= 3
+                        ? tour.itinerary.map((i) => i.title)
+                        : [tour.area ?? tour.title]),
+                      "Barcelona",
+                    ]}
+                  />
+                </div>
+              </Reveal>
+              {tour.itinerary.length > 0 && <DayTimeline stops={tour.itinerary} />}
+            </Section>
+
+            {tour.description && tour.description.content.length > 0 && (
+              <Section title={t("Sobre el destino")}>
+                <RichText doc={tour.description} />
+              </Section>
+            )}
+
+            {tour.highlights.length > 0 && (
+              <Section title={t("Lo más destacado")}>
+                <List items={tour.highlights} kind="yes" columns />
+              </Section>
+            )}
+
+            <section
+              aria-label={t("Incluye, punto de encuentro y antes de reservar")}
+              className="py-8"
+            >
+              <Reveal>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <InfoCard title={t("Qué incluye")}>
+                    {tour.inclusions.length > 0 ? (
+                      <ul className="space-y-2 text-sm text-tertiary">
+                        {tour.inclusions.slice(0, 6).map((item) => (
+                          <li key={item} className="flex gap-2">
+                            <Check
+                              aria-hidden
+                              className="mt-0.5 size-4 shrink-0 text-fg-success-primary"
+                            />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-tertiary">{t("Autocar y guía incluidos.")}</p>
+                    )}
+                  </InfoCard>
+                  <InfoCard title={t("Punto de encuentro")} tinted>
+                    <p className="text-sm text-secondary">
+                      {tour.meetingPoint ?? site.meetingPoint}
+                    </p>
+                    {next && (
+                      <p className="mt-2 text-sm text-tertiary">
+                        {t("Salida a las {time}.", { time: formatTime(next.startsAt, locale) })}
+                      </p>
+                    )}
+                    <a
+                      href={tour.mapUrl ?? site.meetingPointMapHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-block text-sm font-semibold text-brand-secondary underline-offset-2 hover:underline"
+                    >
+                      {t("Ver en Google Maps")}
+                    </a>
+                  </InfoCard>
+                  <InfoCard title={t("Antes de reservar")}>
+                    <ul className="space-y-2 text-sm font-medium text-primary">
+                      {[
+                        [t("Política de cancelación"), "/politica-de-devoluciones"],
+                        [t("Preguntas frecuentes"), "/preguntas-frecuentes"],
+                        [t("¿Dudas? Escríbenos"), "/contactanos"],
+                      ].map(([label, href]) => (
+                        <li key={href}>
+                          <Link
+                            href={href}
+                            className="group flex items-center justify-between rounded-lg px-2 py-1.5 ring-1 ring-secondary ring-inset transition hover:bg-secondary"
+                          >
+                            {label}
+                            <ArrowRight
+                              aria-hidden
+                              className="size-4 text-brand-secondary transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none"
+                            />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </InfoCard>
+                </div>
+              </Reveal>
+            </section>
+
+            {tour.exclusions.length > 0 && (
+              <Section title={t("No incluye")}>
+                <List items={tour.exclusions} kind="no" />
+              </Section>
+            )}
+
+            {tour.packingList.length > 0 && (
+              <Section title={t("Qué llevar")}>
+                <List items={tour.packingList} kind="dot" />
+              </Section>
+            )}
+
+            {tour.faqs.length > 0 && (
+              <Section title={t("Preguntas frecuentes")}>
+                <Accordion
+                  items={tour.faqs.map((f, i) => ({
+                    id: String(i),
+                    title: f.question,
+                    content: f.answer,
+                  }))}
+                />
+              </Section>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <Testimonials reviews={reviews} />
+
+      {related.length > 0 && (
+        <section
+          aria-labelledby="related-heading"
+          className="container-detail mt-16 border-t border-secondary py-16"
+        >
+          <h2
+            id="related-heading"
+            className="text-2xl font-semibold tracking-tight text-primary md:text-3xl"
+          >
+            {t("Otras excursiones")}
+          </h2>
+          <ul className="mt-8 grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((r) => (
+              <li key={r.slug} className="flex">
+                <TourCard tour={r} locale={locale} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <MobileBookingBar tour={tour} locale={locale} />
+    </article>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="py-8">
+      <h2 className="mb-5 text-xl font-semibold text-primary">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function InfoCard({
+  title,
+  tinted = false,
+  children,
+}: {
+  title: string;
+  tinted?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      data-reveal
+      className={
+        "rounded-2xl p-5 shadow-xs ring-1 ring-secondary ring-inset transition-shadow duration-200 hover:shadow-md " +
+        (tinted ? "bg-brand-primary" : "bg-primary")
+      }
+    >
+      <h3 className="mb-3 text-md font-semibold text-primary">{title}</h3>
+      {children}
+    </div>
+  );
+}
+
+function List({
+  items,
+  kind,
+  columns = false,
+}: {
+  items: string[];
+  kind: "yes" | "no" | "dot";
+  columns?: boolean;
+}) {
+  return (
+    <ul className={columns ? "grid gap-3 text-tertiary sm:grid-cols-2" : "space-y-3 text-tertiary"}>
+      {items.map((item) => (
+        <li key={item} className="flex gap-3">
+          {kind === "yes" && (
+            <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-success-secondary text-fg-success-primary">
+              <Check aria-hidden size={14} strokeWidth={3} />
+            </span>
+          )}
+          {kind === "no" && (
+            <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-error-secondary text-fg-error-primary">
+              <X aria-hidden size={14} strokeWidth={3} />
+            </span>
+          )}
+          {kind === "dot" && (
+            <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-fg-quaternary" />
+          )}
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Mobile only: price and a jump to the dates, stuck to the bottom while the tour is in view. */
+function MobileBookingBar({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  const t = createT(locale);
+  const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
+  return (
+    <div className="sticky bottom-0 z-30 mt-8 border-t border-secondary bg-primary shadow-lg lg:hidden">
+      <div className="container-detail flex items-center justify-between gap-4 py-3">
+        <p>
+          {price !== null ? (
+            <>
+              <span className="text-sm text-tertiary">{t("Desde")} </span>
+              <span className="font-semibold">{formatPrice(price, locale)}</span>
+              <span className="text-sm text-tertiary"> / {t("persona")}</span>
+            </>
+          ) : (
+            <span className="text-sm text-tertiary">{t("Nuevas fechas próximamente")}</span>
+          )}
+        </p>
+        <ButtonLink href="#reservar" size="md">
+          {t("Ver fechas")}
+        </ButtonLink>
+      </div>
+    </div>
+  );
+}
+
+function KeyFacts({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  const t = createT(locale);
+  const next = tour.departures[0];
+  const minutes = tour.durationMinutes ?? (next ? departureMinutes(next) : null);
+  const facts = [
+    { icon: MapPin, label: t("Zona"), value: tour.area },
+    {
+      icon: Clock,
+      label: t("Horario"),
+      value: next
+        ? `${t("Salida {time}", { time: formatTime(next.startsAt, locale) })}${next.endsAt ? ` · ${t("regreso aprox. {time}", { time: formatTime(next.endsAt, locale) })}` : ""}`
+        : null,
+    },
+    { icon: Timer, label: t("Duración"), value: minutes ? formatDuration(minutes) : null },
+    { icon: Mountain, label: t("Dificultad"), value: tour.difficulty ? t(tour.difficulty) : null },
+    { icon: Bus, label: t("Salida desde"), value: "Estació del Nord, Barcelona" },
+  ].filter((f): f is typeof f & { value: string } => Boolean(f.value));
+
+  return (
+    <dl className="grid gap-4 sm:grid-cols-2">
+      {facts.map(({ icon: Icon, label, value }) => (
+        <div
+          key={label}
+          className="relative min-h-16 rounded-xl bg-primary py-3 pr-3 pl-16 shadow-xs ring-1 ring-secondary ring-inset"
+        >
+          <dt className="text-sm text-tertiary">
+            <FeaturedIcon
+              icon={Icon}
+              color="brand"
+              theme="light"
+              size="md"
+              className="absolute top-1/2 left-3 -translate-y-1/2"
+            />
+            {label}
+          </dt>
+          <dd className="font-semibold text-primary">{value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function BookingPanel({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  const t = createT(locale);
+  const price = tour.departures.find((d) => d.status === "open")?.priceCents ?? tour.priceFromCents;
+  return (
+    <div className="rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary ring-inset">
+      {price !== null && (
+        <p>
+          <span className="text-sm text-tertiary">{t("Desde")} </span>
+          <span className="text-display-xs font-semibold text-primary">
+            {formatPrice(price, locale)}
+          </span>
+          <span className="text-sm text-tertiary"> / {t("persona")}</span>
+        </p>
+      )}
+      {/* Seats are read live per request; the cached list shows meanwhile. */}
+      <Suspense fallback={<CachedDates tour={tour} locale={locale} />}>
+        <LiveAvailability tour={tour} locale={locale} />
+      </Suspense>
+      <ul className="mt-6 space-y-2 border-t border-secondary pt-5 text-sm text-tertiary">
+        <li className="flex items-center gap-2">
+          <CreditCard aria-hidden className="size-4 text-fg-quaternary" />
+          {t("Pago seguro con tarjeta")}
+        </li>
+        <li className="flex items-center gap-2">
+          <Mail aria-hidden className="size-4 text-fg-quaternary" />
+          {t("Confirmación por email")}
+        </li>
+      </ul>
+      <div className="mt-5 border-t border-secondary pt-5">
+        <ul className="flex flex-wrap items-center gap-2" aria-label={t("Tarjetas aceptadas")}>
+          {PAYMENT_METHODS.map((m) => (
+            <li key={m.name}>
+              <Image
+                src={m.src}
+                alt={m.name}
+                width={72}
+                height={45}
+                className="h-6 w-auto rounded ring-1 ring-secondary ring-inset"
+              />
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 flex items-center gap-3">
+          <Image
+            src={BADGES[0].src}
+            alt={BADGES[0].name}
+            width={BADGES[0].width}
+            height={BADGES[0].height}
+            className="size-12 shrink-0"
+          />
+          <p className="text-xs text-tertiary">{t("Distinción Tripadvisor.")}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+async function LiveAvailability({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  const departures = (await getLiveDepartures(tour.slug)).slice(0, 8);
+  const bookable = departures.some((d) => d.status === "open" && d.seatsLeft > 0);
+  if (!bookable) return <NoDates tour={tour} soldOut={departures.length > 0} locale={locale} />;
+  return <DeparturePicker departures={departures} />;
+}
+
+function CachedDates({ tour, locale }: { tour: TourDetail; locale: Locale }) {
+  if (tour.departures.length === 0) return <NoDates tour={tour} soldOut={false} locale={locale} />;
+  return (
+    <ul className="mt-4 divide-y divide-secondary text-sm" aria-busy="true">
+      {tour.departures.slice(0, 8).map((d) => (
+        <li key={d.id} className="py-3 first-letter:uppercase">
+          {formatDateLong(d.startsAt, locale)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function NoDates({
+  tour,
+  soldOut,
+  locale,
+}: {
+  tour: TourDetail;
+  soldOut: boolean;
+  locale: Locale;
+}) {
+  const t = createT(locale);
+  return (
+    <div className="mt-4">
+      <p className="text-tertiary">
+        {soldOut
+          ? t("Todas las fechas publicadas están completas.")
+          : t("Estamos preparando nuevas fechas para esta excursión.")}{" "}
+        {t("Escríbenos y te avisamos de la próxima salida.")}
+      </p>
+      <div className="mt-3 flex flex-col gap-2">
+        <WhatsAppCta
+          label="Avísame por WhatsApp"
+          locale={locale}
+          message={t("Hola, me interesa la excursión «{title}». ¿Cuándo es la próxima salida?", {
+            title: tour.title,
+          })}
+        />
+        <Link
+          href="/ofertas-de-viajes"
+          className="text-center font-semibold underline underline-offset-2"
+        >
+          {t("Ver otras excursiones")}
+        </Link>
+      </div>
+    </div>
+  );
+}

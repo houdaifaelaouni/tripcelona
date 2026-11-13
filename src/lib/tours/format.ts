@@ -1,8 +1,19 @@
+import type { Locale } from "@/lib/i18n/config";
+
 const TZ = "Europe/Madrid";
 
-export function formatPrice(cents: number): string {
+/** Intl tag per site language; dates and prices follow the visitor's language. */
+export const INTL: Record<Locale, string> = {
+  es: "es-ES",
+  en: "en-GB",
+  fr: "fr-FR",
+  ca: "ca-ES",
+  it: "it-IT",
+};
+
+export function formatPrice(cents: number, locale: Locale = "es"): string {
   const euros = cents / 100;
-  return new Intl.NumberFormat("es-ES", {
+  return new Intl.NumberFormat(INTL[locale], {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: Number.isInteger(euros) ? 0 : 2,
@@ -10,8 +21,8 @@ export function formatPrice(cents: number): string {
 }
 
 /** "domingo, 15 de noviembre de 2026" */
-export function formatDateLong(iso: string): string {
-  return new Intl.DateTimeFormat("es-ES", {
+export function formatDateLong(iso: string, locale: Locale = "es"): string {
+  return new Intl.DateTimeFormat(INTL[locale], {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -21,8 +32,8 @@ export function formatDateLong(iso: string): string {
 }
 
 /** "dom, 15 nov" */
-export function formatDateShort(iso: string): string {
-  return new Intl.DateTimeFormat("es-ES", {
+export function formatDateShort(iso: string, locale: Locale = "es"): string {
+  return new Intl.DateTimeFormat(INTL[locale], {
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -31,8 +42,8 @@ export function formatDateShort(iso: string): string {
 }
 
 /** "08:00" */
-export function formatTime(iso: string): string {
-  return new Intl.DateTimeFormat("es-ES", {
+export function formatTime(iso: string, locale: Locale = "es"): string {
+  return new Intl.DateTimeFormat(INTL[locale], {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -61,8 +72,8 @@ export function formatDuration(minutes: number): string {
 }
 
 /** Day number and short month ("15", "nov") for the circular date cells. */
-export function dateParts(iso: string): { day: string; month: string } {
-  const parts = new Intl.DateTimeFormat("es-ES", {
+export function dateParts(iso: string, locale: Locale = "es"): { day: string; month: string } {
+  const parts = new Intl.DateTimeFormat(INTL[locale], {
     day: "numeric",
     month: "short",
     timeZone: TZ,

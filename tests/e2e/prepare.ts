@@ -69,6 +69,13 @@ async function main() {
     if (depError) throw new Error(depError.message);
   }
 
+  // Earlier runs book seats on these dates; start every run with them empty.
+  await db.from("seat_holds").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await db
+    .from("tour_departures")
+    .update({ seats_taken: 0, status: "open" })
+    .like("notes", `${E2E.departureNote}%`);
+
   const { userId } = await grantStaff(E2E.ownerEmail, "owner", { password: e2eOwnerPassword() });
   // grantStaff keeps an existing account's password; the e2e owner always gets the current one.
   const { error: pwError } = await db.auth.admin.updateUserById(userId, {

@@ -4,7 +4,7 @@
  * flat fill, hairline ring, 8px corners. Plain <button>/<Link> so
  * they work in server components and without JavaScript. Tripcelona colours.
  */
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 

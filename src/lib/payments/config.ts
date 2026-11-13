@@ -1,3 +1,4 @@
+import { localizePath, type Locale } from "@/lib/i18n/config";
 import "server-only";
 import { siteUrl } from "@/lib/seo/site-url";
 import { PAYCOMET_BASE_URL, type PaycometCredentials } from "./paycomet";
@@ -94,8 +95,9 @@ export function activeProvider(): PaymentProvider | null {
   return redsysConfig() ? "redsys" : null;
 }
 
-export const paymentUrls = (bookingId: string) => ({
+/** Return pages keep the customer in the language they paid in. */
+export const paymentUrls = (bookingId: string, locale: Locale = "es") => ({
   notificationUrl: `${siteUrl()}/api/pagos/redsys/notificacion`,
-  okUrl: `${siteUrl()}/reservar/confirmada?id=${bookingId}`,
-  koUrl: `${siteUrl()}/reservar/pendiente?id=${bookingId}&pago=error`,
+  okUrl: `${siteUrl()}${localizePath("/reservar/confirmada", locale)}?id=${bookingId}`,
+  koUrl: `${siteUrl()}${localizePath("/reservar/pendiente", locale)}?id=${bookingId}&pago=error`,
 });

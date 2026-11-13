@@ -1,4 +1,5 @@
 import { startPayment } from "@/lib/payments/service";
+import { isLocale, localizePath } from "@/lib/i18n/config";
 import { siteUrl } from "@/lib/seo/site-url";
 
 /**
@@ -10,10 +11,12 @@ import { siteUrl } from "@/lib/seo/site-url";
 export async function POST(request: Request) {
   const form = await request.formData();
   const bookingId = String(form.get("bookingId") ?? "");
-  const result = await startPayment(bookingId);
+  const rawLocale = String(form.get("locale") ?? "");
+  const locale = isLocale(rawLocale) ? rawLocale : "es";
+  const result = await startPayment(bookingId, locale);
 
   if (!result.ok) {
-    const back = new URL("/reservar/pendiente", siteUrl());
+    const back = new URL(localizePath("/reservar/pendiente", locale), siteUrl());
     back.searchParams.set("id", bookingId);
     back.searchParams.set("pago", result.reason);
     return Response.redirect(back, 303);

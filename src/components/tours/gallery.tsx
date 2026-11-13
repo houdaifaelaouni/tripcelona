@@ -10,9 +10,11 @@ import Image from "next/image";
 import { useRef } from "react";
 import { iconButtonClasses } from "@/components/ui/icon-button";
 import { cn } from "@/lib/cn";
+import { useT } from "@/components/i18n/provider";
 import type { TourImage } from "@/lib/tours/types";
 
 export function Gallery({ images, title }: { images: TourImage[]; title: string }) {
+  const t = useT();
   const dialog = useRef<HTMLDialogElement>(null);
   const [main, ...rest] = images;
   if (!main) return null;
@@ -66,14 +68,14 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
             className="absolute right-3 bottom-3 inline-flex h-9 items-center gap-2 rounded-lg bg-primary px-3 ring-1 ring-primary ring-inset text-sm font-semibold text-primary shadow-lg hover:bg-secondary"
           >
             <Grid3x3 aria-hidden size={16} />
-            Mostrar las {images.length} fotos
+            {t("Mostrar las {n} fotos", { n: images.length })}
           </button>
         )}
       </div>
 
       <dialog
         ref={dialog}
-        aria-label={`Fotos: ${title}`}
+        aria-label={t("Fotos: {title}", { title })}
         className="m-0 h-dvh max-h-none w-screen max-w-none bg-white p-0 backdrop:bg-ink/60"
       >
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-secondary bg-white px-4 py-3">
@@ -81,7 +83,7 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
           <button
             type="button"
             onClick={() => dialog.current?.close()}
-            aria-label="Cerrar fotos"
+            aria-label={t("Cerrar fotos")}
             className={iconButtonClasses("soft", "md")}
           >
             <X aria-hidden size={18} />
