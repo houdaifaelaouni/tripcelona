@@ -1,4 +1,5 @@
 import { ArrowUpRight, Phone } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { buttonClasses } from "@/components/ui/button";
@@ -6,6 +7,16 @@ import { WhatsAppIcon } from "@/components/ui/icons";
 import { SOCIAL_LABELS, SOCIAL_NETWORKS, getSiteSettings } from "@/lib/settings";
 import { footerColumns, site as siteDefaults } from "@/lib/site";
 import { getPublishedTours } from "@/lib/tours/queries";
+
+/** Card brands the bank terminal accepts, shown as supplied by the owner. */
+const PAYMENT_METHODS = [
+  { name: "Visa", src: "/brand/payments/visa.png" },
+  { name: "Mastercard", src: "/brand/payments/mastercard.png" },
+  { name: "American Express", src: "/brand/payments/amex.png" },
+  { name: "UnionPay", src: "/brand/payments/unionpay.png" },
+  { name: "Diners Club", src: "/brand/payments/diners.png" },
+  { name: "Discover", src: "/brand/payments/discover.png" },
+] as const;
 
 /**
  * Light footer: brand block and a contact card on top, five link columns,
@@ -88,6 +99,23 @@ export async function Footer() {
               </ul>
             </nav>
           ))}
+        </div>
+
+        <div className="flex flex-col gap-3 border-t border-secondary py-6 sm:flex-row sm:items-center sm:gap-5">
+          <p className="text-sm font-medium text-secondary">Aceptamos</p>
+          <ul className="flex flex-wrap gap-2" aria-label="Tarjetas aceptadas">
+            {PAYMENT_METHODS.map((m) => (
+              <li key={m.name}>
+                <Image
+                  src={m.src}
+                  alt={m.name}
+                  width={72}
+                  height={45}
+                  className="h-8 w-auto rounded-md ring-1 ring-secondary ring-inset"
+                />
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-secondary py-8 text-sm text-tertiary md:flex-row md:items-center md:justify-between">

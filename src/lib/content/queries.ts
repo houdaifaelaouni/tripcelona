@@ -36,6 +36,14 @@ export type Page = {
   updatedAt: string;
 };
 
+export type Review = {
+  id: string;
+  author: string;
+  source: string;
+  rating: number | null;
+  text: string;
+};
+
 export type Faq = { id: string; category: string | null; question: string; answer: string };
 
 type MediaJoin = {
@@ -150,5 +158,20 @@ export async function getPublishedFaqs(): Promise<Faq[]> {
     .order("category", { nullsFirst: true })
     .order("sort_order");
   if (error) throw new Error(`Failed to load FAQs: ${error.message}`);
+  return data ?? [];
+}
+
+/** Opinions the owner approved in the admin (decision D6). Empty until some exist. */
+export async function getApprovedReviews(): Promise<Review[]> {
+  "use cache";
+  cacheTag(CONTENT_TAG);
+  cacheLife("hours");
+  const { data, error } = await createPublicClient()
+    .from("reviews")
+    .select("id, author, source, rating, text")
+    .eq("status", "approved")
+    .order("created_at", { ascending: false })
+    .limit(12);
+  if (error) throw new Error(`Failed to load reviews: ${error.message}`);
   return data ?? [];
 }
