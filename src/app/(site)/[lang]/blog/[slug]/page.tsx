@@ -26,7 +26,7 @@ export async function generateMetadata({
 }: PageProps<"/[lang]/blog/[slug]">): Promise<Metadata> {
   const { slug, lang } = await params;
   if (!isLocale(lang)) notFound();
-  const post = await getPostBySlug(slug);
+  const post = await getPostBySlug(slug, lang);
   if (!post) notFound();
   return {
     title: post.seoTitle ?? post.title,
@@ -63,7 +63,7 @@ async function PostPageBody({ params }: { params: PageProps<"/[lang]/blog/[slug]
     dateStyle: "long",
     timeZone: "Europe/Madrid",
   });
-  const post = await getPostBySlug(slug);
+  const post = await getPostBySlug(slug, locale);
   if (!post) notFound();
 
   return (

@@ -62,7 +62,7 @@ export async function generateMetadata({
   const { slug, lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = createT(lang);
-  const tour = await getTourBySlug(slug);
+  const tour = await getTourBySlug(slug, lang);
   if (!tour) notFound(); // before streaming starts, so unknown slugs get a real 404 status
   return {
     title: tour.seoTitle ?? tour.title,
@@ -104,10 +104,10 @@ async function TourPageBody({
   const { slug, lang: locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = createT(locale);
-  const tour = await getTourBySlug(slug);
+  const tour = await getTourBySlug(slug, locale);
   if (!tour) notFound();
   const [published, reviews] = await Promise.all([
-    getPublishedTours(),
+    getPublishedTours(locale),
     getApprovedReviews().catch(() => []),
   ]);
   const related = relatedTours(published, tour);

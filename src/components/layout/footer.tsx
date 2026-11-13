@@ -20,7 +20,7 @@ export async function Footer({ locale }: { locale: Locale }) {
   const t = createT(locale);
   const [site, tours, content] = await Promise.all([
     getSiteSettings(),
-    getPublishedTours().catch(() => []),
+    getPublishedTours(locale).catch(() => []),
     getSiteContent(),
   ]);
   const footerColumns = content.footer;

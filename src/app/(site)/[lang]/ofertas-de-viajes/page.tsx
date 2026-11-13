@@ -67,7 +67,7 @@ async function CatalogResults({
 }) {
   const t = createT(locale);
   const filters = parseCatalogFilters(await searchParams);
-  const results = filterTours(await getPublishedTours(), filters);
+  const results = filterTours(await getPublishedTours(locale), filters);
 
   return (
     <>

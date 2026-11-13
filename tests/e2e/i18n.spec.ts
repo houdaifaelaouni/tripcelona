@@ -32,6 +32,15 @@ test.describe("languages", () => {
     await expect(page.getByRole("heading", { name: "Checkout" })).toBeVisible();
   });
 
+  test("database text follows the language, with Spanish as fallback", async ({ page }) => {
+    await page.goto(`/en/excursiones/${E2E.tourSlug}`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(E2E.tourTitleEn);
+    // No French translation exists: the Spanish title is shown, not an empty one.
+    await page.goto(`/fr/excursiones/${E2E.tourSlug}`);
+    await expect(page.getByRole("heading", { level: 1 })).not.toHaveText(E2E.tourTitleEn);
+    await expect(page.getByRole("heading", { level: 1 })).not.toBeEmpty();
+  });
+
   test("/es/ redirects to the unprefixed Spanish URL", async ({ request }) => {
     const res = await request.get("/es/blog", { maxRedirects: 0 });
     expect(res.status()).toBe(308);

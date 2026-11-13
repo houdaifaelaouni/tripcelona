@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 export const E2E = {
   tourSlug: "la-magia-rural-de-cataluna-escapada-a-rupit-y-tavertet",
   departureNote: "e2e departure",
+  tourTitleEn: "Rural magic: Rupit and Tavertet (test)",
   ownerEmail: "e2e-owner@example.com",
 } as const;
 

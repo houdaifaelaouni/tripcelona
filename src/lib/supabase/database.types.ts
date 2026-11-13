@@ -201,6 +201,34 @@ export type Database = {
           },
         ];
       };
+      content_translations: {
+        Row: {
+          entity: string;
+          entity_id: string;
+          field: string;
+          locale: string;
+          updated_at: string;
+          value: Json;
+        };
+        ComputedFields: never;
+        Insert: {
+          entity: string;
+          entity_id: string;
+          field: string;
+          locale: string;
+          updated_at?: string;
+          value: Json;
+        };
+        Update: {
+          entity?: string;
+          entity_id?: string;
+          field?: string;
+          locale?: string;
+          updated_at?: string;
+          value?: Json;
+        };
+        Relationships: [];
+      };
       events: {
         Row: {
           created_at: string;
