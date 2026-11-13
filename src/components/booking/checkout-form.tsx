@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/provider";
 import Link from "@/components/i18n/link";
 import { useActionState, useState, type ReactNode } from "react";
 import { Checkbox, Input, Textarea } from "@/components/ui/field";
@@ -27,6 +28,7 @@ export function CheckoutForm({
   summary: ReactNode;
   provider: PaymentProvider | null;
 }) {
+  const locale = useLocale();
   const [state, action, pending] = useActionState<CheckoutState, FormData>(startCheckout, {
     status: "idle",
   });
@@ -44,6 +46,7 @@ export function CheckoutForm({
       className="grid gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1fr)_400px]"
     >
       <input type="hidden" name="departureId" value={departureId} />
+      <input type="hidden" name="locale" value={locale} />
       {/* Honeypot (FR-41): hidden from people and assistive tech. */}
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "@/components/i18n/provider";
 import Link from "@/components/i18n/link";
 import { useActionState } from "react";
 import { FormAlert } from "@/components/forms/form-bits";
@@ -16,6 +17,7 @@ import type { PaymentProvider } from "@/lib/payments/config";
 export function CartCheckout({ provider }: { provider: PaymentProvider | null }) {
   const items = useCart();
   const { lines, loading, empty } = useCartLines();
+  const locale = useLocale();
   const [state, action, pending] = useActionState<CartCheckoutState, FormData>(startCartCheckout, {
     status: "idle",
   });
@@ -43,6 +45,7 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
       className="mt-2 grid gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1fr)_400px]"
     >
       <input type="hidden" name="items" value={JSON.stringify(items)} />
+      <input type="hidden" name="locale" value={locale} />
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>
           Empresa

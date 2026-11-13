@@ -1,6 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isLocale, localizePath } from "@/lib/i18n/config";
+
+const pendingPath = (form: FormData, id: string) => {
+  const raw = String(form.get("locale") ?? "");
+  return localizePath(`/reservar/pendiente?id=${id}`, isLocale(raw) ? raw : "es");
+};
 import { createPendingBooking, createPendingCart } from "./create";
 import {
   cartCheckoutSchema,
@@ -61,7 +67,7 @@ export async function startCheckout(_prev: CheckoutState, form: FormData): Promi
   }
 
   // Unguessable id in the URL (references are sequential).
-  redirect(`/reservar/pendiente?id=${result.bookingId}`);
+  redirect(pendingPath(form, result.bookingId));
 }
 
 /**
@@ -96,5 +102,5 @@ export async function startCartCheckout(
   if (!result.ok) {
     return { status: "error", message: result.message, fieldErrors: {}, values };
   }
-  redirect(`/reservar/pendiente?id=${result.anchorBookingId}`);
+  redirect(pendingPath(form, result.anchorBookingId));
 }
