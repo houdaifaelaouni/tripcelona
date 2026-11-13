@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { CheckoutBand } from "@/components/booking/checkout-ui";
 import { Suspense } from "react";
 import { CartCheckout } from "@/components/cart/cart-checkout";
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function CheckoutPage({ searchParams }: PageProps<"/reservar">) {
+export default function CheckoutPage({ searchParams }: PageProps<"/[lang]/reservar">) {
   return (
     <>
       <CheckoutBand current={2} />
@@ -39,7 +39,7 @@ function first(v: string | string[] | undefined) {
 async function Checkout({
   searchParams,
 }: {
-  searchParams: PageProps<"/reservar">["searchParams"];
+  searchParams: PageProps<"/[lang]/reservar">["searchParams"];
 }) {
   const params = await searchParams;
   if (first(params.carrito) === "1") return <CartCheckout provider={activeProvider()} />;

@@ -12,7 +12,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);

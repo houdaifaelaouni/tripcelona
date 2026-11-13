@@ -86,7 +86,7 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
                     <span
                       className={cn(
                         "text-caption whitespace-nowrap",
-                        d.seatsLeft <= 10 ? "font-semibold text-error-primary" : "text-tertiary",
+                        d.seatsLeft <= 10 ? "font-semibold text-red-700" : "text-tertiary",
                       )}
                     >
                       {d.seatsLeft <= 10 ? `¡Quedan ${d.seatsLeft}!` : `${d.seatsLeft} plazas`}

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
@@ -8,6 +8,8 @@ import type { NavLink } from "@/lib/site-content-shared";
 import { Menu, Phone, X } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { iconButtonClasses } from "@/components/ui/icon-button";
+import { useLocale, useT } from "@/components/i18n/provider";
+import { LanguageLinks } from "./language-switcher";
 
 export function MobileNav({
   nav: primaryNav,
@@ -18,6 +20,8 @@ export function MobileNav({
   phoneHref: string;
   whatsappHref: string;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -57,7 +61,7 @@ export function MobileNav({
           "md",
           "size-9 rounded-lg bg-primary text-fg-tertiary ring-1 ring-secondary ring-inset hover:bg-secondary hover:text-fg-primary",
         )}
-        aria-label="Abrir menú"
+        aria-label={t("Abrir menú")}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
@@ -67,22 +71,22 @@ export function MobileNav({
       <dialog
         ref={dialogRef}
         onClose={() => setOpen(false)}
-        aria-label="Menú"
+        aria-label={t("Menú")}
         className="m-0 ml-auto h-dvh max-h-dvh w-[min(22rem,88vw)] max-w-none rounded-l-2xl bg-white p-0 text-primary backdrop:bg-ink/40 backdrop:backdrop-blur-sm"
       >
         <div className="flex h-16 items-center justify-between border-b border-secondary px-6">
-          <span className="text-lg font-semibold tracking-tight">Menú</span>
+          <span className="text-lg font-semibold tracking-tight">{t("Menú")}</span>
           <button
             type="button"
             className={iconButtonClasses("soft", "md")}
-            aria-label="Cerrar menú"
+            aria-label={t("Cerrar menú")}
             onClick={() => setOpen(false)}
           >
             <X size={18} aria-hidden />
           </button>
         </div>
         <nav
-          aria-label="Principal (móvil)"
+          aria-label={t("Principal (móvil)")}
           // Close the drawer when any link inside it is followed.
           onClick={(e) => {
             if ((e.target as HTMLElement).closest("a")) setOpen(false);
@@ -95,7 +99,7 @@ export function MobileNav({
                   href={item.href}
                   className="block rounded-lg px-3 py-2.5 font-medium hover:bg-secondary"
                 >
-                  {item.label}
+                  {t(item.label)}
                 </Link>
                 {item.children && (
                   <ul>
@@ -105,7 +109,7 @@ export function MobileNav({
                           href={child.href}
                           className="block rounded-lg py-2.5 pr-3 pl-6 text-sm text-tertiary hover:bg-secondary hover:text-primary"
                         >
-                          {child.label}
+                          {t(child.label)}
                         </Link>
                       </li>
                     ))}
@@ -115,6 +119,10 @@ export function MobileNav({
             ))}
           </ul>
         </nav>
+        <div className="border-t border-secondary p-6">
+          <p className="mb-3 text-sm font-medium text-tertiary">{t("Idioma")}</p>
+          <LanguageLinks locale={locale} />
+        </div>
         <div className="flex flex-col gap-2 border-t border-secondary p-6">
           <a
             href={site.phoneHref}

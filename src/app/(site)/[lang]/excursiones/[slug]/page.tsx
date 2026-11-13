@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { notFound } from "next/navigation";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { Suspense } from "react";
@@ -55,7 +55,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: PageProps<"/excursiones/[slug]">): Promise<Metadata> {
+}: PageProps<"/[lang]/excursiones/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const tour = await getTourBySlug(slug);
   if (!tour) notFound(); // before streaming starts, so unknown slugs get a real 404 status
@@ -78,7 +78,7 @@ export async function generateMetadata({
  * invalidated, Next re-prerenders the route shell with fallback params, and
  * awaiting them outside a boundary fails that render (500 on every slug).
  */
-export default function TourPage({ params }: PageProps<"/excursiones/[slug]">) {
+export default function TourPage({ params }: PageProps<"/[lang]/excursiones/[slug]">) {
   return (
     <Suspense fallback={<PageSkeleton />}>
       <TourPageBody params={params} />
@@ -86,7 +86,11 @@ export default function TourPage({ params }: PageProps<"/excursiones/[slug]">) {
   );
 }
 
-async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]">["params"] }) {
+async function TourPageBody({
+  params,
+}: {
+  params: PageProps<"/[lang]/excursiones/[slug]">["params"];
+}) {
   const { slug } = await params;
   const tour = await getTourBySlug(slug);
   if (!tour) notFound();
@@ -161,30 +165,22 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
               {tour.summary && <p className="mt-6 text-lg text-tertiary">{tour.summary}</p>}
             </div>
 
-            <Section title="Tu día de un vistazo">
+            <Section title="Programa del viaje">
               <Reveal>
-                <div data-reveal>
+                <div data-reveal className="mb-8">
                   <RouteDiagram
-                    destination={tour.area ?? tour.title}
-                    departs={next ? formatTime(next.startsAt) : null}
-                    returns={next?.endsAt ? formatTime(next.endsAt) : null}
-                    duration={
-                      (tour.durationMinutes ?? (next ? departureMinutes(next) : null))
-                        ? formatDuration(
-                            (tour.durationMinutes ?? (next ? departureMinutes(next) : 0)) as number,
-                          )
-                        : null
-                    }
+                    stops={[
+                      "Barcelona",
+                      ...(tour.itinerary.length > 0 && tour.itinerary.length <= 3
+                        ? tour.itinerary.map((i) => i.title)
+                        : [tour.area ?? tour.title]),
+                      "Barcelona",
+                    ]}
                   />
                 </div>
               </Reveal>
+              {tour.itinerary.length > 0 && <DayTimeline stops={tour.itinerary} />}
             </Section>
-
-            {tour.itinerary.length > 0 && (
-              <Section title="Programa del día">
-                <DayTimeline stops={tour.itinerary} />
-              </Section>
-            )}
 
             {tour.description && tour.description.content.length > 0 && (
               <Section title="Sobre el destino">

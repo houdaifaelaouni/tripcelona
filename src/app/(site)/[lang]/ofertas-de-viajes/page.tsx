@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { PageHero } from "@/components/layout/page-hero";
 import { Suspense } from "react";
 import { CatalogFilters } from "@/components/tours/catalog-filters";
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/ofertas-de-viajes" },
 };
 
-export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
+export default function CatalogPage({ searchParams }: PageProps<"/[lang]/ofertas-de-viajes">) {
   return (
     <>
       <PageHero
@@ -43,7 +43,7 @@ export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-via
 async function CatalogResults({
   searchParams,
 }: {
-  searchParams: PageProps<"/ofertas-de-viajes">["searchParams"];
+  searchParams: PageProps<"/[lang]/ofertas-de-viajes">["searchParams"];
 }) {
   const filters = parseCatalogFilters(await searchParams);
   const results = filterTours(await getPublishedTours(), filters);

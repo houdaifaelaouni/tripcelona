@@ -15,7 +15,7 @@ import {
   UserCheck,
   Users,
 } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import type { ReactNode } from "react";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import { buttonClasses } from "@/components/ui/button";

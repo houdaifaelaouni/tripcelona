@@ -21,7 +21,7 @@ const NOTICES: Record<string, string> = {
 };
 
 /** Step 2 of checkout: review and pay (US-19). */
-export default function PendingPage({ searchParams }: PageProps<"/reservar/pendiente">) {
+export default function PendingPage({ searchParams }: PageProps<"/[lang]/reservar/pendiente">) {
   return (
     <div className="container-site max-w-2xl py-8 md:py-16">
       <Suspense fallback={<PageSkeleton />}>
@@ -38,7 +38,7 @@ function first(value: string | string[] | undefined): string {
 async function Pending({
   searchParams,
 }: {
-  searchParams: PageProps<"/reservar/pendiente">["searchParams"];
+  searchParams: PageProps<"/[lang]/reservar/pendiente">["searchParams"];
 }) {
   await connection();
   const params = await searchParams;

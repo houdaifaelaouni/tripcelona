@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { Select } from "@/components/ui/field";
 import { buttonClasses } from "@/components/ui/button";
 import { destinations } from "@/lib/site";

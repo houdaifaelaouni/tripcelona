@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { Badge } from "@/components/ui/card";
 import { ArrowUpRight, Calendar, Clock } from "lucide-react";
 import {

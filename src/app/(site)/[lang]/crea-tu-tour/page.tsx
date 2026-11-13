@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 // Heading and intro from the live page (WordPress export, 2026-11-10).
-export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) {
+export default function QuotePage({ searchParams }: PageProps<"/[lang]/crea-tu-tour">) {
   return (
     <>
       <PageHero
@@ -45,7 +45,7 @@ export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) 
 async function Wizard({
   searchParams,
 }: {
-  searchParams: PageProps<"/crea-tu-tour">["searchParams"];
+  searchParams: PageProps<"/[lang]/crea-tu-tour">["searchParams"];
 }) {
   const [{ excursion }, tours, settings] = await Promise.all([
     searchParams,

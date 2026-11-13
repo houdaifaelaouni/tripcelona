@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { getSiteSettings } from "@/lib/settings";
 import { safeHref } from "@/lib/content/rich-text";
 

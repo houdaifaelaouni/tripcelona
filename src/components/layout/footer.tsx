@@ -1,20 +1,23 @@
 import { BADGES, PAYMENT_METHODS } from "@/lib/brand-assets";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { Logo } from "@/components/brand/logo";
 import { buttonClasses } from "@/components/ui/button";
 import { SOCIAL_LABELS, SOCIAL_NETWORKS, getSiteSettings } from "@/lib/settings";
 import { getSiteContent } from "@/lib/site-content";
 import { site as siteDefaults } from "@/lib/site";
 import { getPublishedTours } from "@/lib/tours/queries";
+import { createT } from "@/lib/i18n/translate";
+import type { Locale } from "@/lib/i18n/config";
 
 /** Card brands the bank terminal accepts, shown as supplied by the owner. */
 /**
  * Light footer: brand block and a contact card on top, five link columns,
  * then a one-line legal band. Hairlines separate the three rows.
  */
-export async function Footer() {
+export async function Footer({ locale }: { locale: Locale }) {
+  const t = createT(locale);
   const [site, tours, content] = await Promise.all([
     getSiteSettings(),
     getPublishedTours().catch(() => []),
@@ -23,7 +26,7 @@ export async function Footer() {
   const footerColumns = content.footer;
   const socials = SOCIAL_NETWORKS.filter((n) => site.socials[n]);
   const openDepartures = tours.reduce(
-    (sum, t) => sum + t.departures.filter((d) => d.status === "open").length,
+    (sum, tour) => sum + tour.departures.filter((d) => d.status === "open").length,
     0,
   );
 
@@ -34,13 +37,15 @@ export async function Footer() {
           <div>
             <Link href="/" className="inline-flex rounded-md">
               <Logo className="h-20" />
-              <span className="sr-only"> - inicio</span>
+              <span className="sr-only"> - {t("inicio")}</span>
             </Link>
             <p className="mt-6 text-md font-semibold text-primary">
-              Excursiones de un día desde Barcelona, cada domingo.
+              {t("Excursiones de un día desde Barcelona, cada domingo.")}
             </p>
             <p className="mt-2 max-w-md text-md text-tertiary">
-              Autocar, guía local y logística incluidos. Salimos desde {siteDefaults.meetingPoint}.
+              {t("Autocar, guía local y logística incluidos. Salimos desde {place}.", {
+                place: siteDefaults.meetingPoint,
+              })}
             </p>
             {openDepartures > 0 && (
               <Link
@@ -52,43 +57,45 @@ export async function Footer() {
                   <span className="relative inline-flex size-2 rounded-full bg-success-solid" />
                 </span>
                 {openDepartures === 1
-                  ? "1 salida abierta para reservar"
-                  : `${openDepartures} salidas abiertas para reservar`}
+                  ? t("1 salida abierta para reservar")
+                  : t("{n} salidas abiertas para reservar", { n: openDepartures })}
               </Link>
             )}
           </div>
 
           <div className="rounded-xl bg-secondary p-6 ring-1 ring-secondary ring-inset md:p-7">
-            <h2 className="text-lg font-semibold tracking-tight">¿Tienes alguna duda?</h2>
+            <h2 className="text-lg font-semibold tracking-tight">{t("¿Tienes alguna duda?")}</h2>
             <p className="mt-2 text-sm text-tertiary">
-              Escríbenos por email o llámanos y te ayudamos a elegir excursión, fecha y punto de
-              salida.
+              {t(
+                "Escríbenos por email o llámanos y te ayudamos a elegir excursión, fecha y punto de salida.",
+              )}
             </p>
             <a
               href={site.email ? `mailto:${site.email}` : "/contactanos"}
               className={buttonClasses({ variant: "secondary", size: "lg" }, "mt-5 w-full")}
             >
               <Mail aria-hidden className="size-5" />
-              Escríbenos por email
+              {t("Escríbenos por email")}
             </a>
             <a
               href={site.phoneHref}
               className="mt-3 flex items-center justify-center gap-2 text-sm text-tertiary hover:text-primary"
             >
-              <Phone aria-hidden className="size-4" />o llámanos al {site.phoneDisplay}
+              <Phone aria-hidden className="size-4" />
+              {t("o llámanos al {phone}", { phone: site.phoneDisplay })}
             </a>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 border-t border-secondary py-12 md:grid-cols-3 lg:grid-cols-5">
           {footerColumns.map((col) => (
-            <nav key={col.title} aria-label={col.title}>
-              <h2 className="text-sm font-semibold text-primary">{col.title}</h2>
+            <nav key={col.title} aria-label={t(col.title)}>
+              <h2 className="text-sm font-semibold text-primary">{t(col.title)}</h2>
               <ul className="mt-4 space-y-3 text-sm">
                 {col.links.map((link) => (
                   <li key={link.href}>
                     <Link href={link.href} className="text-tertiary hover:text-primary">
-                      {link.label}
+                      {t(link.label)}
                     </Link>
                   </li>
                 ))}
@@ -98,8 +105,8 @@ export async function Footer() {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-secondary py-6 sm:flex-row sm:items-center sm:gap-5">
-          <p className="text-sm font-medium text-secondary">Aceptamos</p>
-          <ul className="flex flex-wrap gap-2" aria-label="Tarjetas aceptadas">
+          <p className="text-sm font-medium text-secondary">{t("Aceptamos")}</p>
+          <ul className="flex flex-wrap gap-2" aria-label={t("Tarjetas aceptadas")}>
             {PAYMENT_METHODS.map((m) => (
               <li key={m.name}>
                 <Image
@@ -113,10 +120,10 @@ export async function Footer() {
             ))}
           </ul>
           <div className="flex flex-col gap-3 sm:ml-auto sm:flex-row sm:items-center sm:gap-5">
-            <p className="text-sm font-medium text-secondary">Reconocimientos</p>
+            <p className="text-sm font-medium text-secondary">{t("Reconocimientos")}</p>
             <ul
               className="flex flex-wrap items-center gap-4 "
-              aria-label="Premios y reconocimientos"
+              aria-label={t("Premios y reconocimientos")}
             >
               {BADGES.map((b) => (
                 <li key={b.name}>
@@ -135,7 +142,7 @@ export async function Footer() {
 
         <div className="flex flex-col gap-4 border-t border-secondary py-8 text-sm text-tertiary md:flex-row md:items-center md:justify-between">
           <p>
-            © 2026 Tripcelona · Barcelona, España
+            © 2026 Tripcelona · Barcelona, {t("España")}
             {site.email && (
               <>
                 {" · "}
@@ -146,7 +153,7 @@ export async function Footer() {
             )}
           </p>
           {socials.length > 0 && (
-            <ul className="flex flex-wrap gap-4" aria-label="Redes sociales">
+            <ul className="flex flex-wrap gap-4" aria-label={t("Redes sociales")}>
               {socials.map((n) => (
                 <li key={n}>
                   <a

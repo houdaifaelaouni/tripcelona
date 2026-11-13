@@ -3,12 +3,14 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ShoppingCart } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { iconButtonClasses } from "@/components/ui/icon-button";
 import { useRef } from "react";
 import { useCart } from "@/lib/cart/store";
+import { useT } from "@/components/i18n/provider";
 
 export function CartLink() {
+  const t = useT();
   const count = useCart().length;
   const badge = useRef<HTMLSpanElement>(null);
   const previous = useRef(count);
@@ -33,7 +35,11 @@ export function CartLink() {
     <Link
       href="/carrito"
       aria-label={
-        count > 0 ? `Carrito, ${count} ${count === 1 ? "excursión" : "excursiones"}` : "Carrito"
+        count > 0
+          ? count === 1
+            ? t("Carrito, 1 excursión")
+            : t("Carrito, {n} excursiones", { n: count })
+          : t("Carrito")
       }
       className={iconButtonClasses(
         "soft",

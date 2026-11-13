@@ -3,42 +3,57 @@ import { NextResponse, type NextRequest } from "next/server";
 import { canonicalRedirect, isGone, slugLookup } from "@/lib/seo/legacy";
 import { lookupRedirect } from "@/lib/seo/redirect-registry";
 import { slugExists } from "@/lib/seo/slug-registry";
+import { defaultLocale, splitLocale } from "@/lib/i18n/config";
 
-/** Path with no matching route: Next answers it with the not-found page and a 404 status. */
-const NOT_FOUND_PATH = "/__no-encontrada__/404";
+/** Routes that live outside the [lang] tree and are never language-prefixed. */
+const UNLOCALIZED = /^\/(robots\.txt|sitemap\.xml|wp-content\/)/;
 
 export async function proxy(request: NextRequest) {
-  const path = request.nextUrl.pathname;
-  if (path === "/admin" || path.startsWith("/admin/")) return adminGate(request);
+  const rawPath = request.nextUrl.pathname;
+  if (rawPath === "/admin" || rawPath.startsWith("/admin/")) return adminGate(request);
 
-  if (isGone(path.replace(/\/+$/, ""))) {
-    return new NextResponse("Gone", {
-      status: 410,
-      headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex" },
-    });
+  // "/es/…" is the same as the unprefixed Spanish URL: one canonical address.
+  if (/^\/es(\/|$)/.test(rawPath)) {
+    const bare = rawPath.slice(3) || "/";
+    return NextResponse.redirect(new URL(bare + request.nextUrl.search, request.url), 308);
   }
-  // Redirects the owner added in the admin win over the built-in legacy rules.
-  const custom = await lookupRedirect(path.replace(/\/+$/, ""));
-  if (custom) {
-    if (custom.status === 410)
+  const { locale, path } = splitLocale(rawPath);
+  const localized = !UNLOCALIZED.test(rawPath);
+
+  if (locale === defaultLocale) {
+    if (isGone(path.replace(/\/+$/, ""))) {
       return new NextResponse("Gone", {
         status: 410,
         headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex" },
       });
-    return NextResponse.redirect(new URL(custom.to, request.url), custom.status);
+    }
+    // Redirects the owner added in the admin win over the built-in legacy rules.
+    const custom = await lookupRedirect(path.replace(/\/+$/, ""));
+    if (custom) {
+      if (custom.status === 410)
+        return new NextResponse("Gone", {
+          status: 410,
+          headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex" },
+        });
+      return NextResponse.redirect(new URL(custom.to, request.url), custom.status);
+    }
+    // Legacy WordPress URLs and trailing slashes: one 301 hop (US-33).
+    // A plain URL, not nextUrl.clone(): NextURL would put the trailing slash back.
+    const target = canonicalRedirect(path);
+    if (target)
+      return NextResponse.redirect(new URL(target + request.nextUrl.search, request.url), 301);
   }
-  // Legacy WordPress URLs and trailing slashes: one 301 hop (US-33).
-  // A plain URL, not nextUrl.clone(): NextURL would put the trailing slash back.
-  const target = canonicalRedirect(path);
-  if (target)
-    return NextResponse.redirect(new URL(target + request.nextUrl.search, request.url), 301);
 
   // Unknown slugs get a real 404 status instead of a streamed not-found page.
   const lookup = slugLookup(path);
   if (lookup && !(await slugExists(lookup.kind, lookup.slug))) {
-    return NextResponse.rewrite(new URL(NOT_FOUND_PATH, request.url));
+    return NextResponse.rewrite(new URL(`/${locale}/__no-encontrada__/404`, request.url));
   }
-  return NextResponse.next();
+  if (!localized) return NextResponse.next();
+  // Every public page lives under /[lang]; Spanish is served from /es without showing it.
+  return NextResponse.rewrite(
+    new URL(`/${locale}${path === "/" ? "" : path}${request.nextUrl.search}`, request.url),
+  );
 }
 
 /**

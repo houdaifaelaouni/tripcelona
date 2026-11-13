@@ -16,7 +16,7 @@ export const metadata: Metadata = { title: "Reserva confirmada", robots: { index
  * Redsys URLOK. The browser can arrive before the bank's notification, so a
  * pending booking shows a "confirming" state that refreshes itself.
  */
-export default function ConfirmedPage({ searchParams }: PageProps<"/reservar/confirmada">) {
+export default function ConfirmedPage({ searchParams }: PageProps<"/[lang]/reservar/confirmada">) {
   return (
     <div className="container-site max-w-2xl py-8 md:py-16">
       <Suspense fallback={<PageSkeleton />}>
@@ -29,7 +29,7 @@ export default function ConfirmedPage({ searchParams }: PageProps<"/reservar/con
 async function Confirmed({
   searchParams,
 }: {
-  searchParams: PageProps<"/reservar/confirmada">["searchParams"];
+  searchParams: PageProps<"/[lang]/reservar/confirmada">["searchParams"];
 }) {
   await connection();
   const raw = (await searchParams).id;

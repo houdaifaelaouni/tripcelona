@@ -5,7 +5,7 @@
  * Every number comes from published tours; nothing is invented.
  */
 import { CalendarCheck, CreditCard, MailCheck, MapPin, Search } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { CountUp, DrawOnScroll, Reveal } from "@/components/motion/reveal";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import { Badge } from "@/components/ui/card";

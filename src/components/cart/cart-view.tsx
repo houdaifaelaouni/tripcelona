@@ -1,7 +1,7 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { buttonClasses } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { removeFromCart, setCartQuantity } from "@/lib/cart/store";

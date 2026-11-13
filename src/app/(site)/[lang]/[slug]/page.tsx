@@ -17,7 +17,7 @@ export async function generateStaticParams() {
   return (pages.length ? pages : [NONE]).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/[slug]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/[lang]/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const page = await getPageBySlug(slug);
   if (!page) notFound();
@@ -39,7 +39,7 @@ const updatedFmt = new Intl.DateTimeFormat("es-ES", {
  * invalidated, Next re-prerenders the route shell with fallback params, and
  * awaiting them outside a boundary fails that render (500 on every slug).
  */
-export default function ContentPage({ params }: PageProps<"/[slug]">) {
+export default function ContentPage({ params }: PageProps<"/[lang]/[slug]">) {
   return (
     <Suspense fallback={<PageSkeleton />}>
       <ContentPageBody params={params} />
@@ -47,7 +47,7 @@ export default function ContentPage({ params }: PageProps<"/[slug]">) {
   );
 }
 
-async function ContentPageBody({ params }: { params: PageProps<"/[slug]">["params"] }) {
+async function ContentPageBody({ params }: { params: PageProps<"/[lang]/[slug]">["params"] }) {
   const { slug } = await params;
   const page = await getPageBySlug(slug);
   if (!page) notFound();

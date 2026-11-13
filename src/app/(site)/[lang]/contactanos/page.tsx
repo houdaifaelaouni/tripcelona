@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/page-hero";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { ContactForm } from "@/components/forms/contact-form";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { getSiteSettings } from "@/lib/settings";

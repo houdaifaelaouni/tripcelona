@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import type { ReactNode } from "react";
 import { resolveContentImage } from "@/lib/content/images";
 import type { BlockNode, InlineNode, Mark, RichDoc } from "@/lib/content/rich-text";

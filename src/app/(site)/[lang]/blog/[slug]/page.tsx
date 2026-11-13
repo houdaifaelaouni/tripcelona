@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { Badge } from "@/components/ui/card";
 import { notFound } from "next/navigation";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -19,7 +19,9 @@ export async function generateStaticParams() {
   return (posts.length ? posts : [NONE]).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps<"/[lang]/blog/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
  * invalidated, Next re-prerenders the route shell with fallback params, and
  * awaiting them outside a boundary fails that render (500 on every slug).
  */
-export default function PostPage({ params }: PageProps<"/blog/[slug]">) {
+export default function PostPage({ params }: PageProps<"/[lang]/blog/[slug]">) {
   return (
     <Suspense fallback={<PageSkeleton />}>
       <PostPageBody params={params} />
@@ -50,7 +52,7 @@ export default function PostPage({ params }: PageProps<"/blog/[slug]">) {
   );
 }
 
-async function PostPageBody({ params }: { params: PageProps<"/blog/[slug]">["params"] }) {
+async function PostPageBody({ params }: { params: PageProps<"/[lang]/blog/[slug]">["params"] }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();

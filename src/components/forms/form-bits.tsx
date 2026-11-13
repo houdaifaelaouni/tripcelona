@@ -1,5 +1,5 @@
 import { CircleAlert, CircleCheck } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { Checkbox } from "@/components/ui/field";
 
 /** Honeypot (FR-41): off-screen, hidden from assistive tech, never autofilled. */

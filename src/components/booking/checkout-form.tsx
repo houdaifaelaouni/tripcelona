@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { useActionState, useState, type ReactNode } from "react";
 import { Checkbox, Input, Textarea } from "@/components/ui/field";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";

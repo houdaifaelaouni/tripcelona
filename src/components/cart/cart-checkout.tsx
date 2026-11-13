@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/i18n/link";
 import { useActionState } from "react";
 import { FormAlert } from "@/components/forms/form-bits";
 import { Checkbox, Input, Textarea } from "@/components/ui/field";
