@@ -31,7 +31,7 @@ test.describe("booking", () => {
     await page.locator("input[name=email]").fill("e2e-booking@example.com");
     await page.locator("input[name=phone]").fill("+34 600 000 000");
     await page.locator("input[name=terms]").check();
-    await page.getByRole("button", { name: "Continuar al pago" }).click();
+    await page.getByRole("button", { name: "Realizar el pedido" }).click();
     await page.waitForURL(/\/reservar\/pendiente/);
 
     // Declined first: the booking stays payable.
@@ -76,7 +76,7 @@ test.describe("booking", () => {
     await page.locator("input[name=email]").fill("e2e-cart@example.com");
     await page.locator("input[name=phone]").fill("+34 600 000 001");
     await page.locator("input[name=terms]").check();
-    await page.getByRole("button", { name: "Continuar al pago" }).click();
+    await page.getByRole("button", { name: "Realizar el pedido" }).click();
     await page.waitForURL(/\/reservar\/pendiente/);
     await expect(page.getByText("Referencia").first()).toBeVisible();
 

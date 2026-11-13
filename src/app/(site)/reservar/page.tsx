@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageHero } from "@/components/layout/page-hero";
+import { CheckoutBand } from "@/components/booking/checkout-ui";
 import { Suspense } from "react";
 import { CartCheckout } from "@/components/cart/cart-checkout";
 import { CheckoutForm } from "@/components/booking/checkout-form";
@@ -10,6 +10,7 @@ import { FormAlert } from "@/components/forms/form-bits";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getCheckoutDeparture, getLiveDepartures } from "@/lib/booking/queries";
 import { QUOTE_ERRORS, quoteDeparture } from "@/lib/booking/quote";
+import { activeProvider } from "@/lib/payments/config";
 import { site } from "@/lib/site";
 import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 
@@ -21,12 +22,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage({ searchParams }: PageProps<"/reservar">) {
   return (
     <>
-      <PageHero
-        compact
-        eyebrow="Reserva segura"
-        title="Reserva tu excursión"
-        intro="Elige plazas, paga con tarjeta y recibe la confirmación al instante."
-      />
+      <CheckoutBand current={2} />
       <div className="container-detail py-8 md:py-12">
         <Suspense fallback={<PageSkeleton />}>
           <Checkout searchParams={searchParams} />
@@ -46,7 +42,7 @@ async function Checkout({
   searchParams: PageProps<"/reservar">["searchParams"];
 }) {
   const params = await searchParams;
-  if (first(params.carrito) === "1") return <CartCheckout />;
+  if (first(params.carrito) === "1") return <CartCheckout provider={activeProvider()} />;
   const departureId = first(params.salida) ?? "";
   const travellers = Number.parseInt(first(params.personas) ?? "1", 10) || 1;
   const departure = departureId ? await getCheckoutDeparture(departureId) : null;
@@ -64,53 +60,51 @@ async function Checkout({
   }
 
   return (
-    <div className="mt-8 grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <section className="order-last lg:order-none" aria-labelledby="datos-heading">
-        <h2 id="datos-heading" className="mb-6 text-display-sm">
-          Tus datos
-        </h2>
-        <CheckoutForm
-          departureId={departure.id}
-          unitCents={quote.unitCents}
-          seatsLeft={quote.seatsLeft}
-          initialTravellers={travellers}
-        />
-      </section>
-      <aside className="lg:sticky lg:top-28 lg:self-start">
-        <div className="rounded-xl border border-secondary bg-white p-6 shadow-lg">
-          <p className="text-sm text-tertiary">{departure.tour.area}</p>
-          <h2 className="text-base font-semibold">{departure.tour.title}</h2>
-          <dl className="mt-4 divide-y divide-secondary border-t border-secondary">
-            <div className="py-3">
-              <dt className="text-sm text-tertiary">Fecha</dt>
-              <dd className="font-semibold first-letter:uppercase">
-                {formatDateLong(departure.startsAt)}
-              </dd>
-            </div>
-            <div className="py-3">
-              <dt className="text-sm text-tertiary">Horario</dt>
-              <dd className="font-semibold">
-                Salida {formatTime(departure.startsAt)}
-                {departure.endsAt && ` · regreso aprox. ${formatTime(departure.endsAt)}`}
-              </dd>
-            </div>
-            <div className="py-3">
-              <dt className="text-sm text-tertiary">Punto de encuentro</dt>
-              <dd>{departure.tour.meetingPoint ?? site.meetingPoint}</dd>
-            </div>
-            <div className="py-3">
-              <dt className="text-sm text-tertiary">Precio por persona</dt>
-              <dd className="font-semibold">{formatPrice(quote.unitCents)}</dd>
-            </div>
-          </dl>
-          <Link
-            href={`/excursiones/${departure.tour.slug}`}
-            className="mt-2 inline-block text-sm font-semibold underline underline-offset-2"
-          >
-            Cambiar fecha
-          </Link>
-        </div>
-      </aside>
+    <div className="mt-2">
+      <CheckoutForm
+        departureId={departure.id}
+        unitCents={quote.unitCents}
+        seatsLeft={quote.seatsLeft}
+        initialTravellers={travellers}
+        provider={activeProvider()}
+        summary={
+          <div className="mt-4">
+            <p className="text-sm text-tertiary">{departure.tour.area}</p>
+            <h3 className="text-base font-semibold text-primary">{departure.tour.title}</h3>
+            <dl className="mt-3 divide-y divide-secondary border-t border-secondary text-sm">
+              <div className="flex justify-between gap-4 py-2.5">
+                <dt className="text-tertiary">Fecha</dt>
+                <dd className="text-right font-semibold first-letter:uppercase">
+                  {formatDateLong(departure.startsAt)}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-4 py-2.5">
+                <dt className="text-tertiary">Horario</dt>
+                <dd className="text-right font-semibold">
+                  Salida {formatTime(departure.startsAt)}
+                  {departure.endsAt && ` · regreso ${formatTime(departure.endsAt)}`}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-4 py-2.5">
+                <dt className="text-tertiary">Punto de encuentro</dt>
+                <dd className="max-w-[60%] text-right">
+                  {departure.tour.meetingPoint ?? site.meetingPoint}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-4 py-2.5">
+                <dt className="text-tertiary">Precio por persona</dt>
+                <dd className="font-semibold">{formatPrice(quote.unitCents)}</dd>
+              </div>
+            </dl>
+            <Link
+              href={`/excursiones/${departure.tour.slug}`}
+              className="mt-2 inline-block text-sm font-semibold text-brand-secondary underline underline-offset-2"
+            >
+              Cambiar fecha
+            </Link>
+          </div>
+        }
+      />
     </div>
   );
 }

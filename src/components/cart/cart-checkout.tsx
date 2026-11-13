@@ -10,8 +10,10 @@ import type { CartCheckoutState } from "@/lib/booking/schema";
 import { useCart } from "@/lib/cart/store";
 import { formatDateLong, formatPrice } from "@/lib/tours/format";
 import { cartTotal, useCartLines } from "./use-cart-lines";
+import { FormCard, PaymentMethodCard } from "@/components/booking/checkout-ui";
+import type { PaymentProvider } from "@/lib/payments/config";
 
-export function CartCheckout() {
+export function CartCheckout({ provider }: { provider: PaymentProvider | null }) {
   const items = useCart();
   const { lines, loading, empty } = useCartLines();
   const [state, action, pending] = useActionState<CartCheckoutState, FormData>(startCartCheckout, {
@@ -35,20 +37,22 @@ export function CartCheckout() {
   const total = cartTotal(lines);
 
   return (
-    <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <section className="order-last lg:order-none" aria-labelledby="datos-heading">
-        <h2 id="datos-heading" className="mb-6 text-display-sm">
-          Tus datos
-        </h2>
-        <form action={action} noValidate className="space-y-5">
-          <input type="hidden" name="items" value={JSON.stringify(items)} />
-          <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
-            <label>
-              Empresa
-              <input type="text" name="company" tabIndex={-1} autoComplete="off" />
-            </label>
-          </div>
-          {state.status === "error" && <FormAlert message={state.message} />}
+    <form
+      action={action}
+      noValidate
+      className="mt-2 grid gap-x-12 gap-y-8 lg:grid-cols-[minmax(0,1fr)_400px]"
+    >
+      <input type="hidden" name="items" value={JSON.stringify(items)} />
+      <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Empresa
+          <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+
+      <div className="space-y-6">
+        {state.status === "error" && <FormAlert message={state.message} />}
+        <FormCard title="Detalles de facturación">
           <Input
             label="Nombre y apellidos"
             name="name"
@@ -58,7 +62,16 @@ export function CartCheckout() {
             error={errors.name}
           />
           <Input
-            label="Email"
+            label="Teléfono"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            required
+            defaultValue={values.phone}
+            error={errors.phone}
+          />
+          <Input
+            label="Dirección de correo electrónico"
             name="email"
             type="email"
             autoComplete="email"
@@ -67,88 +80,28 @@ export function CartCheckout() {
             error={errors.email}
             hint="Te enviaremos aquí la confirmación de cada excursión."
           />
-          <Input
-            label="Teléfono (WhatsApp)"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            required
-            defaultValue={values.phone}
-            error={errors.phone}
-          />
+        </FormCard>
+        <FormCard title="Información adicional">
           <Textarea
-            label="Comentarios (opcional)"
+            label="Notas del pedido (opcional)"
             name="pickupNote"
             rows={3}
             maxLength={500}
             defaultValue={values.pickupNote}
             hint="Alergias, movilidad reducida o cualquier cosa que debamos saber."
           />
-          <Checkbox
-            name="terms"
-            required
-            error={errors.terms}
-            label={
-              <>
-                He leído y acepto las{" "}
-                <Link
-                  href="/condiciones-de-contratacion"
-                  target="_blank"
-                  className="font-semibold underline underline-offset-2"
-                >
-                  condiciones de contratación
-                </Link>{" "}
-                y la{" "}
-                <Link
-                  href="/politica-de-privacidad"
-                  target="_blank"
-                  className="font-semibold underline underline-offset-2"
-                >
-                  política de privacidad
-                </Link>
-                .
-              </>
-            }
-          />
-          <p
-            className="flex items-baseline justify-between border-t border-secondary pt-4"
-            aria-live="polite"
-          >
-            <span className="text-tertiary">Total</span>
-            <span className="text-display-sm font-semibold">
-              {loading ? "–" : formatPrice(total)}
-            </span>
-          </p>
-          <button
-            type="submit"
-            disabled={pending || loading || blocked}
-            className={buttonClasses({ size: "lg" }, "w-full")}
-          >
-            {pending ? "Reservando plazas…" : "Continuar al pago"}
-          </button>
-          {blocked && (
-            <p className="text-center text-sm text-error-primary">
-              Alguna excursión ya no está disponible.{" "}
-              <Link href="/carrito" className="font-semibold underline underline-offset-2">
-                Revisa el carrito
-              </Link>
-              .
-            </p>
-          )}
-          <p className="text-center text-sm text-tertiary">
-            Guardamos tus plazas 15 minutos mientras completas el pago.
-          </p>
-        </form>
-      </section>
+        </FormCard>
+      </div>
+
       <aside className="lg:sticky lg:top-28 lg:self-start">
-        <div className="rounded-xl border border-secondary bg-white p-6 shadow-lg">
-          <h2 className="text-base font-semibold">
-            Tu carrito ({items.length} {items.length === 1 ? "excursión" : "excursiones"})
+        <div className="rounded-3xl bg-secondary p-6 ring-1 ring-secondary ring-inset md:p-7">
+          <h2 className="text-xl font-semibold tracking-tight text-primary">
+            Tu pedido ({items.length} {items.length === 1 ? "excursión" : "excursiones"})
           </h2>
           <ul className="mt-4 divide-y divide-secondary border-t border-secondary">
             {lines.map((l) => (
               <li key={l.departureId} className="py-3">
-                <p className="font-semibold">{l.title}</p>
+                <p className="font-semibold text-primary">{l.title}</p>
                 {l.startsAt && (
                   <p className="text-sm text-tertiary first-letter:uppercase">
                     {formatDateLong(l.startsAt)}
@@ -166,12 +119,72 @@ export function CartCheckout() {
           </ul>
           <Link
             href="/carrito"
-            className="mt-2 inline-block text-sm font-semibold underline underline-offset-2"
+            className="mt-1 inline-block text-sm font-semibold text-brand-secondary underline underline-offset-2"
           >
             Modificar carrito
           </Link>
+          <p
+            className="mt-4 flex items-baseline justify-between border-t border-dashed border-primary pt-4"
+            aria-live="polite"
+          >
+            <span className="font-semibold text-primary">Total</span>
+            <span className="text-display-xs font-semibold text-primary">
+              {loading ? "–" : formatPrice(total)}
+            </span>
+          </p>
+
+          <PaymentMethodCard provider={provider} />
+
+          <div className="mt-5">
+            <Checkbox
+              name="terms"
+              required
+              error={errors.terms}
+              label={
+                <>
+                  He leído y acepto las{" "}
+                  <Link
+                    href="/condiciones-de-contratacion"
+                    target="_blank"
+                    className="font-semibold underline underline-offset-2"
+                  >
+                    condiciones de contratación
+                  </Link>{" "}
+                  y la{" "}
+                  <Link
+                    href="/politica-de-privacidad"
+                    target="_blank"
+                    className="font-semibold underline underline-offset-2"
+                  >
+                    política de privacidad
+                  </Link>
+                  .
+                </>
+              }
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={pending || loading || blocked}
+            className={buttonClasses({ size: "lg", shape: "pill" }, "mt-5 w-full")}
+          >
+            {pending ? "Reservando plazas…" : "Realizar el pedido"}
+          </button>
+          {blocked && (
+            <p className="mt-3 text-center text-sm text-error-primary">
+              Alguna excursión ya no está disponible.{" "}
+              <Link href="/carrito" className="font-semibold underline underline-offset-2">
+                Revisa el carrito
+              </Link>
+              .
+            </p>
+          )}
+          <p className="mt-3 text-center text-sm text-tertiary">
+            Guardamos tus plazas 15 minutos mientras completas el pago.
+          </p>
         </div>
       </aside>
-    </div>
+    </form>
   );
 }

@@ -26,7 +26,7 @@ import { Gallery } from "@/components/tours/gallery";
 import { DayTimeline } from "@/components/tours/day-timeline";
 import { RouteDiagram } from "@/components/tours/route-diagram";
 import { Testimonials } from "@/components/home/testimonials";
-import { BADGES, PAYMENT_METHODS } from "@/components/layout/footer";
+import { BADGES, PAYMENT_METHODS } from "@/lib/brand-assets";
 import { Reveal } from "@/components/motion/reveal";
 import { getApprovedReviews } from "@/lib/content/queries";
 import { TourCard } from "@/components/tours/tour-card";
