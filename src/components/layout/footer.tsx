@@ -129,22 +129,25 @@ export async function Footer() {
               </li>
             ))}
           </ul>
-          <ul
-            className="flex flex-wrap items-center gap-4 sm:ml-auto"
-            aria-label="Premios y reconocimientos"
-          >
-            {BADGES.map((b) => (
-              <li key={b.name}>
-                <Image
-                  src={b.src}
-                  alt={b.name}
-                  width={b.width}
-                  height={b.height}
-                  className="h-10 w-auto"
-                />
-              </li>
-            ))}
-          </ul>
+          <div className="flex flex-col gap-3 sm:ml-auto sm:flex-row sm:items-center sm:gap-5">
+            <p className="text-sm font-medium text-secondary">Reconocimientos</p>
+            <ul
+              className="flex flex-wrap items-center gap-4 "
+              aria-label="Premios y reconocimientos"
+            >
+              {BADGES.map((b) => (
+                <li key={b.name}>
+                  <Image
+                    src={b.src}
+                    alt={b.name}
+                    width={b.width}
+                    height={b.height}
+                    className="h-10 w-auto"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-secondary py-8 text-sm text-tertiary md:flex-row md:items-center md:justify-between">
