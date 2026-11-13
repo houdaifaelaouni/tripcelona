@@ -106,7 +106,7 @@ test("keyboard: the photo viewer opens, traps focus and closes with Escape", asy
 
 test("keyboard: the catalog chips and sort control are links in tab order", async ({ page }) => {
   await page.goto("/ofertas-de-viajes");
-  const chips = page.getByRole("navigation", { name: "Destinos" }).getByRole("link");
+  const chips = page.getByRole("navigation", { name: "Filtrar por destino" }).getByRole("link");
   await expect(chips.first()).toHaveAttribute("aria-current", "page");
   await chips.nth(1).focus();
   await page.keyboard.press("Enter");
