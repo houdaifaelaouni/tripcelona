@@ -11,7 +11,14 @@ import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/feature
 import { Badge } from "@/components/ui/card";
 import { buildCatalogUrl } from "@/lib/search";
 import { destinations, site } from "@/lib/site";
-import { formatDateShort, formatDuration, formatPrice, formatTime } from "@/lib/tours/format";
+import { cn } from "@/lib/cn";
+import {
+  dateParts,
+  formatDateShort,
+  formatDuration,
+  formatPrice,
+  formatTime,
+} from "@/lib/tours/format";
 import type { TourSummary } from "@/lib/tours/types";
 import { SectionHeader } from "./sections";
 
@@ -227,13 +234,31 @@ export function Stats({ tours }: { tours: TourSummary[] }) {
   );
 }
 
+/** Half-circle punches on a ticket's tear line (the card clips the outer half). */
+function Punches({ className }: { className?: string }) {
+  const dot = "absolute size-4 rounded-full bg-primary ring-1 ring-secondary";
+  return (
+    <>
+      {/* Stacked (mobile): the tear line is horizontal, punches left and right. */}
+      <span aria-hidden className={`${dot} -bottom-2 -left-2 sm:hidden ${className ?? ""}`} />
+      <span aria-hidden className={`${dot} -right-2 -bottom-2 sm:hidden ${className ?? ""}`} />
+      {/* Side by side: the tear line is vertical, punches top and bottom. */}
+      <span aria-hidden className={`${dot} -top-2 -right-2 hidden sm:block ${className ?? ""}`} />
+      <span
+        aria-hidden
+        className={`${dot} -right-2 -bottom-2 hidden sm:block ${className ?? ""}`}
+      />
+    </>
+  );
+}
+
+/** Upcoming departures as tickets: date stub, trip, price and seats, torn along a dashed line. */
 export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
   const rows = tours
     .flatMap((t) => t.departures.filter((d) => d.status !== "cancelled").map((d) => ({ t, d })))
     .sort((a, b) => Date.parse(a.d.startsAt) - Date.parse(b.d.startsAt))
     .slice(0, 8);
   if (rows.length === 0) return null;
-  const showDuration = rows.some(({ t }) => t.durationMinutes);
   return (
     <section aria-labelledby="calendario-heading" className="container-site pb-16 md:pb-24">
       <div className="flex items-center justify-between gap-10">
@@ -245,78 +270,66 @@ export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
         />
       </div>
       <Reveal className="mt-10">
-        <div
-          data-reveal
-          role="region"
-          aria-labelledby="calendario-heading"
-          tabIndex={0}
-          className="overflow-x-auto rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset"
-        >
-          <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="bg-secondary text-xs font-semibold text-quaternary">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Fecha
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Excursión
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Zona
-                </th>
-                {showDuration && (
-                  <th scope="col" className="px-6 py-3">
-                    Duración
-                  </th>
-                )}
-                <th scope="col" className="px-6 py-3">
-                  Plazas
-                </th>
-                <th scope="col" className="px-6 py-3 text-right">
-                  Precio
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-secondary">
-              {rows.map(({ t, d }) => (
-                <tr key={d.id} className="transition-colors hover:bg-primary_hover">
-                  <td className="px-6 py-4 whitespace-nowrap text-primary">
-                    <span className="font-medium first-letter:uppercase">
-                      {formatDateShort(d.startsAt)}
-                    </span>
-                    <span className="block text-tertiary">{formatTime(d.startsAt)}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Link
-                      href={`/excursiones/${t.slug}`}
-                      className="font-medium text-primary hover:underline"
-                    >
-                      {t.title}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4 text-tertiary">{t.area ?? "—"}</td>
-                  {showDuration && (
-                    <td className="px-6 py-4 whitespace-nowrap text-tertiary">
-                      {t.durationMinutes ? formatDuration(t.durationMinutes) : "—"}
-                    </td>
+        <ul className="grid gap-4 lg:grid-cols-2">
+          {rows.map(({ t, d }) => {
+            const full = d.status === "sold_out" || d.seatsLeft <= 0;
+            const date = dateParts(d.startsAt);
+            return (
+              <li key={d.id} data-reveal>
+                <article
+                  className={cn(
+                    "relative grid overflow-hidden rounded-2xl bg-primary shadow-xs ring-1 ring-secondary transition-[box-shadow,transform] duration-200 ring-inset hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:grid-cols-[96px_minmax(0,1fr)_auto]",
+                    full && "opacity-70",
                   )}
-                  <td className="px-6 py-4">
-                    {d.status === "sold_out" || d.seatsLeft <= 0 ? (
+                >
+                  {/* Date stub */}
+                  <div className="relative flex items-center justify-between gap-3 border-b border-dashed border-primary bg-brand-primary_alt px-5 py-4 text-brand-secondary sm:flex-col sm:justify-center sm:border-r sm:border-b-0 sm:px-0">
+                    <span className="text-[11px] font-semibold tracking-[0.08em] uppercase">
+                      {date.month}
+                    </span>
+                    <span className="text-4xl leading-none font-semibold tracking-tight text-primary sm:text-[2.5rem]">
+                      {date.day}
+                    </span>
+                    <span className="text-sm font-medium sm:mt-1">{formatTime(d.startsAt)}</span>
+                    <Punches />
+                  </div>
+
+                  {/* Trip */}
+                  <div className="relative flex min-w-0 flex-col justify-center gap-1 border-b border-dashed border-primary px-5 py-4 sm:border-r sm:border-b-0">
+                    <p className="text-xs font-medium text-quaternary">
+                      <span className="first-letter:uppercase">{formatDateShort(d.startsAt)}</span>
+                      {t.area ? ` · ${t.area}` : ""}
+                      {t.durationMinutes ? ` · ${formatDuration(t.durationMinutes)}` : ""}
+                    </p>
+                    <h3 className="text-base leading-snug font-semibold tracking-tight text-primary">
+                      <Link
+                        href={`/excursiones/${t.slug}`}
+                        className="after:absolute after:inset-0 hover:underline"
+                      >
+                        {t.title}
+                      </Link>
+                    </h3>
+                    <Punches />
+                  </div>
+
+                  {/* Price and seats */}
+                  <div className="flex items-center justify-between gap-4 px-5 py-4 sm:min-w-36 sm:flex-col sm:items-end sm:justify-center sm:gap-2">
+                    <p className="text-2xl font-semibold tracking-tight whitespace-nowrap text-primary">
+                      {formatPrice(d.priceCents)}
+                    </p>
+                    {full ? (
                       <Badge tone="danger">Completo</Badge>
                     ) : d.seatsLeft <= 10 ? (
                       <Badge tone="accent">Quedan {d.seatsLeft}</Badge>
                     ) : (
                       <Badge tone="success">{d.seatsLeft} libres</Badge>
                     )}
-                  </td>
-                  <td className="px-6 py-4 text-right font-semibold whitespace-nowrap text-primary">
-                    {formatPrice(d.priceCents)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
       </Reveal>
     </section>
   );
