@@ -64,6 +64,7 @@ export const OWN_ROUTES = new Set([
   "blog",
   "carrito",
   "contactanos",
+  "sobre-nosotros",
   "crea-tu-tour",
   "excursiones",
   "health",
