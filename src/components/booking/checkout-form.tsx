@@ -26,7 +26,7 @@ export function CheckoutForm({
   seatsLeft: number;
   initialTravellers: number;
   summary: ReactNode;
-  provider: PaymentProvider | null;
+  provider: PaymentProvider | "choice" | null;
 }) {
   const locale = useLocale();
   const t = useT();

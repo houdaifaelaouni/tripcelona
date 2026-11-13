@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const bookingId = String(form.get("bookingId") ?? "");
   const rawLocale = String(form.get("locale") ?? "");
   const locale = isLocale(rawLocale) ? rawLocale : "es";
-  const result = await startPayment(bookingId, locale);
+  const result = await startPayment(bookingId, locale, String(form.get("provider") ?? ""));
 
   if (!result.ok) {
     const back = new URL(localizePath("/reservar/pendiente", locale), siteUrl());

@@ -10,7 +10,7 @@ import { FormAlert } from "@/components/forms/form-bits";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getCheckoutDeparture, getLiveDepartures } from "@/lib/booking/queries";
 import { QUOTE_ERRORS, quoteDeparture } from "@/lib/booking/quote";
-import { activeProvider } from "@/lib/payments/config";
+import { checkoutGateway } from "@/lib/payments/config";
 import { site } from "@/lib/site";
 import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 import { createT } from "@/lib/i18n/translate";
@@ -55,7 +55,7 @@ async function Checkout({
   if (!isLocale(locale)) notFound();
   const t = createT(locale);
   const params = await searchParams;
-  if (first(params.carrito) === "1") return <CartCheckout provider={await activeProvider()} />;
+  if (first(params.carrito) === "1") return <CartCheckout provider={await checkoutGateway()} />;
   const departureId = first(params.salida) ?? "";
   const travellers = Number.parseInt(first(params.personas) ?? "1", 10) || 1;
   const departure = departureId ? await getCheckoutDeparture(departureId) : null;
@@ -84,7 +84,7 @@ async function Checkout({
         unitCents={quote.unitCents}
         seatsLeft={quote.seatsLeft}
         initialTravellers={travellers}
-        provider={await activeProvider()}
+        provider={await checkoutGateway()}
         summary={
           <div className="mt-4">
             <p className="text-sm text-tertiary">

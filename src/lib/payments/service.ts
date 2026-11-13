@@ -2,7 +2,13 @@ import "server-only";
 import { sendBookingEmail } from "@/lib/email/booking-emails";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Locale } from "@/lib/i18n/config";
-import { activeProvider, paycometConfig, paymentUrls, redsysConfig, stripeConfig } from "./config";
+import {
+  availableProviders,
+  paycometConfig,
+  paymentUrls,
+  redsysConfig,
+  stripeConfig,
+} from "./config";
 import {
   buildCheckoutSession,
   interpretEvent as interpretStripeEvent,
@@ -40,8 +46,10 @@ export type StartPaymentResult =
 export async function startPayment(
   bookingId: string,
   locale: Locale = "es",
+  chosen?: string,
 ): Promise<StartPaymentResult> {
-  const provider = await activeProvider();
+  const available = await availableProviders();
+  const provider = available.find((p) => p === chosen) ?? available[0];
   if (!provider) return { ok: false, reason: "not_configured" };
   const db = createAdminClient();
 

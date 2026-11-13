@@ -318,6 +318,9 @@ export const it: Dictionary = {
   "Información adicional": "Informazioni aggiuntive",
   "Pago seguro con Stripe": "Pagamento sicuro con Stripe",
   "Pago seguro con Redsys": "Pagamento sicuro con Redsys",
+  "Elige la pasarela de pago": "Scegli il gateway di pagamento",
+  "Pago seguro con 3D Secure en la pasarela que elijas.":
+    "Pagamento sicuro con 3D Secure sul gateway che scegli.",
   "Pago seguro con PAYCOMET": "Pagamento sicuro con PAYCOMET",
   "Método de pago": "Metodo di pagamento",
   "Tarjeta de crédito o débito": "Carta di credito o debito",
