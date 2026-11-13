@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { ChatArt, FaqArt } from "@/components/art/art";
 import { FaqList } from "@/components/content/faq-list";
+import { CtaBand } from "@/components/layout/cta-band";
+import { PageHero } from "@/components/layout/page-hero";
 import { JsonLd } from "@/components/seo/json-ld";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { getPublishedFaqs } from "@/lib/content/queries";
@@ -16,20 +19,26 @@ export default async function FaqPage() {
   const faqs = await getPublishedFaqs();
   const schema = faqJsonLd(faqs);
   return (
-    <div className="container-site py-8 md:py-16">
+    <>
       {schema && <JsonLd data={schema} />}
-      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        Preguntas frecuentes
-      </h1>
-      <div className="mt-6 max-w-3xl">
-        <FaqList faqs={faqs} />
-      </div>
-      <div className="mt-16 max-w-3xl rounded-2xl bg-secondary p-8">
-        <h2 className="text-display-sm">¿No encuentras tu respuesta?</h2>
-        <div className="mt-4">
-          <WhatsAppCta message="Hola, tengo una pregunta sobre vuestras excursiones." />
+      <PageHero
+        eyebrow="Ayuda"
+        title="Preguntas frecuentes"
+        intro="Reservas, pagos, punto de encuentro y qué pasa si llueve."
+        art={<FaqArt />}
+      />
+      <div className="container-site py-10 md:py-14">
+        <div className="max-w-3xl">
+          <FaqList faqs={faqs} />
         </div>
       </div>
-    </div>
+      <CtaBand
+        title="¿No encuentras tu respuesta?"
+        text="Escríbenos y te respondemos lo antes posible."
+        art={<ChatArt />}
+      >
+        <WhatsAppCta message="Hola, tengo una pregunta sobre vuestras excursiones." />
+      </CtaBand>
+    </>
   );
 }

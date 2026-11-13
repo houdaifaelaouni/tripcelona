@@ -6,6 +6,7 @@
  */
 import { CalendarCheck, CreditCard, MailCheck, MapPin, Search } from "lucide-react";
 import Link from "next/link";
+import { CalendarArt, TicketArt } from "@/components/art/art";
 import { CountUp, DrawOnScroll, Reveal } from "@/components/motion/reveal";
 import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import { Badge } from "@/components/ui/card";
@@ -172,12 +173,20 @@ export function HowItWorks() {
   return (
     <section aria-labelledby="como-heading" className="border-t border-secondary py-16 md:py-24">
       <div className="container-site">
-        <SectionHeader
-          id="como-heading"
-          eyebrow="Cómo funciona"
-          title="Reservar es muy fácil"
-          lead="Cuatro pasos y tu plaza está asegurada."
-        />
+        <div className="flex items-center justify-between gap-10">
+          <SectionHeader
+            id="como-heading"
+            eyebrow="Cómo funciona"
+            title="Reservar es muy fácil"
+            lead="Cuatro pasos y tu plaza está asegurada."
+          />
+          <div
+            data-art-host
+            className="hidden w-56 shrink-0 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-secondary transition-transform duration-300 hover:-translate-y-1 md:block"
+          >
+            <TicketArt />
+          </div>
+        </div>
         <Reveal>
           <ol className="mt-12 grid gap-px overflow-hidden rounded-xl bg-border-secondary ring-1 ring-secondary sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
@@ -242,12 +251,20 @@ export function DeparturesTable({ tours }: { tours: TourSummary[] }) {
   const showDuration = rows.some(({ t }) => t.durationMinutes);
   return (
     <section aria-labelledby="calendario-heading" className="container-site pb-16 md:pb-24">
-      <SectionHeader
-        id="calendario-heading"
-        eyebrow="Calendario"
-        title="Calendario de salidas"
-        lead="Fechas, plazas y precios de las próximas excursiones."
-      />
+      <div className="flex items-center justify-between gap-10">
+        <SectionHeader
+          id="calendario-heading"
+          eyebrow="Calendario"
+          title="Calendario de salidas"
+          lead="Fechas, plazas y precios de las próximas excursiones."
+        />
+        <div
+          data-art-host
+          className="hidden w-56 shrink-0 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-secondary transition-transform duration-300 hover:-translate-y-1 md:block"
+        >
+          <CalendarArt />
+        </div>
+      </div>
       <Reveal className="mt-10">
         <div
           data-reveal

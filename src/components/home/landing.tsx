@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { CoachArt, GroupArt, HikerArt } from "@/components/art/art";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { Reveal } from "@/components/motion/reveal";
@@ -143,7 +144,11 @@ export function LandingHero({
 
         <div className="relative">
           <div className="rounded-2xl bg-secondary p-2 ring-1 ring-secondary ring-inset">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-tertiary lg:aspect-[5/6]">
+            <div
+              data-art-host
+              className="relative aspect-[4/3] overflow-hidden rounded-xl bg-tertiary lg:aspect-[5/6]"
+            >
+              {!photo && <CoachArt className="absolute inset-0 size-full" />}
               {photo && (
                 <Image
                   src={photo.url}
@@ -285,7 +290,11 @@ export function WhyTripcelona({ photo }: { photo: { url: string; alt: string } |
   return (
     <section aria-labelledby="por-que-heading" className="border-t border-secondary py-16 md:py-24">
       <div className="container-site grid items-center gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
-        <div className="relative order-last aspect-[4/5] overflow-hidden rounded-2xl bg-tertiary ring-1 ring-secondary ring-inset lg:order-first">
+        <div
+          data-art-host
+          className="relative order-last aspect-[4/5] overflow-hidden rounded-2xl bg-brand-primary ring-1 ring-secondary ring-inset lg:order-first"
+        >
+          {!photo && <HikerArt className="absolute inset-0 size-full object-cover" />}
           {photo && (
             <Image
               src={photo.url}
@@ -294,6 +303,11 @@ export function WhyTripcelona({ photo }: { photo: { url: string; alt: string } |
               sizes="(min-width: 1128px) 520px, 100vw"
               className="object-cover"
             />
+          )}
+          {photo && (
+            <div className="absolute bottom-4 left-4 w-44 rounded-2xl bg-white p-1.5 shadow-lg ring-1 ring-secondary">
+              <HikerArt />
+            </div>
           )}
         </div>
         <div>
@@ -437,16 +451,22 @@ export function GroupsBanner({
             </a>
           </div>
         </div>
-        <div className="relative hidden min-h-72 bg-neutral-800 lg:block">
+        <div
+          data-art-host
+          className="relative hidden min-h-72 items-center justify-center bg-neutral-800 p-8 lg:flex"
+        >
           {photo && (
             <Image
               src={photo.url}
               alt={photo.alt}
               fill
               sizes="520px"
-              className="object-cover opacity-90"
+              className="object-cover opacity-30"
             />
           )}
+          <div className="relative w-full max-w-[300px] rounded-3xl bg-white p-2 shadow-xl">
+            <GroupArt />
+          </div>
         </div>
       </div>
     </section>
