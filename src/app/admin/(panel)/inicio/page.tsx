@@ -63,6 +63,13 @@ export default async function HomeContentAdmin({ searchParams }: PageProps<"/adm
             rows={3}
             maxLength={320}
           />
+          <Input
+            label="Vídeo de fondo (opcional)"
+            name="heroVideoUrl"
+            defaultValue={home.heroVideoUrl}
+            maxLength={300}
+            hint="Enlace a un .mp4 o .webm corto (10-20 s, sin sonido, menos de 8 MB), subido a Supabase Storage o a /public. Déjalo vacío para usar la foto."
+          />
         </SettingsRow>
         <SettingsRow
           label="Por qué Tripcelona"

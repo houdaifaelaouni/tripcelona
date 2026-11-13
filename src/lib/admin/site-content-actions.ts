@@ -10,6 +10,7 @@ import {
   parseFooter,
   parseList,
   parseNav,
+  parseVideoUrl,
   parsePairs,
 } from "@/lib/site-content-shared";
 import { createClient } from "@/lib/supabase/server";
@@ -47,6 +48,8 @@ export async function saveHomeContent(formData: FormData) {
   const staff = await assertStaff("any");
   const heroTitle = field(formData, "heroTitle");
   const heroLead = field(formData, "heroLead");
+  const heroVideo = parseVideoUrl(field(formData, "heroVideoUrl"));
+  if (!heroVideo.ok) backWith(HOME, { error: heroVideo.error });
   const whyTitle = field(formData, "whyTitle");
   const stepsTitle = field(formData, "stepsTitle");
   const groupsTitle = field(formData, "groupsTitle");
@@ -84,6 +87,7 @@ export async function saveHomeContent(formData: FormData) {
         value: {
           heroTitle,
           heroLead,
+          heroVideoUrl: heroVideo.ok ? heroVideo.value : "",
           whyTitle,
           reasons: reasons.value,
           stepsTitle,
