@@ -471,6 +471,14 @@ export default async function TourEdit({
                               style={{ width: `${pct}%` }}
                             />
                           </div>
+                          {isOwner && d.seats_taken > 0 && (
+                            <Link
+                              href={`/admin/salidas/${d.id}`}
+                              className="mt-2 inline-block text-sm font-semibold text-brand-secondary hover:underline"
+                            >
+                              Ver pasajeros
+                            </Link>
+                          )}
                         </div>
                       </div>
                       {isOwner && !cancelled && (

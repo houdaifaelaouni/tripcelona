@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { canonicalRedirect, isGone, slugLookup } from "@/lib/seo/legacy";
+import { lookupRedirect } from "@/lib/seo/redirect-registry";
 import { slugExists } from "@/lib/seo/slug-registry";
 
 /** Path with no matching route: Next answers it with the not-found page and a 404 status. */
@@ -15,6 +16,16 @@ export async function proxy(request: NextRequest) {
       status: 410,
       headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex" },
     });
+  }
+  // Redirects the owner added in the admin win over the built-in legacy rules.
+  const custom = await lookupRedirect(path.replace(/\/+$/, ""));
+  if (custom) {
+    if (custom.status === 410)
+      return new NextResponse("Gone", {
+        status: 410,
+        headers: { "Content-Type": "text/plain; charset=utf-8", "X-Robots-Tag": "noindex" },
+      });
+    return NextResponse.redirect(new URL(custom.to, request.url), custom.status);
   }
   // Legacy WordPress URLs and trailing slashes: one 301 hop (US-33).
   // A plain URL, not nextUrl.clone(): NextURL would put the trailing slash back.

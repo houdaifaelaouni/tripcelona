@@ -48,7 +48,17 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
   return (
     <>
       <PageTitle
-        actions={<ButtonLink href="/admin/reservas/nueva">Nueva reserva manual</ButtonLink>}
+        actions={
+          <div className="flex gap-2">
+            <ButtonLink
+              href={`/admin/exportar/reservas${status ? `?estado=${status}` : ""}`}
+              variant="secondary"
+            >
+              Descargar CSV
+            </ButtonLink>
+            <ButtonLink href="/admin/reservas/nueva">Nueva reserva manual</ButtonLink>
+          </div>
+        }
         description="Busca por referencia, email o nombre del cliente."
       >
         Reservas
