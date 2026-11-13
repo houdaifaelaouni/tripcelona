@@ -6,8 +6,8 @@
  * - Scripts allow 'unsafe-inline' because pages are prerendered (PPR) and
  *   Next's inline bootstrap scripts cannot carry a per-request nonce there.
  *   Everything else is locked to this origin.
- * - form-action allows Redsys: "Pagar con tarjeta" posts the signed form to
- *   the bank's payment page.
+ * - form-action allows Redsys and PAYCOMET: "Pagar con tarjeta" posts the signed
+ *   form to Redsys, or is redirected to the PAYCOMET hosted page.
  * - Outside Vercel production, localhost is allowed for the e2e fake gateway.
  * - Analytics (decision D8) is not loaded today; adding GTM/GA4 needs its
  *   hosts here and a consent banner first.
@@ -32,7 +32,7 @@ export function securityHeaders(env: {
     `font-src 'self' data:`,
     `connect-src ${src("'self'", supabase, supabaseWs, vercel, local)}`,
     `frame-src ${src(vercel) || "'none'"}`,
-    `form-action ${src("'self'", "https://sis.redsys.es", "https://sis-t.redsys.es:25443", local)}`,
+    `form-action ${src("'self'", "https://sis.redsys.es", "https://sis-t.redsys.es:25443", "https://*.paycomet.com", local)}`,
     `frame-ancestors 'none'`,
     `base-uri 'self'`,
     `object-src 'none'`,

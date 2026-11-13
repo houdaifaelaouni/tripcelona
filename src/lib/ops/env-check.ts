@@ -13,15 +13,25 @@ export interface EnvProblem {
 
 const REDSYS_SANDBOX_MERCHANT = "999008881";
 
+const REDSYS_REQUIRED = [
+  "REDSYS_MERCHANT_CODE",
+  "REDSYS_TERMINAL",
+  "REDSYS_SECRET_KEY",
+  "REDSYS_ENV",
+] as const;
+
+const PAYCOMET_REQUIRED = [
+  "PAYCOMET_API_KEY",
+  "PAYCOMET_TERMINAL",
+  "PAYCOMET_CUSTOMER_CODE",
+  "PAYCOMET_PASSWORD",
+] as const;
+
 const REQUIRED = [
   "NEXT_PUBLIC_SITE_URL",
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
-  "REDSYS_MERCHANT_CODE",
-  "REDSYS_TERMINAL",
-  "REDSYS_SECRET_KEY",
-  "REDSYS_ENV",
   "RESEND_API_KEY",
   "EMAIL_FROM",
   "OWNER_EMAIL",
@@ -48,6 +58,15 @@ export function checkEnv(env: Record<string, string | undefined>, target: EnvTar
   const get = (name: string) => env[name]?.trim() ?? "";
 
   for (const name of REQUIRED) {
+    if (!get(name)) error(name, "missing");
+  }
+
+  // The card gateway: Redsys unless PAYMENT_PROVIDER=paycomet.
+  const provider = get("PAYMENT_PROVIDER") || "redsys";
+  if (provider !== "redsys" && provider !== "paycomet") {
+    error("PAYMENT_PROVIDER", "must be 'redsys' or 'paycomet'");
+  }
+  for (const name of provider === "paycomet" ? PAYCOMET_REQUIRED : REDSYS_REQUIRED) {
     if (!get(name)) error(name, "missing");
   }
 
@@ -93,6 +112,7 @@ export function checkEnv(env: Record<string, string | undefined>, target: EnvTar
     if (redsysEnv && redsysEnv !== "live") error("REDSYS_ENV", "must be 'live' in production");
     if (sandboxMerchant) error("REDSYS_MERCHANT_CODE", "is the public sandbox merchant");
     if (get("REDSYS_BASE_URL")) error("REDSYS_BASE_URL", "must not be set in production");
+    if (get("PAYCOMET_BASE_URL")) error("PAYCOMET_BASE_URL", "must not be set in production");
     if (site && !/^https:\/\/(www\.)?tripcelona\.com$/.test(site.replace(/\/$/, ""))) {
       warn(
         "NEXT_PUBLIC_SITE_URL",

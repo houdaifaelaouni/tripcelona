@@ -79,7 +79,7 @@ describe("Redsys payment flow", () => {
   it("starts a payment with the server-side amount", async () => {
     const result = await startPayment(bookingId);
     expect(result.ok).toBe(true);
-    if (!result.ok) return;
+    if (!result.ok || result.kind !== "form") throw new Error("expected a Redsys form");
     expect(result.action).toBe("http://redsys.invalid/sis/realizarPago");
     const params = decodeParameters(result.fields.Ds_MerchantParameters);
     expect(params.DS_MERCHANT_AMOUNT).toBe("16500");

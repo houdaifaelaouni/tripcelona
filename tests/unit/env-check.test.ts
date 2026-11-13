@@ -28,6 +28,34 @@ describe("checkEnv", () => {
     expect(checkEnv(production, "production")).toEqual([]);
   });
 
+  it("asks for PAYCOMET instead of Redsys when it is the chosen gateway", () => {
+    const { REDSYS_MERCHANT_CODE, REDSYS_TERMINAL, REDSYS_SECRET_KEY, REDSYS_ENV, ...rest } =
+      production;
+    void [REDSYS_MERCHANT_CODE, REDSYS_TERMINAL, REDSYS_SECRET_KEY, REDSYS_ENV];
+    const env = { ...rest, PAYMENT_PROVIDER: "paycomet" };
+    expect(names(env, "production")).toEqual([
+      "PAYCOMET_API_KEY",
+      "PAYCOMET_TERMINAL",
+      "PAYCOMET_CUSTOMER_CODE",
+      "PAYCOMET_PASSWORD",
+    ]);
+    expect(
+      names(
+        {
+          ...env,
+          PAYCOMET_API_KEY: "k",
+          PAYCOMET_TERMINAL: "89986",
+          PAYCOMET_CUSTOMER_CODE: "c",
+          PAYCOMET_PASSWORD: "p",
+        },
+        "production",
+      ),
+    ).toEqual([]);
+    expect(names({ ...production, PAYMENT_PROVIDER: "stripe" }, "production")).toContain(
+      "PAYMENT_PROVIDER",
+    );
+  });
+
   it("reports every missing required variable", () => {
     const errors = names({}, "production");
     expect(errors).toContain("SUPABASE_SERVICE_ROLE_KEY");

@@ -1,7 +1,14 @@
 import "server-only";
 import { sendBookingEmail } from "@/lib/email/booking-emails";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { paymentUrls, redsysConfig } from "./config";
+import { activeProvider, paycometConfig, paymentUrls, redsysConfig } from "./config";
+import {
+  buildFormRequest as buildPaycometForm,
+  buildRefundRequest as buildPaycometRefund,
+  newOrderId as newPaycometOrder,
+  OPERATION as PAYCOMET_OPERATION,
+  verifyNotification as verifyPaycometNotification,
+} from "./paycomet";
 import {
   buildPaymentRequest,
   buildRefundRequest,
@@ -14,17 +21,19 @@ import {
 const HOLD_TTL = "15 minutes";
 
 export type StartPaymentResult =
-  | { ok: true; action: string; fields: SignedRequest }
+  | { ok: true; kind: "form"; action: string; fields: SignedRequest }
+  | { ok: true; kind: "redirect"; url: string }
   | { ok: false; reason: "not_configured" | "not_found" | "not_pending" | "no_seats" };
 
 /**
- * Prepare a Redsys redirect for a pending booking (US-19): make sure its seats
+ * Prepare a card payment for a pending booking (US-19): make sure its seats
  * are still held (re-hold if the 15-minute hold lapsed), create a payment row
- * with a fresh Ds_Order, and return the signed form fields.
+ * with a fresh order reference, and hand back what the browser needs: signed
+ * form fields (Redsys) or the hosted page URL (PAYCOMET).
  */
 export async function startPayment(bookingId: string): Promise<StartPaymentResult> {
-  const config = redsysConfig();
-  if (!config) return { ok: false, reason: "not_configured" };
+  const provider = activeProvider();
+  if (!provider) return { ok: false, reason: "not_configured" };
   const db = createAdminClient();
 
   const { data: booking } = await db
@@ -40,23 +49,74 @@ export async function startPayment(bookingId: string): Promise<StartPaymentResul
   if (!(await ensureHold(booking.id, booking.departure_id, booking.travellers)))
     return { ok: false, reason: "no_seats" };
 
-  const order = newOrderId();
+  const order = provider === "paycomet" ? newPaycometOrder() : newOrderId();
   const { error } = await db.from("payments").insert({
     booking_id: booking.id,
-    provider: "redsys",
+    provider,
     provider_ref: order,
     amount_cents: booking.total_cents,
   });
   if (error) throw new Error(`Could not create payment: ${error.message}`);
 
+  const description = `${booking.reference} · ${booking.tour_departures.tours.title}`;
+  const urls = paymentUrls(booking.id);
+
+  if (provider === "paycomet") {
+    const paycomet = paycometConfig()!;
+    const url = await createPaycometForm(
+      paycomet,
+      buildPaycometForm(paycomet, {
+        order,
+        amountCents: booking.total_cents,
+        description,
+        okUrl: urls.okUrl,
+        koUrl: urls.koUrl,
+      }),
+    );
+    if (!url) {
+      await db
+        .from("payments")
+        .update({ status: "failed" })
+        .eq("provider", "paycomet")
+        .eq("provider_ref", order);
+      return { ok: false, reason: "not_configured" };
+    }
+    return { ok: true, kind: "redirect", url };
+  }
+
+  const config = redsysConfig()!;
   const fields = buildPaymentRequest(config, {
     order,
     amountCents: booking.total_cents,
-    description: `${booking.reference} · ${booking.tour_departures.tours.title}`,
+    description,
     holder: booking.customer_name,
-    ...paymentUrls(booking.id),
+    ...urls,
   });
-  return { ok: true, action: config.redirectUrl, fields };
+  return { ok: true, kind: "form", action: config.redirectUrl, fields };
+}
+
+/** POST /v1/form: PAYCOMET answers with the URL of its hosted payment page. */
+async function createPaycometForm(
+  config: NonNullable<ReturnType<typeof paycometConfig>>,
+  body: ReturnType<typeof buildPaycometForm>,
+): Promise<string | null> {
+  try {
+    const res = await fetch(`${config.baseUrl}/v1/form`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "PAYCOMET-API-TOKEN": config.apiKey,
+      },
+      body: JSON.stringify(body),
+    });
+    const json = (await res.json()) as { errorCode?: number; challengeUrl?: string };
+    if (res.ok && !json.errorCode && json.challengeUrl) return json.challengeUrl;
+    console.error(`[paycomet] form refused: HTTP ${res.status}, errorCode ${json.errorCode}`);
+  } catch (error) {
+    console.error(`[paycomet] form request failed: ${String(error)}`);
+  }
+  return null;
 }
 
 /** True when the booking holds its seats (existing live hold, or a new one). */
@@ -107,7 +167,18 @@ export type NotificationOutcome =
   | "amount_mismatch"
   | "already_paid"
   | "booking_closed"
-  | "no_seats";
+  | "no_seats"
+  | "ignored";
+
+/** What a verified gateway notification says, whatever the gateway. */
+type VerifiedResult = {
+  provider: "redsys" | "paycomet";
+  order: string;
+  eventKey: string;
+  authorized: boolean;
+  amountCents: number | null;
+  payload: Record<string, string>;
+};
 
 /**
  * Handle a Redsys notification (US-20). The signature is verified before
@@ -122,21 +193,70 @@ export async function handleRedsysNotification(message: {
   if (!config) return "not_configured";
   const result = verifySignedMessage(config.secretKey, message);
   if (!result) return "invalid_signature";
+  return applyVerifiedResult({
+    provider: "redsys",
+    order: result.order,
+    eventKey: [
+      result.order,
+      result.transactionType ?? "",
+      result.response ?? "",
+      result.params.Ds_AuthorisationCode ?? "",
+    ].join(":"),
+    authorized: result.authorized,
+    amountCents: result.amountCents,
+    payload: result.params,
+  });
+}
 
+/**
+ * Handle a PAYCOMET notification (URLNOTIFY). Only approved or refused card
+ * payments (TransactionType 1) change a booking; refunds we made ourselves
+ * (type 2) and other operation types are acknowledged and ignored.
+ */
+export async function handlePaycometNotification(
+  fields: Record<string, string | null | undefined>,
+): Promise<NotificationOutcome> {
+  const config = paycometConfig();
+  if (!config) return "not_configured";
+  const result = verifyPaycometNotification(config, fields);
+  if (!result) return "invalid_signature";
+  if (result.transactionType !== PAYCOMET_OPERATION.authorization) return "ignored";
+  return applyVerifiedResult({
+    provider: "paycomet",
+    order: result.order,
+    eventKey: [
+      result.order,
+      result.transactionType,
+      result.response,
+      result.errorId,
+      result.authCode ?? "",
+    ].join(":"),
+    authorized: result.authorized,
+    amountCents: result.amountCents,
+    payload: result.params,
+  });
+}
+
+async function applyVerifiedResult(result: VerifiedResult): Promise<NotificationOutcome> {
   const db = createAdminClient();
-  const eventKey = [
-    result.order,
-    result.transactionType ?? "",
-    result.response ?? "",
-    result.params.Ds_AuthorisationCode ?? "",
-  ].join(":");
+  // PAYCOMET's hosted page may let the customer retry the same order after a
+  // refusal. A verified approval must still confirm it, so reopen a payment
+  // that an earlier refusal marked as failed (Redsys uses a new order per try).
+  if (result.provider === "paycomet" && result.authorized) {
+    await db
+      .from("payments")
+      .update({ status: "pending" })
+      .eq("provider", "paycomet")
+      .eq("provider_ref", result.order)
+      .eq("status", "failed");
+  }
   const { data: outcome, error } = await db.rpc("apply_payment_result", {
-    p_provider: "redsys",
+    p_provider: result.provider,
     p_provider_ref: result.order,
-    p_event_key: eventKey,
+    p_event_key: result.eventKey,
     p_authorized: result.authorized,
     p_amount_cents: result.amountCents ?? -1,
-    p_payload: result.params,
+    p_payload: result.payload,
   });
   if (error) throw new Error(`apply_payment_result: ${error.message}`);
   const typed = outcome as NotificationOutcome;
@@ -146,7 +266,7 @@ export async function handleRedsysNotification(message: {
   const { data: payment } = await db
     .from("payments")
     .select("id, booking_id")
-    .eq("provider", "redsys")
+    .eq("provider", result.provider)
     .eq("provider_ref", result.order)
     .single();
   if (!payment) return typed;
@@ -159,9 +279,10 @@ export async function handleRedsysNotification(message: {
   } else {
     // Money was taken but the booking cannot use it: give it back.
     const refund = await refundPayment(payment.id);
+    const portal = result.provider === "paycomet" ? "PAYCOMET" : "Redsys";
     await sendBookingEmail(payment.booking_id, "owner_alert", {
       force: true,
-      note: `Cobro devuelto automáticamente (${typed}${refund.ok ? "" : ", DEVOLUCIÓN FALLIDA: revisar en Redsys"})`,
+      note: `Cobro devuelto automáticamente (${typed}${refund.ok ? "" : `, DEVOLUCIÓN FALLIDA: revisar en ${portal}`})`,
     });
   }
   return typed;
@@ -202,6 +323,8 @@ export async function refundPayment(paymentId: string): Promise<RefundResult> {
     return { ok: true };
   }
 
+  if (payment.provider === "paycomet") return refundPaycomet(payment);
+
   const config = redsysConfig();
   if (!config) return { ok: false, error: "Redsys is not configured" };
 
@@ -236,6 +359,60 @@ export async function refundPayment(paymentId: string): Promise<RefundResult> {
       refunded_at: new Date().toISOString(),
       refund_raw: verified.params,
     })
+    .eq("id", payment.id);
+  return { ok: true };
+}
+
+/**
+ * Refund through PAYCOMET (POST /v1/payments/{order}/refund). It needs the
+ * bank authorisation code from the paid notification, which is kept in the
+ * payment's raw_event.
+ */
+async function refundPaycomet(payment: {
+  id: string;
+  provider_ref: string;
+  amount_cents: number;
+  raw_event: unknown;
+}): Promise<RefundResult> {
+  const config = paycometConfig();
+  if (!config) return { ok: false, error: "PAYCOMET is not configured" };
+  const event = (payment.raw_event ?? {}) as Record<string, string>;
+  if (!event.AuthCode) return { ok: false, error: "PAYCOMET authorisation code not recorded" };
+  // Refund what was charged (differs from the booking only on amount_mismatch).
+  const charged = Number(event.Amount);
+  const amountCents = Number.isInteger(charged) && charged > 0 ? charged : payment.amount_cents;
+
+  let body: { errorCode?: number; error?: { message?: string } };
+  try {
+    const res = await fetch(
+      `${config.baseUrl}/v1/payments/${encodeURIComponent(payment.provider_ref)}/refund`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "PAYCOMET-API-TOKEN": config.apiKey,
+        },
+        body: JSON.stringify(
+          buildPaycometRefund(config, {
+            amountCents,
+            authCode: event.AuthCode,
+            originalIp: process.env.PAYCOMET_ORIGINAL_IP || "127.0.0.1",
+          }),
+        ),
+      },
+    );
+    body = (await res.json()) as typeof body;
+    if (!res.ok && !body.errorCode) body.errorCode = res.status;
+  } catch (error) {
+    return { ok: false, error: `PAYCOMET unreachable: ${String(error)}` };
+  }
+  if (body.errorCode) return { ok: false, error: `PAYCOMET ${body.errorCode}` };
+
+  const db = createAdminClient();
+  await db
+    .from("payments")
+    .update({ status: "refunded", refunded_at: new Date().toISOString(), refund_raw: body })
     .eq("id", payment.id);
   return { ok: true };
 }

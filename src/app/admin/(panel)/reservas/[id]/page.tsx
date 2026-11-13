@@ -140,7 +140,13 @@ export default async function BookingDetail({
               {payments.map((p) => (
                 <tr key={p.id}>
                   <td className={td}>{dateTime(p.created_at)}</td>
-                  <td className={td}>{p.provider === "redsys" ? "Tarjeta (Redsys)" : "Manual"}</td>
+                  <td className={td}>
+                    {p.provider === "redsys"
+                      ? "Tarjeta (Redsys)"
+                      : p.provider === "paycomet"
+                        ? "Tarjeta (PAYCOMET)"
+                        : "Manual"}
+                  </td>
                   <td className={td}>{p.provider_ref}</td>
                   <td className={td}>{formatPrice(p.amount_cents)}</td>
                   <td className={td}>
