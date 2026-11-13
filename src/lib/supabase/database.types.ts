@@ -208,7 +208,7 @@ export type Database = {
           field: string;
           locale: string;
           updated_at: string;
-          value: Json;
+          value: NonNullable<Json>;
         };
         ComputedFields: never;
         Insert: {
@@ -217,7 +217,7 @@ export type Database = {
           field: string;
           locale: string;
           updated_at?: string;
-          value: Json;
+          value: NonNullable<Json>;
         };
         Update: {
           entity?: string;
@@ -225,7 +225,7 @@ export type Database = {
           field?: string;
           locale?: string;
           updated_at?: string;
-          value?: Json;
+          value?: NonNullable<Json>;
         };
         Relationships: [];
       };
