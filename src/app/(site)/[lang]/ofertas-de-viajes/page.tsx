@@ -71,7 +71,7 @@ async function CatalogResults({
 
   return (
     <>
-      <nav aria-label={t("Destinos")} className="mt-8 -mx-4 overflow-x-auto px-4 pb-1">
+      <nav aria-label={t("Filtrar por destino")} className="mt-8 -mx-4 overflow-x-auto px-4 pb-1">
         <ul className="flex w-max gap-2">
           {[{ label: "Todos", area: undefined }, ...destinations].map((d) => {
             const active = filters.zona === d.area;

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { useT } from "@/components/i18n/provider";
 
 export default function Error({
   error,
@@ -10,6 +11,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useT();
   useEffect(() => {
     // Error monitoring hooks in here (Sentry, optional per PRD §9).
     console.error(error);
@@ -18,15 +20,17 @@ export default function Error({
   return (
     <section className="container-site py-16 md:py-24" role="alert">
       <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        Algo ha fallado
+        {t("Algo ha fallado")}
       </h1>
       <p className="mt-3 max-w-xl text-tertiary">
-        Ha ocurrido un error inesperado. Inténtalo de nuevo o escríbenos por WhatsApp si persiste.
+        {t(
+          "Ha ocurrido un error inesperado. Inténtalo de nuevo o escríbenos por WhatsApp si persiste.",
+        )}
       </p>
       <div className="mt-6 flex flex-wrap gap-2">
-        <Button onClick={reset}>Reintentar</Button>
+        <Button onClick={reset}>{t("Reintentar")}</Button>
         <ButtonLink href="/" variant="outline">
-          Volver al inicio
+          {t("Volver al inicio")}
         </ButtonLink>
       </div>
     </section>

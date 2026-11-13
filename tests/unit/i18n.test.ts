@@ -61,6 +61,10 @@ describe("translations", () => {
       for (const [k, v] of Object.entries(dict)) expect(vars(v), k).toBe(vars(k));
     });
   }
+  it("translates server messages that carry their own numbers", () => {
+    expect(createT("en")("Solo quedan 3 plazas.")).toBe("Only 3 seats left.");
+    expect(createT("it")("Máximo 500 caracteres.")).toBe("Massimo 500 caratteri.");
+  });
   it("fills variables and falls back to Spanish", () => {
     expect(createT("en")("Llamar al {phone}", { phone: "1" })).toBe("Call 1");
     expect(createT("fr")("Texto sin traducir")).toBe("Texto sin traducir");

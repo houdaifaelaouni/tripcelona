@@ -1,20 +1,26 @@
+"use client";
+
+import { useT } from "@/components/i18n/provider";
+
 /**
  * Generic skeleton for streamed page bodies (catalog, tour, blog pages).
  * Full viewport height, so the footer starts below the fold and does not jump
  * when the content arrives (CLS, US-37).
  */
 export function PageSkeleton() {
+  const t = useT();
   return (
     <div className="container-site min-h-[100svh] py-16" role="status" aria-live="polite">
       <div className="h-8 w-2/3 animate-pulse rounded-lg bg-secondary" />
       <div className="mt-4 h-4 w-1/2 animate-pulse rounded-lg bg-secondary" />
-      <span className="sr-only">Cargando…</span>
+      <span className="sr-only">{t("Cargando…")}</span>
     </div>
   );
 }
 
 /** Card-grid skeleton for the catalog: chip strip, filters and photo cards. */
 export function CardGridSkeleton({ cards = 6 }: { cards?: number }) {
+  const t = useT();
   return (
     <div className="min-h-[100svh]" role="status" aria-live="polite">
       <div className="mt-6 flex gap-2 overflow-hidden">
@@ -34,7 +40,7 @@ export function CardGridSkeleton({ cards = 6 }: { cards?: number }) {
           ))}
         </ul>
       </div>
-      <span className="sr-only">Cargando…</span>
+      <span className="sr-only">{t("Cargando…")}</span>
     </div>
   );
 }
