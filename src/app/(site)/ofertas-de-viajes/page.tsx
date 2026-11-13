@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CoachArt } from "@/components/art/art";
+import { PageHero } from "@/components/layout/page-hero";
 import { Suspense } from "react";
 import { CatalogFilters } from "@/components/tours/catalog-filters";
 import { CatalogEmptyState } from "@/components/tours/empty-state";
@@ -24,18 +26,19 @@ export const metadata: Metadata = {
 
 export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
   return (
-    <div className="container-site py-12 md:py-16">
-      <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">Excursiones</p>
-      <h1 className="mt-3 text-4xl leading-[1.1] font-semibold tracking-[-0.035em] text-primary md:text-[3.5rem]">
-        Ofertas de viajes
-      </h1>
-      <p className="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
-        Excursiones de un día cada domingo desde Estació del Nord, Barcelona.
-      </p>
-      <Suspense fallback={<CardGridSkeleton />}>
-        <CatalogResults searchParams={searchParams} />
-      </Suspense>
-    </div>
+    <>
+      <PageHero
+        eyebrow="Excursiones"
+        title="Ofertas de viajes"
+        intro="Excursiones de un día cada domingo desde Estació del Nord, Barcelona."
+        art={<CoachArt />}
+      />
+      <div className="container-site py-10 md:py-14">
+        <Suspense fallback={<CardGridSkeleton />}>
+          <CatalogResults searchParams={searchParams} />
+        </Suspense>
+      </div>
+    </>
   );
 }
 

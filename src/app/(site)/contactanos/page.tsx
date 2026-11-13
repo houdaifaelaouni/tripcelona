@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ChatArt, PinArt } from "@/components/art/art";
+import { PageHero } from "@/components/layout/page-hero";
 import Link from "next/link";
 import { ContactForm } from "@/components/forms/contact-form";
 import { WhatsAppCta } from "@/components/tours/empty-state";
@@ -16,14 +18,14 @@ export const metadata: Metadata = {
 export default async function ContactPage() {
   const s = await getSiteSettings();
   return (
-    <div className="container-site py-8 md:py-12">
-      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        ¿En qué podemos ayudarte?
-      </h1>
-      <p className="mt-2 max-w-2xl text-tertiary">
-        Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura.
-      </p>
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
+    <>
+      <PageHero
+        eyebrow="Contacto"
+        title="¿En qué podemos ayudarte?"
+        intro="Estamos aquí para tu grupo 24 horas, 7 días a la semana, listos para la aventura."
+        art={<ChatArt />}
+      />
+      <div className="container-site grid gap-8 py-10 md:py-14 lg:grid-cols-[1fr_320px]">
         <section
           aria-labelledby="form-title"
           className="rounded-2xl border border-secondary bg-white p-5 md:p-6"
@@ -72,6 +74,12 @@ export default async function ContactPage() {
               {s.meetingPoint}
             </a>
           </div>
+          <div
+            data-art-host
+            className="hidden max-w-[260px] rounded-2xl bg-white p-2 ring-1 ring-secondary lg:block"
+          >
+            <PinArt />
+          </div>
           <p>
             <Link href="/preguntas-frecuentes" className="text-blue underline">
               Preguntas frecuentes
@@ -79,6 +87,6 @@ export default async function ContactPage() {
           </p>
         </aside>
       </div>
-    </div>
+    </>
   );
 }

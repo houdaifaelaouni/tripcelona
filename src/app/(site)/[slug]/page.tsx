@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { JournalArt } from "@/components/art/art";
+import { PageHero } from "@/components/layout/page-hero";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { Suspense } from "react";
 import { RichText } from "@/components/content/rich-text";
@@ -53,26 +55,31 @@ async function ContentPageBody({ params }: { params: PageProps<"/[slug]">["param
   const settings = await getSiteSettings();
 
   return (
-    <article className="container-site py-8 md:py-16">
+    <article>
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Inicio", path: "/" },
           { name: page.title, path: `/${page.slug}` },
         ])}
       />
-      <h1 className="max-w-3xl text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        {page.title}
-      </h1>
-      <RichText
-        className="mt-6"
-        doc={page.content}
-        tokens={page.kind === "legal" ? legalTokens(settings) : {}}
+      <PageHero
+        compact
+        eyebrow={page.kind === "legal" ? "Información legal" : "Tripcelona"}
+        title={page.title}
+        art={<JournalArt />}
       />
-      {page.kind === "legal" && (
-        <p className="mt-10 text-sm text-tertiary">
-          Versión publicada en esta web el {updatedFmt.format(new Date(page.updatedAt))}.
-        </p>
-      )}
+      <div className="container-site py-10 md:py-14">
+        <RichText
+          className="mt-6"
+          doc={page.content}
+          tokens={page.kind === "legal" ? legalTokens(settings) : {}}
+        />
+        {page.kind === "legal" && (
+          <p className="mt-10 text-sm text-tertiary">
+            Versión publicada en esta web el {updatedFmt.format(new Date(page.updatedAt))}.
+          </p>
+        )}
+      </div>
     </article>
   );
 }

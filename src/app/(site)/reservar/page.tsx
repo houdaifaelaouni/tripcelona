@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TicketArt } from "@/components/art/art";
+import { PageHero } from "@/components/layout/page-hero";
 import { Suspense } from "react";
 import { CheckoutForm } from "@/components/booking/checkout-form";
 import { WhatsAppCta } from "@/components/tours/empty-state";
@@ -18,14 +20,20 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage({ searchParams }: PageProps<"/reservar">) {
   return (
-    <div className="container-detail py-8 md:py-12">
-      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        Reserva tu excursión
-      </h1>
-      <Suspense fallback={<PageSkeleton />}>
-        <Checkout searchParams={searchParams} />
-      </Suspense>
-    </div>
+    <>
+      <PageHero
+        compact
+        eyebrow="Reserva segura"
+        title="Reserva tu excursión"
+        intro="Elige plazas, paga con tarjeta y recibe la confirmación al instante."
+        art={<TicketArt />}
+      />
+      <div className="container-detail py-8 md:py-12">
+        <Suspense fallback={<PageSkeleton />}>
+          <Checkout searchParams={searchParams} />
+        </Suspense>
+      </div>
+    </>
   );
 }
 

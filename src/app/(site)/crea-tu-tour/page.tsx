@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { RouteArt } from "@/components/art/art";
+import { PageHero } from "@/components/layout/page-hero";
 import { QuoteWizard } from "@/components/forms/quote-wizard";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -17,15 +19,14 @@ export const metadata: Metadata = {
 // Heading and intro from the live page (WordPress export, 2026-11-10).
 export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) {
   return (
-    <div className="container-site py-8 md:py-12">
-      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        Crea tu tour a medida
-      </h1>
-      <p className="mt-2 max-w-2xl text-tertiary">
-        ¿Vienes con tu empresa, tu asociación o un grupo de amigos? Elige un plan, la fecha y los
-        extras, y te enviamos una propuesta personalizada en 24–48 horas.
-      </p>
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_300px]">
+    <>
+      <PageHero
+        eyebrow="Grupos y empresas"
+        title="Crea tu tour a medida"
+        intro="¿Vienes con tu empresa, tu asociación o un grupo de amigos? Elige un plan, la fecha y los extras, y te enviamos una propuesta personalizada en 24–48 horas."
+        art={<RouteArt />}
+      />
+      <div className="container-site grid gap-8 py-10 md:py-14 lg:grid-cols-[1fr_300px]">
         <section className="rounded-2xl border border-secondary bg-white p-5 md:p-6">
           <Suspense fallback={<PageSkeleton />}>
             <Wizard searchParams={searchParams} />
@@ -39,7 +40,7 @@ export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) 
           />
         </aside>
       </div>
-    </div>
+    </>
   );
 }
 

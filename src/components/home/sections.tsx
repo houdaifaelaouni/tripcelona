@@ -5,6 +5,7 @@
  * CTA band. Built from scratch where the original block is PRO-only. Copy
  * only states facts already published on the site.
  */
+import { ChatArt } from "@/components/art/art";
 import {
   Bus,
   CalendarDays,
@@ -198,6 +199,12 @@ export function ContactSection({
               </li>
             ))}
           </ul>
+          <div
+            data-art-host
+            className="mt-8 hidden w-56 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-secondary lg:block"
+          >
+            <ChatArt />
+          </div>
         </div>
         <div className="rounded-xl bg-primary p-6 ring-1 ring-secondary ring-inset md:p-8">
           <ContactForm />
