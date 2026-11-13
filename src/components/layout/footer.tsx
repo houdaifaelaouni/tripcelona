@@ -1,9 +1,8 @@
-import { ArrowUpRight, Phone } from "lucide-react";
+import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { buttonClasses } from "@/components/ui/button";
-import { WhatsAppIcon } from "@/components/ui/icons";
 import { SOCIAL_LABELS, SOCIAL_NETWORKS, getSiteSettings } from "@/lib/settings";
 import { getSiteContent } from "@/lib/site-content";
 import { site as siteDefaults } from "@/lib/site";
@@ -77,16 +76,15 @@ export async function Footer() {
           <div className="rounded-xl bg-secondary p-6 ring-1 ring-secondary ring-inset md:p-7">
             <h2 className="text-lg font-semibold tracking-tight">¿Tienes alguna duda?</h2>
             <p className="mt-2 text-sm text-tertiary">
-              Escríbenos por WhatsApp y te ayudamos a elegir excursión, fecha y punto de salida.
+              Escríbenos por email o llámanos y te ayudamos a elegir excursión, fecha y punto de
+              salida.
             </p>
             <a
-              href={site.whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={site.email ? `mailto:${site.email}` : "/contactanos"}
               className={buttonClasses({ variant: "secondary", size: "lg" }, "mt-5 w-full")}
             >
-              <WhatsAppIcon />
-              Escríbenos por WhatsApp
+              <Mail aria-hidden className="size-5" />
+              Escríbenos por email
             </a>
             <a
               href={site.phoneHref}

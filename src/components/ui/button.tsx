@@ -15,7 +15,7 @@ type Shape = "rounded" | "pill";
 const base = cn(
   // Labels may wrap on very narrow screens (WCAG 1.4.10 reflow at 320px).
   "relative inline-flex items-center justify-center gap-1.5 text-center leading-tight font-medium tracking-[-0.006em] select-none",
-  "transition duration-100 ease-linear motion-reduce:transition-none",
+  "transition duration-100 ease-linear active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100",
   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
   "aria-disabled:pointer-events-none aria-disabled:opacity-50",
 );
