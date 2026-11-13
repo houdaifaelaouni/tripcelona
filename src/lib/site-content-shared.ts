@@ -15,6 +15,8 @@ export type FooterColumn = { title: string; links: { label: string; href: string
 export type HomeContent = {
   heroTitle: string;
   heroLead: string;
+  /** Optional background video for the home hero: https:// or /path to an .mp4/.webm. */
+  heroVideoUrl: string;
   whyTitle: string;
   reasons: Pair[];
   stepsTitle: string;
@@ -29,6 +31,7 @@ export const HOME_DEFAULTS: HomeContent = {
   heroTitle: "Excursiones de un día desde Barcelona",
   heroLead:
     "El Pirineo, los volcanes de la Garrotxa y pueblos medievales de Cataluña. Tú eliges destino; nosotros ponemos el autocar, el guía y la logística.",
+  heroVideoUrl: "",
   whyTitle: "Tú disfrutas del día, nosotros nos ocupamos del resto",
   reasons: [
     {
@@ -67,6 +70,15 @@ export const HOME_DEFAULTS: HomeContent = {
   seoDescription:
     "Excursiones en grupo cada domingo desde Estació del Nord: Pirineo, Garrotxa, Osona y Alquézar.",
 };
+
+/** A video link the hero can play: https or a site path, ending in .mp4 or .webm (blank = none). */
+export function parseVideoUrl(raw: string): Parsed<string> {
+  const v = raw.trim();
+  if (!v) return { ok: true, value: "" };
+  if (!/^(https:\/\/|\/(?!\/))[^\s]+\.(mp4|webm)(\?[^\s]*)?$/i.test(v))
+    return fail("Vídeo de portada: pon un enlace https:// o una ruta / que acabe en .mp4 o .webm.");
+  return { ok: true, value: v };
+}
 
 export const HOME_LIMITS = { reasons: [2, 8], steps: [3, 6], groupPoints: [1, 6] } as const;
 
@@ -134,6 +146,10 @@ export function homeFromValue(raw: unknown): HomeContent {
   return {
     heroTitle: str("heroTitle") ?? HOME_DEFAULTS.heroTitle,
     heroLead: str("heroLead") ?? HOME_DEFAULTS.heroLead,
+    heroVideoUrl: (() => {
+      const r = parseVideoUrl(typeof v.heroVideoUrl === "string" ? v.heroVideoUrl : "");
+      return r.ok ? r.value : "";
+    })(),
     whyTitle: str("whyTitle") ?? HOME_DEFAULTS.whyTitle,
     reasons: pairs("reasons") ?? HOME_DEFAULTS.reasons,
     stepsTitle: str("stepsTitle") ?? HOME_DEFAULTS.stepsTitle,

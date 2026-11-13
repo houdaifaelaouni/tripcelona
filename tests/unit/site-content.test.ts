@@ -81,3 +81,17 @@ describe("home texts", () => {
     expect(pairsToText(home.steps).split("\n")).toHaveLength(3);
   });
 });
+
+describe("hero video link", () => {
+  it("accepts blank, https and site paths to mp4/webm, rejects the rest", async () => {
+    const { parseVideoUrl } = await import("@/lib/site-content-shared");
+    expect(parseVideoUrl("")).toEqual({ ok: true, value: "" });
+    expect(parseVideoUrl("https://x.supabase.co/storage/v1/object/public/media/hero.mp4").ok).toBe(
+      true,
+    );
+    expect(parseVideoUrl("/video/hero.webm").ok).toBe(true);
+    expect(parseVideoUrl("http://insecure.com/a.mp4").ok).toBe(false);
+    expect(parseVideoUrl("https://youtube.com/watch?v=1").ok).toBe(false);
+    expect(parseVideoUrl("//evil.com/a.mp4").ok).toBe(false);
+  });
+});

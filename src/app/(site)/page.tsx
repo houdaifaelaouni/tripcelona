@@ -14,6 +14,7 @@ import {
 import { ContactSection } from "@/components/home/sections";
 import { Testimonials } from "@/components/home/testimonials";
 import { getApprovedReviews, getPublishedFaqs } from "@/lib/content/queries";
+import { destinations } from "@/lib/site";
 import { getSiteSettings } from "@/lib/settings";
 import { getSiteContent } from "@/lib/site-content";
 import { TourCard } from "@/components/tours/tour-card";
@@ -35,6 +36,13 @@ export default async function Home() {
   ]);
   const photos = tours.flatMap((tour) => (tour.image ? [tour.image] : []));
   const photo = (i: number) => photos[i % Math.max(photos.length, 1)] ?? null;
+  // One photo per destination, from the tours that go there.
+  const areaPhotos = Object.fromEntries(
+    destinations.map((d, i) => [
+      d.area,
+      tours.find((t) => t.areaSlug === d.area && t.image)?.image ?? photo(i),
+    ]),
+  );
   const next = findNextTrip(tours);
   const bySoonest = [...tours].sort(
     (a, b) =>
@@ -47,12 +55,13 @@ export default async function Home() {
       <AnnouncementBar next={next} />
       <LandingHero
         photo={photo(0)}
+        videoSrc={home.heroVideoUrl || undefined}
         next={next}
         fromCents={minPriceCents(tours)}
         title={home.heroTitle}
         lead={home.heroLead}
       />
-      <DestinationStrip />
+      <DestinationStrip photos={areaPhotos} />
 
       <section aria-labelledby="tours-heading" className="container-site py-16 md:py-24">
         <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
@@ -96,14 +105,15 @@ export default async function Home() {
         )}
       </section>
 
-      <StatsRow tours={tours} />
+      <StatsRow tours={tours} photo={photo(3)} />
       <WhyTripcelona photo={photo(1)} title={home.whyTitle} reasons={home.reasons} />
       <HowItWorks title={home.stepsTitle} steps={home.steps} />
       <DeparturesTable tours={tours} />
       <Testimonials reviews={reviews} />
       <GroupsBanner
         photo={photo(2)}
-        whatsappHref={site.whatsappHref}
+        phoneHref={site.phoneHref}
+        phoneDisplay={site.phoneDisplay}
         title={home.groupsTitle}
         groupPoints={home.groupPoints}
       />

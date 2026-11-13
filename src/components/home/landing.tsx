@@ -13,13 +13,14 @@ import {
   CreditCard,
   MailCheck,
   MapPin,
+  Phone,
   ShieldCheck,
   UserCheck,
   Users,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { CoachArt, GroupArt, HikerArt } from "@/components/art/art";
+import { CoachArt, HikerArt } from "@/components/art/art";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { Reveal } from "@/components/motion/reveal";
@@ -83,89 +84,112 @@ const trust = [
   { icon: MailCheck, label: "Confirmación inmediata" },
 ];
 
-/** Split hero: promise and two CTAs left, photo with the next-departure card right. */
+/**
+ * Full-bleed hero: a background video (when the owner sets one in the admin,
+ * and the visitor has not asked for reduced motion) over the tour photo, which
+ * is always the first paint so the video never blocks the page. The text sits
+ * on a dark gradient for AA contrast; the next-departure card floats right.
+ */
 export function LandingHero({
   photo,
+  videoSrc,
   next,
   fromCents,
   title,
   lead,
 }: {
   photo: { url: string; alt: string } | null;
+  videoSrc?: string;
   next: NextTrip;
   fromCents: number | null;
   title: string;
   lead: string;
 }) {
   return (
-    <section aria-labelledby="home-heading" className="relative overflow-hidden">
+    <section
+      aria-labelledby="home-heading"
+      className="relative isolate overflow-hidden bg-ink text-white"
+    >
+      {photo ? (
+        <Image src={photo.url} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
+      ) : (
+        <CoachArt className="absolute inset-0 -z-20 size-full object-cover" />
+      )}
+      {videoSrc && (
+        <video
+          className="absolute inset-0 -z-20 size-full object-cover motion-reduce:hidden"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden
+          data-no-motion
+        >
+          <source
+            src={videoSrc}
+            type={videoSrc.toLowerCase().includes(".webm") ? "video/webm" : "video/mp4"}
+          />
+        </video>
+      )}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 [background-image:linear-gradient(to_right,var(--color-border-tertiary)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border-tertiary)_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_80%_70%_at_20%_0%,black,transparent)]"
+        className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/85 via-ink/55 to-ink/25"
       />
-      <div className="container-site grid items-center gap-12 py-12 md:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink/70 to-transparent"
+      />
+      <div className="container-site grid min-h-[600px] items-end gap-10 pt-24 pb-14 md:min-h-[680px] md:pb-20 lg:grid-cols-[1.4fr_1fr]">
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full bg-primary py-1 pr-3 pl-1 text-xs font-medium text-secondary ring-1 ring-secondary ring-inset">
-            <span className="rounded-full bg-brand-primary px-2 py-0.5 text-brand-secondary">
-              Cada domingo
-            </span>
+          <p className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pr-3 pl-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur ring-inset">
+            <span className="rounded-full bg-white px-2 py-0.5 text-ink">Cada domingo</span>
             {fromCents !== null
               ? `Excursiones desde ${formatPrice(fromCents)} por persona`
               : "Salidas desde Estació del Nord"}
           </p>
           <h1
             id="home-heading"
-            className="mt-6 text-[2.5rem] leading-[1.06] font-semibold tracking-[-0.035em] text-primary md:text-6xl md:leading-[1.04]"
+            className="mt-6 text-[2.5rem] leading-[1.06] font-semibold tracking-[-0.035em] md:text-6xl md:leading-[1.04]"
           >
             {title}
           </h1>
-          <p className="mt-5 max-w-xl text-lg text-tertiary md:text-xl md:leading-relaxed">
+          <p className="mt-5 max-w-xl text-lg text-white/90 md:text-xl md:leading-relaxed">
             {lead}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="#tours-heading" className={buttonClasses({ size: "lg" })}>
+            <Link
+              href="#tours-heading"
+              className={buttonClasses({ size: "lg" }, "bg-white text-ink hover:bg-white/90")}
+            >
               Ver próximas salidas
               <ArrowRight aria-hidden className="size-4" />
             </Link>
             <Link
               href="/crea-tu-tour"
-              className={buttonClasses({ variant: "outline", size: "lg" })}
+              className={buttonClasses(
+                { size: "lg" },
+                "bg-white/10 text-white ring-white/30 backdrop-blur hover:bg-white/20",
+              )}
             >
               <Users aria-hidden className="size-4" />
               Viajes para grupos
             </Link>
           </div>
-          <ul className="mt-10 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-secondary pt-6 text-sm text-secondary">
+          <ul className="mt-10 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-white/20 pt-6 text-sm text-white/90 sm:max-w-xl">
             {trust.map(({ icon: Icon, label }) => (
               <li key={label} className="flex items-center gap-2.5">
-                <Icon aria-hidden className="size-4 shrink-0 text-fg-brand-primary" />
+                <Icon aria-hidden className="size-4 shrink-0 text-white" />
                 {label}
               </li>
             ))}
           </ul>
         </div>
-
-        <div className="relative">
-          <div className="rounded-2xl bg-secondary p-2 ring-1 ring-secondary ring-inset">
-            <div
-              data-art-host
-              className="relative aspect-[4/3] overflow-hidden rounded-xl bg-tertiary lg:aspect-[5/6]"
-            >
-              {!photo && <CoachArt className="absolute inset-0 size-full" />}
-              {photo && (
-                <Image
-                  src={photo.url}
-                  alt={photo.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1128px) 560px, 100vw"
-                  className="object-cover"
-                />
-              )}
-            </div>
+        {next && (
+          <div className="lg:justify-self-end">
+            <NextTripCard next={next} />
           </div>
-          {next && <NextTripCard next={next} />}
-        </div>
+        )}
       </div>
     </section>
   );
@@ -177,7 +201,7 @@ function NextTripCard({ next }: { next: NonNullable<NextTrip> }) {
   return (
     <Link
       href={`/excursiones/${tour.slug}`}
-      className="group relative z-10 mx-4 -mt-16 flex items-center gap-4 rounded-xl bg-primary p-4 shadow-lg ring-1 ring-secondary transition-shadow hover:shadow-xl sm:mx-auto sm:max-w-md lg:absolute lg:-bottom-6 lg:-left-10 lg:mx-0 lg:mt-0 lg:w-[360px]"
+      className="group relative z-10 flex w-full max-w-md items-center gap-4 rounded-xl bg-primary p-4 text-primary shadow-lg ring-1 ring-secondary transition-shadow hover:shadow-xl lg:w-[360px]"
     >
       <span className="flex min-w-14 flex-col items-center rounded-lg bg-brand-primary px-2 py-1.5 text-center text-brand-secondary">
         <span className="text-[11px] font-medium tracking-[0.06em] uppercase">{date.month}</span>
@@ -203,34 +227,68 @@ function NextTripCard({ next }: { next: NonNullable<NextTrip> }) {
   );
 }
 
-/** Logo-strip layout, used for destinations. */
-export function DestinationStrip() {
+/** Destination tiles: one photo per destination, from the tours that go there. */
+export function DestinationStrip({
+  photos,
+}: {
+  photos: Record<string, { url: string; alt: string } | null>;
+}) {
   return (
-    <section aria-labelledby="destinos-strip" className="border-y border-secondary bg-secondary">
-      <div className="container-site flex flex-col gap-4 py-6 md:flex-row md:items-center md:gap-8">
-        <h2 id="destinos-strip" className="shrink-0 text-sm font-medium text-tertiary">
-          Nuestros destinos
-        </h2>
-        <ul className="flex flex-wrap gap-x-6 gap-y-3">
-          {destinations.map((d) => (
-            <li key={d.area}>
-              <Link
-                href={catalogHref({ zona: d.area })}
-                className="inline-flex items-center gap-1.5 text-md font-semibold tracking-tight text-secondary hover:text-brand-secondary"
-              >
-                <MapPin aria-hidden className="size-4 text-fg-quaternary" />
-                {d.label}
-              </Link>
-            </li>
-          ))}
+    <section aria-labelledby="destinos-strip" className="container-site py-14 md:py-20">
+      <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">Destinos</p>
+      <h2
+        id="destinos-strip"
+        className="mt-3 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]"
+      >
+        Nuestros destinos
+      </h2>
+      <Reveal>
+        <ul className="mt-8 grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-5">
+          {destinations.map((d) => {
+            const photo = photos[d.area];
+            return (
+              <li key={d.area} data-reveal>
+                <Link
+                  href={catalogHref({ zona: d.area })}
+                  className="group relative flex aspect-[3/4] items-end overflow-hidden rounded-2xl bg-ink ring-1 ring-secondary ring-inset"
+                >
+                  {photo ? (
+                    <Image
+                      src={photo.url}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 20vw, 50vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+                    />
+                  ) : (
+                    <HikerArt className="absolute inset-0 size-full object-cover" />
+                  )}
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent"
+                  />
+                  <span className="relative flex items-center gap-1.5 p-4 text-md leading-snug font-semibold tracking-tight text-white">
+                    <MapPin aria-hidden className="size-4 shrink-0" />
+                    {d.label}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
-      </div>
+      </Reveal>
     </section>
   );
 }
 
-/** Stats row (kit "Stats V1"): four real figures over hairline dividers. */
-export function StatsRow({ tours }: { tours: TourSummary[] }) {
+/** Stats band: four real figures over a full-width landscape photo. */
+export function StatsRow({
+  tours,
+  photo,
+}: {
+  tours: TourSummary[];
+  photo: { url: string; alt: string } | null;
+}) {
   const open = tours.flatMap((t) => t.departures.filter((d) => d.status === "open"));
   const from = minPriceCents(tours);
   const stats = [
@@ -240,17 +298,25 @@ export function StatsRow({ tours }: { tours: TourSummary[] }) {
     ...(from !== null ? [{ value: formatPrice(from), label: "Precio desde, por persona" }] : []),
   ];
   return (
-    <section aria-label="Tripcelona en cifras" className="container-site py-14 md:py-20">
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-border-secondary ring-1 ring-secondary lg:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="flex flex-col-reverse gap-1 bg-primary p-6 md:p-8">
-            <dt className="text-sm text-tertiary">{s.label}</dt>
-            <dd className="text-4xl font-semibold tracking-[-0.035em] text-primary md:text-5xl">
-              {s.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
+    <section
+      aria-label="Tripcelona en cifras"
+      className="relative isolate overflow-hidden bg-ink text-white"
+    >
+      {photo && <Image src={photo.url} alt="" fill sizes="100vw" className="-z-20 object-cover" />}
+      <div aria-hidden className="absolute inset-0 -z-10 bg-ink/65" />
+      <div className="container-site py-16 md:py-24">
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              className="flex flex-col-reverse gap-1 border-l border-white/30 pl-5"
+            >
+              <dt className="text-sm text-white/85">{s.label}</dt>
+              <dd className="text-4xl font-semibold tracking-[-0.035em] md:text-5xl">{s.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </section>
   );
 }
@@ -376,22 +442,32 @@ export function HomeFaq({
   );
 }
 
-/** Call to action (dark panel + photo) for group trips. */
+/** Call to action over a full-width photo, for group trips. */
 export function GroupsBanner({
   photo,
-  whatsappHref,
+  phoneHref,
+  phoneDisplay,
   title,
   groupPoints,
 }: {
   photo: { url: string; alt: string } | null;
-  whatsappHref: string;
+  phoneHref: string;
+  phoneDisplay: string;
   title: string;
   groupPoints: string[];
 }) {
   return (
-    <section aria-labelledby="grupos-heading" className="container-site pb-16 md:pb-24">
-      <div className="grid overflow-hidden rounded-2xl bg-primary-solid text-white lg:grid-cols-[1.2fr_1fr]">
-        <div className="p-8 md:p-12 lg:p-14">
+    <section
+      aria-labelledby="grupos-heading"
+      className="relative isolate overflow-hidden bg-ink text-white"
+    >
+      {photo && <Image src={photo.url} alt="" fill sizes="100vw" className="-z-20 object-cover" />}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/90 via-ink/65 to-ink/30"
+      />
+      <div className="container-site py-20 md:py-28">
+        <div className="max-w-2xl">
           <p className="text-[13px] font-medium tracking-[0.03em] text-brand-300">
             Empresas, colegios y amigos
           </p>
@@ -401,7 +477,7 @@ export function GroupsBanner({
           >
             {title}
           </h2>
-          <ul className="mt-6 space-y-2.5 text-md text-white/80">
+          <ul className="mt-6 space-y-2.5 text-md text-white/90">
             {groupPoints.map((p) => (
               <li key={p} className="flex items-center gap-2.5">
                 <Check aria-hidden className="size-4 shrink-0 text-brand-300" />
@@ -415,34 +491,15 @@ export function GroupsBanner({
               <ArrowRight aria-hidden className="size-4" />
             </Link>
             <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={phoneHref}
               className={buttonClasses(
                 { size: "lg" },
-                "bg-white/10 text-white ring-white/20 hover:bg-white/15",
+                "bg-white/10 text-white ring-white/30 backdrop-blur hover:bg-white/20",
               )}
             >
-              <WhatsAppIcon />
-              WhatsApp
+              <Phone aria-hidden className="size-4" />
+              {phoneDisplay}
             </a>
-          </div>
-        </div>
-        <div
-          data-art-host
-          className="relative hidden min-h-72 items-center justify-center bg-neutral-800 p-8 lg:flex"
-        >
-          {photo && (
-            <Image
-              src={photo.url}
-              alt={photo.alt}
-              fill
-              sizes="520px"
-              className="object-cover opacity-30"
-            />
-          )}
-          <div className="relative w-full max-w-[300px] rounded-3xl bg-white p-2 shadow-xl">
-            <GroupArt />
           </div>
         </div>
       </div>
