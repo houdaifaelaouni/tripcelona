@@ -54,20 +54,20 @@ export function DestinationsMap() {
             {/* Sea */}
             <path
               d="M564 134 C540 200 470 260 394 307 C330 340 280 355 250 370 L180 420 L600 420 L600 134 Z"
-              fill="#d9e9f7"
+              fill="#dbe8fe"
             />
-            <text x="462" y="390" fontSize="13" fill="#4d97d6" fontStyle="italic">
+            <text x="462" y="390" fontSize="13" fill="#6094fa" fontStyle="italic">
               Mar Mediterráneo
             </text>
             {/* Pyrenees ridge */}
             <path
               d="M30 70 L60 52 L90 72 L120 46 L150 70 L190 40 L230 66 L270 44 L310 70 L350 50 L390 76 L430 58 L470 84 L510 70 L560 100"
               fill="none"
-              stroke="#80b5e3"
+              stroke="#93b8fd"
               strokeWidth="2"
               strokeLinejoin="round"
             />
-            <text x="250" y="30" fontSize="13" fill="#4d97d6" fontWeight="600">
+            <text x="250" y="30" fontSize="13" fill="#6094fa" fontWeight="600">
               Pirineo
             </text>
             {/* Routes */}
@@ -77,7 +77,7 @@ export function DestinationsMap() {
                 data-draw
                 d={routePath(points[d.area])}
                 fill="none"
-                stroke="#0071c2"
+                stroke="#2563eb"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeDasharray="6 6"
@@ -94,7 +94,7 @@ export function DestinationsMap() {
                     cy={p.y}
                     r="7"
                     fill="#ffffff"
-                    stroke="#0071c2"
+                    stroke="#2563eb"
                     strokeWidth="3"
                   />
                   <text
@@ -103,7 +103,7 @@ export function DestinationsMap() {
                     textAnchor={p.anchor}
                     fontSize="12"
                     fontWeight="600"
-                    fill="#00224f"
+                    fill="#0f1011"
                   >
                     {d.label.split(" y ")[0]}
                   </text>
@@ -111,12 +111,12 @@ export function DestinationsMap() {
               );
             })}
             {/* Barcelona */}
-            <circle cx={BCN.x} cy={BCN.y} r="18" fill="#0071c2" opacity="0.15" />
-            <circle data-pop cx={BCN.x} cy={BCN.y} r="9" fill="#003580" />
-            <text x={BCN.x - 14} y={BCN.y + 30} fontSize="14" fontWeight="700" fill="#003580">
+            <circle cx={BCN.x} cy={BCN.y} r="18" fill="#2563eb" opacity="0.15" />
+            <circle data-pop cx={BCN.x} cy={BCN.y} r="9" fill="#0f1011" />
+            <text x={BCN.x - 14} y={BCN.y + 30} fontSize="14" fontWeight="700" fill="#0f1011">
               Barcelona
             </text>
-            <text x="16" y="408" fontSize="11" fill="#4d97d6">
+            <text x="16" y="408" fontSize="11" fill="#6094fa">
               Esquema orientativo, no a escala
             </text>
           </svg>
@@ -170,7 +170,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section aria-labelledby="como-heading" className="bg-secondary py-16 md:py-24">
+    <section aria-labelledby="como-heading" className="border-t border-secondary py-16 md:py-24">
       <div className="container-site">
         <SectionHeader
           id="como-heading"
@@ -178,44 +178,26 @@ export function HowItWorks() {
           title="Reservar es muy fácil"
           lead="Cuatro pasos y tu plaza está asegurada."
         />
-        <DrawOnScroll className="relative mt-12">
-          {/* Connector line behind the steps (desktop). */}
-          <svg
-            aria-hidden
-            viewBox="0 0 1000 8"
-            preserveAspectRatio="none"
-            className="absolute top-6 right-[12.5%] left-[12.5%] hidden h-2 w-3/4 lg:block"
-          >
-            <path
-              data-draw
-              d="M0 4 L1000 4"
-              stroke="#80b5e3"
-              strokeWidth="3"
-              strokeDasharray="8 8"
-              fill="none"
-            />
-          </svg>
-          <ol className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <Reveal>
+          <ol className="mt-12 grid gap-px overflow-hidden rounded-xl bg-border-secondary ring-1 ring-secondary sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
-              <li key={s.title} className="flex flex-col items-center text-center">
-                <span data-pop className="relative">
-                  <FeaturedIcon
-                    icon={s.icon}
-                    color="brand"
-                    theme="gradient"
-                    size="xl"
-                    className="bg-primary"
-                  />
-                  <span className="absolute -top-1 -right-1 flex size-6 items-center justify-center rounded-full bg-navy text-xs font-bold text-white">
-                    {i + 1}
+              <li key={s.title} data-reveal className="flex flex-col gap-6 bg-primary p-6">
+                <div className="flex items-center justify-between">
+                  <span className="flex size-9 items-center justify-center rounded-lg bg-brand-primary text-fg-brand-primary ring-1 ring-brand-200/60 ring-inset">
+                    <s.icon aria-hidden className="size-[18px]" />
                   </span>
-                </span>
-                <h3 className="mt-5 text-lg font-semibold text-primary">{s.title}</h3>
-                <p className="mt-1 max-w-60 text-md text-tertiary">{s.body}</p>
+                  <span className="font-mono text-xs text-quaternary">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-md font-semibold tracking-tight text-primary">{s.title}</h3>
+                  <p className="mt-1.5 text-sm text-tertiary">{s.body}</p>
+                </div>
               </li>
             ))}
           </ol>
-        </DrawOnScroll>
+        </Reveal>
       </div>
     </section>
   );

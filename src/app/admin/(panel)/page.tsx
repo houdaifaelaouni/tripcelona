@@ -236,7 +236,7 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
                     </td>
                     <td className={td}>
                       <Link
-                        className="font-semibold text-brand-secondary hover:underline"
+                        className="font-medium text-primary hover:text-brand-secondary"
                         href={`/admin/excursiones/${d.tours.id}`}
                       >
                         {d.tours.title}
@@ -283,7 +283,7 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
                     <tr key={b.id}>
                       <td className={td}>
                         <Link
-                          className="font-semibold text-brand-secondary hover:underline"
+                          className="font-medium text-primary hover:text-brand-secondary"
                           href={`/admin/reservas/${b.id}`}
                         >
                           {b.reference}

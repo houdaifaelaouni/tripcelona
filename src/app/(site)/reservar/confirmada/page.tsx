@@ -35,7 +35,7 @@ async function Confirmed({
   const booking = await getBookingDetails({ id: (Array.isArray(raw) ? raw[0] : raw) ?? "" });
   if (!booking)
     return (
-      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         No encontramos esta reserva
       </h1>
     );
@@ -44,7 +44,7 @@ async function Confirmed({
     return (
       <>
         <meta httpEquiv="refresh" content="5" />
-        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           Estamos confirmando tu pago…
         </h1>
         <p className="mt-2 text-tertiary" role="status">
@@ -59,7 +59,7 @@ async function Confirmed({
   if (booking.status !== "paid") {
     return (
       <>
-        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           Reserva {booking.status === "refunded" ? "reembolsada" : "cancelada"}
         </h1>
         <BookingSummary booking={booking} />
@@ -81,7 +81,7 @@ async function Confirmed({
       <p className="mt-4 text-sm font-semibold tracking-wide text-success uppercase">
         Pago recibido
       </p>
-      <h1 className="mt-1 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="mt-1 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         ¡Reserva confirmada!
       </h1>
       <p className="mt-2 text-tertiary">

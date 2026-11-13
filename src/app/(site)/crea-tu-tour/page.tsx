@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function QuotePage({ searchParams }: PageProps<"/crea-tu-tour">) {
   return (
     <div className="container-site py-8 md:py-12">
-      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         Crea tu tour a medida
       </h1>
       <p className="mt-2 max-w-2xl text-tertiary">

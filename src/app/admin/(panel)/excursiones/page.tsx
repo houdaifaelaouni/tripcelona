@@ -65,7 +65,7 @@ export default async function ToursAdmin({ searchParams }: PageProps<"/admin/exc
                 <tr key={t.id}>
                   <td className={td}>
                     <Link
-                      className="font-semibold text-brand-secondary hover:underline"
+                      className="font-medium text-primary hover:text-brand-secondary"
                       href={`/admin/excursiones/${t.id}`}
                     >
                       {t.title}

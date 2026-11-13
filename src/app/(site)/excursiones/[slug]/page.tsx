@@ -110,7 +110,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
         </nav>
 
         <header className="mt-3">
-          <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+          <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
             {tour.title}
           </h1>
           {tour.area && (
@@ -152,7 +152,7 @@ async function TourPageBody({ params }: { params: PageProps<"/excursiones/[slug]
                     >
                       <span
                         aria-hidden
-                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-secondary text-sm font-semibold text-brand-secondary ring-1 ring-brand ring-inset"
+                        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-mono text-xs font-medium text-brand-secondary ring-1 ring-secondary ring-inset"
                       >
                         {i + 1}
                       </span>

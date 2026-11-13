@@ -10,7 +10,6 @@ import { ChevronRight, HomeLine } from "@untitledui/icons";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
-import { FeaturedIcon } from "@/components/uui/foundations/featured-icon/featured-icon";
 import { BadgeWithDot } from "@/components/uui/base/badges/badges";
 import { cn } from "@/lib/cn";
 export { EmptyState } from "./empty-state";
@@ -82,10 +81,10 @@ export function PageTitle({
       {trail && <Breadcrumbs items={trail} />}
       <div className="flex flex-col gap-4 border-b border-secondary pb-5 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
-          <h1 className="text-2xl leading-8 font-semibold tracking-normal text-primary md:text-3xl md:leading-9">
+          <h1 className="text-2xl leading-8 font-semibold tracking-[-0.025em] text-primary md:text-3xl md:leading-9">
             {children}
           </h1>
-          {description && <div className="mt-1 text-md text-tertiary">{description}</div>}
+          {description && <div className="mt-1.5 text-sm text-tertiary">{description}</div>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
       </div>
@@ -171,29 +170,29 @@ export function Panel({
     <section
       id={id}
       className={cn(
-        "mb-6 flex flex-col overflow-hidden rounded-xl bg-primary shadow-xs ring-1 ring-secondary",
+        "mb-6 flex flex-col overflow-hidden rounded-xl bg-primary ring-1 ring-secondary",
         className,
       )}
     >
       {hasHeader && (
-        <div className="flex flex-col gap-4 border-b border-secondary px-4 py-5 md:flex-row md:items-start md:justify-between md:px-6">
+        <div className="flex flex-col gap-3 border-b border-secondary px-4 py-4 md:flex-row md:items-center md:justify-between md:px-5">
           <div className="min-w-0">
             {title && (
-              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-normal text-primary">
+              <h2 className="flex items-center gap-2 text-md font-semibold tracking-tight text-primary">
                 {title}
                 {badge}
               </h2>
             )}
-            {description && <p className="mt-1 text-sm text-tertiary">{description}</p>}
+            {description && <p className="mt-0.5 text-sm text-tertiary">{description}</p>}
           </div>
-          {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
+          {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
         </div>
       )}
-      <div className="px-4 py-5 md:px-6 [&>div[data-table]:first-child]:-mt-5 [&>div[data-table]:last-child]:-mb-5">
+      <div className="px-4 py-5 md:px-5 [&>div[data-table]:first-child]:-mt-5 [&>div[data-table]:last-child]:-mb-5">
         {children}
       </div>
       {footer && (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-secondary px-4 py-3 text-sm text-tertiary md:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-secondary bg-secondary px-4 py-3 text-sm text-tertiary md:px-5">
           {footer}
         </div>
       )}
@@ -219,7 +218,7 @@ export function Table({ className, ...props }: ComponentProps<"table">) {
       tabIndex={0}
       role="region"
       aria-label={props["aria-label"] ?? "Tabla"}
-      className="-mx-4 overflow-x-auto outline-focus-ring focus-visible:outline-2 md:-mx-6"
+      className="-mx-4 overflow-x-auto outline-focus-ring focus-visible:outline-2 md:-mx-5"
     >
       <table
         className={cn(
@@ -233,8 +232,8 @@ export function Table({ className, ...props }: ComponentProps<"table">) {
 }
 
 export const th =
-  "h-11 border-b border-secondary bg-secondary px-4 py-3 text-xs font-semibold whitespace-nowrap text-quaternary first:pl-4 md:px-6";
-export const td = "border-b border-secondary px-4 py-4 align-middle text-sm text-tertiary md:px-6";
+  "h-9 border-b border-secondary bg-secondary px-4 py-2 text-xs font-medium whitespace-nowrap text-quaternary first:pl-4 md:px-5";
+export const td = "border-b border-secondary px-4 py-3 align-middle text-sm text-tertiary md:px-5";
 
 /** Footer line under a list: "12 reservas". */
 export function ResultCount({ count, one, many }: { count: number; one: string; many: string }) {
@@ -264,11 +263,15 @@ export function StatCard({
   const body = (
     <>
       <div className="flex items-center gap-3">
-        <FeaturedIcon icon={Icon} color="gray" theme="modern" size="md" />
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-fg-tertiary ring-1 ring-secondary ring-inset">
+          <Icon aria-hidden className="size-4" />
+        </span>
         <span className="text-sm font-medium text-tertiary">{label}</span>
       </div>
       <div className="mt-5 flex flex-wrap items-end justify-between gap-2">
-        <span className="text-3xl leading-9 font-semibold text-primary">{value}</span>
+        <span className="text-3xl leading-9 font-semibold tracking-[-0.03em] text-primary tabular-nums">
+          {value}
+        </span>
         {trend && (
           <span
             className={cn(
@@ -285,9 +288,12 @@ export function StatCard({
       {hint && <p className="mt-2 text-sm text-tertiary">{hint}</p>}
     </>
   );
-  const cls = "flex flex-col rounded-xl bg-primary p-5 shadow-xs ring-1 ring-secondary md:p-6";
+  const cls = "flex flex-col rounded-xl bg-primary p-5 ring-1 ring-secondary";
   return href ? (
-    <Link href={href} className={cn(cls, "transition-shadow hover:shadow-md")}>
+    <Link
+      href={href}
+      className={cn(cls, "transition-colors hover:bg-secondary hover:ring-primary")}
+    >
       {body}
     </Link>
   ) : (
@@ -296,7 +302,7 @@ export function StatCard({
 }
 
 export function StatGrid({ children }: { children: ReactNode }) {
-  return <div className="mb-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">{children}</div>;
+  return <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{children}</div>;
 }
 
 type Tone = "neutral" | "brand" | "accent" | "success" | "danger";

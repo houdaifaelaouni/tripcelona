@@ -25,8 +25,8 @@ export const metadata: Metadata = {
 export default function CatalogPage({ searchParams }: PageProps<"/ofertas-de-viajes">) {
   return (
     <div className="container-site py-12 md:py-16">
-      <p className="text-sm font-semibold text-brand-secondary md:text-md">Excursiones</p>
-      <h1 className="mt-3 text-4xl leading-[1.15] font-semibold tracking-tight text-primary md:text-5xl">
+      <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">Excursiones</p>
+      <h1 className="mt-3 text-4xl leading-[1.1] font-semibold tracking-[-0.035em] text-primary md:text-[3.5rem]">
         Ofertas de viajes
       </h1>
       <p className="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
@@ -59,10 +59,10 @@ async function CatalogResults({
                   href={catalogHref({ ...filters, zona: d.area })}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "inline-flex h-10 items-center rounded-lg px-3.5 text-sm font-semibold whitespace-nowrap shadow-xs ring-1 transition-colors ring-inset",
+                    "inline-flex h-9 items-center rounded-full px-3.5 text-sm font-medium whitespace-nowrap ring-1 transition-colors ring-inset",
                     active
-                      ? "bg-brand-secondary text-brand-secondary ring-brand"
-                      : "bg-primary text-secondary ring-primary hover:bg-primary_hover",
+                      ? "bg-primary-solid text-white ring-transparent"
+                      : "bg-primary text-tertiary ring-secondary hover:bg-secondary hover:text-primary",
                   )}
                 >
                   {d.label}

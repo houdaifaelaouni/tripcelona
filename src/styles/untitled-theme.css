@@ -1,8 +1,10 @@
 /*
  * Untitled UI design tokens (MIT, © 2025 Untitled UI,
  * https://github.com/untitleduico/react, see THIRD_PARTY_NOTICES.md),
- * light mode only. Changes for Tripcelona: the brand scale is Tripcelona
- * navy/blue (600 = #0071c2, 800 = #003580) instead of purple, and the
+ * light mode only. Changes for Tripcelona: the brand scale is the
+ * Tripcelona blue (600 = #2563eb), the neutral scale is a cool light-mode
+ * ladder (see globals.css "Brand" notes), shadows are flattened to
+ * hairlines, and the
  * display font sizes and font families are left to the Tripcelona tokens in
  * globals.css. Used by the admin (src/components/uui).
  */
@@ -39,20 +41,17 @@
   --breakpoint-xs: 37.5rem;
 
   /* SHADOW */
-  --shadow-xs: 0px 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.06);
-  --shadow-lg:
-    0px 12px 16px -4px rgba(0, 0, 0, 0.08), 0px 4px 6px -2px rgba(0, 0, 0, 0.03),
-    0px 2px 2px -1px rgba(0, 0, 0, 0.04);
+  --shadow-xs: 0px 1px 2px rgba(15, 16, 17, 0.04);
+  --shadow-sm: 0px 1px 2px rgba(15, 16, 17, 0.05);
+  --shadow-md: 0px 2px 6px -1px rgba(15, 16, 17, 0.06), 0px 1px 2px rgba(15, 16, 17, 0.04);
+  --shadow-lg: 0px 8px 24px -6px rgba(15, 16, 17, 0.1), 0px 1px 2px rgba(15, 16, 17, 0.04);
   --shadow-xl:
     0px 20px 24px -4px rgba(0, 0, 0, 0.08), 0px 8px 8px -4px rgba(0, 0, 0, 0.03),
     0px 3px 3px -1.5px rgba(0, 0, 0, 0.04);
   --shadow-2xl: 0px 24px 48px -12px rgba(0, 0, 0, 0.18), 0px 4px 4px -2px rgba(0, 0, 0, 0.04);
   --shadow-3xl: 0px 32px 64px -12px rgba(0, 0, 0, 0.14), 0px 5px 5px -2.5px rgba(0, 0, 0, 0.04);
 
-  --shadow-skeuomorphic:
-    0px 0px 0px 1px rgba(0, 0, 0, 0.18) inset, 0px -2px 0px 0px rgba(0, 0, 0, 0.05) inset;
+  --shadow-skeuomorphic: 0 0 #0000;
   --shadow-xs-skeuomorphic: var(--shadow-skeuomorphic), var(--shadow-xs);
 
   --shadow-modern-mockup-inner-lg:
@@ -107,17 +106,32 @@
   --color-alpha-white: rgb(255 255 255);
   --color-alpha-black: rgb(0 0 0);
 
-  --color-brand-50: #eef5fc;
-  --color-brand-100: #d9e9f7;
-  --color-brand-200: #b3d3ef;
-  --color-brand-300: #80b5e3;
-  --color-brand-400: #4d97d6;
-  --color-brand-500: #1a82cc;
-  --color-brand-600: #0071c2;
-  --color-brand-700: #005999;
-  --color-brand-800: #003580;
-  --color-brand-900: #00224f;
-  --color-brand-950: #001633;
+  --color-brand-50: #eff5ff;
+  --color-brand-100: #dbe8fe;
+  --color-brand-200: #bfd5fe;
+  --color-brand-300: #93b8fd;
+  --color-brand-400: #6094fa;
+  --color-brand-500: #3b76f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4fd8;
+  --color-brand-800: #1e41af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #172554;
+
+  /* Cool neutral ladder for light mode: canvas white, surfaces #f7f8f8 /
+     #f1f2f4, hairlines #e6e8eb / #d0d6e0, ink #0f1011. */
+  --color-neutral-25: #fbfbfc;
+  --color-neutral-50: #f7f8f8;
+  --color-neutral-100: #f1f2f4;
+  --color-neutral-200: #e6e8eb;
+  --color-neutral-300: #d0d6e0;
+  --color-neutral-400: #a4aab4;
+  --color-neutral-500: #686d76;
+  --color-neutral-600: #52565e;
+  --color-neutral-700: #3c4048;
+  --color-neutral-800: #23252a;
+  --color-neutral-900: #0f1011;
+  --color-neutral-950: #08090a;
 
   /* LIGHT MODE VARIABLES */
 
@@ -283,20 +297,20 @@
   --color-text-secondary: var(--color-neutral-700);
   --color-text-secondary_hover: var(--color-neutral-800);
   --color-text-tertiary_hover: var(--color-neutral-700);
-  --color-text-brand-secondary: var(--color-brand-700);
+  --color-text-brand-secondary: var(--color-brand-600);
   --color-text-placeholder: var(--color-neutral-500);
   --color-text-brand-tertiary: var(--color-brand-600);
   --color-text-editor-icon-fg: var(--color-neutral-400);
   --color-text-editor-icon-fg_active: var(--color-neutral-500);
   --color-text-quaternary: var(--color-neutral-500);
-  --color-text-brand-primary: var(--color-brand-900);
+  --color-text-brand-primary: var(--color-neutral-900);
   --color-text-primary_on-brand: var(--color-white);
   --color-text-secondary_on-brand: var(--color-brand-200);
   --color-text-tertiary_on-brand: var(--color-brand-200);
   --color-text-quaternary_on-brand: var(--color-brand-300);
   --color-text-brand-tertiary_alt: var(--color-brand-600);
   --color-text-error-primary_hover: var(--color-red-700);
-  --color-text-brand-secondary_hover: var(--color-brand-800);
+  --color-text-brand-secondary_hover: var(--color-brand-700);
 
   /* BORDER COLORS */
   --color-border-primary: var(--color-neutral-300);
@@ -354,8 +368,8 @@
   --color-bg-brand-primary_alt: var(--color-brand-50);
   --color-bg-secondary_alt: var(--color-neutral-50);
   --color-bg-overlay: var(--color-neutral-950);
-  --color-bg-brand-section: var(--color-brand-800);
-  --color-bg-brand-section_subtle: var(--color-brand-700);
+  --color-bg-brand-section: var(--color-neutral-900);
+  --color-bg-brand-section_subtle: var(--color-neutral-800);
   --color-bg-primary-solid: var(--color-neutral-950);
   --color-bg-error-solid_hover: var(--color-red-700);
 

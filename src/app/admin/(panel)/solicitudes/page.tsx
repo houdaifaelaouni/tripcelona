@@ -130,7 +130,7 @@ async function Quotes({ status }: { status: Status | null }) {
               <td className={td}>
                 <Link
                   href={`/admin/solicitudes/${r.id}`}
-                  className="font-semibold text-brand-secondary hover:underline"
+                  className="font-medium text-primary hover:text-brand-secondary"
                 >
                   {r.name}
                 </Link>
@@ -191,7 +191,7 @@ async function Messages({ status }: { status: Status | null }) {
                 <td className={td}>
                   <Link
                     href={`/admin/solicitudes/mensajes/${m.id}`}
-                    className="font-semibold text-brand-secondary hover:underline"
+                    className="font-medium text-primary hover:text-brand-secondary"
                   >
                     {p.name ?? "—"}
                   </Link>

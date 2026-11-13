@@ -10,30 +10,30 @@ import { MobileNav } from "./mobile-nav";
 
 /*
  * Untitled UI marketing header layout (MIT, see THIRD_PARTY_NOTICES.md):
- * white 72px bar, wordmark left, nav centred, actions and a primary CTA
- * right. Tripcelona navy is the wordmark colour.
+ * white 64px bar with a hairline, wordmark left, nav centred, actions and
+ * one blue primary CTA right.
  */
 const navLink =
-  "flex items-center gap-0.5 rounded-lg px-3 py-2 text-md font-semibold text-secondary transition-colors hover:bg-primary_hover hover:text-secondary_hover";
+  "flex items-center gap-0.5 rounded-md px-3 py-1.5 text-sm font-medium text-tertiary transition-colors hover:bg-secondary hover:text-primary";
 const action = iconButtonClasses(
   "soft",
   "md",
-  "bg-primary text-fg-quaternary ring-1 ring-primary ring-inset shadow-xs hover:bg-primary_hover hover:text-fg-quaternary_hover",
+  "size-9 rounded-lg bg-primary text-fg-tertiary ring-1 ring-secondary ring-inset hover:bg-secondary hover:text-fg-primary",
 );
 
 export async function Header() {
   const site = await getSiteSettings();
   return (
-    <header className="sticky top-0 z-40 border-b border-secondary bg-primary/95 text-primary backdrop-blur">
-      <div className="container-site grid h-18 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
+    <header className="sticky top-0 z-40 border-b border-secondary bg-primary/85 text-primary backdrop-blur-md backdrop-saturate-150">
+      <div className="container-site grid h-16 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
         {/* TODO(PO): replace the wordmark with the SVG logo (access checklist). */}
         <Link
           href="/"
-          className="flex items-center gap-2 justify-self-start text-xl font-bold tracking-tight text-navy"
+          className="flex items-center gap-2 justify-self-start text-lg font-semibold tracking-tight text-primary"
         >
           <span
             aria-hidden
-            className="flex size-8 items-center justify-center rounded-lg [&>svg]:size-5 bg-brand-solid text-md text-white shadow-xs-skeuomorphic"
+            className="flex size-7 items-center justify-center rounded-md bg-brand-solid text-white [&>svg]:size-4"
           >
             <Mountain />
           </span>
@@ -55,12 +55,12 @@ export async function Header() {
                     />
                   </Link>
                   {/* Opens on hover and on keyboard focus inside the item. */}
-                  <ul className="invisible absolute top-full left-0 mt-2 min-w-60 rounded-xl bg-primary p-1.5 text-secondary opacity-0 shadow-lg ring-1 ring-secondary transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul className="invisible absolute top-full left-0 mt-2 min-w-60 rounded-xl bg-primary p-1 text-secondary opacity-0 shadow-lg ring-1 ring-secondary transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                     {item.children.map((child) => (
                       <li key={child.href}>
                         <Link
                           href={child.href}
-                          className="block rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-primary_hover"
+                          className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary hover:text-primary"
                         >
                           {child.label}
                         </Link>
@@ -82,7 +82,7 @@ export async function Header() {
         <div className="flex items-center justify-self-end gap-2">
           <a
             href={site.phoneHref}
-            className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-secondary whitespace-nowrap hover:bg-primary_hover 2xl:flex"
+            className="hidden items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-tertiary whitespace-nowrap hover:bg-secondary hover:text-primary 2xl:flex"
           >
             <Phone size={18} aria-hidden />
             <span>{site.phoneDisplay}</span>

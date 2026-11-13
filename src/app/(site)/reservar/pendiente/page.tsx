@@ -46,7 +46,7 @@ async function Pending({
 
   if (!booking)
     return (
-      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         No encontramos esta reserva
       </h1>
     );
@@ -54,7 +54,7 @@ async function Pending({
   if (booking.status === "paid") {
     return (
       <>
-        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           Esta reserva ya está pagada
         </h1>
         <BookingSummary booking={booking} />
@@ -68,7 +68,7 @@ async function Pending({
   if (booking.status !== "pending") {
     return (
       <>
-        <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           Reserva cancelada
         </h1>
         <p className="mt-2 text-tertiary">
@@ -87,7 +87,7 @@ async function Pending({
   const canPay = redsysConfig() !== null;
   return (
     <>
-      <h1 className="text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         Revisa y paga tu reserva
       </h1>
       <p className="mt-2 text-tertiary">

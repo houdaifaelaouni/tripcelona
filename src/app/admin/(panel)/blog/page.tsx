@@ -59,7 +59,7 @@ export default async function BlogAdmin({ searchParams }: PageProps<"/admin/blog
               <tr key={p.id}>
                 <td className={td}>
                   <Link
-                    className="font-semibold text-brand-secondary hover:underline"
+                    className="font-medium text-primary hover:text-brand-secondary"
                     href={`/admin/blog/${p.id}`}
                   >
                     {p.title}

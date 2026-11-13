@@ -60,7 +60,7 @@ async function ContentPageBody({ params }: { params: PageProps<"/[slug]">["param
           { name: page.title, path: `/${page.slug}` },
         ])}
       />
-      <h1 className="max-w-3xl text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+      <h1 className="max-w-3xl text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
         {page.title}
       </h1>
       <RichText

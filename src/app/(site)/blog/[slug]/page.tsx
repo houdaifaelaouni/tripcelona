@@ -77,7 +77,7 @@ async function PostPageBody({ params }: { params: PageProps<"/blog/[slug]">["par
             Blog
           </Link>
         </nav>
-        <h1 className="mt-3 text-3xl leading-[1.2] font-semibold tracking-tight text-primary md:text-4xl">
+        <h1 className="mt-3 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           {post.title}
         </h1>
         <p className="mt-2 text-sm text-tertiary">

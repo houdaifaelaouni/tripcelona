@@ -38,7 +38,7 @@ export function MfaChallenge({ next }: { next: string }) {
 
   return (
     <div>
-      <h1 className="text-2xl leading-8 font-semibold text-primary md:text-3xl md:leading-9">
+      <h1 className="text-2xl leading-8 font-semibold tracking-[-0.025em] text-primary md:text-3xl md:leading-9">
         Verificación en dos pasos
       </h1>
       <p className="mt-3 text-md text-tertiary">
