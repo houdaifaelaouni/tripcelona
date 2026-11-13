@@ -522,4 +522,43 @@ export const en: Dictionary = {
   Etiquetas: "Tags",
   "Información legal": "Legal information",
   "Versión publicada en esta web el {date}.": "Version published on this website on {date}.",
+  "Solicitud enviada": "Request sent",
+  "Gracias. Te enviaremos una propuesta personalizada en 24–48 horas.":
+    "Thank you. We will send you a personalised proposal within 24–48 hours.",
+  "Paso {n} de {total}": "Step {n} of {total}",
+  Pasos: "Steps",
+  "Elige tu plan base": "Choose your base plan",
+  "Fecha y grupo": "Date and group",
+  "Añade extras": "Add extras",
+  "Tus datos": "Your details",
+  "Selecciona una excursión…": "Select a trip…",
+  "desde {price}": "from {price}",
+  "Destino a medida (cuéntanos tu idea)": "Tailor-made destination (tell us your idea)",
+  "Fecha preferida": "Preferred date",
+  "Una fecha concreta o varias opciones.": "A specific date or several options.",
+  "Número de personas": "Number of people",
+  "Presupuesto aproximado (opcional)": "Approximate budget (optional)",
+  "Por persona o para todo el grupo.": "Per person or for the whole group.",
+  "Teléfono / WhatsApp": "Phone / WhatsApp",
+  "Empresa o grupo (opcional)": "Company or group (optional)",
+  "¿Algo más que debamos saber?": "Anything else we should know?",
+  "Te confirmaremos el precio final sin compromiso.":
+    "We will confirm the final price with no obligation.",
+  Atrás: "Back",
+  Siguiente: "Next",
+  "Solicitar presupuesto": "Request a quote",
+  "Indica una fecha o un periodo.": "Enter a date or a period.",
+  "Crea tu tour a medida para grupos": "Create your tailor-made group tour",
+  "Empresas, asociaciones y grupos de amigos: elige un plan, la fecha y los extras y te enviamos una propuesta personalizada.":
+    "Companies, associations and groups of friends: choose a plan, the date and the extras and we will send you a personalised proposal.",
+  "Grupos y empresas": "Groups and companies",
+  "Crea tu tour a medida": "Create your tailor-made tour",
+  "¿Vienes con tu empresa, tu asociación o un grupo de amigos? Elige un plan, la fecha y los extras, y te enviamos una propuesta personalizada en 24–48 horas.":
+    "Coming with your company, your association or a group of friends? Choose a plan, the date and the extras, and we will send you a personalised proposal within 24–48 hours.",
+  "¿Prefieres hablarlo?": "Prefer to talk it over?",
+  "Hablar por WhatsApp": "Talk on WhatsApp",
+  "Hola Tripcelona, quiero organizar una excursión para mi grupo.":
+    "Hello Tripcelona, I would like to organise a trip for my group.",
+  "Hola Tripcelona, quiero información sobre vuestras excursiones.":
+    "Hello Tripcelona, I would like information about your trips.",
 };

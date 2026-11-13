@@ -539,4 +539,43 @@ export const fr: Dictionary = {
   Etiquetas: "Étiquettes",
   "Información legal": "Informations légales",
   "Versión publicada en esta web el {date}.": "Version publiée sur ce site le {date}.",
+  "Solicitud enviada": "Demande envoyée",
+  "Gracias. Te enviaremos una propuesta personalizada en 24–48 horas.":
+    "Merci. Nous vous enverrons une proposition personnalisée sous 24 à 48 heures.",
+  "Paso {n} de {total}": "Étape {n} sur {total}",
+  Pasos: "Étapes",
+  "Elige tu plan base": "Choisissez votre formule de base",
+  "Fecha y grupo": "Date et groupe",
+  "Añade extras": "Ajoutez des extras",
+  "Tus datos": "Vos coordonnées",
+  "Selecciona una excursión…": "Sélectionnez une excursion…",
+  "desde {price}": "dès {price}",
+  "Destino a medida (cuéntanos tu idea)": "Destination sur mesure (parlez-nous de votre idée)",
+  "Fecha preferida": "Date souhaitée",
+  "Una fecha concreta o varias opciones.": "Une date précise ou plusieurs options.",
+  "Número de personas": "Nombre de personnes",
+  "Presupuesto aproximado (opcional)": "Budget approximatif (facultatif)",
+  "Por persona o para todo el grupo.": "Par personne ou pour tout le groupe.",
+  "Teléfono / WhatsApp": "Téléphone / WhatsApp",
+  "Empresa o grupo (opcional)": "Entreprise ou groupe (facultatif)",
+  "¿Algo más que debamos saber?": "Autre chose que nous devrions savoir ?",
+  "Te confirmaremos el precio final sin compromiso.":
+    "Nous vous confirmerons le prix final sans engagement.",
+  Atrás: "Retour",
+  Siguiente: "Suivant",
+  "Solicitar presupuesto": "Demander un devis",
+  "Indica una fecha o un periodo.": "Indiquez une date ou une période.",
+  "Crea tu tour a medida para grupos": "Créez votre tour sur mesure pour groupes",
+  "Empresas, asociaciones y grupos de amigos: elige un plan, la fecha y los extras y te enviamos una propuesta personalizada.":
+    "Entreprises, associations et groupes d'amis : choisissez une formule, la date et les extras et nous vous envoyons une proposition personnalisée.",
+  "Grupos y empresas": "Groupes et entreprises",
+  "Crea tu tour a medida": "Créez votre tour sur mesure",
+  "¿Vienes con tu empresa, tu asociación o un grupo de amigos? Elige un plan, la fecha y los extras, y te enviamos una propuesta personalizada en 24–48 horas.":
+    "Vous venez avec votre entreprise, votre association ou un groupe d'amis ? Choisissez une formule, la date et les extras, et nous vous envoyons une proposition personnalisée sous 24 à 48 heures.",
+  "¿Prefieres hablarlo?": "Vous préférez en parler ?",
+  "Hablar por WhatsApp": "Parler sur WhatsApp",
+  "Hola Tripcelona, quiero organizar una excursión para mi grupo.":
+    "Bonjour Tripcelona, je souhaite organiser une excursion pour mon groupe.",
+  "Hola Tripcelona, quiero información sobre vuestras excursiones.":
+    "Bonjour Tripcelona, je souhaite des informations sur vos excursions.",
 };

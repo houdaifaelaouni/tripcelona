@@ -6,6 +6,7 @@ import { Checkbox, Input, Select, Textarea } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
 import { submitQuote } from "@/lib/forms/actions";
 import { QUOTE_CUSTOM, type FormState } from "@/lib/forms/schema";
+import { useT } from "@/components/i18n/provider";
 import { FormAlert, FormSuccess, Honeypot, PrivacyConsent } from "./form-bits";
 
 type TourOption = { slug: string; title: string; priceFrom: string | null };
@@ -45,6 +46,8 @@ export function QuoteWizard({
   groupNote: string | null;
   initialTour?: string;
 }) {
+  const t = useT();
+  const tr = (s?: string) => (s ? t(s) : undefined);
   const [state, action, pending] = useActionState<FormState, FormData>(submitQuote, {
     status: "idle",
   });
@@ -140,8 +143,8 @@ export function QuoteWizard({
 
   if (state.status === "ok") {
     return (
-      <FormSuccess title="Solicitud enviada">
-        <p>Gracias. Te enviaremos una propuesta personalizada en 24–48 horas.</p>
+      <FormSuccess title={t("Solicitud enviada")}>
+        <p>{t("Gracias. Te enviaremos una propuesta personalizada en 24–48 horas.")}</p>
       </FormSuccess>
     );
   }
@@ -161,9 +164,9 @@ export function QuoteWizard({
       {enhanced && (
         <div>
           <p className="text-sm text-tertiary">
-            Paso {step + 1} de {STEPS.length}
+            {t("Paso {n} de {total}", { n: step + 1, total: STEPS.length })}
           </p>
-          <ol className="mt-2 grid grid-cols-4 gap-2" aria-label="Pasos">
+          <ol className="mt-2 grid grid-cols-4 gap-2" aria-label={t("Pasos")}>
             {STEPS.map((label, i) => (
               <li key={label} aria-current={i === step ? "step" : undefined} className="min-w-0">
                 <span
@@ -179,10 +182,10 @@ export function QuoteWizard({
                     i === step ? "font-semibold text-primary" : "text-tertiary",
                   )}
                 >
-                  {label}
+                  {t(label)}
                 </span>
                 <span className="sr-only sm:hidden">
-                  {i + 1}. {label}
+                  {i + 1}. {t(label)}
                 </span>
               </li>
             ))}
@@ -199,23 +202,23 @@ export function QuoteWizard({
             tabIndex={-1}
             className="text-display-sm font-semibold"
           >
-            1. {STEPS[0]}
+            1. {t(STEPS[0])}
           </legend>
           <Select
-            label="Excursión"
+            label={t("Excursión")}
             name="tour"
             required
             defaultValue={v("tour")}
-            error={errors.tour}
+            error={tr(errors.tour)}
           >
-            <option value="">Selecciona una excursión…</option>
-            {tours.map((t) => (
-              <option key={t.slug} value={t.slug}>
-                {t.title}
-                {t.priceFrom ? ` — desde ${t.priceFrom}` : ""}
+            <option value="">{t("Selecciona una excursión…")}</option>
+            {tours.map((tour) => (
+              <option key={tour.slug} value={tour.slug}>
+                {tour.title}
+                {tour.priceFrom ? ` — ${t("desde {price}", { price: tour.priceFrom })}` : ""}
               </option>
             ))}
-            <option value={QUOTE_CUSTOM}>Destino a medida (cuéntanos tu idea)</option>
+            <option value={QUOTE_CUSTOM}>{t("Destino a medida (cuéntanos tu idea)")}</option>
           </Select>
         </fieldset>
 
@@ -225,29 +228,29 @@ export function QuoteWizard({
             tabIndex={-1}
             className="text-display-sm font-semibold"
           >
-            2. {STEPS[1]}
+            2. {t(STEPS[1])}
           </legend>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
-              label="Fecha preferida"
+              label={t("Fecha preferida")}
               name="dates"
               required
               defaultValue={v("dates")}
-              error={errors.dates}
-              hint="Una fecha concreta o varias opciones."
+              error={tr(errors.dates)}
+              hint={t("Una fecha concreta o varias opciones.")}
             />
             <Input
-              label="Número de personas"
+              label={t("Número de personas")}
               name="groupSize"
               type="number"
               inputMode="numeric"
               min={1}
               required
               defaultValue={v("groupSize")}
-              error={errors.groupSize}
+              error={tr(errors.groupSize)}
             />
           </div>
-          {groupNote && <p className="text-tertiary">{groupNote}</p>}
+          {groupNote && <p className="text-tertiary">{t(groupNote)}</p>}
         </fieldset>
 
         <fieldset className={cn("space-y-4", !shown(2) && "hidden")}>
@@ -256,7 +259,7 @@ export function QuoteWizard({
             tabIndex={-1}
             className="text-display-sm font-semibold"
           >
-            3. {STEPS[2]}
+            3. {t(STEPS[2])}
           </legend>
           {extras.length > 0 && (
             <ul className="space-y-3">
@@ -265,7 +268,7 @@ export function QuoteWizard({
                   <Checkbox
                     name="extras"
                     value={x}
-                    label={x}
+                    label={t(x)}
                     defaultChecked={chosenExtras.includes(x)}
                   />
                 </li>
@@ -273,11 +276,11 @@ export function QuoteWizard({
             </ul>
           )}
           <Input
-            label="Presupuesto aproximado (opcional)"
+            label={t("Presupuesto aproximado (opcional)")}
             name="budget"
             defaultValue={v("budget")}
-            error={errors.budget}
-            hint="Por persona o para todo el grupo."
+            error={tr(errors.budget)}
+            hint={t("Por persona o para todo el grupo.")}
           />
         </fieldset>
 
@@ -287,69 +290,71 @@ export function QuoteWizard({
             tabIndex={-1}
             className="text-display-sm font-semibold"
           >
-            4. {STEPS[3]}
+            4. {t(STEPS[3])}
           </legend>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
-              label="Nombre"
+              label={t("Nombre")}
               name="name"
               autoComplete="name"
               required
               defaultValue={v("name")}
-              error={errors.name}
+              error={tr(errors.name)}
             />
             <Input
-              label="Email"
+              label={t("Email")}
               name="email"
               type="email"
               autoComplete="email"
               required
               defaultValue={v("email")}
-              error={errors.email}
+              error={tr(errors.email)}
             />
             <Input
-              label="Teléfono / WhatsApp"
+              label={t("Teléfono / WhatsApp")}
               name="phone"
               type="tel"
               autoComplete="tel"
               required
               defaultValue={v("phone")}
-              error={errors.phone}
+              error={tr(errors.phone)}
             />
             <Input
-              label="Empresa o grupo (opcional)"
+              label={t("Empresa o grupo (opcional)")}
               name="company"
               autoComplete="organization"
               defaultValue={v("company")}
-              error={errors.company}
+              error={tr(errors.company)}
             />
           </div>
           <Textarea
-            label="¿Algo más que debamos saber?"
+            label={t("¿Algo más que debamos saber?")}
             name="message"
             rows={4}
             defaultValue={v("message")}
-            error={errors.message}
+            error={tr(errors.message)}
           />
-          <PrivacyConsent error={errors.privacy} />
-          <p className="text-sm text-tertiary">Te confirmaremos el precio final sin compromiso.</p>
+          <PrivacyConsent error={tr(errors.privacy)} />
+          <p className="text-sm text-tertiary">
+            {t("Te confirmaremos el precio final sin compromiso.")}
+          </p>
         </fieldset>
       </div>
 
       <div className="flex flex-wrap gap-3">
         {enhanced && step > 0 && (
           <Button variant="outline" onClick={() => go(step - 1)}>
-            Atrás
+            {t("Atrás")}
           </Button>
         )}
         {enhanced && step < STEPS.length - 1 ? (
           // Distinct keys: reusing one <button> would turn the click into a submit.
           <Button key="next" onClick={() => go(step + 1)}>
-            Siguiente
+            {t("Siguiente")}
           </Button>
         ) : (
           <Button key="submit" type="submit" size="lg" disabled={pending}>
-            {pending ? "Enviando…" : "Solicitar presupuesto"}
+            {pending ? t("Enviando…") : t("Solicitar presupuesto")}
           </Button>
         )}
       </div>

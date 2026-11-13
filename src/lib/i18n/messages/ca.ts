@@ -527,4 +527,43 @@ export const ca: Dictionary = {
   Etiquetas: "Etiquetes",
   "Información legal": "Informació legal",
   "Versión publicada en esta web el {date}.": "Versió publicada en aquesta web el {date}.",
+  "Solicitud enviada": "Sol·licitud enviada",
+  "Gracias. Te enviaremos una propuesta personalizada en 24–48 horas.":
+    "Gràcies. T'enviarem una proposta personalitzada en 24–48 hores.",
+  "Paso {n} de {total}": "Pas {n} de {total}",
+  Pasos: "Passos",
+  "Elige tu plan base": "Tria el teu pla base",
+  "Fecha y grupo": "Data i grup",
+  "Añade extras": "Afegeix extres",
+  "Tus datos": "Les teves dades",
+  "Selecciona una excursión…": "Selecciona una excursió…",
+  "desde {price}": "des de {price}",
+  "Destino a medida (cuéntanos tu idea)": "Destinació a mida (explica'ns la teva idea)",
+  "Fecha preferida": "Data preferida",
+  "Una fecha concreta o varias opciones.": "Una data concreta o diverses opcions.",
+  "Número de personas": "Nombre de persones",
+  "Presupuesto aproximado (opcional)": "Pressupost aproximat (opcional)",
+  "Por persona o para todo el grupo.": "Per persona o per a tot el grup.",
+  "Teléfono / WhatsApp": "Telèfon / WhatsApp",
+  "Empresa o grupo (opcional)": "Empresa o grup (opcional)",
+  "¿Algo más que debamos saber?": "Alguna cosa més que hàgim de saber?",
+  "Te confirmaremos el precio final sin compromiso.":
+    "Et confirmarem el preu final sense compromís.",
+  Atrás: "Enrere",
+  Siguiente: "Següent",
+  "Solicitar presupuesto": "Sol·licitar pressupost",
+  "Indica una fecha o un periodo.": "Indica una data o un període.",
+  "Crea tu tour a medida para grupos": "Crea el teu tour a mida per a grups",
+  "Empresas, asociaciones y grupos de amigos: elige un plan, la fecha y los extras y te enviamos una propuesta personalizada.":
+    "Empreses, associacions i grups d'amics: tria un pla, la data i els extres i t'enviem una proposta personalitzada.",
+  "Grupos y empresas": "Grups i empreses",
+  "Crea tu tour a medida": "Crea el teu tour a mida",
+  "¿Vienes con tu empresa, tu asociación o un grupo de amigos? Elige un plan, la fecha y los extras, y te enviamos una propuesta personalizada en 24–48 horas.":
+    "Véns amb la teva empresa, la teva associació o un grup d'amics? Tria un pla, la data i els extres, i t'enviem una proposta personalitzada en 24–48 hores.",
+  "¿Prefieres hablarlo?": "Prefereixes parlar-ne?",
+  "Hablar por WhatsApp": "Parlar per WhatsApp",
+  "Hola Tripcelona, quiero organizar una excursión para mi grupo.":
+    "Hola Tripcelona, vull organitzar una excursió per al meu grup.",
+  "Hola Tripcelona, quiero información sobre vuestras excursiones.":
+    "Hola Tripcelona, vull informació sobre les vostres excursions.",
 };
