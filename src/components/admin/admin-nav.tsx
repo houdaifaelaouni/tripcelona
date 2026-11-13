@@ -82,7 +82,7 @@ export function AdminRouter({ children }: { children: ReactNode }) {
 export function SidebarBrand() {
   return (
     <Link href="/admin" className="flex items-center gap-2 rounded-md">
-      <Logo className="text-md" markClassName="size-7" />
+      <Logo className="h-10" />
       <span className="rounded-md bg-tertiary px-1.5 py-0.5 text-[11px] font-medium text-tertiary">
         Admin
       </span>

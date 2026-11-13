@@ -28,7 +28,7 @@ export async function Header() {
     <header className="sticky top-0 z-40 border-b border-secondary bg-primary/85 text-primary backdrop-blur-md backdrop-saturate-150">
       <div className="container-site grid h-16 grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
         <Link href="/" className="flex items-center justify-self-start rounded-md">
-          <Logo markClassName="size-8" />
+          <Logo className="h-12" priority />
           <span className="sr-only"> - Excursiones en grupo por Cataluña, inicio</span>
         </Link>
 

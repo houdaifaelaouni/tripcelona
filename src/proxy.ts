@@ -70,5 +70,5 @@ async function adminGate(request: NextRequest) {
 
 export const config = {
   // Everything except Next internals, API routes and the health check.
-  matcher: ["/((?!_next/|api/|health$|favicon\\.ico$|icon\\.svg$).*)"],
+  matcher: ["/((?!_next/|api/|health$|favicon\\.ico$|icon\\.png$|brand/).*)"],
 };

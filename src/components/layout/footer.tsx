@@ -25,7 +25,7 @@ export async function Footer() {
         <div className="grid gap-10 py-14 md:py-16 lg:grid-cols-[1fr_400px] lg:gap-16">
           <div>
             <Link href="/" className="inline-flex rounded-md">
-              <Logo className="text-xl" markClassName="size-9" />
+              <Logo className="h-20" />
               <span className="sr-only"> - inicio</span>
             </Link>
             <p className="mt-6 text-md font-semibold text-primary">
