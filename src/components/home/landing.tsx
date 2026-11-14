@@ -58,7 +58,7 @@ export function AnnouncementBar({ next, locale }: { next: NextTrip; locale: Loca
   const t = createT(locale);
   const { tour, departure } = next;
   return (
-    <div className="border-b border-brand-100 bg-brand-primary text-sm text-brand-secondary">
+    <div className="hidden border-b border-brand-100 bg-brand-primary text-sm text-brand-secondary md:block">
       <p className="container-site flex min-h-10 flex-wrap items-center justify-center gap-x-2 gap-y-1 py-2 text-center">
         <span className="font-semibold">{t("Próxima salida:")}</span>
         <span className="first-letter:uppercase">{formatDateLong(departure.startsAt, locale)}</span>
