@@ -210,3 +210,38 @@ test("owner downloads CSV exports and gets a 401 when signed out", async ({ page
   expect(res.headers()["content-type"]).toContain("text/csv");
   expect(await res.text()).toContain("Referencia");
 });
+
+test("owner anonymises a contact message on request (GDPR erasure)", async ({ page }) => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const res = await fetch(`${url}/rest/v1/leads`, {
+    method: "POST",
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify({
+      source: "contact",
+      payload: { name: "Persona Borrar", email: "borrar@example.com", message: "Hola, borrad." },
+    }),
+  });
+  const [lead] = (await res.json()) as { id: string }[];
+
+  await page.goto("/admin/login");
+  await page.locator("input[name=email]").fill(E2E.ownerEmail);
+  await page.locator("input[name=password]").fill(e2eOwnerPassword());
+  await page.locator("button[type=submit]").click();
+  await page.waitForURL((u) => !u.pathname.startsWith("/admin/login"));
+
+  await page.goto(`/admin/solicitudes/mensajes/${lead.id}`);
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByText("borrar@example.com")).toBeVisible();
+  await page.getByLabel("Anonimizar los datos personales. No se puede deshacer.").check();
+  await page.getByRole("button", { name: "Anonimizar datos" }).click();
+  await page.waitForURL(/ok=anonimizado/);
+  await expect(page.getByText("borrar@example.com")).toHaveCount(0);
+  await expect(page.getByText("Hola, borrad.")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Anonimizar datos" })).toHaveCount(0);
+});
