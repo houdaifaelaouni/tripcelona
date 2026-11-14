@@ -28,7 +28,8 @@ export function securityHeaders(env: {
     `script-src ${src("'self'", "'unsafe-inline'", vercel)}`,
     `style-src 'self' 'unsafe-inline'`,
     `img-src ${src("'self'", "data:", "blob:", supabase, "https://tripcelona.com", vercel)}`,
-    `media-src ${src("'self'", supabase)}`,
+    // Mixkit CDN serves the default free-license hero video.
+    `media-src ${src("'self'", supabase, "https://assets.mixkit.co")}`,
     `font-src 'self' data:`,
     `connect-src ${src("'self'", supabase, supabaseWs, vercel, local)}`,
     `frame-src ${src(vercel) || "'none'"}`,
