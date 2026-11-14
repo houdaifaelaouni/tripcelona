@@ -68,7 +68,7 @@ export default async function HomeContentAdmin({ searchParams }: PageProps<"/adm
             name="heroVideoUrl"
             defaultValue={home.heroVideoUrl}
             maxLength={300}
-            hint="Enlace a un .mp4 o .webm corto (10-20 s, sin sonido, menos de 8 MB), subido a Supabase Storage o a /public. Déjalo vacío para usar la foto."
+            hint="Enlace a un .mp4 o .webm corto (10-20 s, sin sonido, menos de 8 MB), subido a Supabase Storage o a /public. Si lo dejas vacío se usa el vídeo gratuito de la Sagrada Família (Mixkit)."
           />
         </SettingsRow>
         <SettingsRow

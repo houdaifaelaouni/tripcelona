@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  DEFAULT_HERO_VIDEO_URL,
   HOME_DEFAULTS,
   footerFromValue,
   footerToText,
@@ -83,6 +84,14 @@ describe("home texts", () => {
 });
 
 describe("hero video link", () => {
+  it("uses the free Mixkit clip unless the owner sets another video", () => {
+    expect(homeFromValue({ heroVideoUrl: "" }).heroVideoUrl).toBe(DEFAULT_HERO_VIDEO_URL);
+    expect(homeFromValue({ heroVideoUrl: "not a video" }).heroVideoUrl).toBe(
+      DEFAULT_HERO_VIDEO_URL,
+    );
+    expect(homeFromValue({ heroVideoUrl: "/video/own.mp4" }).heroVideoUrl).toBe("/video/own.mp4");
+  });
+
   it("accepts blank, https and site paths to mp4/webm, rejects the rest", async () => {
     const { parseVideoUrl } = await import("@/lib/site-content-shared");
     expect(parseVideoUrl("")).toEqual({ ok: true, value: "" });
