@@ -141,17 +141,31 @@ export async function Footer({ locale }: { locale: Locale }) {
         </div>
 
         <div className="flex flex-col gap-4 border-t border-secondary py-8 text-sm text-tertiary md:flex-row md:items-center md:justify-between">
-          <p>
-            © 2026 Tripcelona · Barcelona, {t("España")}
-            {site.email && (
-              <>
-                {" · "}
-                <a href={`mailto:${site.email}`} className="hover:text-primary">
-                  {site.email}
-                </a>
-              </>
+          <div className="flex flex-col gap-1">
+            <p>
+              © 2026 Tripcelona · Barcelona, {t("España")}
+              {site.email && (
+                <>
+                  {" · "}
+                  <a href={`mailto:${site.email}`} className="hover:text-primary">
+                    {site.email}
+                  </a>
+                </>
+              )}
+            </p>
+            {/* LSSI-CE art. 10: holder, tax ID and address, from Admin > Ajustes > Datos legales. */}
+            {(site.legal.titular || site.legal.nif || site.legal.domicilio) && (
+              <p data-testid="legal-identity">
+                {[
+                  site.legal.titular,
+                  site.legal.nif && `${t("NIF")} ${site.legal.nif}`,
+                  site.legal.domicilio,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
             )}
-          </p>
+          </div>
           {socials.length > 0 && (
             <ul className="flex flex-wrap gap-4" aria-label={t("Redes sociales")}>
               {socials.map((n) => (

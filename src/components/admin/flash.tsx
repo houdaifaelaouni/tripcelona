@@ -10,6 +10,7 @@ const MESSAGES: Record<string, string> = {
   reenviado: "Email reenviado.",
   reembolsado: "Reserva reembolsada.",
   cancelada: "Reserva cancelada y plazas liberadas.",
+  anonimizado: "Datos personales anonimizados.",
   creada: "Reserva creada.",
   invitado: "Invitación enviada.",
   rol: "Rol actualizado.",

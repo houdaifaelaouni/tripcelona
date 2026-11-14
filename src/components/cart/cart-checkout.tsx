@@ -174,7 +174,7 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | null })
             disabled={pending || loading || blocked}
             className={buttonClasses({ size: "lg", shape: "pill" }, "mt-5 w-full")}
           >
-            {pending ? t("Reservando plazas…") : t("Realizar el pedido")}
+            {pending ? t("Reservando plazas…") : t("Confirmar y pagar")}
           </button>
           {blocked && (
             <p className="mt-3 text-center text-sm text-error-primary">

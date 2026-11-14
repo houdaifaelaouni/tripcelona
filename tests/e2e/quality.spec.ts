@@ -11,6 +11,8 @@ const PAGES = [
   "/contactanos",
   "/preguntas-frecuentes",
   "/blog",
+  "/sobre-nosotros",
+  "/carrito",
   "/no-existe-esta-pagina",
 ];
 
