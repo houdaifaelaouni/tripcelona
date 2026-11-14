@@ -338,7 +338,8 @@ export const it: Dictionary = {
   "condiciones de contratación": "condizioni di contratto",
   "y la": "e l'",
   "Reservando plazas…": "Prenotazione dei posti…",
-  "Realizar el pedido": "Effettua l'ordine",
+  "Confirmar y pagar": "Conferma e paga",
+  NIF: "NIF",
   "Guardamos tus plazas 15 minutos mientras completas el pago.":
     "Teniamo i tuoi posti per 15 minuti mentre completi il pagamento.",
   "Tu carrito está vacío.": "Il tuo carrello è vuoto.",

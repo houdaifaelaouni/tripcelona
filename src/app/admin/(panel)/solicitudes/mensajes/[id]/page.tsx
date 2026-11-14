@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
+import { AnonymiseForm } from "@/components/admin/anonymise-form";
 import { Facts, InboxStatusForm } from "@/components/admin/inbox-form";
 import { PageTitle, Panel, RequestStatus } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/admin/button";
 import { updateContactMessage } from "@/lib/admin/inbox-actions";
+import { anonymiseLeadAction } from "@/lib/admin/privacy-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 
@@ -39,6 +41,7 @@ export default async function ContactMessage({
     phone?: string | null;
     message?: string;
     newsletter?: boolean;
+    anonymised?: boolean;
   };
 
   return (
@@ -90,6 +93,7 @@ export default async function ContactMessage({
         status={m.status}
         notes={m.admin_notes}
       />
+      {!p.anonymised && <AnonymiseForm action={anonymiseLeadAction.bind(null, m.id)} />}
       <Link
         href="/admin/solicitudes?tipo=mensajes"
         className="text-sm text-brand-secondary hover:underline"

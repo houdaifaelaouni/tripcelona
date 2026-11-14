@@ -98,17 +98,9 @@ export function QuoteWizard({
     if (!form) return;
     const data = new FormData(form);
     const out: Values = { extras: data.getAll("extras").map(String) };
-    for (const k of [
-      "tour",
-      "dates",
-      "groupSize",
-      "budget",
-      "name",
-      "email",
-      "phone",
-      "company",
-      "message",
-    ]) {
+    // Only the trip choices are kept on the device; contact details never leave the form
+    // until it is sent (data minimisation: nothing personal lingers if the visitor leaves).
+    for (const k of ["tour", "dates", "groupSize", "budget"]) {
       out[k] = String(data.get(k) ?? "");
     }
     try {

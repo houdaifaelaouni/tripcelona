@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
+import { AnonymiseForm } from "@/components/admin/anonymise-form";
 import { Facts, InboxStatusForm } from "@/components/admin/inbox-form";
 import { PageTitle, Panel, RequestStatus } from "@/components/admin/ui";
 import { buttonClasses } from "@/components/admin/button";
 import { updateQuoteRequest } from "@/lib/admin/inbox-actions";
+import { anonymiseRequestAction } from "@/lib/admin/privacy-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 
@@ -118,6 +120,9 @@ export default async function QuoteRequest({
         status={r.status}
         notes={r.admin_notes}
       />
+      {r.name !== "Anonimizado" && (
+        <AnonymiseForm action={anonymiseRequestAction.bind(null, r.id)} />
+      )}
       <Link href="/admin/solicitudes" className="text-sm text-brand-secondary hover:underline">
         ← Todas las solicitudes
       </Link>

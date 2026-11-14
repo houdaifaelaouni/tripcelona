@@ -330,7 +330,8 @@ export const en: Dictionary = {
   "condiciones de contratación": "terms and conditions",
   "y la": "and the",
   "Reservando plazas…": "Reserving seats…",
-  "Realizar el pedido": "Place order",
+  "Confirmar y pagar": "Confirm and pay",
+  NIF: "Tax ID",
   "Guardamos tus plazas 15 minutos mientras completas el pago.":
     "We hold your seats for 15 minutes while you complete the payment.",
   "Tu carrito está vacío.": "Your cart is empty.",

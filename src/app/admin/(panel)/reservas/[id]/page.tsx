@@ -10,6 +10,8 @@ import {
   refundBookingAction,
   resendBookingEmail,
 } from "@/lib/admin/booking-actions";
+import { bookingCanBeAnonymised } from "@/lib/admin/privacy";
+import { anonymiseBookingAction } from "@/lib/admin/privacy-actions";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
@@ -227,8 +229,28 @@ export default async function BookingDetail({
             </form>
           )}
           {(b.status === "cancelled" || b.status === "refunded") && (
-            <p className="text-sm text-tertiary">Reserva cerrada: no hay acciones disponibles.</p>
+            <p className="text-sm text-tertiary">Reserva cerrada.</p>
           )}
+          {bookingCanBeAnonymised(b.status, dep?.starts_at) &&
+            b.customer_name !== "Anonimizado" && (
+              <form
+                action={anonymiseBookingAction.bind(null, b.id)}
+                className="mt-4 flex flex-col gap-2 border-t border-secondary pt-4 text-sm"
+              >
+                <p className="text-tertiary">
+                  Derecho de supresión: borra nombre, email, teléfono y notas. Se conservan la
+                  referencia, el importe y las fechas para la contabilidad.
+                </p>
+                <Checkbox
+                  name="confirm"
+                  required
+                  label="Anonimizar los datos personales de esta reserva. No se puede deshacer."
+                />
+                <Button type="submit" variant="outline" className="self-start text-error-primary">
+                  Anonimizar datos
+                </Button>
+              </form>
+            )}
         </Panel>
       </div>
 

@@ -335,7 +335,8 @@ export const ca: Dictionary = {
   "condiciones de contratación": "condicions de contractació",
   "y la": "i la",
   "Reservando plazas…": "Reservant places…",
-  "Realizar el pedido": "Fer la comanda",
+  "Confirmar y pagar": "Confirmar i pagar",
+  NIF: "NIF",
   "Guardamos tus plazas 15 minutos mientras completas el pago.":
     "Guardem les teves places 15 minuts mentre completes el pagament.",
   "Tu carrito está vacío.": "El teu cistell és buit.",

@@ -171,7 +171,7 @@ export function CheckoutForm({
             disabled={pending}
             className={buttonClasses({ size: "lg", shape: "pill" }, "mt-5 w-full")}
           >
-            {pending ? t("Reservando plazas…") : t("Realizar el pedido")}
+            {pending ? t("Reservando plazas…") : t("Confirmar y pagar")}
           </button>
           <p className="mt-3 text-center text-sm text-tertiary">
             {t("Guardamos tus plazas 15 minutos mientras completas el pago.")}
