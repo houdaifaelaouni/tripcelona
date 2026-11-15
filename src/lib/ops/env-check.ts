@@ -113,6 +113,12 @@ export function checkEnv(env: Record<string, string | undefined>, target: EnvTar
   if (media && media !== "true" && media !== "false") {
     error("MEDIA_FROM_STORAGE", "must be 'true' or 'false'");
   }
+  const legacyWp = get("LEGACY_WP_ORIGIN");
+  if (legacyWp) {
+    if (!isHttpsUrl(legacyWp)) error("LEGACY_WP_ORIGIN", "must be an https URL");
+    else if (/^https:\/\/(www\.)?tripcelona\.com\/?$/.test(legacyWp))
+      error("LEGACY_WP_ORIGIN", "must be the old WordPress host, not tripcelona.com itself");
+  }
   const indexing = get("NEXT_PUBLIC_ALLOW_INDEXING");
   if (indexing && indexing !== "true" && indexing !== "false") {
     error("NEXT_PUBLIC_ALLOW_INDEXING", "must be 'true' or 'false'");

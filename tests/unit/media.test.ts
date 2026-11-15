@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { placeholderAlt, targetPaths } from "@/lib/media/pipeline";
+import { legacyDownloadUrl, placeholderAlt, targetPaths } from "@/lib/media/pipeline";
 
 describe("media pipeline helpers", () => {
   it("keeps a stable base path and swaps the extension", () => {
@@ -17,5 +17,22 @@ describe("media pipeline helpers", () => {
     );
     expect(placeholderAlt("tours/x/Garrotxa-4-1-scaled-1.jpg")).toBe("Garrotxa");
     expect(placeholderAlt("tours/x/67437cb-053.jpg")).toBeNull();
+  });
+
+  it("downloads legacy images from the old WordPress host once it moves", () => {
+    const src = "https://tripcelona.com/wp-content/uploads/2025/11/Rupit.jpg";
+    expect(legacyDownloadUrl(src, undefined)).toBe(src);
+    expect(legacyDownloadUrl(src, "https://antiguo.tripcelona.com")).toBe(
+      "https://antiguo.tripcelona.com/wp-content/uploads/2025/11/Rupit.jpg",
+    );
+    expect(
+      legacyDownloadUrl(
+        "https://www.tripcelona.com/wp-content/uploads/a.png",
+        "https://wp.example.org",
+      ),
+    ).toBe("https://wp.example.org/wp-content/uploads/a.png");
+    expect(legacyDownloadUrl("https://cdn.other.com/a.png", "https://wp.example.org")).toBe(
+      "https://cdn.other.com/a.png",
+    );
   });
 });

@@ -1,7 +1,10 @@
 "use server";
 
 import { audit } from "@/lib/auth/audit";
+import { redirect } from "next/navigation";
 import { assertStaff } from "@/lib/auth/staff";
+import { syncLegacyMedia } from "@/lib/media/sync";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { altSchema as alt, storeImage } from "./media-store";
 import { backWith } from "./redirect";
@@ -61,4 +64,27 @@ export async function deleteMedia(id: string) {
     source_url: row.source_url,
   });
   backWith(BACK, { ok: "eliminado" });
+}
+
+/**
+ * Copies the images still on WordPress into Supabase Storage (same pipeline
+ * as `pnpm media:sync`), so the site keeps its photos when tripcelona.com
+ * moves to Vercel. Works in batches: stops starting files after ~40 s and
+ * reports how many are left, so the owner presses again.
+ */
+export async function copyLegacyMedia() {
+  const staff = await assertStaff("owner");
+  const report = await syncLegacyMedia(createAdminClient(), {
+    pendingOnly: true,
+    deadline: Date.now() + 40_000,
+  });
+  await audit(staff.id, "media.copy_legacy", "media", null, {
+    processed: report.processed.length,
+    failed: report.failed.map((f) => `${f.path}: ${f.error}`).slice(0, 20),
+  });
+  const url = new URL(BACK, "http://admin.local");
+  url.searchParams.set("copiadas", String(report.processed.length));
+  url.searchParams.set("fallidas", String(report.failed.length));
+  if (report.failed[0]) url.searchParams.set("error_copia", report.failed[0].error.slice(0, 200));
+  redirect(url.pathname + url.search);
 }

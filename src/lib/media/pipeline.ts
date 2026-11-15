@@ -33,3 +33,22 @@ export type MediaReport = {
   skipped: string[];
   failed: { path: string; error: string }[];
 };
+
+/**
+ * Where to download a legacy original from. Image URLs are recorded as
+ * `https://tripcelona.com/wp-content/...`; once tripcelona.com points to
+ * Vercel, the old WordPress only answers on its new host (for example
+ * `https://antiguo.tripcelona.com`), set in LEGACY_WP_ORIGIN.
+ */
+export function legacyDownloadUrl(
+  sourceUrl: string,
+  origin = process.env.LEGACY_WP_ORIGIN,
+): string {
+  if (!origin) return sourceUrl;
+  const url = new URL(sourceUrl);
+  if (!/^(www\.)?tripcelona\.com$/.test(url.hostname)) return sourceUrl;
+  const target = new URL(origin);
+  url.protocol = target.protocol;
+  url.host = target.host;
+  return url.toString();
+}

@@ -42,6 +42,9 @@ Placeholders in `<angle brackets>` depend on open decisions (D7, D9, D10).
    pnpm media:sync
    ```
    Check the report, then set `MEDIA_FROM_STORAGE=true` and redeploy.
+   The owner can do the media copy without a terminal: Admin → Medios →
+   **Copiar imágenes de WordPress**. It must be done before DNS moves
+   (see `domain-move.md`).
 5. **First owner**: `pnpm ops grant-staff <owner email> owner`.
    The owner fills **Ajustes** (legal data, phone, email, socials) and
    reviews `docs/legal/owner-review.md`.
