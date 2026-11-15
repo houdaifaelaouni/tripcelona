@@ -4,7 +4,14 @@ import { MediaDropzone } from "@/components/admin/media-dropzone";
 import { EmptyState, PageTitle, Panel } from "@/components/admin/ui";
 import { Button } from "@/components/admin/button";
 import { Checkbox, Input } from "@/components/admin/fields";
-import { deleteMedia, updateMediaAlt, uploadMedia } from "@/lib/admin/media-actions";
+import { Alert } from "@/components/admin/alert";
+import {
+  copyLegacyMedia,
+  deleteMedia,
+  updateMediaAlt,
+  uploadMedia,
+} from "@/lib/admin/media-actions";
+import { pendingLegacyMedia } from "@/lib/media/sync";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
 import { mediaUrl } from "@/lib/tours/media";
@@ -16,7 +23,7 @@ const PAGE = 48;
 /** FR-87: media library with alt text, search and guarded delete. */
 export default async function MediaAdmin({ searchParams }: PageProps<"/admin/medios">) {
   const staff = await requireStaff();
-  const { ok, error, q: rawQ, sin_alt } = await searchParams;
+  const { ok, error, q: rawQ, sin_alt, copiadas, fallidas, error_copia } = await searchParams;
   const q = typeof rawQ === "string" ? rawQ.trim().slice(0, 100) : "";
   const missingAlt = sin_alt === "1";
   const db = await createClient();
@@ -30,7 +37,8 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
     query = query.or(`alt.ilike.%${term}%,path.ilike.%${term}%`);
   }
   if (missingAlt) query = query.or("alt.is.null,alt.eq.");
-  const { data: media, count } = await query;
+  const [{ data: media, count }, pending] = await Promise.all([query, pendingLegacyMedia(db)]);
+  const copyRan = typeof copiadas === "string";
   const ids = (media ?? []).map((m) => m.id);
   const usage = new Map<string, number>();
   await Promise.all(
@@ -46,6 +54,37 @@ export default async function MediaAdmin({ searchParams }: PageProps<"/admin/med
         Medios
       </PageTitle>
       <Flash ok={ok} error={error} />
+      {staff.role === "owner" && (pending > 0 || copyRan) && (
+        <Panel
+          title="Copiar imágenes de WordPress"
+          description="Antes de cambiar el dominio: copia a la web nueva las fotos que aún se cargan desde el WordPress antiguo."
+        >
+          {copyRan && (
+            <Alert
+              tone={pending === 0 ? "success" : Number(fallidas) > 0 ? "warning" : "brand"}
+              title={
+                pending === 0
+                  ? "Todas las imágenes están copiadas."
+                  : `Copiadas ${copiadas} en esta tanda. Faltan ${pending}.`
+              }
+              className="mb-4"
+            >
+              {Number(fallidas) > 0 && `${fallidas} no se pudieron copiar (${error_copia}). `}
+              {pending === 0
+                ? "Ya puedes poner MEDIA_FROM_STORAGE=true en Vercel y volver a desplegar."
+                : "Pulsa otra vez para seguir con la siguiente tanda."}
+            </Alert>
+          )}
+          {pending > 0 && (
+            <form action={copyLegacyMedia} className="flex flex-wrap items-center gap-3">
+              <Button type="submit">Copiar imágenes ({pending} pendientes)</Button>
+              <span className="text-sm text-tertiary">
+                Cada pulsación copia unas cuantas (unos 40 segundos). No cierres la página.
+              </span>
+            </form>
+          )}
+        </Panel>
+      )}
       <Panel title="Subir imagen">
         <form action={uploadMedia} className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
           <MediaDropzone />
