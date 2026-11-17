@@ -12,6 +12,7 @@ export const TOURS_TAG = "tours";
 
 const SUMMARY_SELECT = `
   id, slug, title, area, area_slug, difficulty, duration_minutes, price_from_cents,
+  summary, meeting_point,
   tour_departures ( id, starts_at, ends_at, capacity, seats_taken, price_cents, status ),
   tour_images ( storage_path, alt, sort_order, media ( bucket, path, source_url ) )
 `;
@@ -65,6 +66,8 @@ function toSummary(
     difficulty: string | null;
     duration_minutes: number | null;
     price_from_cents: number | null;
+    summary?: string | null;
+    meeting_point?: string | null;
     tour_departures: DepartureRow[];
     tour_images: ImageRow[];
   },
@@ -81,6 +84,8 @@ function toSummary(
     difficulty: str(tr.difficulty, row.difficulty),
     durationMinutes: row.duration_minutes,
     priceFromCents: row.price_from_cents,
+    summary: str(tr.summary, row.summary ?? null),
+    meetingPoint: str(tr.meeting_point, row.meeting_point ?? null),
     image: images[0] ?? null,
     gallery: images,
     departures: toDepartures(row.tour_departures, now),
@@ -138,7 +143,7 @@ export async function getTourBySlug(
     .from("tours")
     .select(
       `${SUMMARY_SELECT},
-       summary, description, highlights, inclusions, exclusions, packing_list, meeting_point, map_url,
+       description, highlights, inclusions, exclusions, packing_list, map_url,
        seo_title, seo_description,
        tour_itinerary ( id, sort_order, time_label, title, body ),
        tour_faqs ( id, sort_order, question, answer )`,

@@ -1,9 +1,11 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "@/components/i18n/link";
 import { Badge } from "@/components/ui/card";
-import { ArrowUpRight, Calendar, Clock } from "lucide-react";
+import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
 import {
   dateParts,
+  departureMinutes,
   formatDateShort,
   formatDuration,
   formatPrice,
@@ -14,10 +16,10 @@ import { createT } from "@/lib/i18n/translate";
 import type { Locale } from "@/lib/i18n/config";
 
 /**
- * Catalog / home card (FR-10): hairline card after the Untitled UI blog-card layout (MIT, see
- * THIRD_PARTY_NOTICES.md): photo with a date tile, area badge, title, next
- * departure, price-from and an arrow link. The whole card is one link
- * through the stretched title link.
+ * Catalog / home card (FR-10): photo with a date tile, area, title, a short
+ * teaser, icon facts (next departure, duration, meeting point) and a
+ * full-width blue footer bar with "Ver viaje" and the price. The whole card
+ * is one link through the stretched title link.
  */
 export function TourCard({
   tour,
@@ -36,11 +38,12 @@ export function TourCard({
   const price = next?.priceCents ?? tour.priceFromCents;
   const href = `/excursiones/${tour.slug}`;
   const fewSeats = next !== null && next.seatsLeft > 0 && next.seatsLeft <= 10;
+  const minutes = tour.durationMinutes ?? (next ? departureMinutes(next) : null);
 
   const date = next ? dateParts(next.startsAt, locale) : null;
 
   return (
-    <article className="group relative flex w-full flex-col overflow-hidden rounded-xl bg-primary ring-1 ring-secondary ring-inset transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+    <article className="group relative flex w-full flex-col overflow-hidden rounded-2xl bg-primary ring-1 ring-secondary ring-inset transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
         {tour.image && (
           <Image
@@ -55,7 +58,7 @@ export function TourCard({
         {date && (
           <div
             aria-hidden
-            className="absolute top-3 left-3 flex min-w-12 flex-col items-center rounded-lg bg-primary/95 px-2 py-1 text-center ring-1 ring-black/5 backdrop-blur"
+            className="absolute top-3 left-3 flex min-w-12 flex-col items-center rounded-lg bg-primary/95 px-2 py-1 text-center shadow-sm ring-1 ring-black/5 backdrop-blur"
           >
             <span className="text-[11px] font-medium tracking-[0.06em] text-brand-secondary uppercase">
               {date.month}
@@ -70,28 +73,31 @@ export function TourCard({
             <Badge tone="accent">{t("Últimas plazas")}</Badge>
           </div>
         )}
-      </div>
-      <div className="flex flex-1 flex-col gap-3 p-5">
         {tour.area && (
-          <p className="text-[13px] font-medium tracking-[0.02em] text-quaternary">
+          <p className="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-primary/95 px-2.5 py-1 text-xs font-medium text-secondary shadow-sm ring-1 ring-black/5 backdrop-blur">
+            <MapPin aria-hidden className="size-3.5 text-fg-brand-primary" />
             {t(tour.area)}
           </p>
         )}
-        <h3 className="flex items-start justify-between gap-4 text-lg leading-snug font-semibold tracking-tight text-primary">
+      </div>
+
+      <div className="flex flex-1 flex-col gap-3 px-5 pt-4 pb-5">
+        <h3 className="text-lg leading-snug font-semibold tracking-tight text-primary">
           <Link
             href={href}
-            className="line-clamp-2 after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-focus-within:underline"
+            className="line-clamp-2 after:absolute after:inset-0 after:rounded-2xl focus-visible:outline-none group-focus-within:underline"
           >
             {t(tour.title)}
           </Link>
-          <ArrowUpRight
-            aria-hidden
-            className="mt-0.5 size-5 shrink-0 text-fg-quaternary transition-colors group-hover:text-fg-brand-primary"
-          />
         </h3>
-        <ul className="flex flex-col gap-1.5 text-sm text-tertiary">
-          <li className="flex items-center gap-2">
-            <Calendar aria-hidden className="size-4 shrink-0 text-fg-quaternary" />
+        {tour.summary && (
+          <p className="line-clamp-2 text-sm leading-relaxed text-tertiary">{tour.summary}</p>
+        )}
+        <ul className="mt-auto flex flex-col gap-2 pt-1 text-sm text-secondary">
+          <li className="flex items-start gap-2.5">
+            <IconDot>
+              <Calendar aria-hidden className="size-3.5" />
+            </IconDot>
             {next ? (
               <span>
                 {t("Próxima salida: {date} a las {time}", {
@@ -99,33 +105,63 @@ export function TourCard({
                   time: formatTime(next.startsAt, locale),
                 })}
                 {fewSeats && (
-                  <span className="text-error-primary">
+                  <span className="font-medium text-error-primary">
                     {" "}
                     · {t("quedan {n} plazas", { n: next.seatsLeft })}
                   </span>
                 )}
               </span>
             ) : (
-              t("Nuevas fechas próximamente")
+              <span>{t("Nuevas fechas próximamente")}</span>
             )}
           </li>
-          {tour.durationMinutes !== null && (
-            <li className="flex items-center gap-2">
-              <Clock aria-hidden className="size-4 shrink-0 text-fg-quaternary" />
-              {formatDuration(tour.durationMinutes)}
+          {minutes !== null && minutes > 0 && (
+            <li className="flex items-center gap-2.5">
+              <IconDot>
+                <Clock aria-hidden className="size-3.5" />
+              </IconDot>
+              <span>{formatDuration(minutes)}</span>
+            </li>
+          )}
+          {tour.meetingPoint && (
+            <li className="flex items-center gap-2.5">
+              <IconDot>
+                <MapPin aria-hidden className="size-3.5" />
+              </IconDot>
+              <span className="line-clamp-1">
+                <span className="sr-only">{t("Punto de encuentro")}: </span>
+                {tour.meetingPoint}
+              </span>
             </li>
           )}
         </ul>
+      </div>
+
+      <div className="flex items-center justify-between gap-4 bg-brand-solid px-5 py-4 text-white transition-colors duration-200 group-hover:bg-brand-solid_hover motion-reduce:transition-none">
+        <span aria-hidden className="inline-flex items-center gap-2 text-base font-semibold">
+          {t("Ver viaje")}
+          <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
+        </span>
         {price !== null && (
-          <p className="mt-auto border-t border-secondary pt-3">
-            <span className="text-sm text-tertiary">{t("Desde")} </span>
-            <span className="text-lg font-semibold tracking-tight text-primary">
-              {formatPrice(price, locale)}
+          <span className="flex flex-col items-end leading-none">
+            <span className="text-[11px] font-medium tracking-[0.06em] text-white/80 uppercase">
+              {t("Desde")}
             </span>
-            <span className="text-sm text-tertiary"> / {t("persona")}</span>
-          </p>
+            <span className="mt-1 text-xl font-semibold tracking-tight">
+              {formatPrice(price, locale)}
+              <span className="text-sm font-medium text-white/80"> / {t("persona")}</span>
+            </span>
+          </span>
         )}
       </div>
     </article>
+  );
+}
+
+function IconDot({ children }: { children: ReactNode }) {
+  return (
+    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-primary text-fg-brand-primary">
+      {children}
+    </span>
   );
 }

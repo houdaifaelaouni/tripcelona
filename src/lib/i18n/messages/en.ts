@@ -174,6 +174,7 @@ export const en: Dictionary = {
   "Más opiniones": "More reviews",
   "Opiniones de clientes": "Customer reviews",
   "Últimas plazas": "Last seats",
+  "Ver viaje": "View trip",
   "Próxima salida: {date} a las {time}": "Next departure: {date} at {time}",
   "Nuevas fechas próximamente": "New dates coming soon",
   Desde: "From",

@@ -181,6 +181,7 @@ export const fr: Dictionary = {
   "Más opiniones": "Plus d'avis",
   "Opiniones de clientes": "Avis des clients",
   "Últimas plazas": "Dernières places",
+  "Ver viaje": "Voir le voyage",
   "Próxima salida: {date} a las {time}": "Prochain départ : {date} à {time}",
   "Nuevas fechas próximamente": "Nouvelles dates prochainement",
   Desde: "À partir de",
