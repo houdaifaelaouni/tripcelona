@@ -25,6 +25,9 @@ export const en: Dictionary = {
   "Excursiones de un día desde Barcelona, cada domingo.": "Day trips from Barcelona, every Sunday.",
   "Excursiones destacadas": "Featured trips",
   "Excursiones en grupo por Cataluña": "Group trips across Catalonia",
+  "Mostrar {n} más": "Show {n} more",
+  "Mostrar menos": "Show less",
+  "Parada {i} de {n}": "Stop {i} of {n}",
   "Horarios aproximados: pueden variar según el tráfico y la meteorología.":
     "Approximate times: they may vary with traffic and weather.",
   Idioma: "Language",

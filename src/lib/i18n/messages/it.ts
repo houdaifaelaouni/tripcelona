@@ -26,6 +26,9 @@ export const it: Dictionary = {
     "Gite di un giorno da Barcellona, ogni domenica.",
   "Excursiones destacadas": "Escursioni in evidenza",
   "Excursiones en grupo por Cataluña": "Escursioni di gruppo in Catalogna",
+  "Mostrar {n} más": "Mostra altri {n}",
+  "Mostrar menos": "Mostra meno",
+  "Parada {i} de {n}": "Tappa {i} di {n}",
   "Horarios aproximados: pueden variar según el tráfico y la meteorología.":
     "Orari indicativi: possono variare in base al traffico e al meteo.",
   Idioma: "Lingua",
