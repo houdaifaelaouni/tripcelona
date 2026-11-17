@@ -505,6 +505,7 @@ export const en: Dictionary = {
   "Nuestra galería": "Our gallery",
   "Foto anterior": "Previous photo",
   "Foto siguiente": "Next photo",
+  "Foto {n} de {total}": "Photo {n} of {total}",
   "Galería de fotos de las excursiones": "Photo gallery of our trips",
   "Blog: ideas y guías para excursiones desde Barcelona":
     "Blog: ideas and guides for day trips from Barcelona",
