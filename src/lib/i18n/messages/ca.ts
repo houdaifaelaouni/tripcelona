@@ -178,6 +178,7 @@ export const ca: Dictionary = {
   "Más opiniones": "Més opinions",
   "Opiniones de clientes": "Opinions de clients",
   "Últimas plazas": "Últimes places",
+  "Ver viaje": "Veure el viatge",
   "Próxima salida: {date} a las {time}": "Propera sortida: {date} a les {time}",
   "Nuevas fechas próximamente": "Noves dates properament",
   Desde: "Des de",

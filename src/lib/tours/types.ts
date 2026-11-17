@@ -17,6 +17,9 @@ export type TourSummary = {
   difficulty: string | null;
   durationMinutes: number | null;
   priceFromCents: number | null;
+  /** Short teaser shown under the title on cards. */
+  summary?: string | null;
+  meetingPoint?: string | null;
   image: TourImage | null;
   /** Every published photo of the tour, in order (home gallery). */
   gallery?: TourImage[];

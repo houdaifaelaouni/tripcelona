@@ -179,6 +179,7 @@ export const it: Dictionary = {
   "Más opiniones": "Altre recensioni",
   "Opiniones de clientes": "Recensioni dei clienti",
   "Últimas plazas": "Ultimi posti",
+  "Ver viaje": "Vedi il viaggio",
   "Próxima salida: {date} a las {time}": "Prossima partenza: {date} alle {time}",
   "Nuevas fechas próximamente": "Nuove date in arrivo",
   Desde: "Da",
