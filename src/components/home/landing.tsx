@@ -1,6 +1,6 @@
 /*
  * Conversion home page sections, laid out after the owner's wireframe kit
- * (top notification bar, split hero, logo strip, stats, content section,
+ * (top notification bar, split hero, logo strip, content section,
  * accordion and call-to-action layouts). Every number and date comes from
  * published tours; no reviews or figures are invented.
  */
@@ -290,51 +290,6 @@ export function DestinationStrip({
           })}
         </ul>
       </Reveal>
-    </section>
-  );
-}
-
-/** Stats band: four real figures over a full-width landscape photo. */
-export function StatsRow({
-  tours,
-  photo,
-  locale,
-}: {
-  tours: TourSummary[];
-  photo: { url: string; alt: string } | null;
-  locale: Locale;
-}) {
-  const t = createT(locale);
-  const open = tours.flatMap((t) => t.departures.filter((d) => d.status === "open"));
-  const from = minPriceCents(tours);
-  const stats = [
-    { value: String(tours.length), label: t("Excursiones de un día") },
-    { value: String(destinations.length), label: t("Destinos en Cataluña y Aragón") },
-    { value: String(open.length), label: t("Salidas abiertas ahora") },
-    ...(from !== null
-      ? [{ value: formatPrice(from, locale), label: t("Precio desde, por persona") }]
-      : []),
-  ];
-  return (
-    <section
-      aria-label={t("Tripcelona en cifras")}
-      className="relative isolate overflow-hidden bg-ink text-white"
-    >
-      {photo && <Image src={photo.url} alt="" fill sizes="100vw" className="-z-20 object-cover" />}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-ink/65" />
-      <div className="container-site py-16 md:py-24">
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              className="flex flex-col-reverse gap-1 border-l border-white/30 pl-5"
-            >
-              <dt className="text-sm text-white/85">{s.label}</dt>
-              <dd className="text-4xl font-semibold tracking-[-0.035em] md:text-5xl">{s.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
     </section>
   );
 }

@@ -8,7 +8,6 @@ import {
   HomeFaq,
   LandingHero,
   minPriceCents,
-  StatsRow,
   WhyTripcelona,
 } from "@/components/home/landing";
 import { ContactSection } from "@/components/home/sections";
@@ -122,7 +121,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         )}
       </section>
 
-      <StatsRow tours={tours} photo={photo(3)} locale={locale} />
       <WhyTripcelona
         photo={photo(1)}
         title={home.whyTitle}
