@@ -75,7 +75,6 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         title={home.heroTitle}
         lead={home.heroLead}
       />
-      <DestinationStrip photos={areaPhotos} locale={locale} />
 
       <section aria-labelledby="tours-heading" className="container-site py-16 md:py-24">
         <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
@@ -130,6 +129,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <HowItWorks title={home.stepsTitle} steps={home.steps} locale={locale} />
       <DeparturesTable tours={tours} locale={locale} />
       <Testimonials reviews={reviews} />
+      <DestinationStrip photos={areaPhotos} locale={locale} />
       <GroupsBanner
         photo={photo(2)}
         phoneHref={site.phoneHref}
