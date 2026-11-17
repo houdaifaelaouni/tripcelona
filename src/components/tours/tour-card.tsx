@@ -144,12 +144,12 @@ export function TourCard({
         </span>
         {price !== null && (
           <span className="flex flex-col items-end leading-none">
-            <span className="text-[11px] font-medium tracking-[0.06em] text-white/80 uppercase">
+            <span className="text-[11px] font-medium tracking-[0.06em] uppercase">
               {t("Desde")}
             </span>
             <span className="mt-1 text-xl font-semibold tracking-tight">
               {formatPrice(price, locale)}
-              <span className="text-sm font-medium text-white/80"> / {t("persona")}</span>
+              <span className="text-sm font-medium"> / {t("persona")}</span>
             </span>
           </span>
         )}
