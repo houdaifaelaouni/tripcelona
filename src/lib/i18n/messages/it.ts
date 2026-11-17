@@ -513,6 +513,7 @@ export const it: Dictionary = {
   "Nuestra galería": "La nostra galleria",
   "Foto anterior": "Foto precedente",
   "Foto siguiente": "Foto successiva",
+  "Foto {n} de {total}": "Foto {n} di {total}",
   "Galería de fotos de las excursiones": "Galleria fotografica delle escursioni",
   "Blog: ideas y guías para excursiones desde Barcelona":
     "Blog: idee e guide per gite da Barcellona",
