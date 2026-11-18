@@ -64,6 +64,8 @@ export const ca: Dictionary = {
   "Aigüestortes y Sant Maurici": "Aigüestortes i Sant Maurici",
   "Rupit y Tavertet": "Rupit i Tavertet",
   "Alquézar y las Pasarelas del Vero": "Alquézar i les Passeres del Vero",
+  "Village de Noël de Le Barcarès": "Village de Noël de Le Barcarès",
+  "Andorra la Vella en Navidad": "Andorra la Vella per Nadal",
   Ripollès: "Ripollès",
   "La Garrotxa": "La Garrotxa",
   Aigüestortes: "Aigüestortes",

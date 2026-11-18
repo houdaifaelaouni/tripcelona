@@ -12,6 +12,8 @@ type MediaRow = { bucket: string; path: string; source_url: string | null } | nu
  */
 export function mediaUrl(media: MediaRow): string | null {
   if (!media) return null;
+  // Photos shipped with the site itself (public/photos/...) are always served locally.
+  if (media.source_url?.startsWith("/")) return media.source_url;
   if (process.env.MEDIA_FROM_STORAGE !== "true" && media.source_url) return media.source_url;
   return `${supabaseUrl()}/storage/v1/object/public/${media.bucket}/${media.path}`;
 }
