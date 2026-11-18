@@ -585,4 +585,12 @@ export const fr: Dictionary = {
     "Une erreur inattendue s'est produite. Réessayez ou écrivez-nous sur WhatsApp si le problème persiste.",
   Reintentar: "Réessayer",
   "Filtrar por destino": "Filtrer par destination",
+  "Créditos de fotos y vídeo": "Crédits photos et vidéo",
+  "Autores y licencias de las fotos y el vídeo que usamos en la web.":
+    "Auteurs et licences des photos et de la vidéo utilisées sur ce site.",
+  "Inicio, Sobre nosotros y blog": "Accueil, À propos et blog",
+  Créditos: "Crédits",
+  "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
+    "Les photos du site proviennent de Wikimedia Commons et la vidéo d'accueil de Mixkit, toutes sous licence libre. Merci à leurs auteurs.",
+  "Vídeo de portada": "Vidéo d'accueil",
 };

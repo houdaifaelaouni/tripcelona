@@ -5,6 +5,7 @@ import { sanitizeDoc } from "@/lib/content/rich-text";
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { loadOverlay, str, strList } from "@/lib/i18n/overlay";
 import { mediaUrl } from "./media";
+import { destinationPhotos } from "@/lib/photos/library";
 import type { Departure, TourDetail, TourImage, TourSummary } from "./types";
 
 /** Cache tag every tour read carries; admin publishes call revalidateTag(TOURS_TAG). */
@@ -47,7 +48,19 @@ function toDepartures(rows: DepartureRow[], now: number): Departure[] {
     .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
 }
 
-function toImages(rows: ImageRow[], title: string): TourImage[] {
+/**
+ * Tour photos: the curated, credited library set for the tour's destination
+ * when there is one (each photo is used once on the whole site), else the
+ * photos uploaded in the admin.
+ */
+function toImages(
+  rows: ImageRow[],
+  title: string,
+  areaSlug?: string | null,
+  slug?: string,
+): TourImage[] {
+  const curated = destinationPhotos(areaSlug, slug);
+  if (curated) return curated.map(({ url, alt, credit }) => ({ url, alt, credit }));
   return [...rows]
     .sort((a, b) => a.sort_order - b.sort_order)
     .flatMap((img, i) => {
@@ -75,7 +88,7 @@ function toSummary(
   tr: Record<string, unknown> = {},
 ): TourSummary {
   const title = str(tr.title, row.title);
-  const images = toImages(row.tour_images, title);
+  const images = toImages(row.tour_images, title, row.area_slug, row.slug);
   return {
     slug: row.slug,
     title,
@@ -185,7 +198,7 @@ export async function getTourBySlug(
     mapUrl: data.map_url,
     seoTitle: str(tr.seo_title, data.seo_title),
     seoDescription: str(tr.seo_description, data.seo_description),
-    images: toImages(data.tour_images as ImageRow[], summary.title),
+    images: toImages(data.tour_images as ImageRow[], summary.title, data.area_slug, data.slug),
     itinerary: [...data.tour_itinerary]
       .sort((a, b) => a.sort_order - b.sort_order)
       .map((s) => {

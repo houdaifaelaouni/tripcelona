@@ -138,3 +138,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## Site photos and home video
+
+The photos in `public/photos/` come from Wikimedia Commons under CC0, public
+domain, CC BY or CC BY-SA licences. The home video in `public/video/` is
+"Mountainous area in the Alps" by dubassy on Mixkit (Mixkit Free Stock Video
+License). Author, licence and source page for each file are listed in
+`src/lib/photos/library.json` and shown on the site at `/creditos`.

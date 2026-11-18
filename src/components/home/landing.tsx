@@ -19,6 +19,9 @@ import {
   Users,
 } from "lucide-react";
 import Image from "next/image";
+import { PhotoCredit } from "@/components/ui/photo-credit";
+import type { PhotoCredit as PhotoCreditData } from "@/lib/photos/library";
+import type { TourImage } from "@/lib/tours/types";
 import Link from "@/components/i18n/link";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
@@ -97,6 +100,8 @@ const trust = [
 export function LandingHero({
   photo,
   videoSrc,
+  videoSrcMobile,
+  videoCredit,
   next,
   fromCents,
   title,
@@ -104,8 +109,12 @@ export function LandingHero({
   locale,
 }: {
   locale: Locale;
-  photo: { url: string; alt: string } | null;
+  photo: TourImage | null;
   videoSrc?: string;
+  /** Smaller file for phones; only used with the library video. */
+  videoSrcMobile?: string;
+  /** Credit shown for the background video. */
+  videoCredit?: PhotoCreditData;
   next: NextTrip;
   fromCents: number | null;
   title: string;
@@ -131,12 +140,16 @@ export function LandingHero({
           aria-hidden
           data-no-motion
         >
+          {videoSrcMobile && (
+            <source src={videoSrcMobile} type="video/mp4" media="(max-width: 767px)" />
+          )}
           <source
             src={videoSrc}
             type={videoSrc.toLowerCase().includes(".webm") ? "video/webm" : "video/mp4"}
           />
         </video>
       )}
+      <PhotoCredit credit={videoSrc ? (videoCredit ?? photo?.credit) : photo?.credit} />
       <div
         aria-hidden
         className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/85 via-ink/55 to-ink/25"
@@ -242,7 +255,7 @@ export function DestinationStrip({
   photos,
   locale,
 }: {
-  photos: Record<string, { url: string; alt: string } | null>;
+  photos: Record<string, TourImage | null>;
   locale: Locale;
 }) {
   const t = createT(locale);
@@ -280,6 +293,11 @@ export function DestinationStrip({
                     aria-hidden
                     className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent"
                   />
+                  <PhotoCredit
+                    credit={photo?.credit}
+                    link={false}
+                    className="top-2 right-2 bottom-auto max-w-[90%] text-[9px]"
+                  />
                   <span className="relative flex items-center gap-1.5 p-4 text-md leading-snug font-semibold tracking-tight text-white">
                     <MapPin aria-hidden className="size-4 shrink-0" />
                     {t(d.label)}
@@ -303,7 +321,7 @@ export function WhyTripcelona({
   reasons,
   locale,
 }: {
-  photo: { url: string; alt: string } | null;
+  photo: TourImage | null;
   title: string;
   reasons: { title: string; body: string }[];
   locale: Locale;
@@ -322,6 +340,7 @@ export function WhyTripcelona({
               className="object-cover"
             />
           )}
+          <PhotoCredit credit={photo?.credit} />
         </div>
         <div>
           <SectionHeader id="por-que-heading" eyebrow={t("Por qué Tripcelona")} title={t(title)} />
@@ -423,7 +442,7 @@ export function GroupsBanner({
   groupPoints,
   locale,
 }: {
-  photo: { url: string; alt: string } | null;
+  photo: TourImage | null;
   phoneHref: string;
   phoneDisplay: string;
   title: string;
@@ -437,6 +456,7 @@ export function GroupsBanner({
       className="relative isolate overflow-hidden bg-ink text-white"
     >
       {photo && <Image src={photo.url} alt="" fill sizes="100vw" className="-z-20 object-cover" />}
+      <PhotoCredit credit={photo?.credit} />
       <div
         aria-hidden
         className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/90 via-ink/65 to-ink/30"

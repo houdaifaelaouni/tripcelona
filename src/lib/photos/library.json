@@ -1,0 +1,805 @@
+{
+  "destinations": {
+    "la-garrotxa": [
+      {
+        "url": "/photos/la-garrotxa/149667508.jpg",
+        "alt": "Castellfollit de la Roca sobre su acantilado de basalto",
+        "width": 1920,
+        "height": 1082,
+        "credit": {
+          "author": "JopkeB",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_of_Castellfollit_de_la_Roca_2012.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/la-garrotxa/12060462.jpg",
+        "alt": "Hayedo de la Fageda d'en Jordà en verano",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Catalaalatac",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:La_Fageda_d%27en_Jord%C3%A0_un_dia_d%27estiuet_de_Sant_Mart%C3%AD.JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/la-garrotxa/67399397.jpg",
+        "alt": "El volcán de la Roca Negra en la Garrotxa",
+        "width": 1920,
+        "height": 977,
+        "credit": {
+          "author": "Tosca Serveis Ambientals",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Roca_Negra_(11497569035).jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+        }
+      },
+      {
+        "url": "/photos/la-garrotxa/89678993.jpg",
+        "alt": "Puente medieval de Besalú sobre el río Fluvià",
+        "width": 1920,
+        "height": 1080,
+        "credit": {
+          "author": "AmaliaCorella",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:EL_PONT_DE_BESAL%C3%9A.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/la-garrotxa/32818535.jpg",
+        "alt": "Paseo en carro de caballos por la Fageda d'en Jordà en otoño",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "Felipoween",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fageda_d%27en_Jord%C3%A0_felipoween.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/la-garrotxa/49208777.jpg",
+        "alt": "Castellfollit de la Roca y el río en invierno",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "JB aus Siegen",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Castellfollit_de_la_Roca_2015-12-27_D.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/la-garrotxa/32646161.jpg",
+        "alt": "Camino de hojas rojas en la Fageda d'en Jordà",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "Felipoween",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:La_fageda_d%27en_jorda.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/la-garrotxa/28135854.jpg",
+        "alt": "Vista aérea del casco histórico de Besalú",
+        "width": 1920,
+        "height": 1262,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Conjunto_historico-besalu-2011.JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0 es",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/es/deed.en"
+        }
+      }
+    ],
+    "ripolles": [
+      {
+        "url": "/photos/ripolles/26966914.jpg",
+        "alt": "Lago y ermita de Sant Gil en la Vall de Núria",
+        "width": 1920,
+        "height": 1080,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vall_de_nuria-ripolles-2009_(2).JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/ripolles/26966978.jpg",
+        "alt": "El tren cremallera de Núria junto al lago",
+        "width": 1920,
+        "height": 1080,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vall_de_nuria-ripolles-2009_(8).JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/ripolles/26967006.jpg",
+        "alt": "Santuario de Núria reflejado en el lago",
+        "width": 1920,
+        "height": 1080,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vall_de_nuria-ripolles-2009_(11).JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/ripolles/153489207.jpg",
+        "alt": "Valle verde junto al pueblo de Queralbs",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "Kent Wang",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Views_of_Queralbs_02.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/ripolles/3989190.jpg",
+        "alt": "Panorámica del Pirineo catalán nevado",
+        "width": 1920,
+        "height": 1315,
+        "credit": {
+          "author": "Flickr 90664717@N00",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pyrenees_Catalonia.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+        }
+      },
+      {
+        "url": "/photos/ripolles/104851209.jpg",
+        "alt": "Prados de la Vall de Núria",
+        "width": 1920,
+        "height": 1080,
+        "credit": {
+          "author": "Jl FilpoC",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Parque_del_Valle_de_Nuria,_Queralbs.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/ripolles/153488900.jpg",
+        "alt": "Iglesia románica de Sant Jaume de Queralbs",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "Kent Wang",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Esgl%C3%A9sia_de_Sant_Jaume_de_Queralbs_01.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/ripolles/19122315.jpg",
+        "alt": "El cremallera saliendo del santuario de Núria",
+        "width": 1920,
+        "height": 1080,
+        "credit": {
+          "author": "José Luis Filpo Cabana",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Valle_de_Nuria._El_cremallera.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+        }
+      }
+    ],
+    "pallars": [
+      {
+        "url": "/photos/pallars/32940565.jpg",
+        "alt": "Els Encantats y el lago de Sant Maurici en otoño",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Mikipons",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Els_Encantats_i_Sant_Maurici.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/pallars/2761930.jpg",
+        "alt": "Lago de Sant Maurici con Els Encantats al fondo",
+        "width": 1920,
+        "height": 1277,
+        "credit": {
+          "author": "Josep Renalias",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Estany_de_Sant_Maurici.JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/pallars/54342629.jpg",
+        "alt": "Aguas turquesa del lago de Sant Maurici",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Vicente Maza Gómez",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Estany_de_Sant_Maurici_-_panoramio_(1).jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/pallars/33097320.jpg",
+        "alt": "Els Encantats en el Parque Nacional de Aigüestortes",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "Eduardps",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Els_Encantats_del_Parc_d%27Aig%C3%BCestortes.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/pallars/93382441.jpg",
+        "alt": "Picos y bosques del Parque Nacional de Aigüestortes",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Pimlico27",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Roca_de_l%27Estany,_Aig%C3%BCestortes_i_Estany_de_Sant_Maurici_National_Park.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/pallars/59989992.jpg",
+        "alt": "Els Encantats entre pinos",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Abel Cerezuela Sanjulián",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Els_Encantats_entre_arbres.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/pallars/40337431.jpg",
+        "alt": "Els Encantats nevados en invierno",
+        "width": 1920,
+        "height": 1121,
+        "credit": {
+          "author": "Pasdeguia",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Els_Encantats_2748m.JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "osona": [
+      {
+        "url": "/photos/osona/80315259.jpg",
+        "alt": "Rupit visto desde la ermita de Santa Magdalena",
+        "width": 1920,
+        "height": 1277,
+        "credit": {
+          "author": "Menargues",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vista_de_Rupit_desde_la_ermita_de_Santa_Magdalena.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/osona/134004067.jpg",
+        "alt": "Riscos de Tavertet sobre el pantano de Sau",
+        "width": 1920,
+        "height": 1282,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pantano_de_Sau_(4).jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+        }
+      },
+      {
+        "url": "/photos/osona/27337858.jpg",
+        "alt": "El río y las casas de piedra de Rupit",
+        "width": 1920,
+        "height": 1279,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rupit-2005_(2).jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/osona/72785461.jpg",
+        "alt": "Acantilado del Cingle de Collsavenc en Tavertet",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "Enric",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:057_Cingle_de_Collsavenc_(Tavertet).jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/osona/134004066.jpg",
+        "alt": "Pantano de Sau entre montañas",
+        "width": 1920,
+        "height": 1282,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pantano_de_Sau_(2).jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+        }
+      },
+      {
+        "url": "/photos/osona/39588054.jpg",
+        "alt": "Calle empedrada de Tavertet",
+        "width": 1920,
+        "height": 1309,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Calle_del_Mig-Tavertet_(1).JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+        }
+      },
+      {
+        "url": "/photos/osona/149695837.jpg",
+        "alt": "Rupit y su iglesia entre la vegetación",
+        "width": 1920,
+        "height": 1440,
+        "credit": {
+          "author": "JopkeB",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_of_Rupit_2012.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/osona/39568590.jpg",
+        "alt": "Meandro del río Ter junto al pantano de Sau",
+        "width": 1920,
+        "height": 1312,
+        "credit": {
+          "author": "Alberto-g-rovi",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pantano_de_Sau-Masias_de_Roda.JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+        }
+      }
+    ],
+    "huesca": [
+      {
+        "url": "/photos/huesca/28147068.jpg",
+        "alt": "Alquézar colgado sobre el cañón",
+        "width": 1920,
+        "height": 1154,
+        "credit": {
+          "author": "Mikipons",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Alquezar_m1.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0 es",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/es/deed.en"
+        }
+      },
+      {
+        "url": "/photos/huesca/73965482.jpg",
+        "alt": "Cañón de La Choca en la Sierra de Guara",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Birding In Spain",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:La_choca_gorge,_Sierra_de_Guara.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/huesca/7795161.jpg",
+        "alt": "Baño en las pozas de la Sierra de Guara",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Bert Heymans",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ba%C3%B1o_en_la_Sierra_de_Guara.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+        }
+      },
+      {
+        "url": "/photos/huesca/59352786.jpg",
+        "alt": "Cueva del río Vero con bañistas",
+        "width": 1920,
+        "height": 1277,
+        "credit": {
+          "author": "Havista",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rio_Vero.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/huesca/21716469.jpg",
+        "alt": "Tejados de Alquézar y la sierra",
+        "width": 1920,
+        "height": 1261,
+        "credit": {
+          "author": "Solros",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ALQUEZAR_6.JPG",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "url": "/photos/huesca/139942259.jpg",
+        "alt": "Soportales en la plaza de Alquézar",
+        "width": 1920,
+        "height": 1080,
+        "credit": {
+          "author": "Jl FilpoC",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fachadas_de_Alqu%C3%A9zar.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "url": "/photos/huesca/40220317.jpg",
+        "alt": "Atardecer en la Sierra de Guara desde el Salto del Roldán",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Abel Muñoz",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Atardecer_en_Sierra_de_Guara_desde_el_Salto_del_Rold%C3%A1n.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 3.0 es",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/es/deed.en"
+        }
+      },
+      {
+        "url": "/photos/huesca/92509850.jpg",
+        "alt": "Arco de roca del Mascún en la Sierra de Guara",
+        "width": 1920,
+        "height": 1280,
+        "credit": {
+          "author": "Túllio Morais Franca",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mascun_Inferior_-_Sierra_y_Ca%C3%B1ones_de_Guara.jpg",
+          "source": "Wikimedia Commons",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ]
+  },
+  "slots": {
+    "strip-la-garrotxa": {
+      "url": "/photos/la-garrotxa/32813192.jpg",
+      "alt": "Zona volcánica de la Garrotxa vista desde el aire",
+      "width": 1920,
+      "height": 1272,
+      "credit": {
+        "author": "Maria Rosa Ferre",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Zona_volc%C3%A0nica_de_la_Garrotxa_-_10.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0"
+      }
+    },
+    "strip-ripolles": {
+      "url": "/photos/ripolles/26966929.jpg",
+      "alt": "Santuario de la Vall de Núria",
+      "width": 1920,
+      "height": 1080,
+      "credit": {
+        "author": "Alberto-g-rovi",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vall_de_nuria-ripolles-2009_(3).JPG",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+      }
+    },
+    "strip-pallars": {
+      "url": "/photos/pallars/93382445.jpg",
+      "alt": "Estany de la Bassa en el Parque Nacional de Aigüestortes",
+      "width": 1920,
+      "height": 1280,
+      "credit": {
+        "author": "Pimlico27",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Estany_de_la_Bassa_and_landscape_of_Estany_de_Sant_Maurici_National_Park.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      }
+    },
+    "strip-osona": {
+      "url": "/photos/osona/134004065.jpg",
+      "alt": "Los riscos de Tavertet desde el pantano de Sau",
+      "width": 1920,
+      "height": 1282,
+      "credit": {
+        "author": "Alberto-g-rovi",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pantano_de_Sau_(1).jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+      }
+    },
+    "strip-huesca": {
+      "url": "/photos/huesca/21716459.jpg",
+      "alt": "Panorámica del pueblo de Alquézar",
+      "width": 1920,
+      "height": 977,
+      "credit": {
+        "author": "Solros",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:ALQUEZAR_4.JPG",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+      }
+    },
+    "home-why": {
+      "url": "/photos/site/160695818.jpg",
+      "alt": "Excursionista con mochila en un sendero de montaña",
+      "width": 1920,
+      "height": 1280,
+      "credit": {
+        "author": "GlacierNPS",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hiking_with_Bearspray_(49964122248).jpg",
+        "source": "Wikimedia Commons",
+        "license": "Public domain",
+        "licenseUrl": ""
+      }
+    },
+    "home-groups": {
+      "url": "/photos/site/107001594.jpg",
+      "alt": "Grupo de excursionistas en una cresta al amanecer",
+      "width": 1920,
+      "height": 1282,
+      "credit": {
+        "author": "Jakub Hałun",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Babia_G%C3%B3ra_po_wschodzie_s%C5%82o%C5%84ca,_20210620_0451_7539.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      }
+    },
+    "about-1": {
+      "url": "/photos/site/9050140.jpg",
+      "alt": "Casas de Gaudí en el Park Güell, Barcelona",
+      "width": 1920,
+      "height": 1448,
+      "credit": {
+        "author": "Bernard Gagnon",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Park_G%C3%BCell_02.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+      }
+    },
+    "about-2": {
+      "url": "/photos/site/22291043.jpg",
+      "alt": "La Sagrada Família, Barcelona",
+      "width": 1920,
+      "height": 1286,
+      "credit": {
+        "author": "Jopparn",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sagrada_Fam%C3%ADlia_2010.JPG",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+      }
+    }
+  },
+  "aboutGallery": [
+    {
+      "url": "/photos/la-garrotxa/175852155.jpg",
+      "alt": "Castellfollit de la Roca y su formación de basalto",
+      "width": 1920,
+      "height": 1239,
+      "credit": {
+        "author": "Imaginepascal",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Castellfollit_Castle_and_Geologic_Formation.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      },
+      "area": "la-garrotxa"
+    },
+    {
+      "url": "/photos/ripolles/73898917.jpg",
+      "alt": "Valle de Vallfogona de Ripollès en otoño",
+      "width": 1920,
+      "height": 1434,
+      "credit": {
+        "author": "Jack_ma",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vallfogona_de_Ripoll%C3%A8s_-_2.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      },
+      "area": "ripolles"
+    },
+    {
+      "url": "/photos/pallars/93382442.jpg",
+      "alt": "Refugio de Amitges en Aigüestortes",
+      "width": 1920,
+      "height": 1280,
+      "credit": {
+        "author": "Pimlico27",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Refugi_Amitges,_Estany_de_Sant_Maurici_National_Park.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      },
+      "area": "pallars"
+    },
+    {
+      "url": "/photos/osona/134004068.jpg",
+      "alt": "Pantano de Sau con los riscos de Tavertet",
+      "width": 1920,
+      "height": 1282,
+      "credit": {
+        "author": "Alberto-g-rovi",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pantano_de_Sau_(3).jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+      },
+      "area": "osona"
+    },
+    {
+      "url": "/photos/huesca/124327023.jpg",
+      "alt": "Alquézar sobre las rocas del río Vero",
+      "width": 1920,
+      "height": 1281,
+      "credit": {
+        "author": "Alberto-g-rovi",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Centro_historico_de_Alquezar_(3).jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+      },
+      "area": "huesca"
+    }
+  ],
+  "blog": {
+    "que-llevar-a-una-excursion-de-un-dia": {
+      "url": "/photos/blog/118868703.jpg",
+      "alt": "Excursionista en un sendero de roca",
+      "width": 1920,
+      "height": 1440,
+      "credit": {
+        "author": "NPS Photo",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hiking_to_Delicate_Arch_(115961ed-62c8-440f-84c7-42ee1537c027).jpg",
+        "source": "Wikimedia Commons",
+        "license": "Public domain",
+        "licenseUrl": ""
+      }
+    },
+    "rupit-y-tavertet-pueblos-con-encanto": {
+      "url": "/photos/blog/53635295.jpg",
+      "alt": "Panorámica de Rupit",
+      "width": 1920,
+      "height": 756,
+      "credit": {
+        "author": "sito.rm",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rupit_i_Pruit,_Barcelona,_Spain_-_panoramio.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+      }
+    },
+    "vall-de-nuria-queralbs-excursion": {
+      "url": "/photos/blog/81231764.jpg",
+      "alt": "Quitanieves del cremallera de Núria en plena nevada",
+      "width": 1920,
+      "height": 1366,
+      "credit": {
+        "author": "The STB",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Llevaneus_L09_del_Cremallera_de_N%C3%BAria.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      }
+    },
+    "aiguestortes-lago-sant-maurici-guia": {
+      "url": "/photos/blog/93382440.jpg",
+      "alt": "Estany de Ratera en Aigüestortes",
+      "width": 1920,
+      "height": 1280,
+      "credit": {
+        "author": "Pimlico27",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Estany_de_Ratera,_Aig%C3%BCestortes_i_Estany_de_Sant_Maurici_National_Park.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      }
+    },
+    "fageda-den-jorda-castellfollit-de-la-roca": {
+      "url": "/photos/blog/130787303.jpg",
+      "alt": "Montículo de roca volcánica en la Fageda d'en Jordà",
+      "width": 1920,
+      "height": 1440,
+      "credit": {
+        "author": "Alan Mattingly",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tossol_Fageda.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      }
+    },
+    "excursiones-de-un-dia-desde-barcelona": {
+      "url": "/photos/blog/144650997.jpg",
+      "alt": "Amanecer sobre Barcelona",
+      "width": 1920,
+      "height": 1440,
+      "credit": {
+        "author": "Francisco Gonzalez",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sunrise_in_Barcelona.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+      }
+    }
+  },
+  "heroVideo": {
+    "src": "/video/hero-1080.mp4",
+    "srcMobile": "/video/hero-720.mp4",
+    "poster": "/video/hero-poster.jpg",
+    "title": "Mountainous area in the Alps",
+    "credit": {
+      "author": "dubassy",
+      "sourceUrl": "https://mixkit.co/free-stock-video/mountainous-area-in-the-alps-4132/",
+      "source": "Mixkit",
+      "license": "Mixkit Free Stock Video License",
+      "licenseUrl": "https://mixkit.co/license/#videoFree"
+    }
+  }
+}
