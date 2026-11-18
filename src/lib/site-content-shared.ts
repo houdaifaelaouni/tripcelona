@@ -28,13 +28,16 @@ export type HomeContent = {
 };
 
 /**
- * Default hero video: "Aerial shot of La Sagrada Familia in Spain" by Mixkit
- * (https://mixkit.co/free-stock-video/aerial-shot-of-la-sagrada-familia-in-spain-26886/),
- * Mixkit Stock Video Free License: commercial use, no attribution required.
- * Streamed from Mixkit's CDN (allowed in media-src). Used whenever the admin
- * field is empty; paste another .mp4/.webm in Admin > Inicio to replace it.
+ * Default hero video: "Mountainous area in the Alps" by dubassy on Mixkit
+ * (https://mixkit.co/free-stock-video/mountainous-area-in-the-alps-4132/),
+ * Mixkit Stock Video Free License. Self-hosted under /public/video (a 720p
+ * file is served to phones). Used whenever the admin field is empty, or
+ * still holds the previous default; paste another .mp4/.webm in
+ * Admin > Inicio to replace it.
  */
-export const DEFAULT_HERO_VIDEO_URL = "https://assets.mixkit.co/videos/26886/26886-720.mp4";
+export const DEFAULT_HERO_VIDEO_URL = "/video/hero-1080.mp4";
+/** Earlier defaults, treated as "use the current default". */
+const OLD_DEFAULT_HERO_VIDEOS = ["https://assets.mixkit.co/videos/26886/26886-720.mp4"];
 
 export const HOME_DEFAULTS: HomeContent = {
   heroTitle: "Excursiones de un día desde Barcelona",
@@ -157,7 +160,9 @@ export function homeFromValue(raw: unknown): HomeContent {
     heroLead: str("heroLead") ?? HOME_DEFAULTS.heroLead,
     heroVideoUrl: (() => {
       const r = parseVideoUrl(typeof v.heroVideoUrl === "string" ? v.heroVideoUrl : "");
-      return r.ok && r.value ? r.value : HOME_DEFAULTS.heroVideoUrl;
+      return r.ok && r.value && !OLD_DEFAULT_HERO_VIDEOS.includes(r.value)
+        ? r.value
+        : HOME_DEFAULTS.heroVideoUrl;
     })(),
     whyTitle: str("whyTitle") ?? HOME_DEFAULTS.whyTitle,
     reasons: pairs("reasons") ?? HOME_DEFAULTS.reasons,

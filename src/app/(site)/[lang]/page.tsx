@@ -20,6 +20,8 @@ import { notFound } from "next/navigation";
 import { destinations } from "@/lib/site";
 import { getSiteSettings } from "@/lib/settings";
 import { getSiteContent } from "@/lib/site-content";
+import { DEFAULT_HERO_VIDEO_URL } from "@/lib/site-content-shared";
+import { library, slotPhoto } from "@/lib/photos/library";
 import { TourCard } from "@/components/tours/tour-card";
 import { ButtonLink } from "@/components/ui/button";
 import { getPublishedTours } from "@/lib/tours/queries";
@@ -47,15 +49,13 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     getSiteSettings(),
     getSiteContent(),
   ]);
-  const photos = tours.flatMap((tour) => (tour.image ? [tour.image] : []));
-  const photo = (i: number) => photos[i % Math.max(photos.length, 1)] ?? null;
-  // One photo per destination, from the tours that go there.
+  // Every home photo comes from the curated library and is used only here,
+  // so none repeats a tour card or another page.
   const areaPhotos = Object.fromEntries(
-    destinations.map((d, i) => [
-      d.area,
-      tours.find((t) => t.areaSlug === d.area && t.image)?.image ?? photo(i),
-    ]),
+    destinations.map((d) => [d.area, slotPhoto(`strip-${d.area}`)]),
   );
+  const video = library.heroVideo;
+  const usesLibraryVideo = home.heroVideoUrl === DEFAULT_HERO_VIDEO_URL;
   const next = findNextTrip(tours);
   const bySoonest = [...tours].sort(
     (a, b) =>
@@ -68,8 +68,10 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <AnnouncementBar next={next} locale={locale} />
       <LandingHero
         locale={locale}
-        photo={photo(0)}
+        photo={{ url: video.poster, alt: "", credit: video.credit }}
         videoSrc={home.heroVideoUrl || undefined}
+        videoSrcMobile={usesLibraryVideo ? video.srcMobile : undefined}
+        videoCredit={usesLibraryVideo ? video.credit : undefined}
         next={next}
         fromCents={minPriceCents(tours)}
         title={home.heroTitle}
@@ -121,7 +123,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       </section>
 
       <WhyTripcelona
-        photo={photo(1)}
+        photo={slotPhoto("home-why")}
         title={home.whyTitle}
         reasons={home.reasons}
         locale={locale}
@@ -131,7 +133,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
       <Testimonials reviews={reviews} />
       <DestinationStrip photos={areaPhotos} locale={locale} />
       <GroupsBanner
-        photo={photo(2)}
+        photo={slotPhoto("home-groups")}
         phoneHref={site.phoneHref}
         phoneDisplay={site.phoneDisplay}
         title={home.groupsTitle}

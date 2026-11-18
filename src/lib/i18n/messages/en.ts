@@ -570,4 +570,12 @@ export const en: Dictionary = {
     "An unexpected error occurred. Try again or message us on WhatsApp if it persists.",
   Reintentar: "Try again",
   "Filtrar por destino": "Filter by destination",
+  "Créditos de fotos y vídeo": "Photo and video credits",
+  "Autores y licencias de las fotos y el vídeo que usamos en la web.":
+    "Authors and licences of the photos and video we use on this website.",
+  "Inicio, Sobre nosotros y blog": "Home, About us and blog",
+  Créditos: "Credits",
+  "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
+    "The photos on this website come from Wikimedia Commons and the home video from Mixkit, all under free licences. Thanks to their authors.",
+  "Vídeo de portada": "Home video",
 };

@@ -7,6 +7,7 @@
  */
 import { ChevronLeft, ChevronRight, Grid3x3, X } from "lucide-react";
 import Image from "next/image";
+import { PhotoCredit } from "@/components/ui/photo-credit";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { iconButtonClasses } from "@/components/ui/icon-button";
 import { cn } from "@/lib/cn";
@@ -168,6 +169,7 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
               </button>
             </>
           )}
+          <PhotoCredit credit={images[active]?.credit} className="top-3 right-3 bottom-auto" />
         </div>
 
         {total > 1 && (
@@ -237,8 +239,23 @@ export function Gallery({ images, title }: { images: TourImage[]; title: string 
                     loading="lazy"
                   />
                 </div>
-                {img.alt && (
-                  <figcaption className="mt-2 text-caption text-tertiary">{img.alt}</figcaption>
+                {(img.alt || img.credit) && (
+                  <figcaption className="mt-2 text-caption text-tertiary">
+                    {img.alt}
+                    {img.credit && (
+                      <>
+                        {img.alt ? " · " : ""}
+                        <a
+                          href={img.credit.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline-offset-2 hover:underline"
+                        >
+                          © {img.credit.author} · {img.credit.license} · {img.credit.source}
+                        </a>
+                      </>
+                    )}
+                  </figcaption>
                 )}
               </figure>
             </li>

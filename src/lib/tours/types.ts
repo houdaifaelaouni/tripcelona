@@ -7,7 +7,12 @@ export type Departure = {
   status: "open" | "sold_out" | "cancelled";
 };
 
-export type TourImage = { url: string; alt: string };
+export type TourImage = {
+  url: string;
+  alt: string;
+  /** Author and licence, for photos from the curated library. */
+  credit?: import("@/lib/photos/library").PhotoCredit;
+};
 
 export type TourSummary = {
   slug: string;

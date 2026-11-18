@@ -12,6 +12,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import { PhotoCredit } from "@/components/ui/photo-credit";
+import type { PhotoCredit as PhotoCreditData } from "@/lib/photos/library";
 import Link from "@/components/i18n/link";
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 
@@ -23,6 +25,7 @@ export type GalleryPhoto = {
   title: string;
   area: string | null;
   href: string;
+  credit?: PhotoCreditData;
 };
 
 import { useT } from "@/components/i18n/provider";
@@ -145,6 +148,7 @@ export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
                 <span className="absolute top-4 left-4 rounded-full bg-black/40 px-2.5 py-1 font-mono text-xs text-white backdrop-blur">
                   {pad(i + 1)}
                 </span>
+                <PhotoCredit credit={p.credit} link={false} className="right-3 bottom-3" />
               </div>
               <p className="mt-4 text-lg font-semibold text-primary group-hover:underline">
                 {p.title}

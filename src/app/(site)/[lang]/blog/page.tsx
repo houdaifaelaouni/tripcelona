@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { PhotoCredit } from "@/components/ui/photo-credit";
 import Link from "@/components/i18n/link";
 import { PageHero } from "@/components/layout/page-hero";
 import { getPublishedPosts } from "@/lib/content/queries";
@@ -58,6 +59,7 @@ export default async function BlogIndex({ params }: PageProps<"/[lang]/blog">) {
                         className="object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none"
                       />
                     )}
+                    <PhotoCredit credit={p.cover?.credit} link={false} />
                   </div>
                   <div>
                     <p className="text-caption text-tertiary">

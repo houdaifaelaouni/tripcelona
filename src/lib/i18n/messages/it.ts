@@ -578,4 +578,12 @@ export const it: Dictionary = {
     "Si è verificato un errore imprevisto. Riprova o scrivici su WhatsApp se persiste.",
   Reintentar: "Riprova",
   "Filtrar por destino": "Filtra per destinazione",
+  "Créditos de fotos y vídeo": "Crediti di foto e video",
+  "Autores y licencias de las fotos y el vídeo que usamos en la web.":
+    "Autori e licenze delle foto e del video che usiamo sul sito.",
+  "Inicio, Sobre nosotros y blog": "Home, Chi siamo e blog",
+  Créditos: "Crediti",
+  "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
+    "Le foto del sito provengono da Wikimedia Commons e il video della home da Mixkit, tutti con licenza libera. Grazie ai loro autori.",
+  "Vídeo de portada": "Video della home",
 };

@@ -152,6 +152,10 @@ export async function Footer({ locale }: { locale: Locale }) {
                   </a>
                 </>
               )}
+              {" · "}
+              <Link href="/creditos" className="hover:text-primary">
+                {t("Créditos de fotos y vídeo")}
+              </Link>
             </p>
             {/* LSSI-CE art. 10: holder, tax ID and address, from Admin > Ajustes > Datos legales. */}
             {(site.legal.titular || site.legal.nif || site.legal.domicilio) && (

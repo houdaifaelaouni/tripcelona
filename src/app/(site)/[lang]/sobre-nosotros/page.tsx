@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Check, CalendarCheck, HeartPulse, LifeBuoy, ShieldCheck, Star } from "lucide-react";
 import Image from "next/image";
+import { PhotoCredit } from "@/components/ui/photo-credit";
+import { destinationPhotos, library, slotPhoto } from "@/lib/photos/library";
+import { destinations } from "@/lib/site";
+import { catalogHref } from "@/lib/tours/filters";
 import { Suspense } from "react";
 import { PhotoGallery, type GalleryPhoto } from "@/components/home/photo-gallery";
 import { SectionHeader } from "@/components/home/sections";
@@ -85,21 +89,24 @@ async function AboutBody({ params }: { params: PageProps<"/[lang]/sobre-nosotros
   if (!isLocale(locale)) notFound();
   const t = createT(locale);
   const [tours, site] = await Promise.all([getPublishedTours(locale), getSiteSettings()]);
-  const photos = tours.flatMap((tour) => (tour.image ? [tour.image] : []));
-  const photo = (i: number) => photos[i % Math.max(photos.length, 1)] ?? null;
-  const gallery: GalleryPhoto[] = tours.flatMap((tour) =>
-    tour.image
-      ? [
-          {
-            url: tour.image.url,
-            alt: tour.image.alt,
-            title: tour.title,
-            area: tour.area,
-            href: `/excursiones/${tour.slug}`,
-          },
-        ]
-      : [],
-  );
+  // Library photos used only on this page (none repeats the home or a tour).
+  const photo = (i: number) => slotPhoto(i === 0 ? "about-1" : "about-2");
+  const gallery: GalleryPhoto[] = library.aboutGallery.flatMap((p) => {
+    const tour = tours.find(
+      (x) => destinationPhotos(x.areaSlug, x.slug) === destinationPhotos(p.area),
+    );
+    const label = destinations.find((d) => d.area === p.area)?.label;
+    return [
+      {
+        url: p.url,
+        alt: p.alt,
+        title: tour?.title ?? (label ? t(label) : p.alt),
+        area: tour?.area ?? null,
+        href: tour ? `/excursiones/${tour.slug}` : catalogHref({ zona: p.area }),
+        credit: p.credit,
+      },
+    ];
+  });
 
   return (
     <>
@@ -148,6 +155,7 @@ async function AboutBody({ params }: { params: PageProps<"/[lang]/sobre-nosotros
                 className="object-cover"
               />
             )}
+            <PhotoCredit credit={photo(0)?.credit} />
           </div>
         </div>
       </header>
@@ -233,6 +241,7 @@ async function AboutBody({ params }: { params: PageProps<"/[lang]/sobre-nosotros
                 className="object-cover"
               />
             )}
+            <PhotoCredit credit={photo(1)?.credit} />
           </div>
           <div>
             <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">

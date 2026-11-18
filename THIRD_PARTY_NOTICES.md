@@ -155,3 +155,11 @@ Resized to 1600px. Credited on each tour page under "Créditos de las fotos".
 - `public/photos/tours/andorra-la-vella-mercado-de-navidad/04.jpg`: Iglesia de Sant Esteve en el casco antiguo de Andorra la Vella. FrankAndProust, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Sant_Esteve_Andorra_la_Vella_20231008_121913.jpg
 - `public/photos/tours/andorra-la-vella-mercado-de-navidad/05.jpg`: Balneario de Caldea junto al río Valira, Escaldes-Engordany. FrankAndProust, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Caldea_20231205_122111.jpg
 - `public/photos/tours/andorra-la-vella-mercado-de-navidad/06.jpg`: Esquiadores bajo las cumbres nevadas del Pirineo andorrano. Jrodriguez9, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Andorra-snow-1940194.jpg
+
+## Site photos and home video
+
+The photos in `public/photos/` come from Wikimedia Commons under CC0, public
+domain, CC BY or CC BY-SA licences. The home video in `public/video/` is
+"Mountainous area in the Alps" by dubassy on Mixkit (Mixkit Free Stock Video
+License). Author, licence and source page for each file are listed in
+`src/lib/photos/library.json` and shown on the site at `/creditos`.

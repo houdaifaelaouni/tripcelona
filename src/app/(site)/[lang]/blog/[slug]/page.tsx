@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { PhotoCredit } from "@/components/ui/photo-credit";
 import { ChevronLeft } from "lucide-react";
 import Link from "@/components/i18n/link";
 import { Badge } from "@/components/ui/card";
@@ -107,6 +108,7 @@ async function PostPageBody({ params }: { params: PageProps<"/[lang]/blog/[slug]
               sizes="(min-width: 800px) 768px, 100vw"
               className="object-cover"
             />
+            <PhotoCredit credit={post.cover.credit} />
           </div>
         )}
         <RichText className="mt-8" doc={post.content} />
