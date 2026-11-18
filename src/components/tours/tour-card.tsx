@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
+import { PhotoCredit } from "@/components/ui/photo-credit";
 import Link from "@/components/i18n/link";
 import { Badge } from "@/components/ui/card";
 import { ArrowRight, Calendar, Clock, MapPin } from "lucide-react";
@@ -55,6 +56,11 @@ export function TourCard({
             priority={priority}
           />
         )}
+        <PhotoCredit
+          credit={tour.image?.credit}
+          link={false}
+          className="top-auto right-3 bottom-3 max-w-[50%] text-[9px]"
+        />
         {date && (
           <div
             aria-hidden

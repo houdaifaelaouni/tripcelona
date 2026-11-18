@@ -4,12 +4,13 @@ import { createPublicClient } from "@/lib/supabase/public";
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { loadOverlay, str } from "@/lib/i18n/overlay";
 import { mediaUrl } from "@/lib/tours/media";
+import { blogCover, type PhotoCredit } from "@/lib/photos/library";
 import { sanitizeDoc, type RichDoc } from "./rich-text";
 
 /** Cache tag for posts, pages and FAQs; editor publishes call updateTag(CONTENT_TAG). */
 export const CONTENT_TAG = "content";
 
-export type Cover = { url: string; alt: string } | null;
+export type Cover = { url: string; alt: string; credit?: PhotoCredit } | null;
 
 export type PostSummary = {
   slug: string;
@@ -55,7 +56,10 @@ type MediaJoin = {
   alt: string | null;
 } | null;
 
-function cover(media: MediaJoin, title: string): Cover {
+/** Post cover: the curated, credited library photo for the post when there is one. */
+function cover(media: MediaJoin, title: string, slug?: string): Cover {
+  const curated = slug ? blogCover(slug) : null;
+  if (curated) return { url: curated.url, alt: curated.alt, credit: curated.credit };
   const url = mediaUrl(media);
   return url ? { url, alt: media?.alt ?? title } : null;
 }
@@ -89,7 +93,7 @@ export async function getPublishedPosts(locale: Locale = defaultLocale): Promise
       publishedAt: p.published_at,
       readingMinutes: p.reading_minutes,
       tags: p.tags,
-      cover: cover(p.media as MediaJoin, title),
+      cover: cover(p.media as MediaJoin, title, p.slug),
     };
   });
 }
@@ -118,7 +122,7 @@ export async function getPostBySlug(
     publishedAt: data.published_at,
     readingMinutes: data.reading_minutes,
     tags: data.tags,
-    cover: cover(data.media as MediaJoin, title),
+    cover: cover(data.media as MediaJoin, title, data.slug),
     content: sanitizeDoc(tr.content ?? data.content),
     seoTitle: str(tr.seo_title, data.seo_title),
     seoDescription: str(tr.seo_description, data.seo_description),

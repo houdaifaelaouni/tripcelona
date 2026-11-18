@@ -573,4 +573,12 @@ export const ca: Dictionary = {
     "Ha ocorregut un error inesperat. Torna-ho a provar o escriu-nos per WhatsApp si persisteix.",
   Reintentar: "Tornar-ho a provar",
   "Filtrar por destino": "Filtrar per destinació",
+  "Créditos de fotos y vídeo": "Crèdits de fotos i vídeo",
+  "Autores y licencias de las fotos y el vídeo que usamos en la web.":
+    "Autors i llicències de les fotos i el vídeo que fem servir al web.",
+  "Inicio, Sobre nosotros y blog": "Inici, Qui som i blog",
+  Créditos: "Crèdits",
+  "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
+    "Les fotos del web provenen de Wikimedia Commons i el vídeo de portada de Mixkit, totes amb llicència lliure. Gràcies als seus autors.",
+  "Vídeo de portada": "Vídeo de portada",
 };
