@@ -42,6 +42,8 @@ export const destinations = [
   { label: "Aigüestortes y Sant Maurici", area: "pallars" },
   { label: "Rupit y Tavertet", area: "osona" },
   { label: "Alquézar y las Pasarelas del Vero", area: "huesca" },
+  { label: "Village de Noël de Le Barcarès", area: "le-barcares" },
+  { label: "Andorra la Vella en Navidad", area: "andorra" },
 ] as const;
 
 export const footerColumns: { title: string; links: { label: string; href: string }[] }[] = [

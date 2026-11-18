@@ -138,3 +138,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## Tour photos: Christmas trips (Wikimedia Commons)
+
+Resized to 1600px. Credited on each tour page under "Créditos de las fotos".
+
+- `public/photos/tours/village-de-noel-le-barcares/01.jpg`: Decoración navideña junto al paquebote Lydia, Le Barcarès. Anthony Levrot, CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0). Source: https://commons.wikimedia.org/wiki/File:Le_Barcar%C3%A8s_-_66420_-_2024.01.17_D%C3%A9corations_de_No%C3%ABl_au_pied_du_%C2%AB_Lydia_%C2%BB_%C2%A9_Anthony_Levrot.jpg
+- `public/photos/tours/village-de-noel-le-barcares/02.jpg`: El paquebote Lydia en el paseo marítimo de Le Barcarès. Anthony Levrot, CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0). Source: https://commons.wikimedia.org/wiki/File:%22Lydia%22_(vue_avant_droite)_-_Le_Barcar%C3%A8s,_2018.jpg
+- `public/photos/tours/village-de-noel-le-barcares/03.jpg`: Barcas catalanas en el puerto de Le Barcarès. Alan Mattingly, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Barques_catalanes_Le-Barcar%C3%A8s.jpg
+- `public/photos/tours/village-de-noel-le-barcares/04.jpg`: Puerto deportivo de Port-Barcarès con el Canigó nevado al fondo. Martine SODAIGUI, CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0). Source: https://commons.wikimedia.org/wiki/File:MRSBarca41.jpg
+- `public/photos/tours/village-de-noel-le-barcares/05.jpg`: Mercado navideño de noche (foto ilustrativa, Lyon). Florian Pépellin, CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0). Source: https://commons.wikimedia.org/wiki/File:March%C3%A9_de_No%C3%ABl_de_Lyon_au_soir_du_8_d%C3%A9cembre_2017.JPG
+- `public/photos/tours/village-de-noel-le-barcares/06.jpg`: Pista de hielo en un mercado navideño (foto ilustrativa, Estrasburgo). Pierre Rudloff, Public domain (https://commons.wikimedia.org/wiki/Commons:Public_domain). Source: https://commons.wikimedia.org/wiki/File:Patinoire_march%C3%A9_de_No%C3%ABl_Strasbourg.JPG
+- `public/photos/tours/andorra-la-vella-mercado-de-navidad/01.jpg`: Árbol de Navidad iluminado en la plaça de la Rotonda, Andorra la Vella. FrankAndProust, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Pla%C3%A7a_de_la_Rotonda_Christmas_Tree_20231128_173438.jpg
+- `public/photos/tours/andorra-la-vella-mercado-de-navidad/02.jpg`: Avinguda Meritxell con luces de Navidad, Andorra la Vella. FrankAndProust, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Avinguda_Meritxell_Christmas_decorations_20231128_174025.jpg
+- `public/photos/tours/andorra-la-vella-mercado-de-navidad/03.jpg`: Casa de la Vall y Consell General, Andorra la Vella. FrankAndProust, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Casa_de_la_Vall_and_Consell_General_d%27Andorra_20231128_075456.jpg
+- `public/photos/tours/andorra-la-vella-mercado-de-navidad/04.jpg`: Iglesia de Sant Esteve en el casco antiguo de Andorra la Vella. FrankAndProust, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Sant_Esteve_Andorra_la_Vella_20231008_121913.jpg
+- `public/photos/tours/andorra-la-vella-mercado-de-navidad/05.jpg`: Balneario de Caldea junto al río Valira, Escaldes-Engordany. FrankAndProust, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Caldea_20231205_122111.jpg
+- `public/photos/tours/andorra-la-vella-mercado-de-navidad/06.jpg`: Esquiadores bajo las cumbres nevadas del Pirineo andorrano. Jrodriguez9, CC0 (http://creativecommons.org/publicdomain/zero/1.0/deed.en). Source: https://commons.wikimedia.org/wiki/File:Andorra-snow-1940194.jpg
