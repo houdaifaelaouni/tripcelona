@@ -19,7 +19,7 @@ export function PhotoCredit({
   if (!credit) return null;
   const text = `© ${credit.author} · ${credit.license}`;
   const classes = cn(
-    "pointer-events-auto absolute right-2 bottom-2 z-10 max-w-[85%] truncate rounded-full bg-black/45 px-2 py-0.5 text-[10px] leading-4 font-medium text-white/90 backdrop-blur-sm",
+    "pointer-events-auto absolute right-2 bottom-2 z-10 max-w-[85%] truncate rounded-full bg-black/75 px-2 py-0.5 text-[10px] leading-4 font-medium text-white",
     className,
   );
   return link ? (
@@ -28,7 +28,7 @@ export function PhotoCredit({
       target="_blank"
       rel="noopener noreferrer"
       title={`${text} (${credit.source})`}
-      className={cn(classes, "hover:bg-black/65 hover:text-white")}
+      className={cn(classes, "hover:bg-black/90")}
     >
       {text}
     </a>
