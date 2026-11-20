@@ -276,3 +276,85 @@ select:not([multiple]):not([size]):not(.appearance-none) {
   background-size: 1.125rem;
   padding-right: 2.5rem;
 }
+
+/* Route map inside tour descriptions (components/content/route-map.tsx). */
+@layer components {
+  .rich-text .route-map {
+    max-width: none;
+  }
+  .route-map-canvas {
+    height: 22rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-alt);
+    overflow: hidden;
+    z-index: 0;
+    position: relative;
+  }
+  @media (max-width: 640px) {
+    .route-map-canvas {
+      height: 16rem;
+    }
+  }
+  .route-map figcaption {
+    margin-top: 0.75em;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .rich-text .route-map ol {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em 1.1em;
+    margin-top: 0.4em;
+  }
+  .rich-text .route-map li + li {
+    margin-top: 0;
+  }
+  .route-map li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    color: var(--color-ink, inherit);
+  }
+  .route-map-num,
+  .route-map-pin span {
+    display: inline-grid;
+    place-items: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 999px;
+    background: var(--color-blue);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .route-map-pin span {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+    box-shadow:
+      0 0 0 3px #fff,
+      0 1px 4px rgb(0 0 0 / 0.35);
+  }
+  .route-map-pin {
+    background: none;
+    border: 0;
+  }
+  .route-map-note {
+    display: block;
+    margin-top: 0.4em;
+    font-size: 0.75rem;
+  }
+}
+@layer components {
+  .rich-text .leaflet-container img {
+    border-radius: 0;
+  }
+  .rich-text .leaflet-control-zoom a {
+    color: var(--color-ink, #111);
+    text-decoration: none;
+    font-weight: 400;
+  }
+}

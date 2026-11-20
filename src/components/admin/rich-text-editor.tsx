@@ -4,6 +4,7 @@ import Image from "@tiptap/extension-image";
 import { TableKit } from "@tiptap/extension-table";
 import { EditorContent, useEditor, useEditorState, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { RouteMapNode } from "@/components/admin/route-map-node";
 import { useState } from "react";
 import { cn } from "@/lib/cn";
 
@@ -41,6 +42,7 @@ export function RichTextEditor({
       }),
       Image.configure({ inline: false }),
       TableKit.configure({ table: { resizable: false } }),
+      RouteMapNode,
     ],
     content: (initial as object) ?? undefined,
     editorProps: {

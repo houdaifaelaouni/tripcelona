@@ -27,7 +27,8 @@ export function securityHeaders(env: {
     `default-src 'self'`,
     `script-src ${src("'self'", "'unsafe-inline'", vercel)}`,
     `style-src 'self' 'unsafe-inline'`,
-    `img-src ${src("'self'", "data:", "blob:", supabase, "https://tripcelona.com", vercel)}`,
+    // OpenStreetMap tiles for route maps in tour descriptions (no API key).
+    `img-src ${src("'self'", "data:", "blob:", supabase, "https://tripcelona.com", "https://tile.openstreetmap.org", vercel)}`,
     // Mixkit CDN serves the default free-license hero video.
     `media-src ${src("'self'", supabase, "https://assets.mixkit.co")}`,
     `font-src 'self' data:`,

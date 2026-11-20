@@ -1,6 +1,7 @@
 import Link from "@/components/i18n/link";
 import type { ReactNode } from "react";
 import { resolveContentImage } from "@/lib/content/images";
+import { RouteMap } from "@/components/content/route-map";
 import type { BlockNode, InlineNode, Mark, RichDoc } from "@/lib/content/rich-text";
 
 type Tokens = Record<string, string>;
@@ -101,6 +102,8 @@ function renderBlock(node: BlockNode, key: number, t: Tokens): ReactNode {
           </table>
         </div>
       );
+    case "routeMap":
+      return <RouteMap key={key} title={node.attrs.title} points={node.attrs.points} />;
   }
 }
 
