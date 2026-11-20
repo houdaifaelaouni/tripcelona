@@ -101,7 +101,7 @@ export function TourCard({
         )}
         <ul className="mt-auto flex flex-col gap-2 pt-1 text-sm text-secondary">
           <li className="flex items-start gap-2.5">
-            <IconDot>
+            <IconDot accent>
               <Calendar aria-hidden className="size-3.5" />
             </IconDot>
             {next ? (
@@ -143,19 +143,19 @@ export function TourCard({
         </ul>
       </div>
 
-      <div className="flex items-center justify-between gap-4 bg-brand-solid px-5 py-4 text-white transition-colors duration-200 group-hover:bg-brand-solid_hover motion-reduce:transition-none">
+      <div className="flex items-center justify-between gap-4 border-t-4 border-yellow bg-brand-solid px-5 py-4 text-white transition-colors duration-200 group-hover:bg-brand-solid_hover motion-reduce:transition-none">
         <span aria-hidden className="inline-flex items-center gap-2 text-base font-semibold">
           {t("Ver viaje")}
-          <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
+          <ArrowRight className="size-5 text-yellow transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" />
         </span>
         {price !== null && (
           <span className="flex flex-col items-end leading-none">
-            <span className="text-[11px] font-medium tracking-[0.06em] uppercase">
+            <span className="text-[11px] font-medium tracking-[0.06em] text-white/80 uppercase">
               {t("Desde")}
             </span>
-            <span className="mt-1 text-xl font-semibold tracking-tight">
+            <span className="mt-1 text-xl font-semibold tracking-tight text-yellow">
               {formatPrice(price, locale)}
-              <span className="text-sm font-medium"> / {t("persona")}</span>
+              <span className="text-sm font-medium text-white"> / {t("persona")}</span>
             </span>
           </span>
         )}
@@ -164,9 +164,16 @@ export function TourCard({
   );
 }
 
-function IconDot({ children }: { children: ReactNode }) {
+/** Round icon chip; `accent` uses the brand yellow (next departure date). */
+function IconDot({ children, accent = false }: { children: ReactNode; accent?: boolean }) {
   return (
-    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-primary text-fg-brand-primary">
+    <span
+      className={
+        accent
+          ? "flex size-6 shrink-0 items-center justify-center rounded-full bg-yellow/25 text-brand-secondary"
+          : "flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-primary text-fg-brand-primary"
+      }
+    >
       {children}
     </span>
   );

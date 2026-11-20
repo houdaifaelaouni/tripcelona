@@ -127,6 +127,10 @@ export function DeparturesTable({ tours, locale }: { tours: TourSummary[]; local
                 >
                   {/* Date stub */}
                   <div className="relative flex items-center justify-between gap-3 border-b border-dashed border-primary bg-brand-primary_alt px-5 py-4 text-brand-secondary sm:flex-col sm:justify-center sm:border-r sm:border-b-0 sm:px-0">
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 top-0 h-1 bg-yellow sm:inset-y-0 sm:right-auto sm:h-auto sm:w-1"
+                    />
                     <span className="text-[11px] font-semibold tracking-[0.08em] uppercase">
                       {date.month}
                     </span>
