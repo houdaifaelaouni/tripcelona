@@ -1,4 +1,4 @@
-import { SearchX } from "lucide-react";
+import { Illustration } from "@/components/illustrations/illustration";
 import { ButtonLink } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import { getSiteSettings, whatsappLink } from "@/lib/settings";
@@ -34,9 +34,7 @@ export function CatalogEmptyState({ locale }: { locale: Locale }) {
   const t = createT(locale);
   return (
     <div className="rounded-2xl bg-secondary px-6 py-12 text-center">
-      <span className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-white shadow-lg">
-        <SearchX aria-hidden className="size-6" />
-      </span>
+      <Illustration name="search" className="mx-auto mb-2 aspect-[4/3] w-56" />
       <h2 className="text-display-sm">{t("No hay salidas con estos filtros")}</h2>
       <p className="mx-auto mt-2 max-w-md text-tertiary">
         {t(

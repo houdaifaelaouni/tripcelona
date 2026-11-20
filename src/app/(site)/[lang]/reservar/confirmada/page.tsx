@@ -1,9 +1,9 @@
-import { CircleCheck } from "lucide-react";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { BookingSummary } from "@/components/booking/booking-summary";
 import { ClearCart } from "@/components/cart/clear-cart";
+import { Illustration } from "@/components/illustrations/illustration";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { ButtonLink } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -53,15 +53,19 @@ async function Confirmed({
   const booking = await getBookingDetails({ id: (Array.isArray(raw) ? raw[0] : raw) ?? "" });
   if (!booking)
     return (
-      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        {t("No encontramos esta reserva")}
-      </h1>
+      <>
+        <Illustration name="lost" play="load" className="mb-4 aspect-[4/3] w-56 md:w-64" />
+        <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
+          {t("No encontramos esta reserva")}
+        </h1>
+      </>
     );
 
   if (booking.status === "pending") {
     return (
       <>
         <meta httpEquiv="refresh" content="5" />
+        <Illustration name="phone" play="load" className="mb-4 aspect-[4/3] w-56 md:w-64" />
         <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           {t("Estamos confirmando tu pago…")}
         </h1>
@@ -78,6 +82,7 @@ async function Confirmed({
   if (booking.status !== "paid") {
     return (
       <>
+        <Illustration name="card" play="load" className="mb-4 aspect-[4/3] w-56 md:w-64" />
         <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           {booking.status === "refunded" ? t("Reserva reembolsada") : t("Reserva cancelada")}
         </h1>
@@ -105,10 +110,8 @@ async function Confirmed({
   return (
     <>
       <ClearCart />
-      <span className="flex size-14 items-center justify-center rounded-full bg-success/10 text-success">
-        <CircleCheck aria-hidden size={28} />
-      </span>
-      <p className="mt-4 text-sm font-semibold tracking-wide text-success uppercase">
+      <Illustration name="tickets" play="load" className="aspect-[4/3] w-60 md:w-72" />
+      <p className="mt-2 text-sm font-semibold tracking-wide text-success uppercase">
         {t("Pago recibido")}
       </p>
       <h1 className="mt-1 text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">

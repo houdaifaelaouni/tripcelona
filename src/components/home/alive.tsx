@@ -3,8 +3,8 @@
  * THIRD_PARTY_NOTICES.md), animated with GSAP via components/motion.
  * Every number comes from published tours; nothing is invented.
  */
-import { CalendarCheck, CreditCard, MailCheck, Search } from "lucide-react";
 import Link from "@/components/i18n/link";
+import { Illustration, type SceneName } from "@/components/illustrations/illustration";
 import { Reveal } from "@/components/motion/reveal";
 import { Badge } from "@/components/ui/card";
 import { createT } from "@/lib/i18n/translate";
@@ -20,7 +20,8 @@ import {
 import type { TourSummary } from "@/lib/tours/types";
 import { SectionHeader } from "./sections";
 
-const stepIcons = [Search, CreditCard, MailCheck, CalendarCheck];
+/** One scene per step: choose, book, get the email, ride. Extra steps reuse the rest. */
+const stepScenes: SceneName[] = ["map", "phone", "mail", "bus", "tickets", "hikers"];
 
 export function HowItWorks({
   title,
@@ -46,14 +47,14 @@ export function HowItWorks({
         <Reveal>
           <ol className="mt-12 grid gap-px overflow-hidden rounded-xl bg-border-secondary ring-1 ring-secondary sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => {
-              const Icon = stepIcons[i % stepIcons.length];
               return (
-                <li key={s.title} data-reveal className="flex flex-col gap-6 bg-primary p-6">
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-9 items-center justify-center rounded-lg bg-brand-primary text-fg-brand-primary ring-1 ring-brand-200/60 ring-inset">
-                      <Icon aria-hidden className="size-[18px]" />
-                    </span>
-                    <span className="font-mono text-xs text-quaternary">
+                <li key={s.title} data-reveal className="flex flex-col gap-5 bg-primary p-6">
+                  <div className="relative">
+                    <Illustration
+                      name={stepScenes[i % stepScenes.length]}
+                      className="aspect-[4/3] w-full"
+                    />
+                    <span className="absolute top-0 left-0 font-mono text-xs text-quaternary">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                   </div>
