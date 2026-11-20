@@ -214,3 +214,38 @@ describe("content media paths", () => {
     );
   });
 });
+
+describe("sanitizeDoc routeMap", () => {
+  it("keeps valid stops and drops bad ones", () => {
+    const doc = sanitizeDoc({
+      type: "doc",
+      content: [
+        {
+          type: "routeMap",
+          attrs: {
+            title: "Ruta",
+            points: [
+              { name: "Barcelona", lat: 41.39, lng: 2.18 },
+              { name: "", lat: 1, lng: 1 },
+              { name: "Fuera", lat: 200, lng: 1 },
+              { name: "<b>Rupit</b>", lat: "42.02", lng: 2.46 },
+            ],
+          },
+        },
+        { type: "routeMap", attrs: { points: [] } },
+      ],
+    });
+    expect(doc.content).toEqual([
+      {
+        type: "routeMap",
+        attrs: {
+          title: "Ruta",
+          points: [
+            { name: "Barcelona", lat: 41.39, lng: 2.18 },
+            { name: "<b>Rupit</b>", lat: 42.02, lng: 2.46 },
+          ],
+        },
+      },
+    ]);
+  });
+});

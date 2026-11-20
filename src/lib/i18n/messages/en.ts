@@ -260,6 +260,8 @@ export const en: Dictionary = {
   Reserva: "Booking",
   "Programa del viaje": "Trip programme",
   "Sobre el destino": "About the destination",
+  "Mapa de la ruta": "Route map",
+  "Ruta aproximada, en el orden del día.": "Approximate route, in the order of the day.",
   "Lo más destacado": "Highlights",
   "Incluye, punto de encuentro y antes de reservar": "Included, meeting point and before you book",
   "Qué incluye": "What is included",

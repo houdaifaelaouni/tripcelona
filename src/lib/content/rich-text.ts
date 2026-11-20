@@ -21,7 +21,11 @@ export type BlockNode =
   | { type: "blockquote"; content: BlockNode[] }
   | { type: "horizontalRule" }
   | { type: "image"; attrs: { src: string; alt: string; title?: string | null } }
-  | { type: "table"; content: TableRow[] };
+  | { type: "table"; content: TableRow[] }
+  | { type: "routeMap"; attrs: { title?: string | null; points: MapPoint[] } };
+
+/** One stop on a route map: OpenStreetMap coordinates, drawn in order. */
+export type MapPoint = { name: string; lat: number; lng: number };
 
 export type ListItem = { type: "listItem"; content: BlockNode[] };
 export type TableRow = { type: "tableRow"; content: TableCell[] };
@@ -175,6 +179,20 @@ function block(n: unknown, depth: number): BlockNode | null {
         return cells.length ? [{ type: "tableRow" as const, content: cells }] : [];
       });
       return rows.length ? { type: "table", content: rows } : null;
+    }
+    case "routeMap": {
+      const points: MapPoint[] = arr(attrs.points).flatMap((p) => {
+        if (!isObj(p)) return [];
+        const lat = Number(p.lat);
+        const lng = Number(p.lng);
+        const name = typeof p.name === "string" ? p.name.trim().slice(0, 120) : "";
+        if (!name || !Number.isFinite(lat) || !Number.isFinite(lng)) return [];
+        if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return [];
+        return [{ name, lat, lng }];
+      });
+      if (!points.length) return null;
+      const title = typeof attrs.title === "string" ? attrs.title.slice(0, 200) : null;
+      return { type: "routeMap", attrs: { title, points: points.slice(0, 30) } };
     }
     default:
       return null;

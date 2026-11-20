@@ -265,6 +265,8 @@ export const ca: Dictionary = {
   Reserva: "Reserva",
   "Programa del viaje": "Programa del viatge",
   "Sobre el destino": "Sobre la destinació",
+  "Mapa de la ruta": "Mapa de la ruta",
+  "Ruta aproximada, en el orden del día.": "Ruta aproximada, en l’ordre del dia.",
   "Lo más destacado": "El més destacat",
   "Incluye, punto de encuentro y antes de reservar": "Inclou, punt de trobada i abans de reservar",
   "Qué incluye": "Què inclou",
