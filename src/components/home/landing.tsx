@@ -132,7 +132,14 @@ export function LandingHero({
         mobileVideo ? (
           <HeroPoster desktop={photo.url} mobile={mobileVideo.poster} />
         ) : (
-          <Image src={photo.url} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
+          <Image
+            src={photo.url}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="-z-20 object-cover"
+          />
         )
       ) : null}
       {(videoSrc || mobileVideo) && (
