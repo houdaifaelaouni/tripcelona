@@ -31,7 +31,10 @@ export function SectionHeader({
   return (
     <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
       <div className="max-w-3xl">
-        <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">{eyebrow}</p>
+        <p className="flex items-center gap-2 text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
+          <span aria-hidden className="h-0.5 w-4 shrink-0 rounded-full bg-yellow" />
+          {eyebrow}
+        </p>
         <h2
           id={id}
           className="mt-3 text-3xl leading-[1.15] font-semibold text-primary md:text-4xl md:leading-[1.15]"

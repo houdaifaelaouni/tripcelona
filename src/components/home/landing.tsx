@@ -161,7 +161,7 @@ export function LandingHero({
       <div className="container-site grid min-h-[600px] items-end gap-10 pt-24 pb-14 md:min-h-[680px] md:pb-20 lg:grid-cols-[1.4fr_1fr]">
         <div>
           <p className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pr-3 pl-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur ring-inset">
-            <span className="rounded-full bg-white px-2 py-0.5 text-ink">{t("Cada domingo")}</span>
+            <span className="rounded-full bg-yellow px-2 py-0.5 text-ink">{t("Cada domingo")}</span>
             {fromCents !== null
               ? t("Excursiones desde {price} por persona", {
                   price: formatPrice(fromCents, locale),

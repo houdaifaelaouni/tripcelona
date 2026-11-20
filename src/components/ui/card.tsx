@@ -25,7 +25,8 @@ type Tone = "neutral" | "brand" | "accent" | "success" | "danger" | "light";
 const tones: Record<Tone, string> = {
   neutral: "bg-utility-neutral-50 text-utility-neutral-700 ring-utility-neutral-200",
   brand: "bg-utility-brand-50 text-utility-brand-700 ring-utility-brand-200",
-  accent: "bg-utility-amber-50 text-utility-amber-700 ring-utility-amber-200",
+  // Booking yellow with ink text: attention on availability, never an action.
+  accent: "bg-yellow text-ink ring-yellow",
   success: "bg-utility-green-50 text-utility-green-700 ring-utility-green-200",
   danger: "bg-utility-red-50 text-utility-red-700 ring-utility-red-200",
   light: "bg-primary text-secondary ring-primary shadow-xs",
