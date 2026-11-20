@@ -436,7 +436,6 @@ export const ca: Dictionary = {
   viajeros: "viatgers",
   Referencia: "Referència",
   Excursión: "Excursió",
-  Salida: "Sortida",
   "Tu carrito": "El teu cistell",
   "Reserva confirmada": "Reserva confirmada",
   "Estamos confirmando tu pago…": "Estem confirmant el teu pagament…",

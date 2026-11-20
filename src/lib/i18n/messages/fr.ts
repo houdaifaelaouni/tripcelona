@@ -444,7 +444,6 @@ export const fr: Dictionary = {
   viajeros: "voyageurs",
   Referencia: "Référence",
   Excursión: "Excursion",
-  Salida: "Départ",
   "Tu carrito": "Votre panier",
   "Reserva confirmada": "Réservation confirmée",
   "Estamos confirmando tu pago…": "Nous confirmons votre paiement…",
