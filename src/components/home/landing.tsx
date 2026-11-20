@@ -253,7 +253,7 @@ function NextTripCard({ next, locale }: { next: NonNullable<NextTrip>; locale: L
             </span>
             <span className="text-xl leading-6 font-semibold">{date.day}</span>
           </span>
-          <span className="absolute right-3 bottom-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-primary shadow-sm">
+          <span className="absolute right-3 bottom-3 rounded-full bg-yellow px-2.5 py-1 text-xs font-semibold text-ink shadow-sm">
             {formatPrice(departure.priceCents, locale)}
           </span>
         </span>
@@ -274,7 +274,7 @@ function NextTripCard({ next, locale }: { next: NonNullable<NextTrip>; locale: L
                 : t("{n} plazas libres", { n: departure.seatsLeft })}
             </span>
           </span>
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-primary text-fg-brand-primary transition-transform group-hover:translate-x-0.5">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-yellow text-ink transition-transform group-hover:translate-x-0.5">
             <ArrowRight aria-hidden className="size-4" />
           </span>
         </span>
