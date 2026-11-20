@@ -33,6 +33,7 @@ import { catalogHref } from "@/lib/tours/filters";
 import { dateParts, formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 import type { Departure, TourSummary } from "@/lib/tours/types";
 import { SectionHeader } from "./sections";
+import { TicketMotion } from "./ticket-motion";
 
 export type NextTrip = { tour: TourSummary; departure: Departure } | null;
 
@@ -213,38 +214,72 @@ export function LandingHero({
   );
 }
 
+/** Round notches cut into both edges at the perforation (9rem = photo height). */
+const TICKET_NOTCH_MASK = [
+  "radial-gradient(circle 11px at 0 9rem, #0000 98%, #000) left / 51% 100% no-repeat",
+  "radial-gradient(circle 11px at 100% 9rem, #0000 98%, #000) right / 51% 100% no-repeat",
+].join(", ");
+
 function NextTripCard({ next, locale }: { next: NonNullable<NextTrip>; locale: Locale }) {
   const t = createT(locale);
   const { tour, departure } = next;
   const date = dateParts(departure.startsAt, locale);
+  const photo = tour.image ?? tour.gallery?.[0] ?? null;
   return (
-    <Link
-      href={`/excursiones/${tour.slug}`}
-      className="group relative z-10 flex w-full max-w-md items-center gap-4 rounded-xl bg-primary p-4 text-primary shadow-lg ring-1 ring-secondary transition-shadow hover:shadow-xl lg:w-[360px]"
-    >
-      <span className="flex min-w-14 flex-col items-center rounded-lg bg-brand-primary px-2 py-1.5 text-center text-brand-secondary">
-        <span className="text-[11px] font-medium tracking-[0.06em] uppercase">{date.month}</span>
-        <span className="text-xl leading-6 font-semibold">{date.day}</span>
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-xs font-medium text-quaternary">
-          {t("Próxima salida")} · {formatTime(departure.startsAt, locale)}
+    // Drop shadow lives on the wrapper: the notch mask would clip a box-shadow.
+    <TicketMotion className="relative z-10 w-full max-w-md drop-shadow-[0_10px_18px_rgb(0_0_0/0.22)] lg:w-[360px]">
+      <Link
+        href={`/excursiones/${tour.slug}`}
+        className="group block overflow-hidden rounded-2xl bg-primary text-primary"
+        style={{ mask: TICKET_NOTCH_MASK, WebkitMask: TICKET_NOTCH_MASK }}
+      >
+        <span data-ticket-photo className="relative block h-36 overflow-hidden bg-ink">
+          {photo && (
+            <Image
+              src={photo.url}
+              alt={photo.alt || tour.title}
+              fill
+              sizes="(min-width: 1024px) 360px, 100vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+            />
+          )}
+          <span
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/45 to-transparent"
+          />
+          <span className="absolute top-3 left-3 flex min-w-14 flex-col items-center rounded-lg bg-white/95 px-2 py-1.5 text-center text-brand-secondary shadow-sm">
+            <span className="text-[11px] font-medium tracking-[0.06em] uppercase">
+              {date.month}
+            </span>
+            <span className="text-xl leading-6 font-semibold">{date.day}</span>
+          </span>
+          <span className="absolute right-3 bottom-3 rounded-full bg-white/95 px-2.5 py-1 text-xs font-semibold text-primary shadow-sm">
+            {formatPrice(departure.priceCents, locale)}
+          </span>
         </span>
-        <span className="mt-0.5 line-clamp-1 block text-sm font-semibold text-primary">
-          {tour.title}
+        <span aria-hidden className="relative block px-5">
+          <span data-ticket-perf className="block border-t-2 border-dashed border-secondary" />
         </span>
-        <span className="mt-0.5 block text-sm text-tertiary">
-          {formatPrice(departure.priceCents, locale)} ·{" "}
-          {departure.seatsLeft === 1
-            ? t("1 plaza libre")
-            : t("{n} plazas libres", { n: departure.seatsLeft })}
+        <span data-ticket-stub className="flex items-center gap-4 px-5 pt-3 pb-4">
+          <span className="min-w-0 flex-1">
+            <span className="block text-xs font-medium text-quaternary">
+              {t("Próxima salida")} · {formatTime(departure.startsAt, locale)}
+            </span>
+            <span className="mt-0.5 line-clamp-2 block text-sm font-semibold text-primary">
+              {tour.title}
+            </span>
+            <span className="mt-0.5 block text-sm text-tertiary">
+              {departure.seatsLeft === 1
+                ? t("1 plaza libre")
+                : t("{n} plazas libres", { n: departure.seatsLeft })}
+            </span>
+          </span>
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-primary text-fg-brand-primary transition-transform group-hover:translate-x-0.5">
+            <ArrowRight aria-hidden className="size-4" />
+          </span>
         </span>
-      </span>
-      <ArrowRight
-        aria-hidden
-        className="size-5 shrink-0 text-fg-quaternary transition-transform group-hover:translate-x-0.5 group-hover:text-fg-brand-primary"
-      />
-    </Link>
+      </Link>
+    </TicketMotion>
   );
 }
 
