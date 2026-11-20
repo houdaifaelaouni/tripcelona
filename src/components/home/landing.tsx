@@ -150,18 +150,13 @@ export function LandingHero({
         </video>
       )}
       <PhotoCredit credit={videoSrc ? (videoCredit ?? photo?.credit) : photo?.credit} />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/85 via-ink/55 to-ink/25"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink/70 to-transparent"
-      />
       <div className="container-site grid min-h-[600px] items-end gap-10 pt-24 pb-14 md:min-h-[680px] md:pb-20 lg:grid-cols-[1.4fr_1fr]">
-        <div>
+        {/* No dark overlay on the photo: a text shadow keeps the white copy readable. */}
+        <div className="[text-shadow:0_1px_3px_rgb(0_0_0/0.6),0_2px_20px_rgb(0_0_0/0.45)]">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pr-3 pl-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur ring-inset">
-            <span className="rounded-full bg-white px-2 py-0.5 text-ink">{t("Cada domingo")}</span>
+            <span className="rounded-full bg-white px-2 py-0.5 text-ink [text-shadow:none]">
+              {t("Cada domingo")}
+            </span>
             {fromCents !== null
               ? t("Excursiones desde {price} por persona", {
                   price: formatPrice(fromCents, locale),
@@ -180,7 +175,10 @@ export function LandingHero({
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="#tours-heading"
-              className={buttonClasses({ size: "lg" }, "bg-white text-ink hover:bg-white/90")}
+              className={buttonClasses(
+                { size: "lg" },
+                "bg-white text-ink [text-shadow:none] hover:bg-white/90",
+              )}
             >
               {t("Ver próximas salidas")}
               <ArrowRight aria-hidden className="size-4" />
