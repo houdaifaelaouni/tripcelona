@@ -41,7 +41,7 @@ export default async function CreditsPage({ params }: PageProps<"/[lang]/credito
       title: t("Inicio, Sobre nosotros y blog"),
       photos: [
         ...Object.entries(library.slots)
-          .filter(([k]) => !k.startsWith("strip-"))
+          .filter(([k]) => !(k.startsWith("strip-") && k.slice(6) in library.destinations))
           .map(([, p]) => p),
         ...Object.values(library.blog),
       ],
