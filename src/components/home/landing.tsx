@@ -33,6 +33,7 @@ import { catalogHref } from "@/lib/tours/filters";
 import { dateParts, formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
 import type { Departure, TourSummary } from "@/lib/tours/types";
 import { SectionHeader } from "./sections";
+import { ReasonsMotion } from "./reasons-motion";
 import { TicketMotion } from "./ticket-motion";
 
 export type NextTrip = { tour: TourSummary; departure: Departure } | null;
@@ -348,6 +349,13 @@ export function DestinationStrip({
 const reasonIcons = [Bus, UserCheck, MapPin, CalendarCheck, CreditCard, Users];
 
 /** Content section (image + feature list). */
+/** Brand palette cycled over the reason cards: navy, cyan, yellow. */
+const reasonTones = [
+  { tile: "bg-blue text-white", bar: "bg-blue" },
+  { tile: "bg-cyan text-white", bar: "bg-cyan" },
+  { tile: "bg-yellow text-ink", bar: "bg-yellow" },
+];
+
 export function WhyTripcelona({
   photo,
   title,
@@ -377,26 +385,40 @@ export function WhyTripcelona({
         </div>
         <div>
           <SectionHeader id="por-que-heading" eyebrow={t("Por qué Tripcelona")} title={t(title)} />
-          <Reveal>
-            <ul className="mt-10 grid gap-x-8 gap-y-7 sm:grid-cols-2">
-              {reasons.map(({ title, body }, i) => {
-                const Icon = reasonIcons[i % reasonIcons.length];
-                return (
-                  <li key={title} data-reveal className="flex gap-4">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-primary text-fg-brand-primary ring-1 ring-brand-200/60 ring-inset">
+          <ReasonsMotion className="mt-10 grid gap-4 sm:grid-cols-2">
+            {reasons.map(({ title, body }, i) => {
+              const Icon = reasonIcons[i % reasonIcons.length];
+              const tone = reasonTones[i % reasonTones.length];
+              return (
+                <li
+                  key={title}
+                  data-reason
+                  className="group relative flex gap-4 overflow-hidden rounded-xl bg-primary p-4 pl-5 ring-1 ring-secondary transition-shadow duration-200 ring-inset hover:shadow-md motion-reduce:transition-none"
+                >
+                  <span
+                    aria-hidden
+                    data-reason-bar
+                    className={`absolute inset-y-0 left-0 w-1 ${tone.bar}`}
+                  />
+                  {/* GSAP animates the outer tile; hover tilt lives on the inner one so
+                      a CSS transform transition never fights the GSAP tween. */}
+                  <span data-reason-icon className="shrink-0">
+                    <span
+                      className={`flex size-11 items-center justify-center rounded-xl shadow-sm transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 motion-reduce:transition-none ${tone.tile}`}
+                    >
                       <Icon aria-hidden className="size-5" />
                     </span>
-                    <div>
-                      <h3 className="text-md font-semibold tracking-tight text-primary">
-                        {t(title)}
-                      </h3>
-                      <p className="mt-1 text-sm text-tertiary">{t(body)}</p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </Reveal>
+                  </span>
+                  <div>
+                    <h3 className="text-md font-semibold tracking-tight text-primary">
+                      {t(title)}
+                    </h3>
+                    <p className="mt-1 text-sm text-tertiary">{t(body)}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ReasonsMotion>
           <Link href="/ofertas-de-viajes" className={buttonClasses({ size: "lg" }, "mt-10")}>
             {t("Elegir excursión")}
             <ArrowRight aria-hidden className="size-4" />
