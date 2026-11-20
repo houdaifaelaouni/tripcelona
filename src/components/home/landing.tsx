@@ -18,7 +18,7 @@ import {
   UserCheck,
   Users,
 } from "lucide-react";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { PhotoCredit } from "@/components/ui/photo-credit";
 import type { PhotoCredit as PhotoCreditData } from "@/lib/photos/library";
 import type { TourImage } from "@/lib/tours/types";
@@ -102,7 +102,7 @@ const trust = [
 export function LandingHero({
   photo,
   videoSrc,
-  videoSrcMobile,
+  mobileVideo,
   videoCredit,
   next,
   fromCents,
@@ -113,8 +113,8 @@ export function LandingHero({
   locale: Locale;
   photo: TourImage | null;
   videoSrc?: string;
-  /** Smaller file for phones; only used with the library video. */
-  videoSrcMobile?: string;
+  /** Vertical clip + poster for phones only (< 768px); desktop never loads it. */
+  mobileVideo?: { webm: string; mp4: string; poster: string };
   /** Credit shown for the background video. */
   videoCredit?: PhotoCreditData;
   next: NextTrip;
@@ -129,9 +129,20 @@ export function LandingHero({
       className="relative isolate overflow-hidden bg-ink text-white"
     >
       {photo ? (
-        <Image src={photo.url} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
+        mobileVideo ? (
+          <HeroPoster desktop={photo.url} mobile={mobileVideo.poster} />
+        ) : (
+          <Image
+            src={photo.url}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="-z-20 object-cover"
+          />
+        )
       ) : null}
-      {videoSrc && (
+      {(videoSrc || mobileVideo) && (
         <video
           className="absolute inset-0 -z-20 size-full object-cover motion-reduce:hidden"
           autoPlay
@@ -142,16 +153,28 @@ export function LandingHero({
           aria-hidden
           data-no-motion
         >
-          {videoSrcMobile && (
-            <source src={videoSrcMobile} type="video/mp4" media="(max-width: 767px)" />
+          {/* The browser picks the first matching source once, so phones get
+              the vertical clip and desktop skips it without downloading it. */}
+          {mobileVideo && (
+            <>
+              <source src={mobileVideo.webm} type="video/webm" media={MOBILE_MEDIA} />
+              <source src={mobileVideo.mp4} type="video/mp4" media={MOBILE_MEDIA} />
+            </>
           )}
-          <source
-            src={videoSrc}
-            type={videoSrc.toLowerCase().includes(".webm") ? "video/webm" : "video/mp4"}
-          />
+          {videoSrc && (
+            <source
+              src={videoSrc}
+              type={videoSrc.toLowerCase().includes(".webm") ? "video/webm" : "video/mp4"}
+              media={mobileVideo ? "(min-width: 768px)" : undefined}
+            />
+          )}
         </video>
       )}
-      <PhotoCredit credit={videoSrc ? (videoCredit ?? photo?.credit) : photo?.credit} />
+      {/* The phone clip is Tripcelona's own footage, so the credit is desktop-only. */}
+      <PhotoCredit
+        credit={videoSrc ? (videoCredit ?? photo?.credit) : photo?.credit}
+        className={mobileVideo ? "hidden md:block" : undefined}
+      />
       <div className="container-site grid min-h-[600px] items-end gap-10 pt-24 pb-14 md:min-h-[680px] md:pb-20 lg:grid-cols-[1.4fr_1fr]">
         {/* No dark overlay on the photo: a text shadow keeps the white copy readable. */}
         <div className="[text-shadow:0_1px_3px_rgb(0_0_0/0.6),0_2px_20px_rgb(0_0_0/0.45)]">
@@ -554,5 +577,23 @@ export function GroupsBanner({
         </div>
       </div>
     </section>
+  );
+}
+
+const MOBILE_MEDIA = "(max-width: 767px)";
+
+/** Hero poster with art direction: the vertical frame on phones, the wide one on desktop. */
+function HeroPoster({ desktop, mobile }: { desktop: string; mobile: string }) {
+  const common = { alt: "", fill: true, priority: true, sizes: "100vw" } as const;
+  const {
+    props: { srcSet: mobileSrcSet },
+  } = getImageProps({ ...common, src: mobile });
+  const { props } = getImageProps({ ...common, src: desktop });
+  return (
+    <picture>
+      <source media={MOBILE_MEDIA} srcSet={mobileSrcSet} />
+      {/* eslint-disable-next-line jsx-a11y/alt-text */}
+      <img {...props} className="-z-20 object-cover" />
+    </picture>
   );
 }

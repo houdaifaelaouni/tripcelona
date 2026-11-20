@@ -31,7 +31,8 @@ export type LibraryPhoto = {
 
 export type LibraryVideo = {
   src: string;
-  srcMobile: string;
+  /** Tripcelona's own vertical clip, shown only on phones (< 768px). */
+  mobile: { webm: string; mp4: string; poster: string };
   poster: string;
   title: string;
   credit: PhotoCredit;
