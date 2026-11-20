@@ -27,6 +27,8 @@ export const en: Dictionary = {
   "Excursiones en grupo por Cataluña": "Group trips across Catalonia",
   "Mostrar {n} más": "Show {n} more",
   "Mostrar menos": "Show less",
+  Salida: "Departure",
+  Regreso: "Return",
   "Parada {i} de {n}": "Stop {i} of {n}",
   "Horarios aproximados: pueden variar según el tráfico y la meteorología.":
     "Approximate times: they may vary with traffic and weather.",
