@@ -3,6 +3,7 @@
 import { Trash2 } from "lucide-react";
 import Link from "@/components/i18n/link";
 import { buttonClasses } from "@/components/ui/button";
+import { Illustration } from "@/components/illustrations/illustration";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { removeFromCart, setCartQuantity } from "@/lib/cart/store";
 import { MAX_TRAVELLERS } from "@/lib/booking/schema";
@@ -18,6 +19,7 @@ export function CartView() {
   if (empty) {
     return (
       <div className="max-w-xl">
+        <Illustration name="backpack" play="load" className="mb-2 aspect-[4/3] w-60" />
         <p className="text-tertiary">
           {t("Tu carrito está vacío. Elige una excursión y una fecha.")}
         </p>

@@ -9,7 +9,7 @@ import { ArrowLeft, ArrowRight } from "@untitledui/icons";
 import Image from "next/image";
 import { Carousel } from "@/components/uui/application/carousel/carousel-base";
 import { cx } from "@/components/uui/utils/cx";
-import { WelcomeIllustration } from "./illustrations";
+import { Illustration } from "@/components/illustrations/illustration";
 
 export type Slide = { url: string; alt: string; title: string; area: string | null };
 
@@ -17,7 +17,11 @@ export function LoginCarousel({ slides }: { slides: Slide[] }) {
   if (!slides.length)
     return (
       <div className="flex h-full items-end bg-brand-section p-12">
-        <WelcomeIllustration className="w-full rounded-2xl bg-primary/90" />
+        <Illustration
+          name="bus"
+          play="load"
+          className="aspect-[4/3] w-full rounded-2xl bg-primary/90 p-6"
+        />
       </div>
     );
   return (

@@ -11,6 +11,7 @@ import { createT } from "@/lib/i18n/translate";
 import { alternatesFor } from "@/lib/i18n/seo";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { notFound } from "next/navigation";
+import { Illustration } from "@/components/illustrations/illustration";
 
 export async function generateMetadata({
   params,
@@ -51,6 +52,7 @@ export default async function QuotePage({
           </Suspense>
         </section>
         <aside className="space-y-3">
+          <Illustration name="map" className="mb-4 aspect-[4/3] w-full max-w-[300px]" />
           <h2 className="text-display-sm">{t("¿Prefieres hablarlo?")}</h2>
           <WhatsAppCta
             message="Hola Tripcelona, quiero organizar una excursión para mi grupo."

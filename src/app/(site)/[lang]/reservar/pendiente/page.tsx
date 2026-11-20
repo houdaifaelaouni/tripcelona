@@ -12,6 +12,7 @@ import { availableProviders } from "@/lib/payments/config";
 import { createT } from "@/lib/i18n/translate";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { notFound } from "next/navigation";
+import { Illustration } from "@/components/illustrations/illustration";
 
 export async function generateMetadata({
   params,
@@ -67,9 +68,12 @@ async function Pending({
 
   if (!booking)
     return (
-      <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-        {t("No encontramos esta reserva")}
-      </h1>
+      <>
+        <Illustration name="lost" play="load" className="mb-4 aspect-[4/3] w-56 md:w-64" />
+        <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
+          {t("No encontramos esta reserva")}
+        </h1>
+      </>
     );
 
   if (booking.status === "paid") {
@@ -91,6 +95,7 @@ async function Pending({
   if (booking.status !== "pending") {
     return (
       <>
+        <Illustration name="card" play="load" className="mb-4 aspect-[4/3] w-56 md:w-64" />
         <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
           {t("Reserva cancelada")}
         </h1>

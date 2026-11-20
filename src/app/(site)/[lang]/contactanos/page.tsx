@@ -9,6 +9,7 @@ import { createT } from "@/lib/i18n/translate";
 import { alternatesFor } from "@/lib/i18n/seo";
 import { isLocale } from "@/lib/i18n/config";
 import { notFound } from "next/navigation";
+import { Illustration } from "@/components/illustrations/illustration";
 
 export async function generateMetadata({
   params,
@@ -53,6 +54,7 @@ export default async function ContactPage({ params }: PageProps<"/[lang]/contact
           <ContactForm />
         </section>
         <aside className="space-y-6">
+          <Illustration name="mail" className="aspect-[4/3] w-full max-w-[320px]" />
           <div>
             <h2 className="text-display-sm">{t("Llámanos")}</h2>
             <a href={s.phoneHref} className="mt-1 block font-semibold text-blue underline">

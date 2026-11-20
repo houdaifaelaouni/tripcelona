@@ -20,6 +20,7 @@ import { createT } from "@/lib/i18n/translate";
 import { alternatesFor } from "@/lib/i18n/seo";
 import { isLocale, localizePath, type Locale } from "@/lib/i18n/config";
 import { notFound } from "next/navigation";
+import { Illustration } from "@/components/illustrations/illustration";
 
 export async function generateMetadata({
   params,
@@ -194,6 +195,7 @@ async function AboutBody({ params }: { params: PageProps<"/[lang]/sobre-nosotros
               data-reveal
               className="rounded-2xl bg-primary p-7 ring-1 ring-secondary ring-inset md:p-9"
             >
+              <Illustration name="sagrada" className="mb-6 aspect-[4/3] w-full max-w-xs" />
               <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
                 {t("Nuestra visión")}
               </p>
@@ -213,6 +215,7 @@ async function AboutBody({ params }: { params: PageProps<"/[lang]/sobre-nosotros
               data-reveal
               className="rounded-2xl bg-primary p-7 ring-1 ring-secondary ring-inset md:p-9"
             >
+              <Illustration name="hikers" className="mb-6 aspect-[4/3] w-full max-w-xs" />
               <p className="text-[13px] font-medium tracking-[0.03em] text-brand-secondary">
                 {t("Nuestra misión")}
               </p>

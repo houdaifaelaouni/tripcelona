@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
-import { RouteIllustration } from "@/components/admin/illustrations";
+import { Illustration } from "@/components/illustrations/illustration";
 import {
   DepartureStatus,
   EmptyState,
@@ -106,7 +106,10 @@ export default async function TourEdit({
                   className="object-cover"
                 />
               ) : (
-                <RouteIllustration className="absolute inset-0 m-auto h-3/4 w-auto" />
+                <Illustration
+                  name="hikers"
+                  className="absolute inset-0 m-auto aspect-[4/3] h-3/4"
+                />
               )}
             </div>
             <div className="flex flex-col gap-5 p-5">
