@@ -635,6 +635,32 @@
         "license": "CC BY-SA 3.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
       }
+    },
+    "strip-le-barcares": {
+      "url": "/photos/tours/village-de-noel-le-barcares/02.jpg",
+      "alt": "El paquebote Lydia en el paseo marítimo de Le Barcarès",
+      "width": 1600,
+      "height": 1200,
+      "credit": {
+        "author": "Anthony Levrot",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%22Lydia%22_(vue_avant_droite)_-_Le_Barcar%C3%A8s,_2018.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+      }
+    },
+    "strip-andorra": {
+      "url": "/photos/tours/andorra-la-vella-mercado-de-navidad/02.jpg",
+      "alt": "Avinguda Meritxell con luces de Navidad, Andorra la Vella",
+      "width": 1600,
+      "height": 901,
+      "credit": {
+        "author": "FrankAndProust",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Avinguda_Meritxell_Christmas_decorations_20231128_174025.jpg",
+        "source": "Wikimedia Commons",
+        "license": "CC0",
+        "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+      }
     }
   },
   "aboutGallery": [
