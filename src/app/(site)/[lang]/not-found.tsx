@@ -13,11 +13,11 @@ export default function NotFound() {
   const locale = useLocale();
   return (
     <>
-      <section className="container-site grid items-start gap-8 py-16 md:py-24 lg:grid-cols-[1fr_420px] lg:gap-12">
+      <section className="container-site grid grid-cols-[minmax(0,1fr)] items-start gap-8 py-16 md:py-24 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-12">
         <Illustration
           name="lost"
           play="load"
-          className="aspect-[4/3] w-64 sm:w-80 lg:order-last lg:w-full"
+          className="aspect-[4/3] w-64 max-w-full sm:w-80 lg:order-last lg:w-full"
         />
         <div>
           <p className="text-sm font-semibold text-tertiary">{t("Error 404")}</p>
