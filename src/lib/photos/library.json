@@ -817,7 +817,11 @@
   },
   "heroVideo": {
     "src": "/video/hero-1080.mp4",
-    "srcMobile": "/video/hero-720.mp4",
+    "mobile": {
+      "webm": "/video/hero-mobile.webm",
+      "mp4": "/video/hero-mobile.mp4",
+      "poster": "/video/hero-mobile-poster.jpg"
+    },
     "poster": "/video/hero-poster.jpg",
     "title": "Mountainous area in the Alps",
     "credit": {

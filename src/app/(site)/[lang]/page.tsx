@@ -70,7 +70,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         locale={locale}
         photo={{ url: video.poster, alt: "", credit: video.credit }}
         videoSrc={home.heroVideoUrl || undefined}
-        videoSrcMobile={usesLibraryVideo ? video.srcMobile : undefined}
+        mobileVideo={video.mobile}
         videoCredit={usesLibraryVideo ? video.credit : undefined}
         next={next}
         fromCents={minPriceCents(tours)}
