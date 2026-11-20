@@ -24,7 +24,9 @@ const GROUPS: Record<string, PaymentField[]> = {
 /** Per field: how it is checked. Anything not listed only needs to be non-empty text. */
 const CHECKS: Partial<Record<PaymentField, (v: string) => string | null>> = {
   PAYMENT_PROVIDER: (v) =>
-    ["stripe", "paycomet", "redsys"].includes(v) ? null : "Elige Stripe, PAYCOMET o Redsys.",
+    ["stripe", "paycomet", "redsys", "both"].includes(v)
+      ? null
+      : "Elige Stripe, PAYCOMET, Redsys o ambas.",
   STRIPE_SECRET_KEY: (v) => stripeKeyProblem(v),
   STRIPE_WEBHOOK_SECRET: (v) =>
     v.startsWith("whsec_") ? null : "El secreto del webhook de Stripe empieza por whsec_.",

@@ -13,7 +13,7 @@ Sandbox and live use the same host; the **terminal number** decides which one ru
 ## Environment variables (Vercel)
 | Variable | Value |
 | --- | --- |
-| `PAYMENT_PROVIDER` | `paycomet` (anything else, or unset, keeps Redsys) |
+| `PAYMENT_PROVIDER` | `paycomet`, or `both` to offer Stripe and PAYCOMET and let the customer choose (anything else, or unset, keeps Redsys) |
 | `PAYCOMET_API_KEY` | API key from the control panel (needs Authorization and Refund privileges) |
 | `PAYCOMET_TERMINAL` | Previews: sandbox terminal. Production: the real terminal |
 | `PAYCOMET_CUSTOMER_CODE` | "Código de cliente" (the `AccountCode` in notifications), shown in the panel |

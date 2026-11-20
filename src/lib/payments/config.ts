@@ -92,12 +92,38 @@ export type PaymentProvider = "redsys" | "paycomet" | "stripe";
  */
 export async function activeProvider(env?: PaymentEnv): Promise<PaymentProvider | null> {
   const e = env ?? (await paymentEnv());
+  if (e.PAYMENT_PROVIDER === "both") return (await availableProviders(e))[0] ?? null;
   const wanted = ["paycomet", "stripe"].includes(e.PAYMENT_PROVIDER ?? "")
     ? e.PAYMENT_PROVIDER
     : "redsys";
   if (wanted === "stripe") return (await stripeConfig(e)) ? "stripe" : null;
   if (wanted === "paycomet") return (await paycometConfig(e)) ? "paycomet" : null;
   return (await redsysConfig(e)) ? "redsys" : null;
+}
+
+/**
+ * Gateways the customer may pick from. With PAYMENT_PROVIDER=both that is every
+ * configured one of Stripe and PAYCOMET (Stripe first); otherwise just the
+ * single active gateway.
+ */
+export async function availableProviders(env?: PaymentEnv): Promise<PaymentProvider[]> {
+  const e = env ?? (await paymentEnv());
+  if (e.PAYMENT_PROVIDER === "both") {
+    const list: PaymentProvider[] = [];
+    if (await stripeConfig(e)) list.push("stripe");
+    if (await paycometConfig(e)) list.push("paycomet");
+    return list;
+  }
+  const one = await activeProvider(e);
+  return one ? [one] : [];
+}
+
+/** What the checkout shows: one gateway, "choice" when the customer picks, or null. */
+export async function checkoutGateway(
+  env?: PaymentEnv,
+): Promise<PaymentProvider | "choice" | null> {
+  const list = await availableProviders(env);
+  return list.length > 1 ? "choice" : (list[0] ?? null);
 }
 
 /** Return pages keep the customer in the language they paid in. */
