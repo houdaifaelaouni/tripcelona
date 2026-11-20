@@ -23,8 +23,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, tourJsonLd } from "@/lib/seo/json-ld";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { Gallery } from "@/components/tours/gallery";
-import { DayTimeline } from "@/components/tours/day-timeline";
-import { RouteDiagram } from "@/components/tours/route-diagram";
+import { TripRoute } from "@/components/tours/trip-route";
 import { Testimonials } from "@/components/home/testimonials";
 import { BADGES, PAYMENT_METHODS } from "@/lib/brand-assets";
 import { Reveal } from "@/components/motion/reveal";
@@ -178,20 +177,7 @@ async function TourPageBody({
             </div>
 
             <Section title={t("Programa del viaje")}>
-              <Reveal>
-                <div data-reveal className="mb-8">
-                  <RouteDiagram
-                    stops={[
-                      "Barcelona",
-                      ...(tour.itinerary.length > 0 && tour.itinerary.length <= 3
-                        ? tour.itinerary.map((i) => i.title)
-                        : [tour.area ?? tour.title]),
-                      "Barcelona",
-                    ]}
-                  />
-                </div>
-              </Reveal>
-              {tour.itinerary.length > 0 && <DayTimeline stops={tour.itinerary} />}
+              <TripRoute stops={tour.itinerary} fallback={tour.area ?? tour.title} />
             </Section>
 
             {tour.description && tour.description.content.length > 0 && (

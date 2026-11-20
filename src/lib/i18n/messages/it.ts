@@ -28,6 +28,8 @@ export const it: Dictionary = {
   "Excursiones en grupo por Cataluña": "Escursioni di gruppo in Catalogna",
   "Mostrar {n} más": "Mostra altri {n}",
   "Mostrar menos": "Mostra meno",
+  Salida: "Partenza",
+  Regreso: "Ritorno",
   "Parada {i} de {n}": "Tappa {i} di {n}",
   "Horarios aproximados: pueden variar según el tráfico y la meteorología.":
     "Orari indicativi: possono variare in base al traffico e al meteo.",
@@ -437,7 +439,6 @@ export const it: Dictionary = {
   viajeros: "viaggiatori",
   Referencia: "Riferimento",
   Excursión: "Escursione",
-  Salida: "Partenza",
   "Tu carrito": "Il tuo carrello",
   "Reserva confirmada": "Prenotazione confermata",
   "Estamos confirmando tu pago…": "Stiamo confermando il tuo pagamento…",
