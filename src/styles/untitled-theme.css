@@ -119,14 +119,17 @@
   --color-brand-950: #010b1a;
 
   /* Booking grey ladder for light mode: canvas white, surfaces #f2f3f5 /
-     #e5eaee, hairlines #d7dee5 / #bec8d2, ink #0f1720. */
+     #e5eaee, hairlines #d7dee5 / #bec8d2, ink #0f1720. The guide's #7e90a5
+     mid grey is too light for text-quaternary and placeholders (3.3:1 on
+     white, 2.9:1 on the grey surface), so 500 sits at #5b6878 (5.7:1), which
+     still passes AA on every light surface in the ladder. */
   --color-neutral-25: #f7f8fa;
   --color-neutral-50: #f2f3f5;
   --color-neutral-100: #e5eaee;
   --color-neutral-200: #d7dee5;
   --color-neutral-300: #bec8d2;
   --color-neutral-400: #a4b2bf;
-  --color-neutral-500: #7e90a5;
+  --color-neutral-500: #5b6878;
   --color-neutral-600: #545e67;
   --color-neutral-700: #3e464e;
   --color-neutral-800: #2a3037;
