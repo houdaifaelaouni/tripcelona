@@ -110,7 +110,7 @@ export function RouteDiagram({ stops }: { stops: string[] }) {
         <div
           data-route-fill
           aria-hidden
-          className="absolute top-1/2 right-0 left-0 h-0.5 -translate-y-[1px] rounded-full bg-gradient-to-r from-brand-400 to-brand-300 shadow-[0_0_8px_rgb(147_184_253/0.6)]"
+          className="absolute top-1/2 right-0 left-0 h-0.5 -translate-y-[1px] rounded-full bg-gradient-to-r from-brand-400 to-brand-300 shadow-[0_0_8px_rgb(154_178_206/0.6)]"
         />
         {stops.map((_, i) => (
           <span
@@ -126,7 +126,7 @@ export function RouteDiagram({ stops }: { stops: string[] }) {
             <span
               data-route-stop
               data-reached
-              className="relative block size-4 rounded-full border-2 border-brand-300 bg-ink transition-[background-color,box-shadow] duration-300 data-reached:bg-brand-300 data-reached:shadow-[0_0_0_4px_rgb(147_184_253/0.25)]"
+              className="relative block size-4 rounded-full border-2 border-brand-300 bg-ink transition-[background-color,box-shadow] duration-300 data-reached:bg-brand-300 data-reached:shadow-[0_0_0_4px_rgb(154_178_206/0.25)]"
             />
           </span>
         ))}
@@ -138,7 +138,7 @@ export function RouteDiagram({ stops }: { stops: string[] }) {
           >
             <span
               data-route-bus-icon
-              className="flex size-7 items-center justify-center rounded-full bg-brand-solid text-white shadow-[0_0_0_3px_var(--color-ink),0_4px_12px_rgb(37_99_235/0.5)] transition-transform duration-300 group-hover/route:scale-110"
+              className="flex size-7 items-center justify-center rounded-full bg-brand-solid text-white shadow-[0_0_0_3px_var(--color-ink),0_4px_12px_rgb(0_59_130/0.5)] transition-transform duration-300 group-hover/route:scale-110"
             >
               <Bus className="size-4" />
             </span>

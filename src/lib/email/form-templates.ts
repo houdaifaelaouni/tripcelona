@@ -35,7 +35,7 @@ export function contactAutoReply(c: ContactInput): EmailContent {
     subject,
     html: layout(
       subject,
-      `<p>Hola ${esc(c.name)},</p><p>Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos lo antes posible.</p><p style="color:#5b6474">Tu mensaje:</p>${para(c.message)}`,
+      `<p>Hola ${esc(c.name)},</p><p>Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos lo antes posible.</p><p style="color:#545e67">Tu mensaje:</p>${para(c.message)}`,
     ),
     text: `Hola ${c.name},\n\nGracias por escribirnos. Hemos recibido tu mensaje y te responderemos lo antes posible.\n\nTu mensaje:\n${c.message}`,
   };

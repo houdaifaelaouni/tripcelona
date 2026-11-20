@@ -23,7 +23,7 @@ export function PageHero({
     <header className="relative overflow-hidden border-b border-secondary bg-secondary">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(37,99,235,0.10),transparent_45%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,--alpha(var(--color-cyan)/12%),transparent_45%)]"
       />
       <div
         className={cn(

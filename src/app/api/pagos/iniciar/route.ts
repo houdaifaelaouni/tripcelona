@@ -30,8 +30,8 @@ export async function POST(request: Request) {
   const html = `<!doctype html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>Redirigiendo al pago seguro…</title>
-<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;color:#1a1f2b}
-button{background:#0071c2;color:#fff;border:0;border-radius:8px;padding:14px 22px;font-size:16px;font-weight:700;cursor:pointer}</style>
+<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;color:#0f1720}
+button{background:#003b82;color:#fff;border:0;border-radius:8px;padding:14px 22px;font-size:16px;font-weight:700;cursor:pointer}</style>
 </head><body><form id="redsys" method="post" action="${escapeAttr(result.action)}">${inputs}
 <p>Te llevamos a la pasarela de pago segura del banco…</p>
 <button type="submit">Ir al pago</button></form>

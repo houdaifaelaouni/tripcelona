@@ -10,8 +10,8 @@ const C = {
   navy: "var(--color-navy)",
   blue: "var(--color-blue)",
   yellow: "var(--color-yellow)",
-  tint: "#eff5ff",
-  tint2: "#dbe8fe",
+  tint: "var(--color-brand-50)",
+  tint2: "var(--color-brand-100)",
   white: "#fff",
 };
 

@@ -18,35 +18,38 @@
 }
 
 /*
- * Brand (2026-11 rebrand): a restrained light-mode system. White canvas,
- * a cool surface ladder (#f7f8f8, #f1f2f4) and hairlines (#e6e8eb,
- * #d0d6e0) carry hierarchy instead of shadows. One chromatic accent,
- * Tripcelona blue #2563eb (hover #1d4fd8), used for primary actions, links
- * and focus rings only. Display type is Inter 600 with negative tracking.
+ * Brand (Booking.com identity): a restrained light-mode system. White canvas,
+ * a cool grey surface ladder (#f2f3f5, #e5eaee) and hairlines (#d7dee5,
+ * #bec8d2) carry hierarchy instead of shadows. Booking navy #003b82 (hover
+ * #04224a) is the single action colour, used for primary buttons, links and
+ * focus rings. Booking cyan #009fe3 only washes page heroes, and Booking
+ * yellow #fcb92c is the spot-illustration accent. Display type is Inter 600
+ * with negative tracking.
  *
  * Legacy names (navy, yellow, blue...) are kept so older markup keeps
- * working: "navy" is now the ink tone, "yellow" the focus/accent blue.
+ * working: "navy" is the dark brand tone, "yellow" the illustration accent.
  * Use these through Tailwind utilities rather than raw hex values.
  */
 @theme {
-  --color-navy: #0f1011;
-  --color-navy-dark: #08090a;
-  --color-yellow: #3b76f6;
-  --color-blue: #2563eb;
-  --color-blue-dark: #1d4fd8;
-  --color-ink: #0f1011;
-  --color-muted: #52565e;
-  --color-border: #e6e8eb;
-  --color-border-strong: #d0d6e0;
+  --color-navy: #04224a;
+  --color-navy-dark: #031a38;
+  --color-yellow: #fcb92c;
+  --color-blue: #003b82;
+  --color-blue-dark: #04224a;
+  --color-ink: #0f1720;
+  --color-muted: #545e67;
+  --color-border: #e5eaee;
+  --color-border-strong: #bec8d2;
   --color-surface: #ffffff;
-  --color-surface-alt: #f7f8f8;
+  --color-surface-alt: #f2f3f5;
+  --color-cyan: #009fe3;
   --color-danger: #c00;
   --color-success: #008234;
   --color-whatsapp: #117c38; /* 5.3:1 with white text (WCAG AA) */
 
   /*
    * Shape, type, spacing and elevation follow docs/ui-rebuild/scrum-plan.md
-   * (design-file rules, Tripcelona colours above are unchanged).
+   * (design-file rules, Booking palette above is unchanged).
    */
   --radius-control: 8px; /* buttons, inputs */
   --radius-card: 12px; /* cards, photos */
