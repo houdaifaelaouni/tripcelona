@@ -150,17 +150,9 @@ export function LandingHero({
         </video>
       )}
       <PhotoCredit credit={videoSrc ? (videoCredit ?? photo?.credit) : photo?.credit} />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/45 via-ink/25 to-ink/5"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink/40 to-transparent"
-      />
       <div className="container-site grid min-h-[600px] items-end gap-10 pt-24 pb-14 md:min-h-[680px] md:pb-20 lg:grid-cols-[1.4fr_1fr]">
-        {/* Soft shadow keeps white text readable on the lighter overlay. */}
-        <div className="[text-shadow:0_1px_2px_rgb(0_0_0/0.45),0_2px_16px_rgb(0_0_0/0.35)]">
+        {/* No dark overlay on the photo: a text shadow keeps the white copy readable. */}
+        <div className="[text-shadow:0_1px_3px_rgb(0_0_0/0.6),0_2px_20px_rgb(0_0_0/0.45)]">
           <p className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1 pr-3 pl-1 text-xs font-medium ring-1 ring-white/25 backdrop-blur ring-inset">
             <span className="rounded-full bg-white px-2 py-0.5 text-ink [text-shadow:none]">
               {t("Cada domingo")}
