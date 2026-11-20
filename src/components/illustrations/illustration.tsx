@@ -42,7 +42,8 @@ export function Illustration({
         paused: play === "scroll",
         defaults: { ease: "power2.out" },
       });
-      enter.from(svg, { y: 14, autoAlpha: 0, duration: 0.6 });
+      // Fade only: the drawing never moves out of its box.
+      enter.from(svg, { autoAlpha: 0, duration: 0.5 });
       const strokes = Array.from(root.querySelectorAll<SVGGeometryElement>("[data-draw]"));
       strokes.forEach((p) => {
         const len = p.getTotalLength();
@@ -72,7 +73,7 @@ export function Illustration({
       q("[data-float]").forEach((el, i) =>
         loop.to(
           el,
-          { y: -6, duration: 2.2 + (i % 3) * 0.5, ease: "sine.inOut", repeat: -1, yoyo: true },
+          { y: -4, duration: 2.6 + (i % 3) * 0.5, ease: "sine.inOut", repeat: -1, yoyo: true },
           i * 0.35,
         ),
       );
@@ -98,21 +99,11 @@ export function Illustration({
           0,
         ),
       );
-      q("[data-bob]").forEach((el) =>
-        loop.to(el, { y: -2.5, duration: 0.4, ease: "sine.inOut", repeat: -1, yoyo: true }, 0),
-      );
       q("[data-twinkle]").forEach((el, i) =>
         loop.to(
           el,
-          {
-            scale: 0.7,
-            transformOrigin: "50% 50%",
-            duration: 0.8,
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-          },
-          i * 0.25,
+          { opacity: 0.25, duration: 1.1, ease: "sine.inOut", repeat: -1, yoyo: true },
+          i * 0.3,
         ),
       );
 
