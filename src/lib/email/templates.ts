@@ -36,7 +36,7 @@ export function layout(title: string, body: string): string {
 <body style="margin:0;background:#f2f3f5;font-family:Arial,Helvetica,sans-serif;color:#0f1720">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:12px">
-<tr><td style="background:#003b82;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;border-radius:12px 12px 0 0">${site.name}</td></tr>
+<tr><td style="background:#003882;color:#ffffff;padding:18px 24px;font-size:20px;font-weight:bold;border-radius:12px 12px 0 0">${site.name}</td></tr>
 <tr><td style="padding:24px;font-size:15px;line-height:1.5">${body}</td></tr>
 <tr><td style="padding:16px 24px;font-size:13px;color:#545e67;border-top:1px solid #e5eaee">
 ¿Dudas? Llámanos al ${esc(site.phoneDisplay)} o escríbenos por WhatsApp: <a href="${site.whatsappHref}">${esc(site.phoneDisplay)}</a>
@@ -91,7 +91,7 @@ ${
         .join("")}</ul>`
     : ""
 }
-<p style="margin:24px 0 8px"><a href="${urls.booking}" style="background:#003b82;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mi reserva</a></p>
+<p style="margin:24px 0 8px"><a href="${urls.booking}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mi reserva</a></p>
 <p style="margin:0"><a href="${urls.calendar}">Añadir al calendario</a></p>`,
   );
   const text = [
@@ -143,7 +143,7 @@ export function paymentFailedEmail(b: EmailBooking, retryUrl: string): EmailCont
 <p>Hola ${esc(b.customerName)}, el banco no ha autorizado el pago de tu reserva, así que todavía no está confirmada.</p>
 ${rows(facts)}
 <p>Puedes intentarlo de nuevo con otra tarjeta mientras queden plazas:</p>
-<p><a href="${retryUrl}" style="background:#003b82;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Reintentar el pago</a></p>`,
+<p><a href="${retryUrl}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Reintentar el pago</a></p>`,
     ),
     text: `Tu pago no se ha completado.\n\nHola ${b.customerName}, el banco no ha autorizado el pago de tu reserva, así que todavía no está confirmada.\n\n${textRows(facts)}\n\nReintentar el pago: ${retryUrl}`,
   };
@@ -198,7 +198,7 @@ export function paymentRequestEmail(b: EmailBooking, payUrl: string): EmailConte
       `<h1 style="font-size:22px;margin:0 0 8px">Te hemos guardado las plazas</h1>
 <p>Hola ${esc(b.customerName)}, para confirmar tu reserva solo falta el pago con tarjeta:</p>
 ${rows(facts)}
-<p><a href="${payUrl}" style="background:#003b82;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Pagar la reserva</a></p>`,
+<p><a href="${payUrl}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Pagar la reserva</a></p>`,
     ),
     text: `Te hemos guardado las plazas.\n\nHola ${b.customerName}, para confirmar tu reserva solo falta el pago con tarjeta.\n\n${textRows(facts)}\n\nPagar la reserva: ${payUrl}`,
   };

@@ -20,8 +20,8 @@
 /*
  * Brand (Booking.com identity): a restrained light-mode system. White canvas,
  * a cool grey surface ladder (#f2f3f5, #e5eaee) and hairlines (#d7dee5,
- * #bec8d2) carry hierarchy instead of shadows. Booking navy #003b82 (hover
- * #04224a) is the single action colour, used for primary buttons, links and
+ * #bec8d2) carry hierarchy instead of shadows. Booking navy #003882 (hover
+ * #04224b) is the single action colour, used for primary buttons, links and
  * focus rings. Booking cyan #009fe3 only washes page heroes, and Booking
  * yellow #fcb92c is the spot-illustration accent. Display type is Inter 600
  * with negative tracking.
@@ -31,11 +31,11 @@
  * Use these through Tailwind utilities rather than raw hex values.
  */
 @theme {
-  --color-navy: #04224a;
+  --color-navy: #04224b;
   --color-navy-dark: #031a38;
   --color-yellow: #fcb92c;
-  --color-blue: #003b82;
-  --color-blue-dark: #04224a;
+  --color-blue: #003882;
+  --color-blue-dark: #04224b;
   --color-ink: #0f1720;
   --color-muted: #545e67;
   --color-border: #e5eaee;
