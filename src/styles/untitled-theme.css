@@ -2,7 +2,7 @@
  * Untitled UI design tokens (MIT, © 2025 Untitled UI,
  * https://github.com/untitleduico/react, see THIRD_PARTY_NOTICES.md),
  * light mode only. Changes for Tripcelona: the brand scale is Booking navy
- * (600 = #003b82, from the Booking.com identity guidelines), the neutral
+ * (600 = #003882, from the Booking.com identity guidelines), the neutral
  * scale is the Booking grey ladder (see globals.css "Brand" notes), shadows
  * are flattened to hairlines, and the
  * display font sizes and font families are left to the Tripcelona tokens in
@@ -112,8 +112,8 @@
   --color-brand-300: #9ab2ce;
   --color-brand-400: #7690b6;
   --color-brand-500: #375f95;
-  --color-brand-600: #003b82;
-  --color-brand-700: #04224a;
+  --color-brand-600: #003882;
+  --color-brand-700: #04224b;
   --color-brand-800: #031a38;
   --color-brand-900: #02122a;
   --color-brand-950: #010b1a;
