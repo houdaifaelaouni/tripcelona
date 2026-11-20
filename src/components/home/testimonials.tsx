@@ -44,7 +44,7 @@ function ReviewCard({ review }: { review: Review }) {
                 aria-hidden
                 className={
                   i < review.rating!
-                    ? "size-4 fill-[#f5b942] text-[#f5b942]"
+                    ? "size-4 fill-[#fcb92c] text-[#fcb92c]"
                     : "size-4 text-quaternary"
                 }
               />
