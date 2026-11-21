@@ -57,6 +57,9 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
         actions={
           <div className="flex gap-2 print:hidden">
             <PrintButton />
+            <ButtonLink href={`/admin/exportar/pasajeros/${id}/pdf`} variant="secondary">
+              Descargar PDF
+            </ButtonLink>
             <ButtonLink href={`/admin/exportar/pasajeros/${id}`} variant="secondary">
               Descargar CSV
             </ButtonLink>
