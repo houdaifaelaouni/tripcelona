@@ -601,4 +601,31 @@ export const fr: Dictionary = {
   "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
     "Les photos du site proviennent de Wikimedia Commons et la vidéo d'accueil de Mixkit, toutes sous licence libre. Merci à leurs auteurs.",
   "Vídeo de portada": "Vidéo d'accueil",
+  // Passenger details and e-ticket
+  "Tu ticket está listo": "Votre billet est prêt",
+  "Te lo hemos enviado por email. También puedes verlo y descargarlo aquí.":
+    "Nous vous l'avons envoyé par e-mail. Vous pouvez aussi le voir et le télécharger ici.",
+  "Ver y descargar mi ticket": "Voir et télécharger mon billet",
+  "Último paso": "Dernière étape",
+  "Datos de los pasajeros": "Informations des passagers",
+  "Escribe el nombre de cada viajero. Te enviaremos el ticket a {email}.":
+    "Indiquez le nom de chaque voyageur. Nous enverrons le billet à {email}.",
+  "Editar pasajeros": "Modifier les passagers",
+  "Ticket listo": "Billet prêt",
+  "Aquí tienes tu ticket": "Voici votre billet",
+  "Te lo hemos enviado a {email}. Si no lo ves, revisa la carpeta de spam.":
+    "Nous l'avons envoyé à {email}. Si vous ne le voyez pas, vérifiez vos spams.",
+  "Muéstralo en el móvil o impreso el día de la excursión.":
+    "Montrez-le sur votre téléphone ou imprimé le jour de l'excursion.",
+  "Descargar ticket (PDF)": "Télécharger le billet (PDF)",
+  "Viajero {n}: nombre y apellidos": "Voyageur {n} : nom et prénom",
+  "DNI o pasaporte (opcional)": "Pièce d'identité ou passeport (facultatif)",
+  "Generando tu ticket…": "Création de votre billet…",
+  "Guardar y reenviar el ticket": "Enregistrer et renvoyer le billet",
+  "Obtener mi ticket": "Obtenir mon billet",
+  "Ticket {ref}": "Billet {ref}",
+  Pasajeros: "Passagers",
+  "Tu ticket": "Votre billet",
+  "Escribe el nombre y apellidos.": "Indiquez le nom et le prénom.",
+  "No hemos podido guardar los datos.": "Nous n'avons pas pu enregistrer les informations.",
 };

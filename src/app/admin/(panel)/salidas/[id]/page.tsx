@@ -25,7 +25,9 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
   if (!departure) notFound();
   const { data: bookings } = await db
     .from("bookings")
-    .select("id, reference, status, customer_name, email, phone, travellers, pickup_note, notes")
+    .select(
+      "id, reference, status, customer_name, email, phone, travellers, pickup_note, notes, booking_travellers(name, document_id, position)",
+    )
     .eq("departure_id", id)
     .in("status", ["paid", "pending"])
     .order("customer_name");
@@ -61,7 +63,7 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
               <tr>
                 <th className={th}>Cliente</th>
                 <th className={th}>Teléfono</th>
-                <th className={th}>Pax</th>
+                <th className={th}>Pasajeros</th>
                 <th className={th}>Recogida y notas</th>
                 <th className={th}>Ref.</th>
               </tr>
@@ -75,7 +77,25 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
                     <span className="text-tertiary">{b.email}</span>
                   </td>
                   <td className={`${td} whitespace-nowrap`}>{b.phone ?? "-"}</td>
-                  <td className={td}>{b.travellers}</td>
+                  <td className={td}>
+                    {b.travellers}
+                    {b.booking_travellers.length > 0 ? (
+                      <ol className="mt-1 list-decimal pl-4 text-tertiary">
+                        {[...b.booking_travellers]
+                          .sort((x, y) => x.position - y.position)
+                          .map((p) => (
+                            <li key={p.position} className="whitespace-nowrap">
+                              {p.name}
+                              {p.document_id ? ` · ${p.document_id}` : ""}
+                            </li>
+                          ))}
+                      </ol>
+                    ) : (
+                      <p className="mt-1 text-xs text-warning-primary print:hidden">
+                        Sin nombres todavía
+                      </p>
+                    )}
+                  </td>
                   <td className={td}>
                     {[b.pickup_note, b.notes].filter(Boolean).join(" · ") || "-"}
                   </td>
