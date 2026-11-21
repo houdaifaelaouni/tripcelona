@@ -21,7 +21,7 @@ export type EmailBooking = {
 
 export type EmailContent = { subject: string; html: string; text: string };
 export type EmailKind =
-  "confirmation" | "owner_alert" | "payment_failed" | "payment_request" | "cancellation";
+  "confirmation" | "owner_alert" | "payment_failed" | "payment_request" | "cancellation" | "ticket";
 
 export function esc(value: string): string {
   return value
@@ -73,7 +73,10 @@ function tripFacts(b: EmailBooking): [string, string][] {
   return facts;
 }
 
-export function confirmationEmail(b: EmailBooking, urls: { booking: string; calendar: string }) {
+export function confirmationEmail(
+  b: EmailBooking,
+  urls: { booking: string; calendar: string; passengers?: string },
+) {
   const facts = tripFacts(b);
   const meeting = b.tour.meetingPoint ?? site.meetingPoint;
   const packing = b.tour.packingList;
@@ -91,6 +94,14 @@ ${
         .join("")}</ul>`
     : ""
 }
+${
+  urls.passengers
+    ? `<div style="margin:24px 0 0;padding:16px;border:2px dashed #fcb92c;border-radius:12px;background:#fffaf0">
+<p style="margin:0 0 6px;font-weight:bold">Último paso: tu ticket</p>
+<p style="margin:0 0 12px">Escribe el nombre de cada viajero y te enviamos el ticket por email, listo para descargar.</p>
+<a href="${urls.passengers}" style="background:#fcb92c;color:#0f1720;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Completar pasajeros</a></div>`
+    : ""
+}
 <p style="margin:24px 0 8px"><a href="${urls.booking}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mi reserva</a></p>
 <p style="margin:0"><a href="${urls.calendar}">Añadir al calendario</a></p>`,
   );
@@ -104,6 +115,9 @@ ${
     `Punto de encuentro: ${meeting}`,
     ...(packing.length ? [``, `Qué llevar:`, ...packing.map((p) => `- ${p}`)] : []),
     ``,
+    ...(urls.passengers
+      ? [`Último paso: completa los pasajeros para recibir tu ticket: ${urls.passengers}`, ``]
+      : []),
     `Ver mi reserva: ${urls.booking}`,
     `Añadir al calendario: ${urls.calendar}`,
     ``,
@@ -202,4 +216,65 @@ ${rows(facts)}
     ),
     text: `Te hemos guardado las plazas.\n\nHola ${b.customerName}, para confirmar tu reserva solo falta el pago con tarjeta.\n\n${textRows(facts)}\n\nPagar la reserva: ${payUrl}`,
   };
+}
+
+export type TicketEmailLine = {
+  reference: string;
+  title: string;
+  startsAt: string;
+  meetingPoint: string | null;
+  passengers: { name: string }[];
+};
+
+/** The e-ticket email: the PDF goes as an attachment, plus a link to the web ticket. */
+export function ticketEmail(
+  b: EmailBooking,
+  lines: TicketEmailLine[],
+  urls: { ticket: string; pdf: string },
+): EmailContent {
+  const blocks = lines
+    .map((l) => {
+      const date = formatDateLong(l.startsAt);
+      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;border:1px solid #e5eaee;border-radius:12px;border-collapse:separate">
+<tr><td style="background:#003882;color:#ffffff;padding:14px 18px;border-radius:12px 12px 0 0">
+<span style="display:inline-block;background:#fcb92c;color:#0f1720;font-size:11px;font-weight:bold;padding:3px 8px;border-radius:999px">E-TICKET</span>
+<div style="font-size:18px;font-weight:bold;margin-top:8px">${esc(l.title)}</div>
+<div style="font-size:14px;opacity:.9">${esc(date.charAt(0).toUpperCase() + date.slice(1))} · ${esc(formatTime(l.startsAt))}</div>
+</td></tr>
+<tr><td style="border-top:2px dashed #d5dbe1;padding:14px 18px">
+<div style="font-size:12px;color:#545e67;text-transform:uppercase;font-weight:bold">Referencia</div>
+<div style="font-size:18px;font-weight:bold;color:#003882">${esc(l.reference)}</div>
+<div style="font-size:12px;color:#545e67;text-transform:uppercase;font-weight:bold;margin-top:10px">Punto de encuentro</div>
+<div>${esc(l.meetingPoint ?? site.meetingPoint)}</div>
+<div style="font-size:12px;color:#545e67;text-transform:uppercase;font-weight:bold;margin-top:10px">Pasajeros</div>
+<ol style="margin:4px 0 0;padding-left:20px">${l.passengers.map((p) => `<li>${esc(p.name)}</li>`).join("")}</ol>
+</td></tr></table>`;
+    })
+    .join("");
+  const html = layout(
+    `Tu ticket ${b.reference}`,
+    `<h1 style="font-size:22px;margin:0 0 8px">Aquí tienes tu ticket</h1>
+<p>Hola ${esc(b.customerName)}, te adjuntamos el ticket en PDF. Muéstralo en el móvil o impreso el día de la excursión.</p>
+${blocks}
+<p style="margin:24px 0 8px"><a href="${urls.pdf}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Descargar ticket (PDF)</a></p>
+<p style="margin:0"><a href="${urls.ticket}">Ver o editar el ticket en la web</a></p>`,
+  );
+  const text = [
+    `Aquí tienes tu ticket`,
+    ``,
+    `Hola ${b.customerName}, te adjuntamos el ticket en PDF. Muéstralo en el móvil o impreso el día de la excursión.`,
+    ``,
+    ...lines.flatMap((l) => [
+      `${l.title} · ${formatDateLong(l.startsAt)} · ${formatTime(l.startsAt)}`,
+      `Referencia: ${l.reference}`,
+      `Punto de encuentro: ${l.meetingPoint ?? site.meetingPoint}`,
+      `Pasajeros: ${l.passengers.map((p) => p.name).join(", ")}`,
+      ``,
+    ]),
+    `Descargar ticket (PDF): ${urls.pdf}`,
+    `Ver o editar el ticket: ${urls.ticket}`,
+    ``,
+    `Dudas: ${site.phoneDisplay}`,
+  ].join("\n");
+  return { subject: `Tu ticket ${b.reference}: ${b.tour.title}`, html, text };
 }

@@ -2,11 +2,14 @@ import "server-only";
 import { getBookingDetails } from "@/lib/booking/details";
 import { siteUrl } from "@/lib/seo/site-url";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "./send";
+import { getTicketBundle } from "@/lib/booking/passengers";
+import { buildTicketPdf } from "@/lib/tickets/pdf";
+import { sendEmail, type OutgoingEmail } from "./send";
 import {
   cancellationEmail,
   confirmationEmail,
   ownerAlertEmail,
+  ticketEmail,
   paymentFailedEmail,
   paymentRequestEmail,
   type EmailContent,
@@ -44,13 +47,30 @@ export async function sendBookingEmail(
 
   const base = siteUrl();
   let content: EmailContent;
+  let attachments: OutgoingEmail["attachments"];
   switch (kind) {
     case "confirmation":
       content = confirmationEmail(booking, {
         booking: `${base}/reservar/confirmada?id=${booking.id}`,
         calendar: `${base}/reservar/confirmada/calendario?id=${booking.id}`,
+        passengers: `${base}/reservar/confirmada?id=${booking.id}#pasajeros`,
       });
       break;
+    case "ticket": {
+      const bundle = await getTicketBundle(booking);
+      content = ticketEmail(booking, bundle.lines, {
+        ticket: `${base}/reservar/ticket?id=${booking.id}`,
+        pdf: `${base}/reservar/ticket/pdf?id=${booking.id}`,
+      });
+      attachments = [
+        {
+          filename: `tripcelona-ticket-${booking.reference}.pdf`,
+          content: await buildTicketPdf(bundle),
+          contentType: "application/pdf",
+        },
+      ];
+      break;
+    }
     case "owner_alert":
       content = ownerAlertEmail(booking, options.note);
       break;
@@ -69,6 +89,7 @@ export async function sendBookingEmail(
     const { id } = await sendEmail({
       to,
       ...content,
+      attachments,
       idempotencyKey: `${booking.id}:${kind}:${claimed.attempts}`,
       replyTo: kind === "owner_alert" ? booking.email : process.env.OWNER_EMAIL,
     });

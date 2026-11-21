@@ -104,9 +104,11 @@ export type Database = {
           age_group: string | null;
           booking_id: string;
           created_at: string;
+          document_id: string | null;
           id: string;
           name: string;
           notes: string | null;
+          position: number;
           updated_at: string;
         };
         ComputedFields: never;
@@ -114,18 +116,22 @@ export type Database = {
           age_group?: string | null;
           booking_id: string;
           created_at?: string;
+          document_id?: string | null;
           id?: string;
           name: string;
           notes?: string | null;
+          position?: number;
           updated_at?: string;
         };
         Update: {
           age_group?: string | null;
           booking_id?: string;
           created_at?: string;
+          document_id?: string | null;
           id?: string;
           name?: string;
           notes?: string | null;
+          position?: number;
           updated_at?: string;
         };
         Relationships: [
@@ -147,6 +153,7 @@ export type Database = {
           email: string;
           id: string;
           notes: string | null;
+          passengers_completed_at: string | null;
           phone: string | null;
           pickup_note: string | null;
           reference: string;
@@ -165,6 +172,7 @@ export type Database = {
           email: string;
           id?: string;
           notes?: string | null;
+          passengers_completed_at?: string | null;
           phone?: string | null;
           pickup_note?: string | null;
           reference?: string;
@@ -182,6 +190,7 @@ export type Database = {
           email?: string;
           id?: string;
           notes?: string | null;
+          passengers_completed_at?: string | null;
           phone?: string | null;
           pickup_note?: string | null;
           reference?: string;
