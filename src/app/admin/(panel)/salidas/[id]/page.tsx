@@ -26,7 +26,7 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
   const { data: bookings } = await db
     .from("bookings")
     .select(
-      "id, reference, status, customer_name, email, phone, travellers, pickup_note, notes, booking_travellers(name, document_id, position)",
+      "id, reference, status, customer_name, email, phone, travellers, pickup_note, notes, booking_travellers(name, document_id, position, checked_in_at)",
     )
     .eq("departure_id", id)
     .in("status", ["paid", "pending"])
@@ -87,6 +87,9 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
                             <li key={p.position} className="whitespace-nowrap">
                               {p.name}
                               {p.document_id ? ` · ${p.document_id}` : ""}
+                              {p.checked_in_at && (
+                                <span className="text-success-primary"> · ✓ embarcado</span>
+                              )}
                             </li>
                           ))}
                       </ol>
@@ -105,6 +108,12 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
                       className="text-primary hover:text-brand-secondary print:no-underline"
                     >
                       {b.reference}
+                    </Link>
+                    <Link
+                      href={`/admin/billetes/${b.reference}`}
+                      className="ml-2 text-xs text-brand-secondary hover:underline print:hidden"
+                    >
+                      Embarque
                     </Link>
                   </td>
                 </tr>

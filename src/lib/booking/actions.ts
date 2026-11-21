@@ -7,6 +7,7 @@ const pendingPath = (form: FormData, id: string) => {
   const raw = String(form.get("locale") ?? "");
   return localizePath(`/reservar/pendiente?id=${id}`, isLocale(raw) ? raw : "es");
 };
+import { readAttribution } from "@/lib/tracking/attribution-server";
 import { createPendingBooking, createPendingCart } from "./create";
 import {
   cartCheckoutSchema,
@@ -53,6 +54,7 @@ export async function startCheckout(_prev: CheckoutState, form: FormData): Promi
     email: input.email,
     phone: input.phone,
     pickupNote: input.pickupNote,
+    attribution: await readAttribution(),
   });
   if (!result.ok) {
     return {
@@ -98,7 +100,13 @@ export async function startCartCheckout(
     };
   }
   const { items, name, email, phone, pickupNote } = parsed.data;
-  const result = await createPendingCart(items, { name, email, phone, pickupNote });
+  const result = await createPendingCart(items, {
+    name,
+    email,
+    phone,
+    pickupNote,
+    attribution: await readAttribution(),
+  });
   if (!result.ok) {
     return { status: "error", message: result.message, fieldErrors: {}, values };
   }

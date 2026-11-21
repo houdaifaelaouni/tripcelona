@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { BookingSummary } from "@/components/booking/booking-summary";
 import { ClearCart } from "@/components/cart/clear-cart";
+import { TrackOnMount } from "@/components/tracking/tracking";
 import { Illustration } from "@/components/illustrations/illustration";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { ButtonLink } from "@/components/ui/button";
@@ -111,9 +112,31 @@ async function Confirmed({
         point: l.meetingPoint ?? site.meetingPoint,
       }))
     : [{ key: booking.id, label: null, point: tour.meetingPoint ?? site.meetingPoint }];
+  const purchaseItems = booking.cart
+    ? booking.cart.lines.map((l) => ({
+        id: l.slug,
+        name: l.title,
+        quantity: l.travellers,
+        priceCents: Math.round(l.totalCents / l.travellers),
+      }))
+    : [
+        {
+          id: tour.slug,
+          name: tour.title,
+          quantity: booking.travellers,
+          priceCents: Math.round(booking.totalCents / booking.travellers),
+        },
+      ];
   return (
     <>
       <ClearCart />
+      <TrackOnMount
+        name="Purchase"
+        items={purchaseItems}
+        eventId={booking.id}
+        orderId={booking.reference}
+        onceKey={`purchase-${booking.id}`}
+      />
       <Illustration name="tickets" play="load" className="aspect-[4/3] w-60 md:w-72" />
       <p className="mt-2 text-sm font-semibold tracking-wide text-success uppercase">
         {t("Pago recibido")}

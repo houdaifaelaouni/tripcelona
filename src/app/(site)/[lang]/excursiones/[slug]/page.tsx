@@ -18,6 +18,7 @@ import { notFound } from "next/navigation";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { Suspense } from "react";
 import { DeparturePicker } from "@/components/booking/departure-picker";
+import { TrackOnMount } from "@/components/tracking/tracking";
 import { RichText } from "@/components/content/rich-text";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbJsonLd, faqJsonLd, tourJsonLd } from "@/lib/seo/json-ld";
@@ -114,6 +115,17 @@ async function TourPageBody({
 
   return (
     <article className="pt-6 md:pt-8">
+      <TrackOnMount
+        name="ViewContent"
+        items={[
+          {
+            id: tour.slug,
+            name: tour.title,
+            priceCents: next?.priceCents ?? tour.priceFromCents ?? 0,
+            quantity: 1,
+          },
+        ]}
+      />
       <JsonLd
         data={[
           tourJsonLd(tour),
@@ -508,7 +520,7 @@ async function LiveAvailability({ tour, locale }: { tour: TourDetail; locale: Lo
   const departures = (await getLiveDepartures(tour.slug)).slice(0, 8);
   const bookable = departures.some((d) => d.status === "open" && d.seatsLeft > 0);
   if (!bookable) return <NoDates tour={tour} soldOut={departures.length > 0} locale={locale} />;
-  return <DeparturePicker departures={departures} />;
+  return <DeparturePicker departures={departures} tour={{ slug: tour.slug, title: tour.title }} />;
 }
 
 function CachedDates({ tour, locale }: { tour: TourDetail; locale: Locale }) {

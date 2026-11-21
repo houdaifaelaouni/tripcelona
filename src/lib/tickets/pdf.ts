@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 import type { TicketBundle, TicketLine } from "@/lib/booking/passengers";
 import { site } from "@/lib/site";
 import { siteUrl } from "@/lib/seo/site-url";
+import { checkinUrl } from "./codes";
 import { formatDateLong, formatTime } from "@/lib/tours/format";
 
 /*
@@ -269,7 +270,8 @@ async function drawTicket(
     }),
   );
 
-  const qr = await QRCode.toBuffer(`TRIPCELONA:${line.reference}`, {
+  // Staff scan it with the phone camera: opens the check-in page of this booking.
+  const qr = await QRCode.toBuffer(checkinUrl(line.reference), {
     type: "png",
     margin: 0,
     width: 360,

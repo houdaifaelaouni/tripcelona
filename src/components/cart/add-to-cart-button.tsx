@@ -4,14 +4,17 @@ import Link from "@/components/i18n/link";
 import { useState } from "react";
 import { buttonClasses } from "@/components/ui/button";
 import { addToCart } from "@/lib/cart/store";
+import { track } from "@/lib/tracking/client";
 import { useT } from "@/components/i18n/provider";
 
 export function AddToCartButton({
   departureId,
   travellers,
+  item,
 }: {
   departureId: string;
   travellers: number;
+  item?: { slug: string; title: string; priceCents: number };
 }) {
   const t = useT();
   const [result, setResult] = useState<"added" | "full" | null>(null);
@@ -20,7 +23,21 @@ export function AddToCartButton({
       <button
         type="button"
         className={buttonClasses({ size: "lg", variant: "outline" }, "w-full")}
-        onClick={() => setResult(addToCart(departureId, travellers))}
+        onClick={() => {
+          const r = addToCart(departureId, travellers);
+          setResult(r);
+          if (r === "added" && item)
+            track("AddToCart", {
+              items: [
+                {
+                  id: item.slug,
+                  name: item.title,
+                  priceCents: item.priceCents,
+                  quantity: travellers,
+                },
+              ],
+            });
+        }}
       >
         {t("Añadir al carrito")}
       </button>

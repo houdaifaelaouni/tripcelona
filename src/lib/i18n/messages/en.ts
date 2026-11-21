@@ -611,4 +611,60 @@ export const en: Dictionary = {
   "Tu ticket": "Your ticket",
   "Escribe el nombre y apellidos.": "Enter the full name.",
   "No hemos podido guardar los datos.": "We could not save the details.",
+  "No encontramos billetes para esta reserva": "We can't find tickets for this booking",
+  "Los billetes aparecen cuando el pago está confirmado.":
+    "Tickets appear once the payment is confirmed.",
+  "Reserva {ref}": "Booking {ref}",
+  "Datos de los viajeros": "Traveller details",
+  "Rellena los datos de cada viajero. Te daremos un billete con código QR por persona para enseñarlo al subir al autobús.":
+    "Fill in each traveller's details. Everyone gets a ticket with a QR code to show when boarding the coach.",
+  "Guardado. Te hemos enviado los billetes a {email}.": "Saved. We've sent the tickets to {email}.",
+  "Tus billetes": "Your tickets",
+  "Enseña el código QR en el móvil o impreso al subir al autobús.":
+    "Show the QR code on your phone or printed when boarding the coach.",
+  "Descargar billetes (PDF)": "Download tickets (PDF)",
+  "Editar viajeros": "Edit travellers",
+  Billete: "Ticket",
+  "Viajero {n}": "Traveller {n}",
+  Viajero: "Traveller",
+  Documento: "ID document",
+  "Código QR del billete": "Ticket QR code",
+  "Tus billetes están listos": "Your tickets are ready",
+  "Último paso: tus billetes": "Last step: your tickets",
+  "Descárgalos o enséñalos desde el móvil al subir al autobús.":
+    "Download them or show them on your phone when boarding the coach.",
+  "Rellena el nombre y el documento de cada viajero y te enviamos los billetes con código QR.":
+    "Fill in each traveller's name and ID and we'll send you the tickets with a QR code.",
+  "Ver mis billetes": "View my tickets",
+  "Completar viajeros": "Add travellers",
+  "Reservar plaza": "Book a seat",
+  "Billete con QR": "Ticket with QR",
+  "Después de pagar recibes por email un billete por viajero.":
+    "After paying you get one ticket per traveller by email.",
+  "¿Dudas?": "Questions?",
+  "DNI, NIE o pasaporte": "ID card, NIE or passport",
+  "Usamos estos datos solo para la lista de pasajeros del autobús. Al guardar te enviamos los billetes por email.":
+    "We only use this data for the coach passenger list. When you save, we email you the tickets.",
+  "Guardando…": "Saving…",
+  "Guardar y recibir mis billetes": "Save and get my tickets",
+  Cookies: "Cookies",
+  "Usamos cookies de medición y publicidad (Meta, TikTok, Google) para saber qué anuncios funcionan. Solo se activan si aceptas.":
+    "We use measurement and advertising cookies (Meta, TikTok, Google) to see which ads work. They only turn on if you accept.",
+  "Más información": "More information",
+  Aceptar: "Accept",
+  Rechazar: "Reject",
+  "Preferencias de cookies": "Cookie preferences",
+  "Esta reserva no está pagada.": "This booking is not paid.",
+  "La excursión ya ha salido: los datos no se pueden cambiar.":
+    "The trip has already left: details can no longer be changed.",
+  "No hemos podido guardar los datos. Inténtalo de nuevo en un momento.":
+    "We couldn't save the details. Please try again in a moment.",
+  "Escribe nombre y apellidos.": "Enter first and last name.",
+  "Máximo 80 caracteres.": "80 characters maximum.",
+  "DNI, NIE o pasaporte: solo letras y números.":
+    "ID card, NIE or passport: letters and numbers only.",
+  "Teléfono no válido.": "Invalid phone number.",
+  "Ticket por email": "Ticket by email",
+  "Después de pagar recibes el ticket con código QR por email.":
+    "After paying you get the ticket with a QR code by email.",
 };

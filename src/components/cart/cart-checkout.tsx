@@ -2,7 +2,8 @@
 
 import { useLocale, useT } from "@/components/i18n/provider";
 import Link from "@/components/i18n/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { track } from "@/lib/tracking/client";
 import { FormAlert } from "@/components/forms/form-bits";
 import { Checkbox, Input, Textarea } from "@/components/ui/field";
 import { buttonClasses } from "@/components/ui/button";
@@ -24,6 +25,19 @@ export function CartCheckout({ provider }: { provider: PaymentProvider | "choice
   });
   const errors = state.status === "error" ? state.fieldErrors : {};
   const values = state.status === "error" ? state.values : {};
+  const tracked = useRef(false);
+  useEffect(() => {
+    if (tracked.current || loading || !lines.length) return;
+    tracked.current = true;
+    track("InitiateCheckout", {
+      items: lines.map((l) => ({
+        id: l.tourSlug,
+        name: l.title,
+        priceCents: l.unitCents,
+        quantity: l.travellers,
+      })),
+    });
+  }, [loading, lines]);
 
   if (empty) {
     return (

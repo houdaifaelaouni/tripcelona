@@ -9,8 +9,9 @@
  * - form-action allows Redsys and PAYCOMET: "Pagar con tarjeta" posts the signed
  *   form to Redsys, or is redirected to the PAYCOMET or Stripe hosted page.
  * - Outside Vercel production, localhost is allowed for the e2e fake gateway.
- * - Analytics (decision D8) is not loaded today; adding GTM/GA4 needs its
- *   hosts here and a consent banner first.
+ * - Ad pixels (Meta, TikTok, Google tag / GTM) load only after the visitor
+ *   accepts the cookie banner; their hosts are allowed here so the media
+ *   buyer can switch them on from Admin > Integraciones without a deploy.
  */
 export function securityHeaders(env: {
   supabaseUrl?: string;
@@ -22,18 +23,50 @@ export function securityHeaders(env: {
   const local = env.production ? "" : "http://localhost:* http://127.0.0.1:*";
   const vercel = env.preview ? "https://vercel.live" : "";
   const src = (...parts: string[]) => parts.filter(Boolean).join(" ");
+  const adScripts = [
+    "https://connect.facebook.net",
+    "https://analytics.tiktok.com",
+    "https://www.googletagmanager.com",
+    "https://*.googletagmanager.com",
+    "https://www.google-analytics.com",
+    "https://googleads.g.doubleclick.net",
+    "https://www.googleadservices.com",
+  ].join(" ");
+  const adConnect = [
+    "https://www.facebook.com",
+    "https://connect.facebook.net",
+    "https://*.tiktok.com",
+    "https://*.tiktokw.us",
+    "https://*.google-analytics.com",
+    "https://*.analytics.google.com",
+    "https://*.googletagmanager.com",
+    "https://*.g.doubleclick.net",
+    "https://www.google.com",
+    "https://www.googleadservices.com",
+  ].join(" ");
+  const adImages = [
+    "https://www.facebook.com",
+    "https://*.tiktok.com",
+    "https://*.google-analytics.com",
+    "https://*.googletagmanager.com",
+    "https://*.g.doubleclick.net",
+    "https://www.google.com",
+    "https://www.google.es",
+    "https://www.googleadservices.com",
+  ].join(" ");
 
   const csp = [
     `default-src 'self'`,
-    `script-src ${src("'self'", "'unsafe-inline'", vercel)}`,
+    `script-src ${src("'self'", "'unsafe-inline'", adScripts, vercel)}`,
     `style-src 'self' 'unsafe-inline'`,
     // OpenStreetMap tiles for route maps in tour descriptions (no API key).
-    `img-src ${src("'self'", "data:", "blob:", supabase, "https://tripcelona.com", "https://tile.openstreetmap.org", vercel)}`,
+    `img-src ${src("'self'", "data:", "blob:", supabase, "https://tripcelona.com", "https://tile.openstreetmap.org", adImages, vercel)}`,
     // Mixkit CDN serves the default free-license hero video.
     `media-src ${src("'self'", supabase, "https://assets.mixkit.co")}`,
     `font-src 'self' data:`,
-    `connect-src ${src("'self'", supabase, supabaseWs, vercel, local)}`,
-    `frame-src ${src(vercel) || "'none'"}`,
+    `connect-src ${src("'self'", supabase, supabaseWs, adConnect, vercel, local)}`,
+    // GTM preview mode and Google Ads conversion frames.
+    `frame-src ${src("https://www.googletagmanager.com", "https://td.doubleclick.net", vercel)}`,
     `form-action ${src("'self'", "https://sis.redsys.es", "https://sis-t.redsys.es:25443", "https://*.paycomet.com", "https://checkout.stripe.com", local)}`,
     `frame-ancestors 'none'`,
     `base-uri 'self'`,

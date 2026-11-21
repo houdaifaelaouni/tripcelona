@@ -1,5 +1,6 @@
 import "server-only";
 import { sendBookingEmail } from "@/lib/email/booking-emails";
+import { sendServerPurchase } from "@/lib/tracking/conversions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Locale } from "@/lib/i18n/config";
 import {
@@ -392,6 +393,8 @@ async function applyVerifiedResult(result: VerifiedResult): Promise<Notification
       await sendBookingEmail(id, "confirmation");
       await sendBookingEmail(id, "owner_alert");
     }
+    // Meta / TikTok server-side Purchase (no-op without tokens or consent).
+    await sendServerPurchase(ids);
   } else if (typed === "failed") {
     await sendBookingEmail(payment.booking_id, "payment_failed");
   } else {

@@ -628,4 +628,62 @@ export const fr: Dictionary = {
   "Tu ticket": "Votre billet",
   "Escribe el nombre y apellidos.": "Indiquez le nom et le prénom.",
   "No hemos podido guardar los datos.": "Nous n'avons pas pu enregistrer les informations.",
+  "No encontramos billetes para esta reserva":
+    "Nous ne trouvons pas de billets pour cette réservation",
+  "Los billetes aparecen cuando el pago está confirmado.":
+    "Les billets apparaissent une fois le paiement confirmé.",
+  "Reserva {ref}": "Réservation {ref}",
+  "Datos de los viajeros": "Informations des voyageurs",
+  "Rellena los datos de cada viajero. Te daremos un billete con código QR por persona para enseñarlo al subir al autobús.":
+    "Remplissez les informations de chaque voyageur. Chacun reçoit un billet avec un code QR à montrer en montant dans l'autocar.",
+  "Guardado. Te hemos enviado los billetes a {email}.":
+    "Enregistré. Nous avons envoyé les billets à {email}.",
+  "Tus billetes": "Vos billets",
+  "Enseña el código QR en el móvil o impreso al subir al autobús.":
+    "Montrez le code QR sur votre téléphone ou imprimé en montant dans l'autocar.",
+  "Descargar billetes (PDF)": "Télécharger les billets (PDF)",
+  "Editar viajeros": "Modifier les voyageurs",
+  Billete: "Billet",
+  "Viajero {n}": "Voyageur {n}",
+  Viajero: "Voyageur",
+  Documento: "Pièce d'identité",
+  "Código QR del billete": "Code QR du billet",
+  "Tus billetes están listos": "Vos billets sont prêts",
+  "Último paso: tus billetes": "Dernière étape : vos billets",
+  "Descárgalos o enséñalos desde el móvil al subir al autobús.":
+    "Téléchargez-les ou montrez-les sur votre téléphone en montant dans l'autocar.",
+  "Rellena el nombre y el documento de cada viajero y te enviamos los billetes con código QR.":
+    "Indiquez le nom et la pièce d'identité de chaque voyageur et nous vous enverrons les billets avec code QR.",
+  "Ver mis billetes": "Voir mes billets",
+  "Completar viajeros": "Compléter les voyageurs",
+  "Reservar plaza": "Réserver une place",
+  "Billete con QR": "Billet avec QR",
+  "Después de pagar recibes por email un billete por viajero.":
+    "Après le paiement, vous recevez par e-mail un billet par voyageur.",
+  "¿Dudas?": "Des questions ?",
+  "DNI, NIE o pasaporte": "DNI, NIE ou passeport",
+  "Usamos estos datos solo para la lista de pasajeros del autobús. Al guardar te enviamos los billetes por email.":
+    "Nous utilisons ces données uniquement pour la liste des passagers de l'autocar. En enregistrant, nous vous envoyons les billets par e-mail.",
+  "Guardando…": "Enregistrement…",
+  "Guardar y recibir mis billetes": "Enregistrer et recevoir mes billets",
+  Cookies: "Cookies",
+  "Usamos cookies de medición y publicidad (Meta, TikTok, Google) para saber qué anuncios funcionan. Solo se activan si aceptas.":
+    "Nous utilisons des cookies de mesure et de publicité (Meta, TikTok, Google) pour savoir quelles annonces fonctionnent. Ils ne s'activent que si vous acceptez.",
+  "Más información": "Plus d'informations",
+  Aceptar: "Accepter",
+  Rechazar: "Refuser",
+  "Preferencias de cookies": "Préférences de cookies",
+  "Esta reserva no está pagada.": "Cette réservation n'est pas payée.",
+  "La excursión ya ha salido: los datos no se pueden cambiar.":
+    "L'excursion est déjà partie : les informations ne peuvent plus être modifiées.",
+  "No hemos podido guardar los datos. Inténtalo de nuevo en un momento.":
+    "Nous n'avons pas pu enregistrer les informations. Réessayez dans un instant.",
+  "Escribe nombre y apellidos.": "Indiquez le prénom et le nom.",
+  "Máximo 80 caracteres.": "80 caractères maximum.",
+  "DNI, NIE o pasaporte: solo letras y números.":
+    "DNI, NIE ou passeport : lettres et chiffres uniquement.",
+  "Teléfono no válido.": "Numéro de téléphone non valide.",
+  "Ticket por email": "Billet par e-mail",
+  "Después de pagar recibes el ticket con código QR por email.":
+    "Après le paiement, vous recevez le billet avec code QR par e-mail.",
 };

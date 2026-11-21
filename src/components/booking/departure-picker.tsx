@@ -19,7 +19,14 @@ import type { Departure } from "@/lib/tours/types";
  * Slot list with circular day cells and the Opensource UI quantity stepper
  * (MIT, see THIRD_PARTY_NOTICES.md).
  */
-export function DeparturePicker({ departures }: { departures: Departure[] }) {
+export function DeparturePicker({
+  departures,
+  tour,
+}: {
+  departures: Departure[];
+  /** For the AddToCart ad event. */
+  tour?: { slug: string; title: string };
+}) {
   const t = useT();
   const locale = useLocale();
   const firstOpen = departures.find((d) => d.status === "open" && d.seatsLeft > 0);
@@ -128,7 +135,13 @@ export function DeparturePicker({ departures }: { departures: Departure[] }) {
       <button type="submit" className={buttonClasses({ size: "lg" }, "mt-4 w-full")}>
         {t("Reservar")}
       </button>
-      {current && <AddToCartButton departureId={current.id} travellers={travellers} />}
+      {current && (
+        <AddToCartButton
+          departureId={current.id}
+          travellers={travellers}
+          item={tour ? { ...tour, priceCents: current.priceCents } : undefined}
+        />
+      )}
     </form>
   );
 }

@@ -4,6 +4,7 @@ import { CheckoutBand } from "@/components/booking/checkout-ui";
 import { Suspense } from "react";
 import { CartCheckout } from "@/components/cart/cart-checkout";
 import { CheckoutForm } from "@/components/booking/checkout-form";
+import { TrackOnMount } from "@/components/tracking/tracking";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { ButtonLink } from "@/components/ui/button";
 import { FormAlert } from "@/components/forms/form-bits";
@@ -79,6 +80,17 @@ async function Checkout({
 
   return (
     <div className="mt-2">
+      <TrackOnMount
+        name="InitiateCheckout"
+        items={[
+          {
+            id: departure.tour.slug,
+            name: departure.tour.title,
+            priceCents: quote.unitCents,
+            quantity: Math.max(1, travellers),
+          },
+        ]}
+      />
       <CheckoutForm
         departureId={departure.id}
         unitCents={quote.unitCents}

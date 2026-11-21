@@ -1,4 +1,5 @@
 import "server-only";
+import type { Json } from "@/lib/supabase/database.types";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { QUOTE_ERRORS, quoteDeparture, type Quote } from "./quote";
 
@@ -13,6 +14,8 @@ export type NewBooking = {
   pickupNote?: string;
   /** Set when the booking belongs to a cart that is paid in one go. */
   cartId?: string;
+  /** Ad campaign the visitor came from (lib/tracking/attribution-server). */
+  attribution?: Json | null;
 };
 
 export type CreateBookingResult =
@@ -82,6 +85,7 @@ export async function createPendingBooking(input: NewBooking): Promise<CreateBoo
       pickup_note: input.pickupNote || null,
       terms_accepted_at: new Date().toISOString(),
       cart_id: input.cartId ?? null,
+      attribution: input.attribution ?? null,
     })
     .select("id, reference")
     .single();

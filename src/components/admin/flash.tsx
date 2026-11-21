@@ -24,6 +24,10 @@ const MESSAGES: Record<string, string> = {
   restaurado: "Textos originales restaurados.",
   ajustes: "Ajustes guardados. La web ya muestra los nuevos datos.",
   claves: "Claves de pago guardadas (cifradas). Ya se usan para cobrar.",
+  embarcado: "Viajero marcado como embarcado.",
+  checkin_deshecho: "Embarque deshecho.",
+  integraciones: "Integraciones guardadas. Los píxeles se activan en la web en un minuto.",
+  landing_creada: "Landing creada como borrador. Ya se puede diseñar.",
 };
 
 /**
