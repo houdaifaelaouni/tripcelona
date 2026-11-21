@@ -589,6 +589,33 @@ export const ca: Dictionary = {
   "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
     "Les fotos del web provenen de Wikimedia Commons i el vídeo de portada de Mixkit, totes amb llicència lliure. Gràcies als seus autors.",
   "Vídeo de portada": "Vídeo de portada",
+  // Passenger details and e-ticket
+  "Tu ticket está listo": "El teu tiquet està a punt",
+  "Te lo hemos enviado por email. También puedes verlo y descargarlo aquí.":
+    "Te l'hem enviat per correu. També el pots veure i descarregar aquí.",
+  "Ver y descargar mi ticket": "Veure i descarregar el meu tiquet",
+  "Último paso": "Últim pas",
+  "Datos de los pasajeros": "Dades dels passatgers",
+  "Escribe el nombre de cada viajero. Te enviaremos el ticket a {email}.":
+    "Escriu el nom de cada viatger. T'enviarem el tiquet a {email}.",
+  "Editar pasajeros": "Editar passatgers",
+  "Ticket listo": "Tiquet a punt",
+  "Aquí tienes tu ticket": "Aquí tens el teu tiquet",
+  "Te lo hemos enviado a {email}. Si no lo ves, revisa la carpeta de spam.":
+    "Te l'hem enviat a {email}. Si no el veus, revisa la carpeta de correu brossa.",
+  "Muéstralo en el móvil o impreso el día de la excursión.":
+    "Mostra'l al mòbil o imprès el dia de l'excursió.",
+  "Descargar ticket (PDF)": "Descarregar el tiquet (PDF)",
+  "Viajero {n}: nombre y apellidos": "Viatger {n}: nom i cognoms",
+  "DNI o pasaporte (opcional)": "DNI o passaport (opcional)",
+  "Generando tu ticket…": "Generant el teu tiquet…",
+  "Guardar y reenviar el ticket": "Desar i reenviar el tiquet",
+  "Obtener mi ticket": "Obtenir el meu tiquet",
+  "Ticket {ref}": "Tiquet {ref}",
+  Pasajeros: "Passatgers",
+  "Tu ticket": "El teu tiquet",
+  "Escribe el nombre y apellidos.": "Escriu el nom i cognoms.",
+  "No hemos podido guardar los datos.": "No hem pogut desar les dades.",
   "No encontramos billetes para esta reserva": "No trobem bitllets per a aquesta reserva",
   "Los billetes aparecen cuando el pago está confirmado.":
     "Els bitllets apareixen quan el pagament està confirmat.",
@@ -642,4 +669,7 @@ export const ca: Dictionary = {
   "Máximo 80 caracteres.": "Màxim 80 caràcters.",
   "DNI, NIE o pasaporte: solo letras y números.": "DNI, NIE o passaport: només lletres i números.",
   "Teléfono no válido.": "Telèfon no vàlid.",
+  "Ticket por email": "Tiquet per correu",
+  "Después de pagar recibes el ticket con código QR por email.":
+    "Després de pagar reps el tiquet amb codi QR per correu.",
 };

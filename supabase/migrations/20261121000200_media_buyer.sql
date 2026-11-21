@@ -1,33 +1,16 @@
--- Media buyer toolkit: e-tickets, ad attribution, landing pages ------------------
+-- Media buyer toolkit: boarding check-in, ad attribution, landing pages ----------
 --
--- 1. E-tickets. After paying, the customer fills one row per traveller (name,
---    ID document, phone). Each traveller gets a ticket with an unguessable
---    code (shown as a QR). Staff scan it on the day to mark boarding.
+-- 1. Check-in. Staff scan the e-ticket QR (PR #73) on the day and mark who
+--    boarded.
 -- 2. Attribution. The UTM tags / click ids the visitor arrived with are saved
 --    on the booking, so the admin can show sales per campaign.
 -- 3. Landing pages. A media buyer creates a page with a title (and slug); the
 --    owner designs it afterwards. Published pages are public at /l/<slug>.
 
--- 1. Tickets -------------------------------------------------------------------
+-- 1. Boarding check-in -------------------------------------------------------------
 alter table public.booking_travellers
-  add column position smallint not null default 1 check (position between 1 and 50),
-  add column document_id text check (char_length(document_id) <= 40),
-  add column phone text check (char_length(phone) <= 30),
-  add column ticket_code text unique check (ticket_code ~ '^[A-Z0-9]{10}$'),
-  add column checked_in_at timestamptz,
-  add column checked_in_by uuid references auth.users (id) on delete set null;
-
-create unique index booking_travellers_position_idx
-  on public.booking_travellers (booking_id, position);
-
-alter table public.bookings
-  add column travellers_completed_at timestamptz;
-
--- The "tickets" email (sent when the traveller form is saved).
-alter table public.booking_emails drop constraint booking_emails_kind_check;
-alter table public.booking_emails add constraint booking_emails_kind_check
-  check (kind in ('confirmation', 'owner_alert', 'payment_failed', 'payment_request',
-                  'cancellation', 'tickets'));
+  add column if not exists checked_in_at timestamptz,
+  add column if not exists checked_in_by uuid references auth.users (id) on delete set null;
 
 -- 2. Attribution ---------------------------------------------------------------
 -- { utm_source, utm_medium, utm_campaign, utm_content, utm_term, fbclid, gclid,

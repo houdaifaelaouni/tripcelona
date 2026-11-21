@@ -1,199 +1,345 @@
 import "server-only";
-import {
-  PDFDocument,
-  rgb,
-  StandardFonts,
-  type PDFFont,
-  type PDFImage,
-  type PDFPage,
-} from "pdf-lib";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import QRCode from "qrcode";
-import { siteUrl } from "@/lib/seo/site-url";
+import type { TicketBundle, TicketLine } from "@/lib/booking/passengers";
 import { site } from "@/lib/site";
+import { siteUrl } from "@/lib/seo/site-url";
+import { checkinUrl } from "./codes";
 import { formatDateLong, formatTime } from "@/lib/tours/format";
-import { checkinUrl, prettyCode } from "./codes";
-import { maskDocument, type TicketBundle } from "./queries";
+
+/*
+ * The e-ticket as a PDF: one A4 page per trip, drawn as the same ticket the
+ * site uses (photo-free header band, dashed perforation with notches, stub
+ * with the details). Pure pdf-lib, so it runs in any serverless function.
+ */
 
 const NAVY = rgb(0, 0x38 / 255, 0x82 / 255);
-const CYAN = rgb(0, 0x9f / 255, 0xe3 / 255);
+const YELLOW = rgb(0xfc / 255, 0xb9 / 255, 0x2c / 255);
 const INK = rgb(0x0f / 255, 0x17 / 255, 0x20 / 255);
-const GREY = rgb(0x54 / 255, 0x5e / 255, 0x67 / 255);
-const LINE = rgb(0xe5 / 255, 0xea / 255, 0xee / 255);
+const MUTED = rgb(0x54 / 255, 0x5e / 255, 0x67 / 255);
+const LINE = rgb(0xd5 / 255, 0xdb / 255, 0xe1 / 255);
+const PAGE_BG = rgb(0xf2 / 255, 0xf3 / 255, 0xf5 / 255);
 
-const A4 = { w: 595.28, h: 841.89 };
-const MARGIN = 40;
-const TICKET_H = 236;
-const GAP = 18;
-const PER_PAGE = 3;
+const W = 595.28;
+const H = 841.89;
+const CARD_X = 48;
+const CARD_W = W - CARD_X * 2;
+const R = 18; // corner radius
+const NOTCH = 12;
 
-/** Drops characters the standard PDF fonts cannot draw (emoji, CJK…). */
-function safe(font: PDFFont, text: string): string {
-  const ok = new Set(font.getCharacterSet());
-  return [...text.normalize("NFC")].filter((c) => ok.has(c.codePointAt(0)!)).join("");
+/** Standard PDF fonts are WinAnsi only: keep Latin-1 + common punctuation. */
+export function pdfSafe(value: string): string {
+  return value
+    .normalize("NFC")
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[–—]/g, "-")
+    .replace(/…/g, "...")
+    .replace(/[^\x20-\x7e\xa0-\xff€·]/g, "");
 }
 
-function wrap(
-  font: PDFFont,
-  text: string,
-  size: number,
-  width: number,
-  maxLines: number,
-): string[] {
-  const words = safe(font, text).split(/\s+/);
+function wrap(text: string, font: PDFFont, size: number, max: number): string[] {
+  const words = pdfSafe(text).split(" ");
   const lines: string[] = [];
-  let line = "";
+  let current = "";
   for (const word of words) {
-    const next = line ? `${line} ${word}` : word;
-    if (font.widthOfTextAtSize(next, size) <= width) line = next;
+    const next = current ? `${current} ${word}` : word;
+    if (font.widthOfTextAtSize(next, size) <= max) current = next;
     else {
-      if (line) lines.push(line);
-      line = word;
+      if (current) lines.push(current);
+      current = word;
     }
-    if (lines.length === maxLines) break;
   }
-  if (line && lines.length < maxLines) lines.push(line);
+  if (current) lines.push(current);
   return lines;
 }
 
-async function logo(pdf: PDFDocument): Promise<PDFImage | null> {
+const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Rounded card with a half-circle notch on both sides at `notchY` (from top). */
+function cardPath(height: number, notchY: number): string {
+  const w = CARD_W;
+  return [
+    `M ${R} 0`,
+    `H ${w - R}`,
+    `A ${R} ${R} 0 0 1 ${w} ${R}`,
+    `V ${notchY - NOTCH}`,
+    `A ${NOTCH} ${NOTCH} 0 0 0 ${w} ${notchY + NOTCH}`,
+    `V ${height - R}`,
+    `A ${R} ${R} 0 0 1 ${w - R} ${height}`,
+    `H ${R}`,
+    `A ${R} ${R} 0 0 1 0 ${height - R}`,
+    `V ${notchY + NOTCH}`,
+    `A ${NOTCH} ${NOTCH} 0 0 0 0 ${notchY - NOTCH}`,
+    `V ${R}`,
+    `A ${R} ${R} 0 0 1 ${R} 0`,
+    "Z",
+  ].join(" ");
+}
+
+/** Top band only: rounded top corners, square bottom. */
+function bandPath(height: number): string {
+  const w = CARD_W;
+  return `M ${R} 0 H ${w - R} A ${R} ${R} 0 0 1 ${w} ${R} V ${height} H 0 V ${R} A ${R} ${R} 0 0 1 ${R} 0 Z`;
+}
+
+/** The owner's logo, exactly as supplied: from disk, else from the site itself. */
+async function logoBytes(): Promise<Uint8Array | null> {
   try {
-    const res = await fetch(`${siteUrl()}/brand/tripcelona-logo.png`, {
-      signal: AbortSignal.timeout(3000),
-    });
-    if (!res.ok) return null;
-    return await pdf.embedPng(await res.arrayBuffer());
+    return await readFile(path.join(process.cwd(), "public/brand/tripcelona-logo.png"));
   } catch {
-    return null;
+    try {
+      const res = await fetch(`${siteUrl()}/brand/tripcelona-logo.png`);
+      return res.ok ? new Uint8Array(await res.arrayBuffer()) : null;
+    } catch {
+      return null;
+    }
   }
 }
 
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+type Fonts = { regular: PDFFont; bold: PDFFont };
 
-/** All the tickets of a booking (or cart) as one A4 PDF, three per page. */
-export async function ticketsPdf(bundle: TicketBundle): Promise<Uint8Array> {
-  const pdf = await PDFDocument.create();
-  pdf.setTitle(`Billetes ${bundle.anchor.reference} · Tripcelona`);
-  pdf.setAuthor("Tripcelona");
-  const regular = await pdf.embedFont(StandardFonts.Helvetica);
-  const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const brand = await logo(pdf);
+function label(page: PDFPage, fonts: Fonts, text: string, x: number, y: number) {
+  page.drawText(pdfSafe(text.toUpperCase()), {
+    x,
+    y,
+    size: 8,
+    font: fonts.bold,
+    color: MUTED,
+  });
+}
 
-  const tickets = bundle.trips.flatMap((trip) =>
-    trip.rows
-      .filter((r) => r.ticketCode)
-      .map((r) => ({ trip, traveller: r, of: trip.rows.length })),
+async function drawTicket(
+  doc: PDFDocument,
+  fonts: Fonts,
+  logo: Awaited<ReturnType<PDFDocument["embedPng"]>> | null,
+  bundle: TicketBundle,
+  line: TicketLine,
+  index: number,
+) {
+  const page = doc.addPage([W, H]);
+  page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: PAGE_BG });
+
+  const passengers = line.passengers.length
+    ? line.passengers
+    : Array.from({ length: line.travellers }, (_, i) => ({
+        name: i === 0 ? bundle.booking.customerName : `Viajero ${i + 1}`,
+        documentId: null,
+      }));
+  const twoCols = passengers.length > 8;
+  const paxRows = twoCols ? Math.ceil(passengers.length / 2) : passengers.length;
+
+  const titleLines = wrap(line.title, fonts.bold, 24, CARD_W - 64).slice(0, 3);
+  const bandH = 96 + titleLines.length * 28;
+  const notchY = bandH + 70;
+  const cardH = notchY + 215 + paxRows * 30;
+  const top = H - 56; // card top edge, PDF coordinates grow upwards
+  const yOf = (fromTop: number) => top - fromTop;
+
+  // Card + band (drawSvgPath draws with y flipped, from the given origin).
+  page.drawSvgPath(cardPath(cardH, notchY), {
+    x: CARD_X,
+    y: top,
+    color: rgb(1, 1, 1),
+    borderColor: LINE,
+    borderWidth: 0.8,
+  });
+  page.drawSvgPath(bandPath(bandH), { x: CARD_X, y: top, color: NAVY });
+
+  // Band: logo chip, e-ticket pill, title, date.
+  const pad = 32;
+  if (logo) {
+    const chipH = 44;
+    const scale = (chipH - 10) / logo.height;
+    const lw = logo.width * scale;
+    page.drawRectangle({
+      x: CARD_X + pad - 6,
+      y: yOf(24 + chipH),
+      width: lw + 12,
+      height: chipH,
+      color: rgb(1, 1, 1),
+    });
+    page.drawImage(logo, {
+      x: CARD_X + pad,
+      y: yOf(24 + chipH) + 5,
+      width: lw,
+      height: chipH - 10,
+    });
+  } else {
+    page.drawText(site.name, {
+      x: CARD_X + pad,
+      y: yOf(52),
+      size: 20,
+      font: fonts.bold,
+      color: rgb(1, 1, 1),
+    });
+  }
+  const pill = "E-TICKET";
+  const pillW = fonts.bold.widthOfTextAtSize(pill, 10) + 24;
+  page.drawRectangle({
+    x: CARD_X + CARD_W - pad - pillW,
+    y: yOf(54),
+    width: pillW,
+    height: 22,
+    color: YELLOW,
+  });
+  page.drawText(pill, {
+    x: CARD_X + CARD_W - pad - pillW + 12,
+    y: yOf(47),
+    size: 10,
+    font: fonts.bold,
+    color: INK,
+  });
+  const count = bundle.lines.length;
+  if (count > 1) {
+    page.drawText(`${index + 1} / ${count}`, {
+      x: CARD_X + CARD_W - pad - pillW,
+      y: yOf(70),
+      size: 9,
+      font: fonts.regular,
+      color: rgb(1, 1, 1),
+    });
+  }
+  titleLines.forEach((t, i) =>
+    page.drawText(t, {
+      x: CARD_X + pad,
+      y: yOf(100 + i * 28),
+      size: 24,
+      font: fonts.bold,
+      color: rgb(1, 1, 1),
+    }),
   );
 
-  let page: PDFPage | null = null;
-  for (const [i, t] of tickets.entries()) {
-    if (i % PER_PAGE === 0) {
-      page = pdf.addPage([A4.w, A4.h]);
-      const note = safe(
-        regular,
-        `Enseña este billete en el móvil o impreso al subir al autobús. Dudas: ${site.phoneDisplay}`,
-      );
-      page.drawText(note, { x: MARGIN, y: 24, size: 8.5, font: regular, color: GREY });
-    }
-    const slot = i % PER_PAGE;
-    const top = A4.h - MARGIN - slot * (TICKET_H + GAP);
-    const x = MARGIN;
-    const w = A4.w - MARGIN * 2;
-    const y = top - TICKET_H;
-    const p = page!;
-
-    p.drawRectangle({ x, y, width: w, height: TICKET_H, borderColor: LINE, borderWidth: 1 });
-    p.drawRectangle({ x, y: top - 6, width: w, height: 6, color: NAVY });
-
-    // Stub on the right: QR + code, behind a perforation line.
-    const stubW = 170;
-    const stubX = x + w - stubW;
-    for (let dy = y + 8; dy < top - 14; dy += 8)
-      p.drawLine({
-        start: { x: stubX, y: dy },
-        end: { x: stubX, y: dy + 4 },
-        thickness: 1,
-        color: LINE,
-      });
-    const code = t.traveller.ticketCode!;
-    const qr = await pdf.embedPng(
-      await QRCode.toBuffer(checkinUrl(code), { margin: 1, width: 360, errorCorrectionLevel: "M" }),
-    );
-    const qrSize = 128;
-    p.drawImage(qr, {
-      x: stubX + (stubW - qrSize) / 2,
-      y: top - 30 - qrSize,
-      width: qrSize,
-      height: qrSize,
-    });
-    const pretty = prettyCode(code);
-    p.drawText(pretty, {
-      x: stubX + (stubW - bold.widthOfTextAtSize(pretty, 13)) / 2,
-      y: top - 52 - qrSize,
-      size: 13,
-      font: bold,
+  // Facts row, above the perforation.
+  const factsTop = bandH + 28;
+  const facts: [string, string][] = [
+    ["Fecha", capital(formatDateLong(line.startsAt))],
+    ["Salida", formatTime(line.startsAt)],
+    ["Viajeros", String(line.travellers)],
+  ];
+  const colX = [CARD_X + pad, CARD_X + pad + 250, CARD_X + pad + 340];
+  facts.forEach(([k, v], i) => {
+    label(page, fonts, k, colX[i], yOf(factsTop));
+    page.drawText(pdfSafe(v), {
+      x: colX[i],
+      y: yOf(factsTop + 18),
+      size: i === 0 ? 12 : 14,
+      font: fonts.bold,
       color: INK,
     });
-    const label = `Viajero ${t.traveller.position} de ${t.of}`;
-    p.drawText(label, {
-      x: stubX + (stubW - regular.widthOfTextAtSize(label, 9)) / 2,
-      y: top - 68 - qrSize,
-      size: 9,
-      font: regular,
-      color: GREY,
-    });
+  });
 
-    // Main part.
-    const left = x + 20;
-    const textW = stubX - left - 20;
-    let cy = top - 34;
-    if (brand) {
-      const h = 26;
-      const bw = (brand.width / brand.height) * h;
-      p.drawImage(brand, { x: left, y: cy - h + 8, width: bw, height: h });
-    } else {
-      p.drawText("Tripcelona", { x: left, y: cy - 8, size: 16, font: bold, color: NAVY });
-    }
-    p.drawText("BILLETE", {
-      x: stubX - 20 - bold.widthOfTextAtSize("BILLETE", 9),
-      y: cy - 6,
-      size: 9,
-      font: bold,
-      color: CYAN,
+  // Perforation.
+  for (let x = CARD_X + NOTCH + 10; x < CARD_X + CARD_W - NOTCH - 10; x += 10) {
+    page.drawLine({
+      start: { x, y: yOf(notchY) },
+      end: { x: x + 5, y: yOf(notchY) },
+      thickness: 1.4,
+      color: LINE,
     });
-    cy -= 40;
-    for (const line of wrap(bold, t.trip.title, 15, textW, 2)) {
-      p.drawText(line, { x: left, y: cy, size: 15, font: bold, color: INK });
-      cy -= 19;
-    }
-    cy -= 4;
-    const when =
-      cap(formatDateLong(t.trip.startsAt)) +
-      ` · salida ${formatTime(t.trip.startsAt)}` +
-      (t.trip.endsAt ? ` · regreso aprox. ${formatTime(t.trip.endsAt)}` : "");
-    const rows: [string, string][] = [
-      ["Fecha", when],
-      ["Punto de encuentro", t.trip.meetingPoint ?? site.meetingPoint],
-      ["Viajero", t.traveller.name],
-      ["Documento · Reserva", `${maskDocument(t.traveller.documentId)} · ${t.trip.reference}`],
-    ];
-    for (const [k, v] of rows) {
-      p.drawText(safe(regular, k), { x: left, y: cy, size: 8.5, font: regular, color: GREY });
-      cy -= 11;
-      const size = k === "Viajero" ? 12 : 10;
-      const font = k === "Viajero" ? bold : regular;
-      for (const line of wrap(font, v, size, textW, 2)) {
-        p.drawText(line, { x: left, y: cy, size, font, color: INK });
-        cy -= size + 3;
-      }
-      cy -= 4;
-      if (cy < y + 14) break;
-    }
   }
-  if (!tickets.length) pdf.addPage([A4.w, A4.h]);
-  return pdf.save();
+
+  // Stub: reference + meeting point (left), QR (right).
+  const stubTop = notchY + 30;
+  const qrSize = 112;
+  const qrX = CARD_X + CARD_W - pad - qrSize;
+  label(page, fonts, "Referencia", CARD_X + pad, yOf(stubTop));
+  page.drawText(pdfSafe(line.reference), {
+    x: CARD_X + pad,
+    y: yOf(stubTop + 22),
+    size: 20,
+    font: fonts.bold,
+    color: NAVY,
+  });
+  label(page, fonts, "Punto de encuentro", CARD_X + pad, yOf(stubTop + 50));
+  const meeting = wrap(
+    line.meetingPoint ?? site.meetingPoint,
+    fonts.regular,
+    11,
+    qrX - CARD_X - pad - 20,
+  ).slice(0, 4);
+  meeting.forEach((m, i) =>
+    page.drawText(m, {
+      x: CARD_X + pad,
+      y: yOf(stubTop + 66 + i * 15),
+      size: 11,
+      font: fonts.regular,
+      color: INK,
+    }),
+  );
+
+  // Staff scan it with the phone camera: opens the check-in page of this booking.
+  const qr = await QRCode.toBuffer(checkinUrl(line.reference), {
+    type: "png",
+    margin: 0,
+    width: 360,
+    errorCorrectionLevel: "M",
+    color: { dark: "#0f1720", light: "#ffffff" },
+  });
+  const qrImage = await doc.embedPng(qr);
+  page.drawImage(qrImage, { x: qrX, y: yOf(stubTop - 6 + qrSize), width: qrSize, height: qrSize });
+
+  // Passengers.
+  const paxTop = stubTop + 150;
+  page.drawLine({
+    start: { x: CARD_X + pad, y: yOf(paxTop - 14) },
+    end: { x: CARD_X + CARD_W - pad, y: yOf(paxTop - 14) },
+    thickness: 0.8,
+    color: LINE,
+  });
+  label(page, fonts, "Pasajeros", CARD_X + pad, yOf(paxTop + 4));
+  const colW = twoCols ? (CARD_W - pad * 2) / 2 : CARD_W - pad * 2;
+  passengers.forEach((p, i) => {
+    const col = twoCols && i >= paxRows ? 1 : 0;
+    const row = col ? i - paxRows : i;
+    const x = CARD_X + pad + col * colW;
+    const y = yOf(paxTop + 26 + row * 30);
+    page.drawText(`${i + 1}.`, { x, y, size: 11, font: fonts.bold, color: MUTED });
+    const name = wrap(p.name, fonts.bold, 11, colW - 30)[0] ?? "";
+    page.drawText(name, { x: x + 20, y, size: 11, font: fonts.bold, color: INK });
+    if (p.documentId) {
+      page.drawText(pdfSafe(p.documentId), {
+        x: x + 20,
+        y: y - 12,
+        size: 9,
+        font: fonts.regular,
+        color: MUTED,
+      });
+    }
+  });
+
+  // Footer note under the card.
+  const note = [
+    "Muestra este ticket en el móvil o impreso el día de la excursión.",
+    `¿Dudas? ${site.phoneDisplay} · ${site.name}`,
+  ];
+  note.forEach((n, i) =>
+    page.drawText(pdfSafe(n), {
+      x: CARD_X + 8,
+      y: yOf(cardH + 28 + i * 15),
+      size: 10,
+      font: fonts.regular,
+      color: MUTED,
+    }),
+  );
 }
 
-/** Inline SVG QR for the ticket page. */
-export async function qrSvg(code: string): Promise<string> {
-  return QRCode.toString(checkinUrl(code), { type: "svg", margin: 1, errorCorrectionLevel: "M" });
+/** One PDF with a ticket page per trip of the booking. */
+export async function buildTicketPdf(bundle: TicketBundle): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  doc.setTitle(`Tripcelona e-ticket ${bundle.booking.reference}`);
+  doc.setAuthor(site.name);
+  doc.setCreator(site.name);
+  const fonts = {
+    regular: await doc.embedFont(StandardFonts.Helvetica),
+    bold: await doc.embedFont(StandardFonts.HelveticaBold),
+  };
+  const bytes = await logoBytes();
+  const logo = bytes ? await doc.embedPng(bytes) : null;
+  for (const [i, line] of bundle.lines.entries()) {
+    await drawTicket(doc, fonts, logo, bundle, line, i);
+  }
+  return doc.save();
 }

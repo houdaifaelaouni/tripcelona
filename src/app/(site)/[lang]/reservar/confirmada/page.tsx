@@ -4,12 +4,14 @@ import { Suspense } from "react";
 import { BookingSummary } from "@/components/booking/booking-summary";
 import { ClearCart } from "@/components/cart/clear-cart";
 import { TrackOnMount } from "@/components/tracking/tracking";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { Illustration } from "@/components/illustrations/illustration";
 import { WhatsAppCta } from "@/components/tours/empty-state";
 import { ButtonLink } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { getBookingDetails } from "@/lib/booking/details";
+import { getTicketBundle } from "@/lib/booking/passengers";
+import { PassengerForm } from "@/components/booking/passenger-form";
+import { formatDateLong, formatTime } from "@/lib/tours/format";
 import { site } from "@/lib/site";
 import { createT } from "@/lib/i18n/translate";
 import { isLocale } from "@/lib/i18n/config";
@@ -102,6 +104,7 @@ async function Confirmed({
   }
 
   const { tour } = booking;
+  const bundle = await getTicketBundle(booking);
   const meetingPoints = booking.cart
     ? booking.cart.lines.map((l) => ({
         key: l.id,
@@ -124,12 +127,6 @@ async function Confirmed({
           priceCents: Math.round(booking.totalCents / booking.travellers),
         },
       ];
-  const ids = booking.cart ? booking.cart.lines.map((l) => l.id) : [booking.id];
-  const { data: done } = await createAdminClient()
-    .from("bookings")
-    .select("travellers_completed_at")
-    .in("id", ids);
-  const ticketsReady = !!done?.length && done.every((b) => b.travellers_completed_at);
   return (
     <>
       <ClearCart />
@@ -152,22 +149,47 @@ async function Confirmed({
         <strong className="text-primary">{booking.email}</strong>.{" "}
         {t("Si no la ves, revisa la carpeta de spam.")}
       </p>
-      <section className="mt-6 rounded-2xl bg-brand-primary_alt p-5 ring-1 ring-brand ring-inset">
-        <h2 className="text-lg font-semibold text-primary">
-          {ticketsReady ? t("Tus billetes están listos") : t("Último paso: tus billetes")}
-        </h2>
-        <p className="mt-1 text-sm text-tertiary">
-          {ticketsReady
-            ? t("Descárgalos o enséñalos desde el móvil al subir al autobús.")
-            : t(
-                "Rellena el nombre y el documento de cada viajero y te enviamos los billetes con código QR.",
-              )}
-        </p>
-        <ButtonLink href={`/reservar/billetes?id=${booking.id}`} className="mt-3">
-          {ticketsReady ? t("Ver mis billetes") : t("Completar viajeros")}
-        </ButtonLink>
-      </section>
       <BookingSummary booking={booking} locale={locale} />
+
+      <section
+        id="pasajeros"
+        className="mt-8 scroll-mt-24 rounded-3xl border-2 border-dashed border-yellow bg-yellow/5 p-5 md:p-6"
+      >
+        {bundle.completedAt ? (
+          <>
+            <h2 className="text-display-sm">{t("Tu ticket está listo")}</h2>
+            <p className="mt-1 mb-4 text-tertiary">
+              {t("Te lo hemos enviado por email. También puedes verlo y descargarlo aquí.")}
+            </p>
+            <ButtonLink href={`/reservar/ticket?id=${booking.id}`} size="lg">
+              {t("Ver y descargar mi ticket")}
+            </ButtonLink>
+          </>
+        ) : (
+          <>
+            <p className="text-sm font-semibold tracking-wide text-brand-secondary uppercase">
+              {t("Último paso")}
+            </p>
+            <h2 className="mt-1 text-display-sm">{t("Datos de los pasajeros")}</h2>
+            <p className="mt-1 mb-5 text-tertiary">
+              {t("Escribe el nombre de cada viajero. Te enviaremos el ticket a {email}.", {
+                email: booking.email,
+              })}
+            </p>
+            <PassengerForm
+              bookingId={booking.id}
+              customerName={booking.customerName}
+              lines={bundle.lines.map((l) => ({
+                bookingId: l.bookingId,
+                title: l.title,
+                when: `${formatDateLong(l.startsAt, locale)} · ${formatTime(l.startsAt, locale)}`,
+                travellers: l.travellers,
+                passengers: l.passengers,
+              }))}
+            />
+          </>
+        )}
+      </section>
 
       <section className="mt-8">
         <h2 className="text-display-sm">{t("Punto de encuentro")}</h2>

@@ -1,7 +1,5 @@
 import { site } from "@/lib/site";
 import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
-import { prettyCode } from "@/lib/tickets/codes";
-import type { TicketBundle } from "@/lib/tickets/queries";
 
 /**
  * Transactional email content (US-21). Pure functions so they can be tested.
@@ -23,12 +21,7 @@ export type EmailBooking = {
 
 export type EmailContent = { subject: string; html: string; text: string };
 export type EmailKind =
-  | "confirmation"
-  | "owner_alert"
-  | "payment_failed"
-  | "payment_request"
-  | "cancellation"
-  | "tickets";
+  "confirmation" | "owner_alert" | "payment_failed" | "payment_request" | "cancellation" | "ticket";
 
 export function esc(value: string): string {
   return value
@@ -82,7 +75,7 @@ function tripFacts(b: EmailBooking): [string, string][] {
 
 export function confirmationEmail(
   b: EmailBooking,
-  urls: { booking: string; calendar: string; tickets?: string },
+  urls: { booking: string; calendar: string; passengers?: string },
 ) {
   const facts = tripFacts(b);
   const meeting = b.tour.meetingPoint ?? site.meetingPoint;
@@ -102,11 +95,11 @@ ${
     : ""
 }
 ${
-  urls.tickets
-    ? `<div style="margin:24px 0 0;padding:16px;border-radius:10px;background:#e8f6fd">
-<p style="margin:0 0 6px;font-weight:bold">Último paso: tus billetes</p>
-<p style="margin:0 0 12px">Rellena el nombre y el documento de cada viajero y te enviamos los billetes con código QR para enseñar al subir al autobús.</p>
-<a href="${urls.tickets}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Completar viajeros</a></div>`
+  urls.passengers
+    ? `<div style="margin:24px 0 0;padding:16px;border:2px dashed #fcb92c;border-radius:12px;background:#fffaf0">
+<p style="margin:0 0 6px;font-weight:bold">Último paso: tu ticket</p>
+<p style="margin:0 0 12px">Escribe el nombre de cada viajero y te enviamos el ticket por email, listo para descargar.</p>
+<a href="${urls.passengers}" style="background:#fcb92c;color:#0f1720;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Completar pasajeros</a></div>`
     : ""
 }
 <p style="margin:24px 0 8px"><a href="${urls.booking}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mi reserva</a></p>
@@ -122,7 +115,9 @@ ${
     `Punto de encuentro: ${meeting}`,
     ...(packing.length ? [``, `Qué llevar:`, ...packing.map((p) => `- ${p}`)] : []),
     ``,
-    ...(urls.tickets ? [`Completa los viajeros y recibe tus billetes: ${urls.tickets}`, ``] : []),
+    ...(urls.passengers
+      ? [`Último paso: completa los pasajeros para recibir tu ticket: ${urls.passengers}`, ``]
+      : []),
     `Ver mi reserva: ${urls.booking}`,
     `Añadir al calendario: ${urls.calendar}`,
     ``,
@@ -223,48 +218,63 @@ ${rows(facts)}
   };
 }
 
-/** The e-tickets, sent when the traveller form is saved (PDF attached). */
-export function ticketsEmail(bundle: TicketBundle, url: string): EmailContent {
-  const b = bundle.anchor;
-  const cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1);
-  const blocks = bundle.trips.map((trip) => {
-    const when = `${cap(formatDateLong(trip.startsAt))} · ${formatTime(trip.startsAt)}`;
-    const meeting = trip.meetingPoint ?? site.meetingPoint;
-    const list = trip.rows
-      .map(
-        (r) =>
-          `<tr><td style="padding:6px 0">${esc(r.name)}</td><td style="padding:6px 0;font-family:monospace;font-weight:bold;text-align:right">${esc(prettyCode(r.ticketCode ?? ""))}</td></tr>`,
-      )
-      .join("");
-    return {
-      html: `<h2 style="font-size:17px;margin:20px 0 4px">${esc(trip.title)}</h2>
-<p style="margin:0;color:#545e67">${esc(when)} · ${esc(meeting)}</p>
-<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin:8px 0;border-top:1px solid #e5eaee">${list}</table>`,
-      text: [
-        trip.title,
-        `${when} · ${meeting}`,
-        ...trip.rows.map((r) => `- ${r.name}: ${prettyCode(r.ticketCode ?? "")}`),
-      ].join("\n"),
-    };
-  });
+export type TicketEmailLine = {
+  reference: string;
+  title: string;
+  startsAt: string;
+  meetingPoint: string | null;
+  passengers: { name: string }[];
+};
+
+/** The e-ticket email: the PDF goes as an attachment, plus a link to the web ticket. */
+export function ticketEmail(
+  b: EmailBooking,
+  lines: TicketEmailLine[],
+  urls: { ticket: string; pdf: string },
+): EmailContent {
+  const blocks = lines
+    .map((l) => {
+      const date = formatDateLong(l.startsAt);
+      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:16px 0;border:1px solid #e5eaee;border-radius:12px;border-collapse:separate">
+<tr><td style="background:#003882;color:#ffffff;padding:14px 18px;border-radius:12px 12px 0 0">
+<span style="display:inline-block;background:#fcb92c;color:#0f1720;font-size:11px;font-weight:bold;padding:3px 8px;border-radius:999px">E-TICKET</span>
+<div style="font-size:18px;font-weight:bold;margin-top:8px">${esc(l.title)}</div>
+<div style="font-size:14px;opacity:.9">${esc(date.charAt(0).toUpperCase() + date.slice(1))} · ${esc(formatTime(l.startsAt))}</div>
+</td></tr>
+<tr><td style="border-top:2px dashed #d5dbe1;padding:14px 18px">
+<div style="font-size:12px;color:#545e67;text-transform:uppercase;font-weight:bold">Referencia</div>
+<div style="font-size:18px;font-weight:bold;color:#003882">${esc(l.reference)}</div>
+<div style="font-size:12px;color:#545e67;text-transform:uppercase;font-weight:bold;margin-top:10px">Punto de encuentro</div>
+<div>${esc(l.meetingPoint ?? site.meetingPoint)}</div>
+<div style="font-size:12px;color:#545e67;text-transform:uppercase;font-weight:bold;margin-top:10px">Pasajeros</div>
+<ol style="margin:4px 0 0;padding-left:20px">${l.passengers.map((p) => `<li>${esc(p.name)}</li>`).join("")}</ol>
+</td></tr></table>`;
+    })
+    .join("");
   const html = layout(
-    `Tus billetes ${b.reference}`,
-    `<h1 style="font-size:22px;margin:0 0 8px">Tus billetes están listos</h1>
-<p>Hola ${esc(b.customerName)}, aquí tienes los billetes de tu reserva <strong>${esc(b.reference)}</strong>. Van adjuntos en PDF, uno por viajero, con su código QR.</p>
-${blocks.map((x) => x.html).join("")}
-<p style="margin:16px 0 0">El día de la excursión, enseña el QR en el móvil o impreso al subir al autobús.</p>
-<p style="margin:24px 0 8px"><a href="${url}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mis billetes</a></p>`,
+    `Tu ticket ${b.reference}`,
+    `<h1 style="font-size:22px;margin:0 0 8px">Aquí tienes tu ticket</h1>
+<p>Hola ${esc(b.customerName)}, te adjuntamos el ticket en PDF. Muéstralo en el móvil o impreso el día de la excursión.</p>
+${blocks}
+<p style="margin:24px 0 8px"><a href="${urls.pdf}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Descargar ticket (PDF)</a></p>
+<p style="margin:0"><a href="${urls.ticket}">Ver o editar el ticket en la web</a></p>`,
   );
   const text = [
-    `Tus billetes están listos (${b.reference})`,
+    `Aquí tienes tu ticket`,
     ``,
-    `Hola ${b.customerName}, van adjuntos en PDF, uno por viajero, con su código QR.`,
+    `Hola ${b.customerName}, te adjuntamos el ticket en PDF. Muéstralo en el móvil o impreso el día de la excursión.`,
     ``,
-    ...blocks.flatMap((x) => [x.text, ``]),
-    `Enseña el QR en el móvil o impreso al subir al autobús.`,
-    `Ver mis billetes: ${url}`,
+    ...lines.flatMap((l) => [
+      `${l.title} · ${formatDateLong(l.startsAt)} · ${formatTime(l.startsAt)}`,
+      `Referencia: ${l.reference}`,
+      `Punto de encuentro: ${l.meetingPoint ?? site.meetingPoint}`,
+      `Pasajeros: ${l.passengers.map((p) => p.name).join(", ")}`,
+      ``,
+    ]),
+    `Descargar ticket (PDF): ${urls.pdf}`,
+    `Ver o editar el ticket: ${urls.ticket}`,
     ``,
     `Dudas: ${site.phoneDisplay}`,
   ].join("\n");
-  return { subject: `Tus billetes ${b.reference} · Tripcelona`, html, text };
+  return { subject: `Tu ticket ${b.reference}: ${b.tour.title}`, html, text };
 }

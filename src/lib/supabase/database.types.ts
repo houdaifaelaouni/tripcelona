@@ -110,9 +110,7 @@ export type Database = {
           id: string;
           name: string;
           notes: string | null;
-          phone: string | null;
           position: number;
-          ticket_code: string | null;
           updated_at: string;
         };
         ComputedFields: never;
@@ -126,9 +124,7 @@ export type Database = {
           id?: string;
           name: string;
           notes?: string | null;
-          phone?: string | null;
           position?: number;
-          ticket_code?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -141,9 +137,7 @@ export type Database = {
           id?: string;
           name?: string;
           notes?: string | null;
-          phone?: string | null;
           position?: number;
-          ticket_code?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -166,6 +160,7 @@ export type Database = {
           email: string;
           id: string;
           notes: string | null;
+          passengers_completed_at: string | null;
           phone: string | null;
           pickup_note: string | null;
           reference: string;
@@ -173,7 +168,6 @@ export type Database = {
           terms_accepted_at: string | null;
           total_cents: number;
           travellers: number;
-          travellers_completed_at: string | null;
           updated_at: string;
         };
         ComputedFields: never;
@@ -186,6 +180,7 @@ export type Database = {
           email: string;
           id?: string;
           notes?: string | null;
+          passengers_completed_at?: string | null;
           phone?: string | null;
           pickup_note?: string | null;
           reference?: string;
@@ -193,7 +188,6 @@ export type Database = {
           terms_accepted_at?: string | null;
           total_cents: number;
           travellers: number;
-          travellers_completed_at?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -205,6 +199,7 @@ export type Database = {
           email?: string;
           id?: string;
           notes?: string | null;
+          passengers_completed_at?: string | null;
           phone?: string | null;
           pickup_note?: string | null;
           reference?: string;
@@ -212,7 +207,6 @@ export type Database = {
           terms_accepted_at?: string | null;
           total_cents?: number;
           travellers?: number;
-          travellers_completed_at?: string | null;
           updated_at?: string;
         };
         Relationships: [

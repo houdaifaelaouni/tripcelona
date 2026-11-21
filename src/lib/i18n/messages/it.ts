@@ -592,6 +592,33 @@ export const it: Dictionary = {
   "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
     "Le foto del sito provengono da Wikimedia Commons e il video della home da Mixkit, tutti con licenza libera. Grazie ai loro autori.",
   "Vídeo de portada": "Video della home",
+  // Passenger details and e-ticket
+  "Tu ticket está listo": "Il tuo biglietto è pronto",
+  "Te lo hemos enviado por email. También puedes verlo y descargarlo aquí.":
+    "Te l'abbiamo inviato via email. Puoi anche vederlo e scaricarlo qui.",
+  "Ver y descargar mi ticket": "Vedi e scarica il mio biglietto",
+  "Último paso": "Ultimo passo",
+  "Datos de los pasajeros": "Dati dei passeggeri",
+  "Escribe el nombre de cada viajero. Te enviaremos el ticket a {email}.":
+    "Scrivi il nome di ogni viaggiatore. Invieremo il biglietto a {email}.",
+  "Editar pasajeros": "Modifica passeggeri",
+  "Ticket listo": "Biglietto pronto",
+  "Aquí tienes tu ticket": "Ecco il tuo biglietto",
+  "Te lo hemos enviado a {email}. Si no lo ves, revisa la carpeta de spam.":
+    "Te l'abbiamo inviato a {email}. Se non lo vedi, controlla lo spam.",
+  "Muéstralo en el móvil o impreso el día de la excursión.":
+    "Mostralo sul telefono o stampato il giorno dell'escursione.",
+  "Descargar ticket (PDF)": "Scarica il biglietto (PDF)",
+  "Viajero {n}: nombre y apellidos": "Viaggiatore {n}: nome e cognome",
+  "DNI o pasaporte (opcional)": "Documento o passaporto (facoltativo)",
+  "Generando tu ticket…": "Creazione del biglietto…",
+  "Guardar y reenviar el ticket": "Salva e reinvia il biglietto",
+  "Obtener mi ticket": "Ottieni il mio biglietto",
+  "Ticket {ref}": "Biglietto {ref}",
+  Pasajeros: "Passeggeri",
+  "Tu ticket": "Il tuo biglietto",
+  "Escribe el nombre y apellidos.": "Scrivi nome e cognome.",
+  "No hemos podido guardar los datos.": "Non siamo riusciti a salvare i dati.",
   "No encontramos billetes para esta reserva": "Non troviamo biglietti per questa prenotazione",
   "Los billetes aparecen cuando el pago está confirmado.":
     "I biglietti compaiono quando il pagamento è confermato.",
@@ -645,4 +672,7 @@ export const it: Dictionary = {
   "Máximo 80 caracteres.": "Massimo 80 caratteri.",
   "DNI, NIE o pasaporte: solo letras y números.": "DNI, NIE o passaporto: solo lettere e numeri.",
   "Teléfono no válido.": "Numero di telefono non valido.",
+  "Ticket por email": "Biglietto via email",
+  "Después de pagar recibes el ticket con código QR por email.":
+    "Dopo il pagamento ricevi il biglietto con codice QR via email.",
 };

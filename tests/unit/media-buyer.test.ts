@@ -94,18 +94,11 @@ describe("conversions API payloads", () => {
   });
 });
 
-describe("tickets", () => {
-  it("makes readable, unguessable codes", async () => {
-    const { newTicketCode, prettyCode } = await import("@/lib/tickets/codes");
-    const codes = new Set(Array.from({ length: 200 }, newTicketCode));
-    expect(codes.size).toBe(200);
-    for (const c of codes) expect(c).toMatch(/^[A-HJ-NP-Z2-9]{10}$/);
-    expect(prettyCode("ABCDEFGHJK")).toBe("ABCD EFGH JK");
-  });
-
-  it("masks the ID document", async () => {
-    const { maskDocument } = await import("@/lib/tickets/queries");
-    expect(maskDocument("12345678Z")).toBe("••••••78Z");
-    expect(maskDocument(null)).toBe("—");
+describe("check-in QR", () => {
+  it("points at the staff check-in page of the booking", async () => {
+    const { checkinUrl, isReference } = await import("@/lib/tickets/codes");
+    expect(checkinUrl("TC-2026-0001")).toMatch(/\/admin\/billetes\/TC-2026-0001$/);
+    expect(isReference("TC-2026-0001")).toBe(true);
+    expect(isReference("../etc")).toBe(false);
   });
 });

@@ -71,9 +71,9 @@ export function DefaultLanding({
             <p className="text-tertiary">{meetingPoint}</p>
           </li>
           <li>
-            <p className="font-semibold">{t("Billete con QR")}</p>
+            <p className="font-semibold">{t("Ticket por email")}</p>
             <p className="text-tertiary">
-              {t("Después de pagar recibes por email un billete por viajero.")}
+              {t("Después de pagar recibes el ticket con código QR por email.")}
             </p>
           </li>
           <li>

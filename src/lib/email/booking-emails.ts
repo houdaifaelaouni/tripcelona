@@ -2,19 +2,19 @@ import "server-only";
 import { getBookingDetails } from "@/lib/booking/details";
 import { siteUrl } from "@/lib/seo/site-url";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "./send";
+import { getTicketBundle } from "@/lib/booking/passengers";
+import { buildTicketPdf } from "@/lib/tickets/pdf";
+import { sendEmail, type OutgoingEmail } from "./send";
 import {
   cancellationEmail,
   confirmationEmail,
   ownerAlertEmail,
+  ticketEmail,
   paymentFailedEmail,
   paymentRequestEmail,
-  ticketsEmail,
   type EmailContent,
   type EmailKind,
 } from "./templates";
-import { ticketsPdf } from "@/lib/tickets/pdf";
-import { getTicketBundle } from "@/lib/tickets/queries";
 
 export type SendResult = "sent" | "skipped" | "failed" | "no_recipient";
 
@@ -47,29 +47,26 @@ export async function sendBookingEmail(
 
   const base = siteUrl();
   let content: EmailContent;
-  let attachments: { filename: string; content: string }[] | undefined;
+  let attachments: OutgoingEmail["attachments"];
   switch (kind) {
     case "confirmation":
       content = confirmationEmail(booking, {
         booking: `${base}/reservar/confirmada?id=${booking.id}`,
         calendar: `${base}/reservar/confirmada/calendario?id=${booking.id}`,
-        tickets: `${base}/reservar/billetes?id=${booking.id}`,
+        passengers: `${base}/reservar/confirmada?id=${booking.id}#pasajeros`,
       });
       break;
-    case "tickets": {
-      const bundle = await getTicketBundle(booking.id);
-      if (!bundle?.complete) {
-        await db
-          .from("booking_emails")
-          .update({ status: "failed", error: "incomplete" })
-          .eq("id", claimed.id);
-        return "failed";
-      }
-      content = ticketsEmail(bundle, `${base}/reservar/billetes?id=${booking.id}`);
+    case "ticket": {
+      const bundle = await getTicketBundle(booking);
+      content = ticketEmail(booking, bundle.lines, {
+        ticket: `${base}/reservar/ticket?id=${booking.id}`,
+        pdf: `${base}/reservar/ticket/pdf?id=${booking.id}`,
+      });
       attachments = [
         {
-          filename: `billetes-${booking.reference}.pdf`,
-          content: Buffer.from(await ticketsPdf(bundle)).toString("base64"),
+          filename: `tripcelona-ticket-${booking.reference}.pdf`,
+          content: await buildTicketPdf(bundle),
+          contentType: "application/pdf",
         },
       ];
       break;
@@ -92,9 +89,9 @@ export async function sendBookingEmail(
     const { id } = await sendEmail({
       to,
       ...content,
+      attachments,
       idempotencyKey: `${booking.id}:${kind}:${claimed.attempts}`,
       replyTo: kind === "owner_alert" ? booking.email : process.env.OWNER_EMAIL,
-      attachments,
     });
     await db
       .from("booking_emails")

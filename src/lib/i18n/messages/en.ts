@@ -584,6 +584,33 @@ export const en: Dictionary = {
   "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
     "The photos on this website come from Wikimedia Commons and the home video from Mixkit, all under free licences. Thanks to their authors.",
   "Vídeo de portada": "Home video",
+  // Passenger details and e-ticket
+  "Tu ticket está listo": "Your ticket is ready",
+  "Te lo hemos enviado por email. También puedes verlo y descargarlo aquí.":
+    "We have emailed it to you. You can also view and download it here.",
+  "Ver y descargar mi ticket": "View and download my ticket",
+  "Último paso": "Last step",
+  "Datos de los pasajeros": "Passenger details",
+  "Escribe el nombre de cada viajero. Te enviaremos el ticket a {email}.":
+    "Enter the name of each traveller. We will send the ticket to {email}.",
+  "Editar pasajeros": "Edit passengers",
+  "Ticket listo": "Ticket ready",
+  "Aquí tienes tu ticket": "Here is your ticket",
+  "Te lo hemos enviado a {email}. Si no lo ves, revisa la carpeta de spam.":
+    "We have sent it to {email}. If you can't see it, check your spam folder.",
+  "Muéstralo en el móvil o impreso el día de la excursión.":
+    "Show it on your phone or printed on the day of the trip.",
+  "Descargar ticket (PDF)": "Download ticket (PDF)",
+  "Viajero {n}: nombre y apellidos": "Traveller {n}: full name",
+  "DNI o pasaporte (opcional)": "ID card or passport (optional)",
+  "Generando tu ticket…": "Creating your ticket…",
+  "Guardar y reenviar el ticket": "Save and resend the ticket",
+  "Obtener mi ticket": "Get my ticket",
+  "Ticket {ref}": "Ticket {ref}",
+  Pasajeros: "Passengers",
+  "Tu ticket": "Your ticket",
+  "Escribe el nombre y apellidos.": "Enter the full name.",
+  "No hemos podido guardar los datos.": "We could not save the details.",
   "No encontramos billetes para esta reserva": "We can't find tickets for this booking",
   "Los billetes aparecen cuando el pago está confirmado.":
     "Tickets appear once the payment is confirmed.",
@@ -637,4 +664,7 @@ export const en: Dictionary = {
   "DNI, NIE o pasaporte: solo letras y números.":
     "ID card, NIE or passport: letters and numbers only.",
   "Teléfono no válido.": "Invalid phone number.",
+  "Ticket por email": "Ticket by email",
+  "Después de pagar recibes el ticket con código QR por email.":
+    "After paying you get the ticket with a QR code by email.",
 };
