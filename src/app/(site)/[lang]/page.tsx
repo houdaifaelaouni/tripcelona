@@ -145,6 +145,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         phoneHref={site.phoneHref}
         phoneDisplay={site.phoneDisplay}
         whatsappHref={site.whatsappHref}
+        meetingPoint={site.meetingPoint}
         locale={locale}
       />
     </>

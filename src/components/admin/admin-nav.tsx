@@ -27,6 +27,7 @@ import {
   SwitchHorizontal01,
   User01,
   Users01,
+  Globe01,
   X as CloseIcon,
 } from "@untitledui/icons";
 import Link from "next/link";
@@ -67,6 +68,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
       { href: "/admin/faqs", label: "Preguntas frecuentes", icon: HelpCircle },
       { href: "/admin/opiniones", label: "Opiniones", icon: MessageSquare01 },
       { href: "/admin/medios", label: "Medios", icon: Image01 },
+      { href: "/admin/traducciones", label: "Traducciones", icon: Globe01 },
     ],
   },
   {

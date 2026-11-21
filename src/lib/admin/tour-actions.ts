@@ -8,6 +8,7 @@ import { audit } from "@/lib/auth/audit";
 import { assertStaff } from "@/lib/auth/staff";
 import { cancelDeparture } from "@/lib/payments/service";
 import { createClient } from "@/lib/supabase/server";
+import { docText, sanitizeDoc, type RichDoc } from "@/lib/content/rich-text";
 import { TOURS_TAG } from "@/lib/tours/queries";
 import { storeImage } from "./media-store";
 import { backWith } from "./redirect";
@@ -57,6 +58,8 @@ const tourSchema = z.object({
   packing_list: lines,
   seo_title: optionalText,
   seo_description: optionalText,
+  // Tiptap JSON from the rich-text editor; absent when the form has no editor.
+  description: z.string().max(2_000_000, "Descripción demasiado larga.").optional(),
   status: z.enum(["draft", "published", "archived"]),
   slug: z
     .string()
@@ -65,6 +68,13 @@ const tourSchema = z.object({
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "La URL solo admite minúsculas, números y guiones.")
     .optional(),
 });
+
+/** False for an editor left empty (Tiptap still sends one blank paragraph). */
+function hasContent(doc: RichDoc): boolean {
+  return doc.content.some(
+    (b) => b.type !== "paragraph" || docText({ type: "doc", content: [b] }).trim() !== "",
+  );
+}
 
 function firstError(error: z.ZodError): string {
   return error.issues[0]?.message ?? "Revisa el formulario.";
@@ -94,7 +104,10 @@ export async function updateTour(tourId: string, form: FormData) {
   const back = `/admin/excursiones/${tourId}`;
   const parsed = tourSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) backWith(back, { error: firstError(parsed.error) });
-  const { price_from, slug, ...fields } = parsed.data;
+  const { price_from, slug, description: rawDescription, ...fields } = parsed.data;
+  const doc = rawDescription === undefined ? undefined : sanitizeDoc(rawDescription);
+  // An empty editor clears the description (the page then shows the summary only).
+  const description = doc === undefined ? undefined : hasContent(doc) ? doc : null;
 
   const db = await createClient();
   const { data: current } = await db
@@ -110,6 +123,7 @@ export async function updateTour(tourId: string, form: FormData) {
     .from("tours")
     .update({
       ...fields,
+      ...(description !== undefined ? { description: description as never } : {}),
       slug: nextSlug,
       price_from_cents: price_from,
       published_at:

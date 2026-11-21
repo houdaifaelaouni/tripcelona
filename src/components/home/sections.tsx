@@ -49,11 +49,14 @@ export function ContactSection({
   phoneHref,
   phoneDisplay,
   whatsappHref,
+  meetingPoint = site.meetingPoint,
   locale,
 }: {
   phoneHref: string;
   phoneDisplay: string;
   whatsappHref: string;
+  /** From Admin > Ajustes (falls back to the default meeting point). */
+  meetingPoint?: string;
   locale: Locale;
 }) {
   const t = createT(locale);
@@ -68,8 +71,8 @@ export function ContactSection({
     {
       icon: MapPin,
       title: t("Punto de salida"),
-      body: site.meetingPoint,
-      href: site.meetingPointMapHref,
+      body: meetingPoint,
+      href: `https://www.google.com/maps/search/${encodeURIComponent(meetingPoint)}`,
     },
   ];
   return (
