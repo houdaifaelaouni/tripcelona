@@ -116,11 +116,15 @@ function Toolbar({ editor, images }: { editor: Editor; images: PickerImage[] }) 
       <Btn
         on={s.h2}
         onClick={() => chain().toggleHeading({ level: 2 }).run()}
-        label="Título de sección"
+        label="H2, título de sección"
       >
         H2
       </Btn>
-      <Btn on={s.h3} onClick={() => chain().toggleHeading({ level: 3 }).run()} label="Subtítulo">
+      <Btn
+        on={s.h3}
+        onClick={() => chain().toggleHeading({ level: 3 }).run()}
+        label="H3, subtítulo"
+      >
         H3
       </Btn>
       <Sep />
@@ -137,7 +141,11 @@ function Toolbar({ editor, images }: { editor: Editor; images: PickerImage[] }) 
       <Btn on={s.bullet} onClick={() => chain().toggleBulletList().run()} label="Lista">
         • Lista
       </Btn>
-      <Btn on={s.ordered} onClick={() => chain().toggleOrderedList().run()} label="Lista numerada">
+      <Btn
+        on={s.ordered}
+        onClick={() => chain().toggleOrderedList().run()}
+        label="1. Lista numerada"
+      >
         1. Lista
       </Btn>
       <Btn on={s.quote} onClick={() => chain().toggleBlockquote().run()} label="Cita">

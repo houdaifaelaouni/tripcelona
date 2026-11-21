@@ -135,7 +135,8 @@ test("staff create a new tour and set its URL", async ({ page }) => {
   await page.getByRole("button", { name: "Nueva excursión" }).click();
   await page.waitForURL(/\/admin\/excursiones\/[0-9a-f-]{36}$/);
   const slug = `e2e-tour-${Date.now()}`;
-  await page.locator("input[name=title]").fill("Excursión creada por la prueba e2e");
+  // The tour form, not the "Nueva parada" form further down (also name=title).
+  await page.locator("#tour-form input[name=title]").fill("Excursión creada por la prueba e2e");
   await page.locator("input[name=slug]").fill(slug);
   await page.locator("input[name=price_from]").fill("45");
   await page.locator("select[name=status]").selectOption("draft");
