@@ -20,6 +20,7 @@ import { Alert } from "@/components/admin/alert";
 import { ButtonLink } from "@/components/admin/button";
 import { requireStaff } from "@/lib/auth/staff";
 import { assessHealth, loadHealthInput, type HealthReport } from "@/lib/ops/health";
+import { pendingMigrations } from "@/lib/ops/schema-check";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateShort, formatPrice, formatTime } from "@/lib/tours/format";
@@ -114,6 +115,10 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
           .catch(() => null)
       : undefined;
 
+  // Owner only: SQL files the code expects but nobody has run in Supabase yet.
+  const pendingSql =
+    staff.role === "owner" ? await pendingMigrations(createAdminClient()).catch(() => []) : [];
+
   const occupancy = seats.total ? Math.round((seats.taken / seats.total) * 100) : null;
   return (
     <>
@@ -145,6 +150,20 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
         Hola{staff.name ? `, ${staff.name}` : ""}
       </PageTitle>
       <Flash ok={aviso} />
+      {pendingSql.length > 0 && (
+        <Alert tone="error" title="Falta ejecutar SQL en Supabase" className="mb-6">
+          La web ya usa estos cambios de base de datos, pero aún no están en Supabase. Ábrelos en la
+          carpeta <code>supabase/migrations</code> del repositorio y ejecútalos, en este orden, en
+          Supabase → SQL Editor:
+          <ul className="mt-2 list-disc pl-5">
+            {pendingSql.map((m) => (
+              <li key={m.file}>
+                <code>{m.file}</code> ({m.what})
+              </li>
+            ))}
+          </ul>
+        </Alert>
+      )}
       <StatGrid>
         <StatCard
           icon={CalendarDays}

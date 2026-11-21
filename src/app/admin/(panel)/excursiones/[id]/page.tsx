@@ -34,6 +34,13 @@ import { dateParts, formatDateShort, formatDuration, formatPrice } from "@/lib/t
 import { mediaUrl } from "@/lib/tours/media";
 import { mediaOptions } from "@/lib/admin/media-options";
 import { MediaDropzone } from "@/components/admin/media-dropzone";
+import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import {
+  deleteItineraryStop,
+  deleteTourFaq,
+  saveItineraryStop,
+  saveTourFaq,
+} from "@/lib/admin/tour-extras-actions";
 
 export const metadata: Metadata = { title: "Editar excursión" };
 
@@ -67,9 +74,26 @@ export default async function TourEdit({
     .eq("tour_id", id)
     .order("sort_order")
     .limit(40);
+  const [{ data: stops }, { data: tourFaqs }] = await Promise.all([
+    db
+      .from("tour_itinerary")
+      .select("id, sort_order, time_label, title, body")
+      .eq("tour_id", id)
+      .order("sort_order")
+      .order("created_at"),
+    db
+      .from("tour_faqs")
+      .select("id, sort_order, question, answer")
+      .eq("tour_id", id)
+      .order("sort_order")
+      .order("created_at"),
+  ]);
+  const nextStopOrder = ((stops ?? []).at(-1)?.sort_order ?? 0) + 10;
+  const nextFaqOrder = ((tourFaqs ?? []).at(-1)?.sort_order ?? 0) + 10;
   const coverUrl = images?.[0] ? mediaUrl(images[0].media) : null;
   const onTour = new Set((images ?? []).map((i) => i.media_id));
-  const library = (await mediaOptions(60)).filter((m) => !onTour.has(m.id));
+  const allMedia = await mediaOptions(60);
+  const library = allMedia.filter((m) => !onTour.has(m.id));
 
   const isOwner = staff.role === "owner";
   const now = new Date().toISOString();
@@ -254,6 +278,18 @@ export default async function TourEdit({
                   rows={5}
                   defaultValue={asLines(tour.highlights)}
                 />
+                <div>
+                  <p className="mb-1.5 text-sm font-medium text-secondary">Descripción completa</p>
+                  <RichTextEditor
+                    name="description"
+                    initial={tour.description}
+                    images={allMedia}
+                    label="Descripción completa"
+                  />
+                  <p className="mt-1.5 text-sm text-tertiary">
+                    El texto largo de la ficha. Déjalo vacío para mostrar solo el resumen.
+                  </p>
+                </div>
               </div>
             </Section>
 
@@ -413,6 +449,176 @@ export default async function TourEdit({
                 </form>
               </details>
             )}
+          </Panel>
+
+          <Panel
+            title="Ruta del día"
+            id="ruta"
+            className="scroll-mt-24"
+            description="Las paradas del itinerario, en orden. Salen en la ficha y en el mapa de ruta."
+          >
+            {(stops ?? []).length === 0 && (
+              <p className="mb-4 text-sm text-tertiary">Aún no hay paradas.</p>
+            )}
+            <ol className="grid gap-3">
+              {(stops ?? []).map((s) => (
+                <li key={s.id} className="rounded-xl border border-secondary">
+                  <details>
+                    <summary className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm">
+                      <span className="w-14 shrink-0 font-semibold text-brand-secondary">
+                        {s.time_label ?? "—"}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate font-semibold">{s.title}</span>
+                      <Pencil aria-hidden size={16} className="text-tertiary" />
+                    </summary>
+                    <form
+                      action={saveItineraryStop.bind(null, tour.id, s.id)}
+                      className="grid gap-3 border-t border-secondary p-4 sm:grid-cols-[120px_1fr_90px]"
+                    >
+                      <Input label="Hora" name="time_label" defaultValue={s.time_label ?? ""} />
+                      <Input label="Parada" name="title" required defaultValue={s.title} />
+                      <Input
+                        label="Orden"
+                        name="sort_order"
+                        type="number"
+                        min={0}
+                        defaultValue={String(s.sort_order)}
+                      />
+                      <Textarea
+                        label="Texto"
+                        name="body"
+                        rows={3}
+                        defaultValue={s.body ?? ""}
+                        className="sm:col-span-3"
+                      />
+                      <div className="flex flex-wrap gap-2 sm:col-span-3">
+                        <Button type="submit" size="sm">
+                          Guardar parada
+                        </Button>
+                        <Button
+                          type="submit"
+                          size="sm"
+                          variant="tertiary"
+                          formNoValidate
+                          formAction={deleteItineraryStop.bind(null, tour.id, s.id)}
+                        >
+                          Borrar
+                        </Button>
+                      </div>
+                    </form>
+                  </details>
+                </li>
+              ))}
+            </ol>
+            <form
+              action={saveItineraryStop.bind(null, tour.id, null)}
+              className="mt-4 grid gap-3 rounded-xl border border-dashed border-primary p-4 sm:grid-cols-[120px_1fr_90px]"
+            >
+              <p className="text-base font-semibold sm:col-span-3">Nueva parada</p>
+              <Input label="Hora" name="time_label" placeholder="08:00" />
+              <Input label="Parada" name="title" required />
+              <Input
+                label="Orden"
+                name="sort_order"
+                type="number"
+                min={0}
+                defaultValue={String(nextStopOrder)}
+              />
+              <Textarea label="Texto" name="body" rows={2} className="sm:col-span-3" />
+              <Button
+                type="submit"
+                variant="secondary"
+                className="sm:col-span-3 sm:justify-self-start"
+              >
+                Añadir parada
+              </Button>
+            </form>
+          </Panel>
+
+          <Panel
+            title="Preguntas de esta excursión"
+            id="preguntas"
+            className="scroll-mt-24"
+            description="Las preguntas frecuentes que salen al final de la ficha."
+          >
+            {(tourFaqs ?? []).length === 0 && (
+              <p className="mb-4 text-sm text-tertiary">Aún no hay preguntas.</p>
+            )}
+            <ul className="grid gap-3">
+              {(tourFaqs ?? []).map((f) => (
+                <li key={f.id} className="rounded-xl border border-secondary">
+                  <details>
+                    <summary className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm">
+                      <span className="min-w-0 flex-1 truncate font-semibold">{f.question}</span>
+                      <Pencil aria-hidden size={16} className="text-tertiary" />
+                    </summary>
+                    <form
+                      action={saveTourFaq.bind(null, tour.id, f.id)}
+                      className="grid gap-3 border-t border-secondary p-4 sm:grid-cols-[1fr_90px]"
+                    >
+                      <Input label="Pregunta" name="question" required defaultValue={f.question} />
+                      <Input
+                        label="Orden"
+                        name="sort_order"
+                        type="number"
+                        min={0}
+                        defaultValue={String(f.sort_order)}
+                      />
+                      <Textarea
+                        label="Respuesta"
+                        name="answer"
+                        rows={3}
+                        required
+                        defaultValue={f.answer}
+                        className="sm:col-span-2"
+                      />
+                      <div className="flex flex-wrap gap-2 sm:col-span-2">
+                        <Button type="submit" size="sm">
+                          Guardar pregunta
+                        </Button>
+                        <Button
+                          type="submit"
+                          size="sm"
+                          variant="tertiary"
+                          formNoValidate
+                          formAction={deleteTourFaq.bind(null, tour.id, f.id)}
+                        >
+                          Borrar
+                        </Button>
+                      </div>
+                    </form>
+                  </details>
+                </li>
+              ))}
+            </ul>
+            <form
+              action={saveTourFaq.bind(null, tour.id, null)}
+              className="mt-4 grid gap-3 rounded-xl border border-dashed border-primary p-4 sm:grid-cols-[1fr_90px]"
+            >
+              <p className="text-base font-semibold sm:col-span-2">Nueva pregunta</p>
+              <Input label="Pregunta" name="question" required />
+              <Input
+                label="Orden"
+                name="sort_order"
+                type="number"
+                min={0}
+                defaultValue={String(nextFaqOrder)}
+              />
+              <Textarea
+                label="Respuesta"
+                name="answer"
+                rows={2}
+                required
+                className="sm:col-span-2"
+              />
+              <Button
+                type="submit"
+                variant="secondary"
+                className="sm:col-span-2 sm:justify-self-start"
+              >
+                Añadir pregunta
+              </Button>
+            </form>
           </Panel>
 
           <Panel
