@@ -1,5 +1,6 @@
 import "server-only";
-import { getBookingDetails } from "@/lib/booking/details";
+import { getBookingDetails, type BookingDetails } from "@/lib/booking/details";
+import { shownPassengers } from "@/lib/tickets/display";
 import { siteUrl } from "@/lib/seo/site-url";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getTicketBundle } from "@/lib/booking/passengers";
@@ -15,6 +16,34 @@ import {
   type EmailContent,
   type EmailKind,
 } from "./templates";
+
+export const ticketUrls = (id: string) => ({
+  ticket: `${siteUrl()}/reservar/ticket?id=${id}`,
+  pdf: `${siteUrl()}/reservar/ticket/pdf?id=${id}`,
+});
+
+/** The e-ticket PDF of a booking (every trip of its cart), ready to attach. */
+export async function ticketAttachment(
+  booking: BookingDetails,
+): Promise<NonNullable<OutgoingEmail["attachments"]>> {
+  return [
+    {
+      filename: `tripcelona-ticket-${booking.reference}.pdf`,
+      content: await buildTicketPdf(await getTicketBundle(booking)),
+      contentType: "application/pdf",
+    },
+  ];
+}
+
+/** The "here is your ticket" email, with the passengers as they stand. */
+export async function ticketMessage(booking: BookingDetails): Promise<EmailContent> {
+  const bundle = await getTicketBundle(booking);
+  const lines = bundle.lines.map((l) => ({
+    ...l,
+    passengers: shownPassengers(l, booking.customerName),
+  }));
+  return ticketEmail(booking, lines, ticketUrls(booking.id));
+}
 
 export type SendResult = "sent" | "skipped" | "failed" | "no_recipient";
 
@@ -50,27 +79,22 @@ export async function sendBookingEmail(
   let attachments: OutgoingEmail["attachments"];
   switch (kind) {
     case "confirmation":
+      // The ticket goes out with the payment confirmation, no extra step needed.
       content = confirmationEmail(booking, {
         booking: `${base}/reservar/confirmada?id=${booking.id}`,
         calendar: `${base}/reservar/confirmada/calendario?id=${booking.id}`,
-        passengers: `${base}/reservar/confirmada?id=${booking.id}#pasajeros`,
+        passengers: `${base}/reservar/ticket?id=${booking.id}&editar=1`,
+        ticketPdf: ticketUrls(booking.id).pdf,
+      });
+      attachments = await ticketAttachment(booking).catch((error) => {
+        console.error(`[email] ticket PDF for ${booking.reference} failed`, error);
+        return undefined;
       });
       break;
-    case "ticket": {
-      const bundle = await getTicketBundle(booking);
-      content = ticketEmail(booking, bundle.lines, {
-        ticket: `${base}/reservar/ticket?id=${booking.id}`,
-        pdf: `${base}/reservar/ticket/pdf?id=${booking.id}`,
-      });
-      attachments = [
-        {
-          filename: `tripcelona-ticket-${booking.reference}.pdf`,
-          content: await buildTicketPdf(bundle),
-          contentType: "application/pdf",
-        },
-      ];
+    case "ticket":
+      content = await ticketMessage(booking);
+      attachments = await ticketAttachment(booking);
       break;
-    }
     case "owner_alert":
       content = ownerAlertEmail(booking, options.note);
       break;

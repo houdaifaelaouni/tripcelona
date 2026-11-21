@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TicketRefLink } from "@/components/admin/ticket-links";
 import {
   BookingStatus,
   EmptyState,
@@ -111,15 +112,15 @@ export default async function BookingsAdmin({ searchParams }: PageProps<"/admin/
               {bookings.map((b) => (
                 <tr key={b.id}>
                   <td className={`${td} whitespace-nowrap`}>
-                    <Link
-                      className="font-medium text-primary hover:text-brand-secondary"
-                      href={`/admin/reservas/${b.id}`}
-                    >
-                      {b.reference}
-                    </Link>
+                    <TicketRefLink id={b.id} reference={b.reference} />
                   </td>
                   <td className={td}>
-                    {b.customer_name}
+                    <Link
+                      className="font-medium text-primary hover:text-brand-secondary hover:underline"
+                      href={`/admin/reservas/${b.id}`}
+                    >
+                      {b.customer_name}
+                    </Link>
                     <br />
                     <span className="text-tertiary">{b.email}</span>
                   </td>

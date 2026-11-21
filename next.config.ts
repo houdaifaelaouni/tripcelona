@@ -25,6 +25,17 @@ const nextConfig: NextConfig = {
           preview: process.env.VERCEL_ENV === "preview",
         }),
       },
+      {
+        // The driver's boarding scanner needs the phone camera (last rule wins).
+        source: "/conductor/:path*",
+        headers: [
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
+          },
+        ],
+      },
     ];
   },
   images: {

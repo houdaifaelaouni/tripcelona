@@ -75,7 +75,7 @@ function tripFacts(b: EmailBooking): [string, string][] {
 
 export function confirmationEmail(
   b: EmailBooking,
-  urls: { booking: string; calendar: string; passengers?: string },
+  urls: { booking: string; calendar: string; passengers?: string; ticketPdf?: string },
 ) {
   const facts = tripFacts(b);
   const meeting = b.tour.meetingPoint ?? site.meetingPoint;
@@ -95,11 +95,15 @@ ${
     : ""
 }
 ${
-  urls.passengers
+  urls.ticketPdf
     ? `<div style="margin:24px 0 0;padding:16px;border:2px dashed #fcb92c;border-radius:12px;background:#fffaf0">
-<p style="margin:0 0 6px;font-weight:bold">Último paso: tu ticket</p>
-<p style="margin:0 0 12px">Escribe el nombre de cada viajero y te enviamos el ticket por email, listo para descargar.</p>
-<a href="${urls.passengers}" style="background:#fcb92c;color:#0f1720;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Completar pasajeros</a></div>`
+<p style="margin:0 0 6px;font-weight:bold">Tu ticket va adjunto en PDF</p>
+<p style="margin:0 0 12px">Muéstralo en el móvil o impreso el día de la excursión.${
+        urls.passengers
+          ? ` Si quieres, <a href="${urls.passengers}">añade el nombre de cada viajero</a> y te lo reenviamos.`
+          : ""
+      }</p>
+<a href="${urls.ticketPdf}" style="background:#fcb92c;color:#0f1720;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Descargar ticket (PDF)</a></div>`
     : ""
 }
 <p style="margin:24px 0 8px"><a href="${urls.booking}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mi reserva</a></p>
@@ -115,9 +119,8 @@ ${
     `Punto de encuentro: ${meeting}`,
     ...(packing.length ? [``, `Qué llevar:`, ...packing.map((p) => `- ${p}`)] : []),
     ``,
-    ...(urls.passengers
-      ? [`Último paso: completa los pasajeros para recibir tu ticket: ${urls.passengers}`, ``]
-      : []),
+    ...(urls.ticketPdf ? [`Tu ticket (PDF, también adjunto): ${urls.ticketPdf}`] : []),
+    ...(urls.passengers ? [`Añadir el nombre de cada viajero: ${urls.passengers}`, ``] : []),
     `Ver mi reserva: ${urls.booking}`,
     `Añadir al calendario: ${urls.calendar}`,
     ``,

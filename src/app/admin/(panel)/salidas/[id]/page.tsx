@@ -6,6 +6,9 @@ import { ButtonLink } from "@/components/admin/button";
 import { EmptyState, PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
 import { requireStaff } from "@/lib/auth/staff";
 import { createClient } from "@/lib/supabase/server";
+import { CopyButton } from "@/components/admin/copy-button";
+import { TicketRefLink, WhatsappTicketLink } from "@/components/admin/ticket-links";
+import { driverUrl } from "@/lib/tickets/driver";
 import { formatDateShort } from "@/lib/tours/format";
 
 export const metadata: Metadata = { title: "Lista de pasajeros" };
@@ -35,6 +38,12 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
   const paid = (bookings ?? []).filter((b) => b.status === "paid");
   const pending = (bookings ?? []).filter((b) => b.status === "pending");
   const pax = paid.reduce((n, b) => n + b.travellers, 0);
+  const boarded = paid.reduce(
+    (n, b) =>
+      n + Math.min(b.travellers, b.booking_travellers.filter((t) => t.checked_in_at).length),
+    0,
+  );
+  const driver = driverUrl(id);
 
   return (
     <>
@@ -56,6 +65,49 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
       >
         Pasajeros: {departure.tours.title}
       </PageTitle>
+      <Panel
+        title="Embarque"
+        description="Envía este enlace al conductor: abre la cámara del móvil, escanea el QR de cada ticket y marca a los pasajeros a bordo. No necesita cuenta."
+      >
+        <div className="px-4 pb-5 md:px-5">
+          <dl className="grid grid-cols-3 gap-3 text-center sm:max-w-md">
+            <div className="rounded-xl bg-secondary p-3">
+              <dt className="text-xs text-tertiary">Tickets vendidos</dt>
+              <dd className="text-2xl font-semibold">{pax}</dd>
+            </div>
+            <div className="rounded-xl bg-secondary p-3">
+              <dt className="text-xs text-tertiary">A bordo</dt>
+              <dd className="text-2xl font-semibold text-success-primary">{boarded}</dd>
+            </div>
+            <div className="rounded-xl bg-secondary p-3">
+              <dt className="text-xs text-tertiary">Faltan</dt>
+              <dd className="text-2xl font-semibold">{pax - boarded}</dd>
+            </div>
+          </dl>
+          <div className="mt-4 flex flex-wrap items-center gap-2 print:hidden">
+            <code className="max-w-full truncate rounded-lg bg-secondary px-3 py-2 text-xs">
+              {driver}
+            </code>
+            <CopyButton value={driver} label="Copiar enlace" />
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`Enlace de embarque ${departure.tours.title} (${formatDateShort(departure.starts_at)}): ${driver}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-secondary ring-1 ring-primary ring-inset hover:bg-primary_hover"
+            >
+              Enviar por WhatsApp
+            </a>
+            <a
+              href={driver}
+              target="_blank"
+              rel="noopener"
+              className="rounded-lg bg-brand-solid px-3 py-2 text-sm font-semibold text-white hover:bg-brand-solid_hover"
+            >
+              Abrir escáner
+            </a>
+          </div>
+        </div>
+      </Panel>
       <Panel title={`Reservas pagadas (${paid.length})`}>
         {paid.length ? (
           <Table>
@@ -72,11 +124,30 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
               {paid.map((b) => (
                 <tr key={b.id}>
                   <td className={td}>
-                    {b.customer_name}
+                    <Link
+                      href={`/admin/reservas/${b.id}`}
+                      className="font-medium text-primary hover:text-brand-secondary hover:underline print:no-underline"
+                    >
+                      {b.customer_name}
+                    </Link>
                     <br />
                     <span className="text-tertiary">{b.email}</span>
                   </td>
-                  <td className={`${td} whitespace-nowrap`}>{b.phone ?? "-"}</td>
+                  <td className={td}>
+                    <span className="print:hidden">
+                      <WhatsappTicketLink
+                        phone={b.phone}
+                        booking={{
+                          id: b.id,
+                          reference: b.reference,
+                          customerName: b.customer_name,
+                          title: departure.tours.title,
+                          startsAt: departure.starts_at,
+                        }}
+                      />
+                    </span>
+                    <span className="hidden print:inline">{b.phone ?? "-"}</span>
+                  </td>
                   <td className={td}>
                     {b.travellers}
                     {b.booking_travellers.length > 0 ? (
@@ -103,12 +174,7 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
                     {[b.pickup_note, b.notes].filter(Boolean).join(" · ") || "-"}
                   </td>
                   <td className={`${td} whitespace-nowrap`}>
-                    <Link
-                      href={`/admin/reservas/${b.id}`}
-                      className="text-primary hover:text-brand-secondary print:no-underline"
-                    >
-                      {b.reference}
-                    </Link>
+                    <TicketRefLink id={b.id} reference={b.reference} />
                     <Link
                       href={`/admin/billetes/${b.reference}`}
                       className="ml-2 text-xs text-brand-secondary hover:underline print:hidden"

@@ -87,7 +87,7 @@ export default async function Checkin({
       <Panel
         title="Pasajeros"
         actions={
-          valid && boarded < pax.length ? (
+          valid && (pax.length === 0 || boarded < pax.length) ? (
             <form action={setCheckin}>
               <input type="hidden" name="ref" value={b.reference} />
               <input type="hidden" name="all" value="1" />

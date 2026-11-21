@@ -675,4 +675,13 @@ export const it: Dictionary = {
   "Ticket por email": "Biglietto via email",
   "Después de pagar recibes el ticket con código QR por email.":
     "Dopo il pagamento ricevi il biglietto con codice QR via email.",
+  "Ver mi ticket": "Vedi il mio biglietto",
+  "Añadir el nombre de cada viajero al ticket (opcional)":
+    "Aggiungi il nome di ogni viaggiatore al biglietto (facoltativo)",
+  "Añadir nombres de los pasajeros": "Aggiungi i nomi dei passeggeri",
+  "Enviar el ticket a un email": "Invia il biglietto a un'email",
+  Enviar: "Invia",
+  "¡Enviado! Revisa tu bandeja de entrada.": "Inviato! Controlla la posta in arrivo.",
+  "Demasiados envíos. Inténtalo más tarde.": "Troppi invii. Riprova più tardi.",
+  "No hemos podido enviar el email.": "Non siamo riusciti a inviare l'email.",
 };

@@ -2,7 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { isLocale, localizePath } from "@/lib/i18n/config";
-import { sendBookingEmail } from "@/lib/email/booking-emails";
+import { sendBookingEmail, ticketAttachment, ticketMessage } from "@/lib/email/booking-emails";
+import { sendEmail } from "@/lib/email/send";
+import { allowSubmission } from "@/lib/forms/rate-limit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getBookingDetails } from "./details";
 import { getTicketBundle } from "./passengers";
@@ -76,4 +78,37 @@ export async function savePassengers(
     console.error(`[email] ticket for ${booking.reference} failed`, error),
   );
   redirect(localizePath(`/reservar/ticket?id=${booking.id}&enviado=1`, locale));
+}
+
+export type SendTicketState = { status: "idle" | "sent" | "error"; message?: string };
+
+/** "Send my ticket to another email": the same ticket email, with the PDF attached. */
+export async function sendTicketTo(
+  _prev: SendTicketState,
+  form: FormData,
+): Promise<SendTicketState> {
+  const email = clean(form.get("email")).toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 200) {
+    return { status: "error", message: "Escribe un email válido." };
+  }
+  const booking = await getBookingDetails({ id: String(form.get("bookingId") ?? "") });
+  if (!booking || booking.status !== "paid") {
+    return { status: "error", message: "No encontramos esta reserva." };
+  }
+  if (!(await allowSubmission("ticket"))) {
+    return { status: "error", message: "Demasiados envíos. Inténtalo más tarde." };
+  }
+  try {
+    await sendEmail({
+      to: email,
+      ...(await ticketMessage(booking)),
+      attachments: await ticketAttachment(booking),
+      idempotencyKey: `${booking.id}:ticket-to:${email}:${Date.now()}`,
+      replyTo: process.env.OWNER_EMAIL,
+    });
+  } catch (error) {
+    console.error(`[email] ticket copy for ${booking.reference} failed`, error);
+    return { status: "error", message: "No hemos podido enviar el email." };
+  }
+  return { status: "sent" };
 }

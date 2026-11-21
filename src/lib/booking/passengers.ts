@@ -68,3 +68,28 @@ export async function getTicketBundle(booking: BookingDetails): Promise<TicketBu
   }));
   return { booking, lines, completedAt: anchor?.passengers_completed_at ?? null };
 }
+
+/**
+ * Makes sure a booking has one traveller row per seat (buyer + "Viajero n")
+ * so it can be boarded before the customer names anyone. Never overwrites.
+ */
+export async function ensureTravellerRows(booking: {
+  id: string;
+  travellers: number;
+  customerName: string;
+}): Promise<void> {
+  const db = createAdminClient();
+  const { count, error } = await db
+    .from("booking_travellers")
+    .select("id", { count: "exact", head: true })
+    .eq("booking_id", booking.id);
+  if (error) throw new Error(`Failed to count passengers: ${error.message}`);
+  if ((count ?? 0) > 0) return;
+  const rows = Array.from({ length: booking.travellers }, (_, i) => ({
+    booking_id: booking.id,
+    name: i === 0 ? booking.customerName : `Viajero ${i + 1}`,
+    position: i,
+  }));
+  const ins = await db.from("booking_travellers").insert(rows);
+  if (ins.error) throw new Error(`Failed to add passengers: ${ins.error.message}`);
+}
