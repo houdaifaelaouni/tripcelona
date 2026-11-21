@@ -681,12 +681,17 @@ export default async function TourEdit({
                             />
                           </div>
                           {isOwner && d.seats_taken > 0 && (
-                            <Link
-                              href={`/admin/salidas/${d.id}`}
-                              className="mt-2 inline-block text-sm font-semibold text-brand-secondary hover:underline"
-                            >
-                              Ver pasajeros
-                            </Link>
+                            <span className="mt-2 flex flex-wrap gap-x-4 text-sm font-semibold text-brand-secondary">
+                              <Link href={`/admin/salidas/${d.id}`} className="hover:underline">
+                                Ver pasajeros
+                              </Link>
+                              <a
+                                href={`/admin/exportar/pasajeros/${d.id}/pdf`}
+                                className="hover:underline"
+                              >
+                                Lista en PDF
+                              </a>
+                            </span>
                           )}
                         </div>
                       </div>
