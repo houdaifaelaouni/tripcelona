@@ -592,4 +592,57 @@ export const it: Dictionary = {
   "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
     "Le foto del sito provengono da Wikimedia Commons e il video della home da Mixkit, tutti con licenza libera. Grazie ai loro autori.",
   "Vídeo de portada": "Video della home",
+  "No encontramos billetes para esta reserva": "Non troviamo biglietti per questa prenotazione",
+  "Los billetes aparecen cuando el pago está confirmado.":
+    "I biglietti compaiono quando il pagamento è confermato.",
+  "Reserva {ref}": "Prenotazione {ref}",
+  "Datos de los viajeros": "Dati dei viaggiatori",
+  "Rellena los datos de cada viajero. Te daremos un billete con código QR por persona para enseñarlo al subir al autobús.":
+    "Compila i dati di ogni viaggiatore. Ognuno riceve un biglietto con codice QR da mostrare salendo sul pullman.",
+  "Guardado. Te hemos enviado los billetes a {email}.":
+    "Salvato. Ti abbiamo inviato i biglietti a {email}.",
+  "Tus billetes": "I tuoi biglietti",
+  "Enseña el código QR en el móvil o impreso al subir al autobús.":
+    "Mostra il codice QR sul telefono o stampato salendo sul pullman.",
+  "Descargar billetes (PDF)": "Scarica i biglietti (PDF)",
+  "Editar viajeros": "Modifica viaggiatori",
+  Billete: "Biglietto",
+  "Viajero {n}": "Viaggiatore {n}",
+  Viajero: "Viaggiatore",
+  Documento: "Documento",
+  "Código QR del billete": "Codice QR del biglietto",
+  "Tus billetes están listos": "I tuoi biglietti sono pronti",
+  "Último paso: tus billetes": "Ultimo passo: i tuoi biglietti",
+  "Descárgalos o enséñalos desde el móvil al subir al autobús.":
+    "Scaricali o mostrali dal telefono salendo sul pullman.",
+  "Rellena el nombre y el documento de cada viajero y te enviamos los billetes con código QR.":
+    "Inserisci nome e documento di ogni viaggiatore e ti inviamo i biglietti con codice QR.",
+  "Ver mis billetes": "Vedi i miei biglietti",
+  "Completar viajeros": "Completa i viaggiatori",
+  "Reservar plaza": "Prenota un posto",
+  "Billete con QR": "Biglietto con QR",
+  "Después de pagar recibes por email un billete por viajero.":
+    "Dopo il pagamento ricevi via email un biglietto per viaggiatore.",
+  "¿Dudas?": "Domande?",
+  "DNI, NIE o pasaporte": "DNI, NIE o passaporto",
+  "Usamos estos datos solo para la lista de pasajeros del autobús. Al guardar te enviamos los billetes por email.":
+    "Usiamo questi dati solo per la lista passeggeri del pullman. Salvando ti inviamo i biglietti via email.",
+  "Guardando…": "Salvataggio…",
+  "Guardar y recibir mis billetes": "Salva e ricevi i miei biglietti",
+  Cookies: "Cookie",
+  "Usamos cookies de medición y publicidad (Meta, TikTok, Google) para saber qué anuncios funcionan. Solo se activan si aceptas.":
+    "Usiamo cookie di misurazione e pubblicità (Meta, TikTok, Google) per capire quali annunci funzionano. Si attivano solo se accetti.",
+  "Más información": "Maggiori informazioni",
+  Aceptar: "Accetta",
+  Rechazar: "Rifiuta",
+  "Preferencias de cookies": "Preferenze cookie",
+  "Esta reserva no está pagada.": "Questa prenotazione non è pagata.",
+  "La excursión ya ha salido: los datos no se pueden cambiar.":
+    "L'escursione è già partita: i dati non si possono più modificare.",
+  "No hemos podido guardar los datos. Inténtalo de nuevo en un momento.":
+    "Non siamo riusciti a salvare i dati. Riprova tra un momento.",
+  "Escribe nombre y apellidos.": "Scrivi nome e cognome.",
+  "Máximo 80 caracteres.": "Massimo 80 caratteri.",
+  "DNI, NIE o pasaporte: solo letras y números.": "DNI, NIE o passaporto: solo lettere e numeri.",
+  "Teléfono no válido.": "Numero di telefono non valido.",
 };

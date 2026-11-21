@@ -27,6 +27,7 @@ export type BookingDetails = {
 export type CartBookingLine = {
   id: string;
   reference: string;
+  slug: string;
   title: string;
   startsAt: string;
   travellers: number;
@@ -68,7 +69,7 @@ export async function getBookingDetails(
     const { data: rows, error: cartError } = await createAdminClient()
       .from("bookings")
       .select(
-        "id, reference, travellers, total_cents, tour_departures!inner(starts_at, tours!inner(title, meeting_point))",
+        "id, reference, travellers, total_cents, tour_departures!inner(starts_at, tours!inner(slug, title, meeting_point))",
       )
       .eq("cart_id", data.cart_id)
       .order("created_at");
@@ -76,6 +77,7 @@ export async function getBookingDetails(
     const lines = (rows ?? []).map((r) => ({
       id: r.id,
       reference: r.reference,
+      slug: r.tour_departures.tours.slug,
       title: r.tour_departures.tours.title,
       startsAt: r.tour_departures.starts_at,
       travellers: r.travellers,

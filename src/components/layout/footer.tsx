@@ -1,3 +1,4 @@
+import { CookieSettingsButton } from "@/components/tracking/tracking";
 import { BADGES, PAYMENT_METHODS } from "@/lib/brand-assets";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import Image from "next/image";
@@ -156,6 +157,8 @@ export async function Footer({ locale }: { locale: Locale }) {
               <Link href="/creditos" className="hover:text-primary">
                 {t("Créditos de fotos y vídeo")}
               </Link>
+              {" · "}
+              <CookieSettingsButton />
             </p>
             {/* LSSI-CE art. 10: holder, tax ID and address, from Admin > Ajustes > Datos legales. */}
             {(site.legal.titular || site.legal.nif || site.legal.domicilio) && (

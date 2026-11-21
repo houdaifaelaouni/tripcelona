@@ -589,4 +589,57 @@ export const ca: Dictionary = {
   "Las fotos de la web vienen de Wikimedia Commons y el vídeo de portada de Mixkit, todos con licencia libre. Gracias a sus autores.":
     "Les fotos del web provenen de Wikimedia Commons i el vídeo de portada de Mixkit, totes amb llicència lliure. Gràcies als seus autors.",
   "Vídeo de portada": "Vídeo de portada",
+  "No encontramos billetes para esta reserva": "No trobem bitllets per a aquesta reserva",
+  "Los billetes aparecen cuando el pago está confirmado.":
+    "Els bitllets apareixen quan el pagament està confirmat.",
+  "Reserva {ref}": "Reserva {ref}",
+  "Datos de los viajeros": "Dades dels viatgers",
+  "Rellena los datos de cada viajero. Te daremos un billete con código QR por persona para enseñarlo al subir al autobús.":
+    "Omple les dades de cada viatger. Tothom tindrà un bitllet amb codi QR per ensenyar-lo en pujar a l'autocar.",
+  "Guardado. Te hemos enviado los billetes a {email}.":
+    "Desat. T'hem enviat els bitllets a {email}.",
+  "Tus billetes": "Els teus bitllets",
+  "Enseña el código QR en el móvil o impreso al subir al autobús.":
+    "Ensenya el codi QR al mòbil o imprès en pujar a l'autocar.",
+  "Descargar billetes (PDF)": "Descarregar bitllets (PDF)",
+  "Editar viajeros": "Editar viatgers",
+  Billete: "Bitllet",
+  "Viajero {n}": "Viatger {n}",
+  Viajero: "Viatger",
+  Documento: "Document",
+  "Código QR del billete": "Codi QR del bitllet",
+  "Tus billetes están listos": "Els teus bitllets estan a punt",
+  "Último paso: tus billetes": "Últim pas: els teus bitllets",
+  "Descárgalos o enséñalos desde el móvil al subir al autobús.":
+    "Descarrega'ls o ensenya'ls des del mòbil en pujar a l'autocar.",
+  "Rellena el nombre y el documento de cada viajero y te enviamos los billetes con código QR.":
+    "Omple el nom i el document de cada viatger i t'enviem els bitllets amb codi QR.",
+  "Ver mis billetes": "Veure els meus bitllets",
+  "Completar viajeros": "Completar viatgers",
+  "Reservar plaza": "Reservar plaça",
+  "Billete con QR": "Bitllet amb QR",
+  "Después de pagar recibes por email un billete por viajero.":
+    "Després de pagar reps per correu un bitllet per viatger.",
+  "¿Dudas?": "Dubtes?",
+  "DNI, NIE o pasaporte": "DNI, NIE o passaport",
+  "Usamos estos datos solo para la lista de pasajeros del autobús. Al guardar te enviamos los billetes por email.":
+    "Fem servir aquestes dades només per a la llista de passatgers de l'autocar. En desar t'enviem els bitllets per correu.",
+  "Guardando…": "Desant…",
+  "Guardar y recibir mis billetes": "Desar i rebre els meus bitllets",
+  Cookies: "Galetes",
+  "Usamos cookies de medición y publicidad (Meta, TikTok, Google) para saber qué anuncios funcionan. Solo se activan si aceptas.":
+    "Fem servir galetes de mesura i publicitat (Meta, TikTok, Google) per saber quins anuncis funcionen. Només s'activen si acceptes.",
+  "Más información": "Més informació",
+  Aceptar: "Acceptar",
+  Rechazar: "Rebutjar",
+  "Preferencias de cookies": "Preferències de galetes",
+  "Esta reserva no está pagada.": "Aquesta reserva no està pagada.",
+  "La excursión ya ha salido: los datos no se pueden cambiar.":
+    "L'excursió ja ha sortit: les dades ja no es poden canviar.",
+  "No hemos podido guardar los datos. Inténtalo de nuevo en un momento.":
+    "No hem pogut desar les dades. Torna-ho a provar d'aquí a un moment.",
+  "Escribe nombre y apellidos.": "Escriu nom i cognoms.",
+  "Máximo 80 caracteres.": "Màxim 80 caràcters.",
+  "DNI, NIE o pasaporte: solo letras y números.": "DNI, NIE o passaport: només lletres i números.",
+  "Teléfono no válido.": "Telèfon no vàlid.",
 };

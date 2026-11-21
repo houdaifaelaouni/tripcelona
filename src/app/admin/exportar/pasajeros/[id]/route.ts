@@ -11,7 +11,9 @@ export async function GET(_request: Request, ctx: RouteContext<"/admin/exportar/
   const db = await createClient();
   const { data, error } = await db
     .from("bookings")
-    .select("reference, customer_name, email, phone, travellers, pickup_note, notes")
+    .select(
+      "reference, customer_name, email, phone, travellers, pickup_note, notes, booking_travellers(position, name, document_id, ticket_code)",
+    )
     .eq("departure_id", id)
     .eq("status", "paid")
     .order("customer_name");
@@ -20,7 +22,16 @@ export async function GET(_request: Request, ctx: RouteContext<"/admin/exportar/
   return csvResponse(
     `pasajeros-${stamp()}.csv`,
     toCsv(
-      ["Referencia", "Cliente", "Email", "Teléfono", "Personas", "Punto de recogida", "Notas"],
+      [
+        "Referencia",
+        "Cliente",
+        "Email",
+        "Teléfono",
+        "Personas",
+        "Punto de recogida",
+        "Notas",
+        "Viajeros (documento, billete)",
+      ],
       (data ?? []).map((b) => [
         b.reference,
         b.customer_name,
@@ -29,6 +40,10 @@ export async function GET(_request: Request, ctx: RouteContext<"/admin/exportar/
         b.travellers,
         b.pickup_note,
         b.notes,
+        [...b.booking_travellers]
+          .sort((x, y) => x.position - y.position)
+          .map((t) => `${t.name} (${t.document_id ?? "-"}, ${t.ticket_code ?? "-"})`)
+          .join("; "),
       ]),
     ),
   );

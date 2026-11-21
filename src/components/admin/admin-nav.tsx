@@ -10,6 +10,8 @@ import {
   Activity,
   BarChartSquare02,
   BookOpen01,
+  Announcement02,
+  LayoutAlt01,
   Calendar,
   CreditCard01,
   File04,
@@ -55,6 +57,13 @@ const GROUPS: { label: string; items: Item[] }[] = [
       { href: "/admin/excursiones", label: "Excursiones", icon: Map01 },
       { href: "/admin/reservas", label: "Reservas", icon: Calendar, ownerOnly: true },
       { href: "/admin/solicitudes", label: "Solicitudes", icon: Inbox01, ownerOnly: true },
+    ],
+  },
+  {
+    label: "Marketing",
+    items: [
+      { href: "/admin/integraciones", label: "Integraciones", icon: Announcement02 },
+      { href: "/admin/landings", label: "Landings", icon: LayoutAlt01 },
     ],
   },
   {

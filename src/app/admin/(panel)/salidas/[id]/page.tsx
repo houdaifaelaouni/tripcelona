@@ -25,7 +25,9 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
   if (!departure) notFound();
   const { data: bookings } = await db
     .from("bookings")
-    .select("id, reference, status, customer_name, email, phone, travellers, pickup_note, notes")
+    .select(
+      "id, reference, status, customer_name, email, phone, travellers, pickup_note, notes, booking_travellers(id, position, name, document_id, ticket_code, checked_in_at)",
+    )
     .eq("departure_id", id)
     .in("status", ["paid", "pending"])
     .order("customer_name");
@@ -33,6 +35,13 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
   const paid = (bookings ?? []).filter((b) => b.status === "paid");
   const pending = (bookings ?? []).filter((b) => b.status === "pending");
   const pax = paid.reduce((n, b) => n + b.travellers, 0);
+  const travellers = paid.flatMap((b) =>
+    [...b.booking_travellers]
+      .sort((x, y) => x.position - y.position)
+      .map((t) => ({ ...t, reference: b.reference, bookingId: b.id })),
+  );
+  const boarded = travellers.filter((t) => t.checked_in_at).length;
+  const missing = paid.filter((b) => b.booking_travellers.length < b.travellers);
 
   return (
     <>
@@ -97,6 +106,64 @@ export default async function PassengerList({ params }: PageProps<"/admin/salida
           </EmptyState>
         )}
       </Panel>
+      <div className="mt-6">
+        <Panel
+          title={`Billetes y embarque (${boarded}/${pax} embarcados)`}
+          description={
+            missing.length
+              ? `${missing.length} ${missing.length === 1 ? "reserva no ha" : "reservas no han"} rellenado los viajeros: ${missing.map((b) => b.reference).join(", ")}.`
+              : "Todas las reservas tienen sus billetes. Escanea el QR con la cámara del móvil para marcar el embarque."
+          }
+        >
+          {travellers.length ? (
+            <Table>
+              <thead>
+                <tr>
+                  <th className={th}>Viajero</th>
+                  <th className={th}>Documento</th>
+                  <th className={th}>Billete</th>
+                  <th className={th}>Embarque</th>
+                  <th className={th}>Ref.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {travellers.map((t) => (
+                  <tr key={t.id}>
+                    <td className={td}>{t.name}</td>
+                    <td className={`${td} whitespace-nowrap`}>{t.document_id ?? "-"}</td>
+                    <td className={`${td} font-mono whitespace-nowrap`}>
+                      {t.ticket_code ? (
+                        <Link
+                          href={`/admin/billetes/${t.ticket_code}`}
+                          className="hover:text-brand-secondary"
+                        >
+                          {t.ticket_code}
+                        </Link>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                    <td className={td}>
+                      {t.checked_in_at
+                        ? new Date(t.checked_in_at).toLocaleTimeString("es-ES", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            timeZone: "Europe/Madrid",
+                          })
+                        : "☐"}
+                    </td>
+                    <td className={`${td} whitespace-nowrap`}>{t.reference}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <p className="px-4 pb-5 text-sm text-tertiary md:px-5">
+              Todavía nadie ha rellenado los datos de los viajeros.
+            </p>
+          )}
+        </Panel>
+      </div>
       {pending.length > 0 && (
         <p className="mt-4 text-sm text-tertiary print:hidden">
           Hay {pending.length} {pending.length === 1 ? "reserva pendiente" : "reservas pendientes"}{" "}

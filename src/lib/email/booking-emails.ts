@@ -9,9 +9,12 @@ import {
   ownerAlertEmail,
   paymentFailedEmail,
   paymentRequestEmail,
+  ticketsEmail,
   type EmailContent,
   type EmailKind,
 } from "./templates";
+import { ticketsPdf } from "@/lib/tickets/pdf";
+import { getTicketBundle } from "@/lib/tickets/queries";
 
 export type SendResult = "sent" | "skipped" | "failed" | "no_recipient";
 
@@ -44,13 +47,33 @@ export async function sendBookingEmail(
 
   const base = siteUrl();
   let content: EmailContent;
+  let attachments: { filename: string; content: string }[] | undefined;
   switch (kind) {
     case "confirmation":
       content = confirmationEmail(booking, {
         booking: `${base}/reservar/confirmada?id=${booking.id}`,
         calendar: `${base}/reservar/confirmada/calendario?id=${booking.id}`,
+        tickets: `${base}/reservar/billetes?id=${booking.id}`,
       });
       break;
+    case "tickets": {
+      const bundle = await getTicketBundle(booking.id);
+      if (!bundle?.complete) {
+        await db
+          .from("booking_emails")
+          .update({ status: "failed", error: "incomplete" })
+          .eq("id", claimed.id);
+        return "failed";
+      }
+      content = ticketsEmail(bundle, `${base}/reservar/billetes?id=${booking.id}`);
+      attachments = [
+        {
+          filename: `billetes-${booking.reference}.pdf`,
+          content: Buffer.from(await ticketsPdf(bundle)).toString("base64"),
+        },
+      ];
+      break;
+    }
     case "owner_alert":
       content = ownerAlertEmail(booking, options.note);
       break;
@@ -71,6 +94,7 @@ export async function sendBookingEmail(
       ...content,
       idempotencyKey: `${booking.id}:${kind}:${claimed.attempts}`,
       replyTo: kind === "owner_alert" ? booking.email : process.env.OWNER_EMAIL,
+      attachments,
     });
     await db
       .from("booking_emails")

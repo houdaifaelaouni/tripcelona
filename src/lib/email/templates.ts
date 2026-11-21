@@ -1,5 +1,7 @@
 import { site } from "@/lib/site";
 import { formatDateLong, formatPrice, formatTime } from "@/lib/tours/format";
+import { prettyCode } from "@/lib/tickets/codes";
+import type { TicketBundle } from "@/lib/tickets/queries";
 
 /**
  * Transactional email content (US-21). Pure functions so they can be tested.
@@ -21,7 +23,12 @@ export type EmailBooking = {
 
 export type EmailContent = { subject: string; html: string; text: string };
 export type EmailKind =
-  "confirmation" | "owner_alert" | "payment_failed" | "payment_request" | "cancellation";
+  | "confirmation"
+  | "owner_alert"
+  | "payment_failed"
+  | "payment_request"
+  | "cancellation"
+  | "tickets";
 
 export function esc(value: string): string {
   return value
@@ -73,7 +80,10 @@ function tripFacts(b: EmailBooking): [string, string][] {
   return facts;
 }
 
-export function confirmationEmail(b: EmailBooking, urls: { booking: string; calendar: string }) {
+export function confirmationEmail(
+  b: EmailBooking,
+  urls: { booking: string; calendar: string; tickets?: string },
+) {
   const facts = tripFacts(b);
   const meeting = b.tour.meetingPoint ?? site.meetingPoint;
   const packing = b.tour.packingList;
@@ -91,6 +101,14 @@ ${
         .join("")}</ul>`
     : ""
 }
+${
+  urls.tickets
+    ? `<div style="margin:24px 0 0;padding:16px;border-radius:10px;background:#e8f6fd">
+<p style="margin:0 0 6px;font-weight:bold">Último paso: tus billetes</p>
+<p style="margin:0 0 12px">Rellena el nombre y el documento de cada viajero y te enviamos los billetes con código QR para enseñar al subir al autobús.</p>
+<a href="${urls.tickets}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Completar viajeros</a></div>`
+    : ""
+}
 <p style="margin:24px 0 8px"><a href="${urls.booking}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mi reserva</a></p>
 <p style="margin:0"><a href="${urls.calendar}">Añadir al calendario</a></p>`,
   );
@@ -104,6 +122,7 @@ ${
     `Punto de encuentro: ${meeting}`,
     ...(packing.length ? [``, `Qué llevar:`, ...packing.map((p) => `- ${p}`)] : []),
     ``,
+    ...(urls.tickets ? [`Completa los viajeros y recibe tus billetes: ${urls.tickets}`, ``] : []),
     `Ver mi reserva: ${urls.booking}`,
     `Añadir al calendario: ${urls.calendar}`,
     ``,
@@ -202,4 +221,50 @@ ${rows(facts)}
     ),
     text: `Te hemos guardado las plazas.\n\nHola ${b.customerName}, para confirmar tu reserva solo falta el pago con tarjeta.\n\n${textRows(facts)}\n\nPagar la reserva: ${payUrl}`,
   };
+}
+
+/** The e-tickets, sent when the traveller form is saved (PDF attached). */
+export function ticketsEmail(bundle: TicketBundle, url: string): EmailContent {
+  const b = bundle.anchor;
+  const cap = (x: string) => x.charAt(0).toUpperCase() + x.slice(1);
+  const blocks = bundle.trips.map((trip) => {
+    const when = `${cap(formatDateLong(trip.startsAt))} · ${formatTime(trip.startsAt)}`;
+    const meeting = trip.meetingPoint ?? site.meetingPoint;
+    const list = trip.rows
+      .map(
+        (r) =>
+          `<tr><td style="padding:6px 0">${esc(r.name)}</td><td style="padding:6px 0;font-family:monospace;font-weight:bold;text-align:right">${esc(prettyCode(r.ticketCode ?? ""))}</td></tr>`,
+      )
+      .join("");
+    return {
+      html: `<h2 style="font-size:17px;margin:20px 0 4px">${esc(trip.title)}</h2>
+<p style="margin:0;color:#545e67">${esc(when)} · ${esc(meeting)}</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;margin:8px 0;border-top:1px solid #e5eaee">${list}</table>`,
+      text: [
+        trip.title,
+        `${when} · ${meeting}`,
+        ...trip.rows.map((r) => `- ${r.name}: ${prettyCode(r.ticketCode ?? "")}`),
+      ].join("\n"),
+    };
+  });
+  const html = layout(
+    `Tus billetes ${b.reference}`,
+    `<h1 style="font-size:22px;margin:0 0 8px">Tus billetes están listos</h1>
+<p>Hola ${esc(b.customerName)}, aquí tienes los billetes de tu reserva <strong>${esc(b.reference)}</strong>. Van adjuntos en PDF, uno por viajero, con su código QR.</p>
+${blocks.map((x) => x.html).join("")}
+<p style="margin:16px 0 0">El día de la excursión, enseña el QR en el móvil o impreso al subir al autobús.</p>
+<p style="margin:24px 0 8px"><a href="${url}" style="background:#003882;color:#ffffff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">Ver mis billetes</a></p>`,
+  );
+  const text = [
+    `Tus billetes están listos (${b.reference})`,
+    ``,
+    `Hola ${b.customerName}, van adjuntos en PDF, uno por viajero, con su código QR.`,
+    ``,
+    ...blocks.flatMap((x) => [x.text, ``]),
+    `Enseña el QR en el móvil o impreso al subir al autobús.`,
+    `Ver mis billetes: ${url}`,
+    ``,
+    `Dudas: ${site.phoneDisplay}`,
+  ].join("\n");
+  return { subject: `Tus billetes ${b.reference} · Tripcelona`, html, text };
 }

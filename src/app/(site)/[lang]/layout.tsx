@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { SiteBanner } from "@/components/layout/site-banner";
 import { SiteMotion } from "@/components/motion/site-motion";
+import { TrackingLoader } from "@/components/tracking/tracking-loader";
 import { isLocale, locales } from "@/lib/i18n/config";
 import { baseMetadata, RootDocument, rootViewport } from "../../root-shared";
 
@@ -37,6 +38,9 @@ export default async function SiteLayout({ children, params }: LayoutProps<"/[la
           {children}
         </main>
         <Footer locale={lang} />
+        <Suspense fallback={null}>
+          <TrackingLoader />
+        </Suspense>
       </LocaleProvider>
     </RootDocument>
   );

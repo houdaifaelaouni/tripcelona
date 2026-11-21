@@ -103,29 +103,47 @@ export type Database = {
         Row: {
           age_group: string | null;
           booking_id: string;
+          checked_in_at: string | null;
+          checked_in_by: string | null;
           created_at: string;
+          document_id: string | null;
           id: string;
           name: string;
           notes: string | null;
+          phone: string | null;
+          position: number;
+          ticket_code: string | null;
           updated_at: string;
         };
         ComputedFields: never;
         Insert: {
           age_group?: string | null;
           booking_id: string;
+          checked_in_at?: string | null;
+          checked_in_by?: string | null;
           created_at?: string;
+          document_id?: string | null;
           id?: string;
           name: string;
           notes?: string | null;
+          phone?: string | null;
+          position?: number;
+          ticket_code?: string | null;
           updated_at?: string;
         };
         Update: {
           age_group?: string | null;
           booking_id?: string;
+          checked_in_at?: string | null;
+          checked_in_by?: string | null;
           created_at?: string;
+          document_id?: string | null;
           id?: string;
           name?: string;
           notes?: string | null;
+          phone?: string | null;
+          position?: number;
+          ticket_code?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -140,6 +158,7 @@ export type Database = {
       };
       bookings: {
         Row: {
+          attribution: Json | null;
           cart_id: string | null;
           created_at: string;
           customer_name: string;
@@ -154,10 +173,12 @@ export type Database = {
           terms_accepted_at: string | null;
           total_cents: number;
           travellers: number;
+          travellers_completed_at: string | null;
           updated_at: string;
         };
         ComputedFields: never;
         Insert: {
+          attribution?: Json | null;
           cart_id?: string | null;
           created_at?: string;
           customer_name: string;
@@ -172,9 +193,11 @@ export type Database = {
           terms_accepted_at?: string | null;
           total_cents: number;
           travellers: number;
+          travellers_completed_at?: string | null;
           updated_at?: string;
         };
         Update: {
+          attribution?: Json | null;
           cart_id?: string | null;
           created_at?: string;
           customer_name?: string;
@@ -189,6 +212,7 @@ export type Database = {
           terms_accepted_at?: string | null;
           total_cents?: number;
           travellers?: number;
+          travellers_completed_at?: string | null;
           updated_at?: string;
         };
         Relationships: [
@@ -344,6 +368,51 @@ export type Database = {
           window_start?: string;
         };
         Relationships: [];
+      };
+      landing_pages: {
+        Row: {
+          brief: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          slug: string;
+          status: Database["public"]["Enums"]["content_status"];
+          title: string;
+          tour_id: string | null;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          brief?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          slug: string;
+          status?: Database["public"]["Enums"]["content_status"];
+          title: string;
+          tour_id?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          brief?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          slug?: string;
+          status?: Database["public"]["Enums"]["content_status"];
+          title?: string;
+          tour_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "landing_pages_tour_id_fkey";
+            columns: ["tour_id"];
+            isOneToOne: false;
+            referencedRelation: "tours";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       leads: {
         Row: {
