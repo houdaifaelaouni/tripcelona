@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { PassengerForm } from "@/components/booking/passenger-form";
+import { SendTicketForm } from "@/components/booking/send-ticket-form";
 import { TicketCard } from "@/components/booking/ticket-card";
 import { ButtonLink, buttonClasses } from "@/components/ui/button";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
@@ -49,12 +50,12 @@ async function Ticket({
   const bundle = await getTicketBundle(booking);
   const editing = one(query.editar) === "1";
 
-  // No passengers yet (or editing): the form comes first.
-  if (!bundle.completedAt || editing) {
+  // The ticket exists from payment on; naming the travellers is optional.
+  if (editing) {
     return (
       <>
         <h1 className="text-3xl leading-[1.15] font-semibold tracking-[-0.03em] text-primary md:text-[2.5rem]">
-          {editing ? t("Editar pasajeros") : t("Datos de los pasajeros")}
+          {bundle.completedAt ? t("Editar pasajeros") : t("Datos de los pasajeros")}
         </h1>
         <p className="mt-2 mb-6 text-tertiary">
           {t("Escribe el nombre de cada viajero. Te enviaremos el ticket a {email}.", {
@@ -64,7 +65,7 @@ async function Ticket({
         <PassengerForm
           bookingId={booking.id}
           customerName={booking.customerName}
-          editing={editing}
+          editing={Boolean(bundle.completedAt)}
           lines={bundle.lines.map((l) => ({
             bookingId: l.bookingId,
             title: l.title,
@@ -100,6 +101,7 @@ async function Ticket({
             line={line}
             locale={locale}
             index={i}
+            customerName={booking.customerName}
             count={bundle.lines.length}
           />
         ))}
@@ -118,7 +120,7 @@ async function Ticket({
           variant="secondary"
           size="lg"
         >
-          {t("Editar pasajeros")}
+          {bundle.completedAt ? t("Editar pasajeros") : t("Añadir nombres de los pasajeros")}
         </ButtonLink>
         <ButtonLink
           href={`/reservar/confirmada/calendario?id=${booking.id}`}
@@ -128,6 +130,7 @@ async function Ticket({
           {t("Añadir al calendario")}
         </ButtonLink>
       </div>
+      <SendTicketForm bookingId={booking.id} />
     </>
   );
 }

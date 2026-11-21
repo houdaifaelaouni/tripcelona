@@ -686,4 +686,13 @@ export const fr: Dictionary = {
   "Ticket por email": "Billet par e-mail",
   "Después de pagar recibes el ticket con código QR por email.":
     "Après le paiement, vous recevez le billet avec code QR par e-mail.",
+  "Ver mi ticket": "Voir mon billet",
+  "Añadir el nombre de cada viajero al ticket (opcional)":
+    "Ajouter le nom de chaque voyageur au billet (facultatif)",
+  "Añadir nombres de los pasajeros": "Ajouter les noms des passagers",
+  "Enviar el ticket a un email": "Envoyer le billet à un e-mail",
+  Enviar: "Envoyer",
+  "¡Enviado! Revisa tu bandeja de entrada.": "Envoyé ! Vérifiez votre boîte de réception.",
+  "Demasiados envíos. Inténtalo más tarde.": "Trop d'envois. Réessayez plus tard.",
+  "No hemos podido enviar el email.": "Nous n'avons pas pu envoyer l'e-mail.",
 };

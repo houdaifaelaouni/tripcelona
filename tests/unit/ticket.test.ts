@@ -74,9 +74,9 @@ describe("ticket emails", () => {
 
   it("confirmation asks for passengers when a link is given", () => {
     const urls = { booking: "https://x/b", calendar: "https://x/c" };
-    expect(confirmationEmail(booking, urls).html).not.toContain("Completar pasajeros");
-    expect(
-      confirmationEmail(booking, { ...urls, passengers: "https://x/b#pasajeros" }).html,
-    ).toContain("Completar pasajeros");
+    expect(confirmationEmail(booking, urls).html).not.toContain("va adjunto");
+    expect(confirmationEmail(booking, { ...urls, ticketPdf: "https://x/p" }).html).toContain(
+      "va adjunto",
+    );
   });
 });

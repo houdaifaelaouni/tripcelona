@@ -667,4 +667,13 @@ export const en: Dictionary = {
   "Ticket por email": "Ticket by email",
   "Después de pagar recibes el ticket con código QR por email.":
     "After paying you get the ticket with a QR code by email.",
+  "Ver mi ticket": "View my ticket",
+  "Añadir el nombre de cada viajero al ticket (opcional)":
+    "Add each traveller's name to the ticket (optional)",
+  "Añadir nombres de los pasajeros": "Add passenger names",
+  "Enviar el ticket a un email": "Send the ticket to an email",
+  Enviar: "Send",
+  "¡Enviado! Revisa tu bandeja de entrada.": "Sent! Check your inbox.",
+  "Demasiados envíos. Inténtalo más tarde.": "Too many sends. Try again later.",
+  "No hemos podido enviar el email.": "We could not send the email.",
 };

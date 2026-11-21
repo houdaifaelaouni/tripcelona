@@ -1,5 +1,6 @@
 import { TicketMotion } from "@/components/home/ticket-motion";
 import type { TicketLine } from "@/lib/booking/passengers";
+import { shownPassengers } from "@/lib/tickets/display";
 import type { Locale } from "@/lib/i18n/config";
 import { createT } from "@/lib/i18n/translate";
 import { site } from "@/lib/site";
@@ -18,7 +19,9 @@ export function TicketCard({
   locale,
   index,
   count,
+  customerName,
 }: {
+  customerName: string;
   line: TicketLine;
   locale: Locale;
   index: number;
@@ -82,7 +85,7 @@ export function TicketCard({
               {t("Pasajeros")}
             </p>
             <ol className="mt-1 list-decimal space-y-0.5 pl-5">
-              {line.passengers.map((p, i) => (
+              {shownPassengers(line, customerName).map((p, i) => (
                 <li key={i}>
                   <span className="font-medium">{p.name}</span>
                   {p.documentId && <span className="text-sm text-tertiary"> · {p.documentId}</span>}

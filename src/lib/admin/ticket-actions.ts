@@ -2,6 +2,7 @@
 
 import { audit } from "@/lib/auth/audit";
 import { assertStaff } from "@/lib/auth/staff";
+import { ensureTravellerRows } from "@/lib/booking/passengers";
 import { isReference } from "@/lib/tickets/codes";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { backWith } from "./redirect";
@@ -25,10 +26,17 @@ export async function setCheckin(form: FormData) {
   const db = createAdminClient();
   const { data: booking } = await db
     .from("bookings")
-    .select("id")
+    .select("id, travellers, customer_name")
     .eq("reference", ref)
     .maybeSingle();
   if (!booking) backWith(back, { error: "Reserva no encontrada." });
+  // Tickets work before the customer names anyone: board the default seats.
+  if (all && !undo)
+    await ensureTravellerRows({
+      id: booking.id,
+      travellers: booking.travellers,
+      customerName: booking.customer_name,
+    });
   let q = db
     .from("booking_travellers")
     .update(

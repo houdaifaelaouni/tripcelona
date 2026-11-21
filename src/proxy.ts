@@ -6,7 +6,7 @@ import { slugExists } from "@/lib/seo/slug-registry";
 import { defaultLocale, splitLocale } from "@/lib/i18n/config";
 
 /** Routes that live outside the [lang] tree and are never language-prefixed. */
-const UNLOCALIZED = /^\/(robots\.txt|sitemap\.xml|wp-content\/)/;
+const UNLOCALIZED = /^\/(robots\.txt|sitemap\.xml|wp-content\/|conductor\/)/;
 
 export async function proxy(request: NextRequest) {
   const rawPath = request.nextUrl.pathname;

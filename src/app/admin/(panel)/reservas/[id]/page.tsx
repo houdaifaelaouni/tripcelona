@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Flash } from "@/components/admin/flash";
+import { TicketRefLink, WhatsappTicketLink } from "@/components/admin/ticket-links";
 import { BookingStatus, PageTitle, Panel, Table, td, th } from "@/components/admin/ui";
 import { Button } from "@/components/admin/button";
 import { Checkbox, Select } from "@/components/admin/fields";
@@ -30,6 +31,7 @@ const EMAIL_LABELS: Record<string, string> = {
   payment_failed: "Pago fallido",
   payment_request: "Enlace de pago",
   cancellation: "Cancelación",
+  ticket: "Ticket",
 };
 
 export default async function BookingDetail({
@@ -73,9 +75,21 @@ export default async function BookingDetail({
     <>
       <PageTitle
         back={{ href: "/admin/reservas", label: "Reservas" }}
-        actions={<BookingStatus status={b.status} />}
+        actions={
+          <div className="flex items-center gap-2">
+            <BookingStatus status={b.status} />
+            <a
+              href={`/admin/exportar/ticket/${b.id}`}
+              target="_blank"
+              rel="noopener"
+              className="rounded-lg bg-brand-solid px-3 py-2 text-sm font-semibold text-white hover:bg-brand-solid_hover"
+            >
+              Ticket PDF
+            </a>
+          </div>
+        }
       >
-        Reserva {b.reference}
+        Reserva <TicketRefLink id={b.id} reference={b.reference} />
       </PageTitle>
       <Flash ok={ok} error={error} />
       <div className="grid gap-x-6 lg:grid-cols-2">
@@ -90,7 +104,18 @@ export default async function BookingDetail({
               </a>
             </dd>
             <dt className="text-tertiary">Teléfono</dt>
-            <dd>{b.phone ?? "—"}</dd>
+            <dd>
+              <WhatsappTicketLink
+                phone={b.phone}
+                booking={{
+                  id: b.id,
+                  reference: b.reference,
+                  customerName: b.customer_name,
+                  title: dep.tours.title,
+                  startsAt: dep.starts_at,
+                }}
+              />
+            </dd>
             <dt className="text-tertiary">Comentarios</dt>
             <dd className="whitespace-pre-line">{b.pickup_note || "—"}</dd>
             {b.notes && (

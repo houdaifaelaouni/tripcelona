@@ -672,4 +672,13 @@ export const ca: Dictionary = {
   "Ticket por email": "Tiquet per correu",
   "Después de pagar recibes el ticket con código QR por email.":
     "Després de pagar reps el tiquet amb codi QR per correu.",
+  "Ver mi ticket": "Veure el meu tiquet",
+  "Añadir el nombre de cada viajero al ticket (opcional)":
+    "Afegir el nom de cada viatger al tiquet (opcional)",
+  "Añadir nombres de los pasajeros": "Afegir els noms dels passatgers",
+  "Enviar el ticket a un email": "Enviar el tiquet a un correu",
+  Enviar: "Enviar",
+  "¡Enviado! Revisa tu bandeja de entrada.": "Enviat! Revisa la safata d'entrada.",
+  "Demasiados envíos. Inténtalo más tarde.": "Massa enviaments. Torna-ho a provar més tard.",
+  "No hemos podido enviar el email.": "No hem pogut enviar el correu.",
 };

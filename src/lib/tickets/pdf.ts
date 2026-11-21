@@ -4,6 +4,7 @@ import path from "node:path";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import QRCode from "qrcode";
 import type { TicketBundle, TicketLine } from "@/lib/booking/passengers";
+import { shownPassengers } from "./display";
 import { site } from "@/lib/site";
 import { siteUrl } from "@/lib/seo/site-url";
 import { checkinUrl } from "./codes";
@@ -122,12 +123,7 @@ async function drawTicket(
   const page = doc.addPage([W, H]);
   page.drawRectangle({ x: 0, y: 0, width: W, height: H, color: PAGE_BG });
 
-  const passengers = line.passengers.length
-    ? line.passengers
-    : Array.from({ length: line.travellers }, (_, i) => ({
-        name: i === 0 ? bundle.booking.customerName : `Viajero ${i + 1}`,
-        documentId: null,
-      }));
+  const passengers = shownPassengers(line, bundle.booking.customerName);
   const twoCols = passengers.length > 8;
   const paxRows = twoCols ? Math.ceil(passengers.length / 2) : passengers.length;
 
