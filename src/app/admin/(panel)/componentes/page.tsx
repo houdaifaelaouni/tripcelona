@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/field";
 import { IconButton } from "@/components/ui/icon-button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
-import { Spinner } from "@/components/ui/spinner";
+import { Spinner, SpinnerInlineWithText } from "@/components/ui/spinner";
 
 export const metadata: Metadata = { title: "Componentes" };
 
@@ -67,6 +67,7 @@ export default function ComponentsPage() {
             <Heart size={14} aria-hidden />
           </IconButton>
           <Spinner />
+          <SpinnerInlineWithText />
         </div>
       </Panel>
 
