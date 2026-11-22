@@ -2,19 +2,10 @@ import type { Metadata } from "next";
 import { BarChart3, Megaphone, MousePointerClick, Target } from "lucide-react";
 import { Button } from "@/components/admin/button";
 import { Checkbox, Input } from "@/components/admin/fields";
+import { ConnectCard } from "@/components/admin/connect-card";
 import { Flash } from "@/components/admin/flash";
 import { PasswordInput } from "@/components/admin/password-input";
-import { SettingsRow } from "@/components/admin/settings";
-import {
-  PageTitle,
-  Panel,
-  StatCard,
-  StatGrid,
-  StatusBadge,
-  Table,
-  td,
-  th,
-} from "@/components/admin/ui";
+import { PageTitle, Panel, StatCard, StatGrid, Table, td, th } from "@/components/admin/ui";
 import { UtmBuilder } from "@/components/admin/utm-builder";
 import { saveIntegrations } from "@/lib/admin/integration-actions";
 import { requireStaff } from "@/lib/auth/staff";
@@ -112,13 +103,6 @@ export default async function Integrations({ searchParams }: PageProps<"/admin/i
     ...(landings ?? []).map((l) => ({ label: `Landing: ${l.title}`, url: `${base}/l/${l.slug}` })),
   ];
 
-  const on = (v: boolean) =>
-    v ? (
-      <StatusBadge tone="success">Activo</StatusBadge>
-    ) : (
-      <StatusBadge tone="neutral">Sin configurar</StatusBadge>
-    );
-
   return (
     <>
       <PageTitle description="Píxeles de Meta, TikTok y Google, la API de conversiones y las ventas por campaña. Los píxeles solo se cargan a los visitantes que aceptan las cookies.">
@@ -157,17 +141,28 @@ export default async function Integrations({ searchParams }: PageProps<"/admin/i
         />
       </StatGrid>
 
-      <div className="mt-6">
-        <Panel
-          title="Píxeles y API de conversiones"
-          description="Pega los IDs y tokens de cada plataforma. Los tokens se guardan cifrados y no se vuelven a mostrar: deja el campo vacío para no cambiarlo."
-        >
-          <form action={saveIntegrations} autoComplete="off" className="px-4 pb-5 md:px-5">
-            <SettingsRow
-              label="Meta (Facebook e Instagram)"
-              description="Administrador de eventos > Orígenes de datos > tu píxel. El token se genera en Configuración > API de conversiones."
-            >
-              <div className="flex items-center gap-2">{on(!!config.metaPixelId)}</div>
+      <form action={saveIntegrations} autoComplete="off" className="mt-6">
+        <div className="mb-4">
+          <h2 className="text-md font-semibold tracking-tight text-primary">
+            Conectar plataformas
+          </h2>
+          <p className="mt-0.5 text-sm text-tertiary">
+            Pega los IDs y tokens de cada plataforma. Los tokens se guardan cifrados y no se vuelven
+            a mostrar: deja el campo vacío para no cambiarlo.
+          </p>
+        </div>
+        <div className="grid gap-6 xl:grid-cols-3">
+          <ConnectCard
+            mark="Meta"
+            name="Meta (Facebook e Instagram)"
+            active={!!config.metaPixelId}
+            events={[
+              ["ViewContent", "Ficha de una excursión"],
+              ["AddToCart · InitiateCheckout", "Carrito y pago"],
+              ["Purchase", "Pago confirmado, también desde el servidor"],
+            ]}
+            help="Administrador de eventos > Orígenes de datos > tu píxel. El token se genera en Configuración > API de conversiones."
+            id={
               <Input
                 label="ID del píxel"
                 name="metaPixelId"
@@ -175,95 +170,111 @@ export default async function Integrations({ searchParams }: PageProps<"/admin/i
                 inputMode="numeric"
                 placeholder="123456789012345"
               />
-              <PasswordInput
-                label="Token de la API de conversiones"
-                name="META_CAPI_TOKEN"
-                autoComplete="off"
-                placeholder={tokenHint("META_CAPI_TOKEN")}
-              />
-              <Input
-                label="Código de evento de prueba (opcional)"
-                name="META_TEST_EVENT_CODE"
-                autoComplete="off"
-                placeholder={
-                  saved.META_TEST_EVENT_CODE
-                    ? "Guardado: los eventos de servidor van a «Probar eventos»"
-                    : "TEST12345"
-                }
-                hint="Mientras esté puesto, las compras del servidor salen en «Probar eventos» y no cuentan. Quítalo al terminar de probar."
-              />
-              <div className="flex flex-wrap gap-x-6">
-                <Checkbox label="Quitar el token guardado" name="clear_META_CAPI_TOKEN" />
-                <Checkbox label="Quitar el código de prueba" name="clear_META_TEST_EVENT_CODE" />
-              </div>
-            </SettingsRow>
-            <SettingsRow
-              label="TikTok"
-              description="TikTok Ads Manager > Herramientas > Eventos > Web > tu píxel. El token está en Configuración > Events API."
-            >
-              <div className="flex items-center gap-2">{on(!!config.tiktokPixelId)}</div>
+            }
+          >
+            <PasswordInput
+              label="Token de la API de conversiones"
+              name="META_CAPI_TOKEN"
+              autoComplete="off"
+              placeholder={tokenHint("META_CAPI_TOKEN")}
+            />
+            <Input
+              label="Código de evento de prueba (opcional)"
+              name="META_TEST_EVENT_CODE"
+              autoComplete="off"
+              placeholder={
+                saved.META_TEST_EVENT_CODE
+                  ? "Guardado: los eventos de servidor van a «Probar eventos»"
+                  : "TEST12345"
+              }
+              hint="Mientras esté puesto, las compras del servidor salen en «Probar eventos» y no cuentan. Quítalo al terminar de probar."
+            />
+            <Checkbox label="Quitar el token guardado" name="clear_META_CAPI_TOKEN" />
+            <Checkbox label="Quitar el código de prueba" name="clear_META_TEST_EVENT_CODE" />
+          </ConnectCard>
+
+          <ConnectCard
+            mark="TT"
+            name="TikTok"
+            active={!!config.tiktokPixelId}
+            events={[
+              ["ViewContent", "Ficha de una excursión"],
+              ["AddToCart · InitiateCheckout", "Carrito y pago"],
+              ["CompletePayment", "Pago confirmado, también desde el servidor"],
+            ]}
+            help="TikTok Ads Manager > Herramientas > Eventos > Web > tu píxel. El token está en Configuración > Events API."
+            id={
               <Input
                 label="ID del píxel"
                 name="tiktokPixelId"
                 defaultValue={config.tiktokPixelId ?? ""}
                 placeholder="C1A2B3C4D5E6F7G8H9I0"
               />
-              <PasswordInput
-                label="Token de la Events API"
-                name="TIKTOK_EVENTS_TOKEN"
-                autoComplete="off"
-                placeholder={tokenHint("TIKTOK_EVENTS_TOKEN")}
-              />
-              <Input
-                label="Código de evento de prueba (opcional)"
-                name="TIKTOK_TEST_EVENT_CODE"
-                autoComplete="off"
-                placeholder={saved.TIKTOK_TEST_EVENT_CODE ? "Guardado" : "TEST12345"}
-              />
-              <div className="flex flex-wrap gap-x-6">
-                <Checkbox label="Quitar el token guardado" name="clear_TIKTOK_EVENTS_TOKEN" />
-                <Checkbox label="Quitar el código de prueba" name="clear_TIKTOK_TEST_EVENT_CODE" />
-              </div>
-            </SettingsRow>
-            <SettingsRow
-              label="Google"
-              description="Usa GTM si quieres montar tú las etiquetas, o pon directamente GA4 y Google Ads. Con los dos a la vez, no repitas las mismas etiquetas dentro de GTM."
-            >
-              <div className="flex items-center gap-2">
-                {on(!!(config.gtmId || config.ga4Id || config.googleAdsId))}
-              </div>
+            }
+          >
+            <PasswordInput
+              label="Token de la Events API"
+              name="TIKTOK_EVENTS_TOKEN"
+              autoComplete="off"
+              placeholder={tokenHint("TIKTOK_EVENTS_TOKEN")}
+            />
+            <Input
+              label="Código de evento de prueba (opcional)"
+              name="TIKTOK_TEST_EVENT_CODE"
+              autoComplete="off"
+              placeholder={saved.TIKTOK_TEST_EVENT_CODE ? "Guardado" : "TEST12345"}
+            />
+            <Checkbox label="Quitar el token guardado" name="clear_TIKTOK_EVENTS_TOKEN" />
+            <Checkbox label="Quitar el código de prueba" name="clear_TIKTOK_TEST_EVENT_CODE" />
+          </ConnectCard>
+
+          <ConnectCard
+            mark="G"
+            name="Google"
+            active={!!(config.gtmId || config.ga4Id || config.googleAdsId)}
+            events={[
+              ["view_item", "Ficha de una excursión"],
+              ["add_to_cart · begin_checkout", "Carrito y pago"],
+              ["purchase", "Pago confirmado y conversión de Ads"],
+            ]}
+            help="Usa GTM si quieres montar tú las etiquetas, o pon directamente GA4 y Google Ads. Con los dos a la vez, no repitas las mismas etiquetas dentro de GTM."
+            id={
               <Input
                 label="Google Tag Manager"
                 name="gtmId"
                 defaultValue={config.gtmId ?? ""}
                 placeholder="GTM-XXXXXXX"
               />
-              <Input
-                label="Google Analytics 4 (ID de medición)"
-                name="ga4Id"
-                defaultValue={config.ga4Id ?? ""}
-                placeholder="G-XXXXXXXXXX"
-              />
-              <Input
-                label="Google Ads (ID de conversión)"
-                name="googleAdsId"
-                defaultValue={config.googleAdsId ?? ""}
-                placeholder="AW-123456789"
-              />
-              <Input
-                label="Etiqueta de la conversión «Compra»"
-                name="googleAdsPurchaseLabel"
-                defaultValue={config.googleAdsPurchaseLabel ?? ""}
-                placeholder="AbC-D_efG-h12_34-567"
-                hint="Google Ads > Objetivos > Conversiones > tu acción de compra > Configuración de etiqueta."
-              />
-            </SettingsRow>
-            <div className="mt-5 flex justify-end">
-              <Button type="submit">Guardar integraciones</Button>
-            </div>
-          </form>
-        </Panel>
-      </div>
+            }
+          >
+            <Input
+              label="Google Analytics 4 (ID de medición)"
+              name="ga4Id"
+              defaultValue={config.ga4Id ?? ""}
+              placeholder="G-XXXXXXXXXX"
+            />
+            <Input
+              label="Google Ads (ID de conversión)"
+              name="googleAdsId"
+              defaultValue={config.googleAdsId ?? ""}
+              placeholder="AW-123456789"
+            />
+            <Input
+              label="Etiqueta de la conversión «Compra»"
+              name="googleAdsPurchaseLabel"
+              defaultValue={config.googleAdsPurchaseLabel ?? ""}
+              placeholder="AbC-D_efG-h12_34-567"
+              hint="Google Ads > Objetivos > Conversiones > tu acción de compra > Configuración de etiqueta."
+            />
+          </ConnectCard>
+        </div>
+        <div className="mt-6 flex flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:justify-end sm:gap-4">
+          <p className="text-xs text-tertiary">
+            Se guarda todo junto. Los píxeles solo se cargan con cookies aceptadas.
+          </p>
+          <Button type="submit">Guardar integraciones</Button>
+        </div>
+      </form>
 
       <div className="mt-6">
         <Panel
