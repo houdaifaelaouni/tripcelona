@@ -16,14 +16,8 @@ export async function appSecret(name: Name): Promise<string | null> {
   if (hit && Date.now() - hit.at < TTL) return hit.value;
   let value: string | null = null;
   try {
-    const { data, error } = await createAdminClient().rpc(
-      "app_secret" as never,
-      {
-        p_name: name,
-      } as never,
-    );
-    const v = data as unknown;
-    if (!error && typeof v === "string" && v.trim()) value = v.trim();
+    const { data, error } = await createAdminClient().rpc("app_secret", { p_name: name });
+    if (!error && typeof data === "string" && data.trim()) value = data.trim();
   } catch {
     value = null;
   }
