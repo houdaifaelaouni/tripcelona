@@ -28,6 +28,7 @@ const MESSAGES: Record<string, string> = {
   checkin_deshecho: "Embarque deshecho.",
   integraciones: "Integraciones guardadas. Los píxeles se activan en la web en un minuto.",
   landing_creada: "Landing creada como borrador. Ya se puede diseñar.",
+  avisos: "Avisos guardados.",
 };
 
 /**

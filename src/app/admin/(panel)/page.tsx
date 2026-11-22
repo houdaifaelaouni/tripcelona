@@ -20,6 +20,8 @@ import { ButtonLink } from "@/components/admin/button";
 import { DeparturesCalendar, type CalendarDeparture } from "@/components/admin/departures-calendar";
 import { TourPerformance, type TourPerf } from "@/components/admin/tour-performance";
 import { requireStaff } from "@/lib/auth/staff";
+import { firingRules, loadAlertData, loadAlertRules } from "@/lib/ops/alert-data";
+import { ruleSentence, type AlertEvaluation, type AlertRule } from "@/lib/ops/alert-rules";
 import { assessHealth, loadHealthInput, type HealthReport } from "@/lib/ops/health";
 import { pendingMigrations } from "@/lib/ops/schema-check";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -117,6 +119,16 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
           .then(assessHealth)
           .catch(() => null)
       : undefined;
+
+  // Owner only: the "Avisos" rules that match something right now.
+  const alerts =
+    staff.role === "owner"
+      ? await (async () => {
+          const admin = createAdminClient();
+          const [rules, data] = await Promise.all([loadAlertRules(admin), loadAlertData(admin)]);
+          return firingRules(rules, data);
+        })().catch(() => [])
+      : [];
 
   // Owner only: SQL files the code expects but nobody has run in Supabase yet.
   const pendingSql =
@@ -230,6 +242,7 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
           )}
         </Panel>
       </div>
+      {alerts.length > 0 && <AlertsPanel alerts={alerts} />}
       {health !== undefined && <HealthPanel report={health} />}
       <DeparturesCalendar
         departures={calendar.departures}
@@ -392,6 +405,45 @@ const STATUS_TEXT: Record<
 };
 
 /** Last 24 h at a glance (US-41). Same checks as `pnpm ops health`. */
+function AlertsPanel({ alerts }: { alerts: { rule: AlertRule; ev: AlertEvaluation }[] }) {
+  const total = alerts.reduce((n, a) => n + a.ev.hits.length, 0);
+  return (
+    <Panel
+      title="Avisos activos"
+      badge={<StatusBadge tone="accent">{total}</StatusBadge>}
+      description="Lo que coincide ahora mismo con tus avisos."
+      actions={
+        <ButtonLink href="/admin/avisos" variant="secondary" size="sm">
+          Cambiar avisos
+        </ButtonLink>
+      }
+    >
+      <ul className="space-y-5">
+        {alerts.map(({ rule, ev }) => (
+          <li key={rule.id}>
+            <p className="text-sm font-medium text-secondary">{ruleSentence(rule)}</p>
+            <ul className="mt-2 divide-y divide-secondary rounded-lg ring-1 ring-secondary">
+              {ev.hits.slice(0, 5).map((h) => (
+                <li key={h.key}>
+                  <Link
+                    href={h.href}
+                    className="block px-3 py-2.5 text-sm text-tertiary outline-focus-ring hover:bg-primary_hover focus-visible:outline-2"
+                  >
+                    {h.text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            {ev.hits.length > 5 && (
+              <p className="mt-1.5 text-xs text-tertiary">Y {ev.hits.length - 5} más.</p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Panel>
+  );
+}
+
 function HealthPanel({ report }: { report: HealthReport | null }) {
   if (!report) {
     return (

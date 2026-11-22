@@ -1,4 +1,5 @@
 import "server-only";
+import { emailConfig } from "./config";
 
 export type OutgoingEmail = {
   to: string;
@@ -12,19 +13,20 @@ export type OutgoingEmail = {
 };
 
 /**
- * Sends through the Resend HTTP API. Without RESEND_API_KEY (local dev,
+ * Sends through the Resend HTTP API. The key and sender come from Vercel
+ * variables or Supabase Vault (see ./config). Without them (local dev,
  * previews) the email is logged instead, so flows can be tested end to end.
  */
 export async function sendEmail(email: OutgoingEmail): Promise<{ id: string }> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM;
-  if (!apiKey || !from) {
+  const config = await emailConfig();
+  if (!config) {
     const files = email.attachments?.map((a) => a.filename).join(", ");
     console.info(
       `[email:dev] to=${email.to} subject="${email.subject}"${files ? ` attachments=${files}` : ""}`,
     );
     return { id: `dev-${email.idempotencyKey}` };
   }
+  const { apiKey, from } = config;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
