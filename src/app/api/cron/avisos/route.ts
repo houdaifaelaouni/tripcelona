@@ -7,8 +7,6 @@ import { ruleSentence } from "@/lib/ops/alert-rules";
 import { siteUrl } from "@/lib/seo/site-url";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export const dynamic = "force-dynamic";
-
 /**
  * Daily run (pg_cron job "avisos-daily", see migration 20261122000100):
  * emails the owner the "Avisos" rules set to "avisarme por email" that match
