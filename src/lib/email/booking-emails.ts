@@ -1,3 +1,4 @@
+import { ownerEmail } from "@/lib/email/config";
 import "server-only";
 import { getBookingDetails, type BookingDetails } from "@/lib/booking/details";
 import { shownPassengers } from "@/lib/tickets/display";
@@ -67,7 +68,7 @@ export async function sendBookingEmail(
   const booking = await getBookingDetails({ id: bookingId });
   if (!booking) throw new Error(`Booking ${bookingId} not found`);
 
-  const to = kind === "owner_alert" ? process.env.OWNER_EMAIL : booking.email;
+  const to = kind === "owner_alert" ? await ownerEmail() : booking.email;
   if (!to) return "no_recipient";
 
   const db = createAdminClient();
@@ -115,7 +116,7 @@ export async function sendBookingEmail(
       ...content,
       attachments,
       idempotencyKey: `${booking.id}:${kind}:${claimed.attempts}`,
-      replyTo: kind === "owner_alert" ? booking.email : process.env.OWNER_EMAIL,
+      replyTo: kind === "owner_alert" ? booking.email : await ownerEmail(),
     });
     await db
       .from("booking_emails")

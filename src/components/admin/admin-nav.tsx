@@ -101,6 +101,7 @@ const NAV: Section[] = [
       { href: "/admin/pagos", label: "Pagos", ownerOnly: true },
       { href: "/admin/actividad", label: "Actividad", ownerOnly: true },
       { href: "/admin/redirecciones", label: "Redirecciones", ownerOnly: true },
+      { href: "/admin/avisos", label: "Avisos", ownerOnly: true },
     ],
   },
   {

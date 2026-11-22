@@ -1,5 +1,6 @@
 "use server";
 
+import { ownerEmail } from "@/lib/email/config";
 import { randomUUID } from "node:crypto";
 import {
   contactAutoReply,
@@ -103,12 +104,12 @@ export async function submitContact(_prev: FormState, form: FormData): Promise<F
   }
 
   await notify("leads", id, [
-    { key: "owner", to: process.env.OWNER_EMAIL, content: contactOwnerAlert(c), replyTo: c.email },
+    { key: "owner", to: await ownerEmail(), content: contactOwnerAlert(c), replyTo: c.email },
     {
       key: "autoreply",
       to: c.email,
       content: contactAutoReply(c),
-      replyTo: process.env.OWNER_EMAIL,
+      replyTo: await ownerEmail(),
     },
   ]);
   return { status: "ok" };
@@ -175,7 +176,7 @@ export async function submitQuote(_prev: FormState, form: FormData): Promise<For
   await notify("tour_requests", id, [
     {
       key: "owner",
-      to: process.env.OWNER_EMAIL,
+      to: await ownerEmail(),
       content: quoteOwnerAlert(q, tourLabel, `${siteUrl()}/admin/solicitudes/${id}`),
       replyTo: q.email,
     },
@@ -183,7 +184,7 @@ export async function submitQuote(_prev: FormState, form: FormData): Promise<For
       key: "autoreply",
       to: q.email,
       content: quoteAutoReply(q, tourLabel),
-      replyTo: process.env.OWNER_EMAIL,
+      replyTo: await ownerEmail(),
     },
   ]);
   return { status: "ok" };

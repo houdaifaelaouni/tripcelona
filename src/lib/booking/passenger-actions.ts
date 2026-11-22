@@ -1,5 +1,6 @@
 "use server";
 
+import { ownerEmail } from "@/lib/email/config";
 import { redirect } from "next/navigation";
 import { isLocale, localizePath } from "@/lib/i18n/config";
 import { sendBookingEmail, ticketAttachment, ticketMessage } from "@/lib/email/booking-emails";
@@ -104,7 +105,7 @@ export async function sendTicketTo(
       ...(await ticketMessage(booking)),
       attachments: await ticketAttachment(booking),
       idempotencyKey: `${booking.id}:ticket-to:${email}:${Date.now()}`,
-      replyTo: process.env.OWNER_EMAIL,
+      replyTo: await ownerEmail(),
     });
   } catch (error) {
     console.error(`[email] ticket copy for ${booking.reference} failed`, error);

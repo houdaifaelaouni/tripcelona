@@ -1230,6 +1230,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      app_secret: { Args: { p_name: string }; Returns: string };
       apply_payment_result: {
         Args: {
           p_amount_cents: number;
