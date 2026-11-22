@@ -269,7 +269,7 @@ export default async function TranslationsAdmin({
               </div>
             </Panel>
           ))}
-          <div className="fixed inset-x-0 bottom-0 z-20 flex justify-end border-t border-secondary bg-primary px-4 py-3 lg:left-[248px]">
+          <div className="fixed inset-x-0 bottom-0 z-20 flex justify-end border-t border-secondary bg-primary px-4 py-3 lg:left-(--sidebar-offset)">
             <Button type="submit" size="lg">
               Guardar traducción ({localeNames[lang]})
             </Button>

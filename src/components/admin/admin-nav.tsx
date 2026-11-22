@@ -1,110 +1,148 @@
 "use client";
 
 /**
- * Admin sidebar: the Untitled UI "sections with subheadings" sidebar
- * (MIT, © 2025 Untitled UI, https://github.com/untitleduico/react,
- * application/app-navigation) with Tripcelona's brand, nav groups and an
- * account card. Phones and tablets get the Untitled mobile header + drawer.
+ * Admin navigation, laid out like shadcn's "sidebar-07": a sidebar that
+ * collapses to icons (rail + Ctrl/⌘+B), a brand menu at the top, collapsible
+ * section groups with their pages underneath, and the signed-in account menu
+ * at the bottom. Below lg it becomes a sheet opened from the top bar.
  */
 import {
-  Activity,
-  BarChartSquare02,
-  BookOpen01,
-  Announcement02,
-  LayoutAlt01,
-  Calendar,
-  CreditCard01,
-  File04,
-  HelpCircle,
-  Home02,
-  Image01,
-  Inbox01,
-  Link01,
-  LinkExternal01,
-  LogOut01,
-  Map01,
-  Menu02,
-  MessageSquare01,
-  Settings01,
-  SwitchHorizontal01,
-  User01,
-  Users01,
-  Globe01,
-  X as CloseIcon,
-} from "@untitledui/icons";
+  ChevronRightIcon,
+  ChevronsUpDownIcon,
+  ExternalLinkIcon,
+  FileTextIcon,
+  LayoutDashboardIcon,
+  LogOutIcon,
+  MegaphoneIcon,
+  Settings2Icon,
+  SettingsIcon,
+  TicketIcon,
+  UserIcon,
+  WalletIcon,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import type { ReactNode } from "react";
-import {
-  Button as AriaButton,
-  Dialog as AriaDialog,
-  DialogTrigger as AriaDialogTrigger,
-  Modal as AriaModal,
-  ModalOverlay as AriaModalOverlay,
-  RouterProvider,
-} from "react-aria-components";
-import { NavItemBase } from "@/components/uui/application/app-navigation/base-components/nav-item";
-import { Avatar } from "@/components/uui/base/avatar/avatar";
-import { cx } from "@/components/uui/utils/cx";
-import { signOut } from "@/lib/admin/auth-actions";
+import { useTransition, type ReactNode } from "react";
+import { RouterProvider } from "react-aria-components";
 import { Logo } from "@/components/brand/logo";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { signOut } from "@/lib/admin/auth-actions";
 
-type Item = { href: string; label: string; icon: typeof Map01; ownerOnly?: boolean };
-const GROUPS: { label: string; items: Item[] }[] = [
-  { label: "General", items: [{ href: "/admin", label: "Panel", icon: BarChartSquare02 }] },
+type Page = { href: string; label: string; ownerOnly?: boolean };
+type Section = { label: string; icon: LucideIcon; href?: string; pages?: Page[] };
+
+/** Every admin page, grouped by what the team does with it. */
+const NAV: Section[] = [
+  { label: "Panel", icon: LayoutDashboardIcon, href: "/admin" },
   {
     label: "Ventas",
-    items: [
-      { href: "/admin/excursiones", label: "Excursiones", icon: Map01 },
-      { href: "/admin/reservas", label: "Reservas", icon: Calendar, ownerOnly: true },
-      { href: "/admin/solicitudes", label: "Solicitudes", icon: Inbox01, ownerOnly: true },
+    icon: TicketIcon,
+    pages: [
+      { href: "/admin/excursiones", label: "Excursiones" },
+      { href: "/admin/reservas", label: "Reservas", ownerOnly: true },
+      { href: "/admin/solicitudes", label: "Solicitudes", ownerOnly: true },
     ],
   },
   {
     label: "Marketing",
-    items: [
-      { href: "/admin/integraciones", label: "Integraciones", icon: Announcement02 },
-      { href: "/admin/landings", label: "Landings", icon: LayoutAlt01 },
+    icon: MegaphoneIcon,
+    pages: [
+      { href: "/admin/integraciones", label: "Integraciones" },
+      { href: "/admin/landings", label: "Landings" },
     ],
   },
   {
     label: "Contenido",
-    items: [
-      { href: "/admin/inicio", label: "Página de inicio", icon: Home02 },
-      { href: "/admin/navegacion", label: "Menú y pie", icon: Link01 },
-      { href: "/admin/blog", label: "Blog", icon: BookOpen01 },
-      { href: "/admin/paginas", label: "Páginas", icon: File04 },
-      { href: "/admin/faqs", label: "Preguntas frecuentes", icon: HelpCircle },
-      { href: "/admin/opiniones", label: "Opiniones", icon: MessageSquare01 },
-      { href: "/admin/medios", label: "Medios", icon: Image01 },
-      { href: "/admin/traducciones", label: "Traducciones", icon: Globe01 },
+    icon: FileTextIcon,
+    pages: [
+      { href: "/admin/inicio", label: "Página de inicio" },
+      { href: "/admin/navegacion", label: "Menú y pie" },
+      { href: "/admin/blog", label: "Blog" },
+      { href: "/admin/paginas", label: "Páginas" },
+      { href: "/admin/faqs", label: "Preguntas frecuentes" },
+      { href: "/admin/opiniones", label: "Opiniones" },
+      { href: "/admin/medios", label: "Medios" },
+      { href: "/admin/traducciones", label: "Traducciones" },
     ],
   },
   {
     label: "Operaciones",
-    items: [
-      { href: "/admin/pagos", label: "Pagos", icon: CreditCard01, ownerOnly: true },
-      { href: "/admin/actividad", label: "Actividad", icon: Activity, ownerOnly: true },
-      {
-        href: "/admin/redirecciones",
-        label: "Redirecciones",
-        icon: SwitchHorizontal01,
-        ownerOnly: true,
-      },
+    icon: WalletIcon,
+    pages: [
+      { href: "/admin/pagos", label: "Pagos", ownerOnly: true },
+      { href: "/admin/actividad", label: "Actividad", ownerOnly: true },
+      { href: "/admin/redirecciones", label: "Redirecciones", ownerOnly: true },
     ],
   },
   {
-    label: "Cuenta",
-    items: [
-      { href: "/admin/equipo", label: "Equipo", icon: Users01, ownerOnly: true },
-      { href: "/admin/ajustes", label: "Ajustes", icon: Settings01, ownerOnly: true },
-      { href: "/admin/cuenta", label: "Mi cuenta", icon: User01 },
+    label: "Configuración",
+    icon: Settings2Icon,
+    pages: [
+      { href: "/admin/equipo", label: "Equipo", ownerOnly: true },
+      { href: "/admin/ajustes", label: "Ajustes", ownerOnly: true },
+      { href: "/admin/cuenta", label: "Mi cuenta" },
     ],
   },
 ];
 
+/** Pages without their own menu entry, shown under a parent in the top bar. */
+const DETAIL_PARENTS: Record<string, string> = {
+  "/admin/salidas": "/admin/excursiones",
+  "/admin/billetes": "/admin/reservas",
+};
+
 const isActive = (path: string, href: string) =>
   href === "/admin" ? path === "/admin" : path === href || path.startsWith(`${href}/`);
+
+type Staff = { role: "owner" | "editor"; email: string; name: string | null };
+
+function visibleNav(role: Staff["role"]) {
+  return NAV.map((s) => ({
+    ...s,
+    pages: s.pages?.filter((p) => role === "owner" || !p.ownerOnly),
+  })).filter((s) => s.href || s.pages?.length);
+}
+
+/** Section + page for the top bar, e.g. "Ventas / Reservas". */
+function crumbs(path: string, nav: Section[]): [string, string | null] {
+  const parent = Object.entries(DETAIL_PARENTS).find(([p]) => path.startsWith(`${p}/`))?.[1];
+  const target = parent ?? path;
+  for (const s of nav) {
+    if (s.href && isActive(target, s.href)) return [s.label, null];
+    const page = s.pages?.find((p) => isActive(target, p.href));
+    if (page) return [s.label, page.label];
+  }
+  return ["Panel", null];
+}
 
 /** React Aria links navigate with the Next router (client-side). */
 export function AdminRouter({ children }: { children: ReactNode }) {
@@ -112,6 +150,7 @@ export function AdminRouter({ children }: { children: ReactNode }) {
   return <RouterProvider navigate={(href) => router.push(href)}>{children}</RouterProvider>;
 }
 
+/** The owner's logo, unchanged, with an "Admin" tag (also used on the login screens). */
 export function SidebarBrand() {
   return (
     <Link href="/admin" className="flex items-center gap-2 rounded-md">
@@ -123,117 +162,274 @@ export function SidebarBrand() {
   );
 }
 
-type Staff = { role: "owner" | "editor"; email: string; name: string | null };
-
-function SidebarContent({ staff }: { staff: Staff }) {
-  const path = usePathname();
+function BrandMenu() {
+  const { isMobile } = useSidebar();
   return (
-    <aside className="flex h-full w-full max-w-full flex-col overflow-auto bg-secondary pt-5 lg:w-[248px] lg:border-r lg:border-secondary">
-      <div className="px-5">
-        <SidebarBrand />
-      </div>
-      <nav aria-label="Admin" className="mt-6">
-        <ul>
-          {GROUPS.map((group) => {
-            const items = group.items.filter((i) => staff.role === "owner" || !i.ownerOnly);
-            if (!items.length) return null;
-            return (
-              <li key={group.label}>
-                <p className="px-5 pb-1.5 text-[11px] font-medium tracking-[0.06em] text-quaternary uppercase">
-                  {group.label}
-                </p>
-                <ul className="px-3 pb-5">
-                  {items.map((item) => (
-                    <li key={item.href} className="py-px">
-                      <NavItemBase
-                        type="link"
-                        href={item.href}
-                        icon={item.icon}
-                        current={isActive(path, item.href)}
-                      >
-                        {item.label}
-                      </NavItemBase>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-      <div className="mt-auto flex flex-col gap-3 px-3 pb-3">
-        <NavItemBase type="link" href="/" icon={LinkExternal01} target="_blank">
-          Ver web
-        </NavItemBase>
-        <div className="relative flex items-center gap-3 rounded-lg bg-primary p-2.5 ring-1 ring-secondary ring-inset">
-          <Avatar size="md" initials={(staff.name ?? staff.email).slice(0, 1).toUpperCase()} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-primary" title={staff.email}>
-              {staff.name ?? staff.email}
-            </p>
-            <p className="truncate text-sm text-tertiary">
-              {staff.role === "owner" ? "Propietario" : "Editor"}
-            </p>
-          </div>
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="flex size-9 items-center justify-center rounded-md text-fg-quaternary hover:bg-primary_hover hover:text-fg-quaternary_hover"
-            >
-              <LogOut01 aria-hidden className="size-5" />
-              <span className="sr-only">Salir</span>
-            </button>
-          </form>
-        </div>
-      </div>
-    </aside>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <SidebarMenuButton size="lg">
+            <span className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-primary ring-1 ring-secondary ring-inset">
+              <Logo className="h-auto w-7" />
+            </span>
+            <span className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold text-primary">Tripcelona</span>
+              <span className="truncate text-xs text-tertiary">Panel de administración</span>
+            </span>
+            <ChevronsUpDownIcon aria-hidden className="ml-auto" />
+          </SidebarMenuButton>
+          <DropdownMenuContent
+            aria-label="Tripcelona"
+            placement={isMobile ? "bottom start" : "right top"}
+          >
+            <DropdownMenuGroup label="Tripcelona">
+              <DropdownMenuItem href="/admin" icon={LayoutDashboardIcon}>
+                Ir al panel
+              </DropdownMenuItem>
+              <DropdownMenuItem href="/" target="_blank" icon={ExternalLinkIcon}>
+                Ver la web
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }
 
-/** Fixed sidebar from lg up; mobile header with a drawer below lg. */
-export function AdminSidebar({ staff }: { staff: Staff }) {
-  const content = <SidebarContent staff={staff} />;
+function NavMain({ nav }: { nav: Section[] }) {
+  const path = usePathname();
+  const { collapsed } = useSidebar();
   return (
-    <>
-      <AriaDialogTrigger>
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-secondary bg-primary p-3 pl-4 lg:hidden">
-          <SidebarBrand />
-          <AriaButton
-            aria-label="Abrir menú"
-            className="group flex items-center justify-center rounded-lg bg-primary p-2 text-fg-secondary outline-focus-ring hover:bg-primary_hover focus-visible:outline-2 focus-visible:outline-offset-2"
-          >
-            <Menu02 aria-hidden className="size-6" />
-          </AriaButton>
-        </header>
-        <AriaModalOverlay
-          isDismissable
-          className={({ isEntering, isExiting }) =>
-            cx(
-              "fixed inset-0 z-50 cursor-pointer bg-overlay/70 pr-16 backdrop-blur-md lg:hidden",
-              isEntering && "duration-300 ease-in-out animate-in fade-in",
-              isExiting && "duration-200 ease-in-out animate-out fade-out",
-            )
+    <SidebarGroup>
+      <SidebarGroupLabel>Gestión</SidebarGroupLabel>
+      <SidebarMenu>
+        {nav.map((section) => {
+          const Icon = section.icon;
+          if (section.href) {
+            return (
+              <SidebarMenuItem key={section.label}>
+                <SidebarMenuButton
+                  href={section.href}
+                  tooltip={section.label}
+                  isActive={isActive(path, section.href)}
+                >
+                  <Icon aria-hidden />
+                  <span>{section.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
           }
-        >
-          {({ state }) => (
-            <>
-              <AriaButton
-                aria-label="Cerrar menú"
-                onPress={() => state.close()}
-                className="fixed top-2.5 right-3 flex cursor-pointer items-center justify-center rounded-lg p-2 text-fg-white/70 hover:bg-primary/10 hover:text-fg-white"
-              >
-                <CloseIcon aria-hidden className="size-6" />
-              </AriaButton>
-              <AriaModal className="w-full max-w-74 cursor-auto">
-                <AriaDialog aria-label="Menú del panel" className="h-dvh outline-hidden">
-                  {content}
-                </AriaDialog>
-              </AriaModal>
-            </>
-          )}
-        </AriaModalOverlay>
-      </AriaDialogTrigger>
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">{content}</div>
+          const pages = section.pages ?? [];
+          const open = pages.some((p) => isActive(path, p.href));
+
+          // Collapsed to icons: the section opens its pages in a flyout.
+          if (collapsed) {
+            return (
+              <SidebarMenuItem key={section.label}>
+                <DropdownMenu>
+                  <SidebarMenuButton isActive={open} aria-label={section.label}>
+                    <Icon aria-hidden />
+                    <span>{section.label}</span>
+                  </SidebarMenuButton>
+                  <DropdownMenuContent
+                    aria-label={section.label}
+                    placement="right top"
+                    offset={10}
+                    className="min-w-48"
+                  >
+                    <DropdownMenuGroup label={section.label}>
+                      {pages.map((p) => (
+                        <DropdownMenuItem
+                          key={p.href}
+                          href={p.href}
+                          className={isActive(path, p.href) ? "text-brand-secondary" : undefined}
+                        >
+                          {p.label}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            );
+          }
+
+          return (
+            <SidebarMenuItem key={section.label}>
+              <Collapsible defaultExpanded={open}>
+                <SidebarMenuButton slot="trigger" tooltip={section.label}>
+                  <Icon aria-hidden className={open ? "text-fg-brand-primary!" : undefined} />
+                  <span className={open ? "text-primary" : undefined}>{section.label}</span>
+                  <ChevronRightIcon
+                    aria-hidden
+                    className="ml-auto transition-transform duration-200 group-data-expanded/collapsible:rotate-90"
+                  />
+                </SidebarMenuButton>
+                <CollapsibleContent>
+                  <SidebarMenuSub className="mt-0.5">
+                    {pages.map((p) => (
+                      <SidebarMenuSubItem key={p.href}>
+                        <SidebarMenuSubButton href={p.href} isActive={isActive(path, p.href)}>
+                          <span>{p.label}</span>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </Collapsible>
+            </SidebarMenuItem>
+          );
+        })}
+      </SidebarMenu>
+    </SidebarGroup>
+  );
+}
+
+function NavShortcuts() {
+  return (
+    <SidebarGroup className="mt-auto">
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton href="/" target="_blank" tooltip="Ver la web">
+            <ExternalLinkIcon aria-hidden />
+            <span>Ver la web</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarGroup>
+  );
+}
+
+function initials(staff: Staff) {
+  const base = staff.name?.trim() || staff.email;
+  const parts = base.split(/[\s@._-]+/).filter(Boolean);
+  return ((parts[0]?.[0] ?? "") + (staff.name ? (parts[1]?.[0] ?? "") : "")).toUpperCase() || "A";
+}
+
+function NavUser({ staff }: { staff: Staff }) {
+  const { isMobile } = useSidebar();
+  const [pending, startTransition] = useTransition();
+  const name = staff.name?.trim() || staff.email.split("@")[0];
+  const role = staff.role === "owner" ? "Propietario" : "Editor";
+  const card = (
+    <>
+      <Avatar className="size-8 rounded-lg">
+        <AvatarFallback className="rounded-lg">{initials(staff)}</AvatarFallback>
+      </Avatar>
+      <span className="grid flex-1 text-left text-sm leading-tight">
+        <span className="truncate font-semibold text-primary">{name}</span>
+        <span className="truncate text-xs text-tertiary">{staff.email}</span>
+      </span>
     </>
+  );
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <SidebarMenuButton size="lg">
+            {card}
+            <ChevronsUpDownIcon aria-hidden className="ml-auto" />
+          </SidebarMenuButton>
+          <DropdownMenuContent
+            aria-label="Cuenta"
+            placement={isMobile ? "top" : "right bottom"}
+            className="min-w-60"
+          >
+            <DropdownMenuLabel className="flex items-center gap-2 px-2.5">
+              {card}
+              <span className="rounded-md bg-tertiary px-1.5 py-0.5 text-[11px] font-medium text-tertiary">
+                {role}
+              </span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem href="/admin/cuenta" icon={UserIcon}>
+              Mi cuenta
+            </DropdownMenuItem>
+            {staff.role === "owner" ? (
+              <DropdownMenuItem href="/admin/ajustes" icon={SettingsIcon}>
+                Ajustes
+              </DropdownMenuItem>
+            ) : null}
+            <DropdownMenuItem href="/" target="_blank" icon={ExternalLinkIcon}>
+              Ver la web
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              icon={LogOutIcon}
+              isDisabled={pending}
+              onAction={() => startTransition(() => signOut())}
+            >
+              Cerrar sesión
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+}
+
+function TopBar({ nav }: { nav: Section[] }) {
+  const path = usePathname();
+  const [section, page] = crumbs(path, nav);
+  return (
+    <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b border-secondary bg-primary/90 px-4 backdrop-blur transition-[height] duration-200 ease-linear md:px-6 lg:group-data-[state=collapsed]/sidebar-wrapper:h-12 print:hidden">
+      <SidebarTrigger className="-ml-1" />
+      <span aria-hidden className="mx-1 h-4 w-px bg-border-secondary" />
+      <nav aria-label="Ruta" className="min-w-0 text-sm">
+        <ol className="flex items-center gap-1.5 truncate">
+          <li className={page ? "hidden text-tertiary sm:block" : "font-medium text-primary"}>
+            {section}
+          </li>
+          {page ? (
+            <>
+              <li aria-hidden className="hidden text-quaternary sm:block">
+                /
+              </li>
+              <li className="truncate font-medium text-primary">{page}</li>
+            </>
+          ) : null}
+        </ol>
+      </nav>
+      <Link href="/admin" className="ml-auto rounded-md lg:hidden" aria-label="Tripcelona, panel">
+        <Logo className="h-8" />
+      </Link>
+    </header>
+  );
+}
+
+/** The whole admin frame: sidebar + top bar + page content. */
+export function AdminShell({
+  staff,
+  defaultOpen,
+  children,
+}: {
+  staff: Staff;
+  defaultOpen: boolean;
+  children: ReactNode;
+}) {
+  const nav = visibleNav(staff.role);
+  return (
+    <AdminRouter>
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <Sidebar label="Menú del panel">
+          <SidebarHeader>
+            <BrandMenu />
+          </SidebarHeader>
+          <SidebarContent>
+            <NavMain nav={nav} />
+            <NavShortcuts />
+          </SidebarContent>
+          <SidebarFooter>
+            <NavUser staff={staff} />
+          </SidebarFooter>
+          <SidebarRail />
+        </Sidebar>
+        <SidebarInset>
+          <TopBar nav={nav} />
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </AdminRouter>
   );
 }
