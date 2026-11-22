@@ -168,7 +168,7 @@ function BrandMenu() {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <SidebarMenuButton size="lg" aria-label="Menú de Tripcelona">
+          <SidebarMenuButton size="lg">
             <span className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-primary ring-1 ring-secondary ring-inset">
               <Logo className="h-auto w-7" />
             </span>
@@ -327,7 +327,7 @@ function NavUser({ staff }: { staff: Staff }) {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <SidebarMenuButton size="lg" aria-label={`Cuenta: ${staff.email}`}>
+          <SidebarMenuButton size="lg">
             {card}
             <ChevronsUpDownIcon aria-hidden className="ml-auto" />
           </SidebarMenuButton>
