@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Suspense } from "react";
-import { AdminRouter, AdminSidebar } from "@/components/admin/admin-nav";
+import { AdminShell } from "@/components/admin/admin-nav";
 import { LoadingScreen } from "@/components/admin/loading";
+import { SIDEBAR_COOKIE } from "@/components/ui/sidebar-cookie";
 import { requireStaff } from "@/lib/auth/staff";
 
 export const metadata: Metadata = {
@@ -19,19 +21,17 @@ export default function PanelLayout({ children }: LayoutProps<"/admin">) {
   );
 }
 
-/** Untitled UI application layout: sidebar navigation + content column. */
+/** shadcn "sidebar-07" style frame: collapsible sidebar + top bar + content column. */
 async function Shell({ children }: { children: React.ReactNode }) {
-  const staff = await requireStaff();
+  const [staff, jar] = await Promise.all([requireStaff(), cookies()]);
   return (
-    <AdminRouter>
-      <div className="print:hidden">
-        <AdminSidebar staff={{ role: staff.role, email: staff.email, name: staff.name ?? null }} />
-      </div>
-      <div className="lg:pl-[248px] print:pl-0">
-        <main id="contenido" tabIndex={-1} className="px-4 pt-6 pb-12 outline-none md:px-8 md:pt-8">
-          <div className="mx-auto max-w-[1180px]">{children}</div>
-        </main>
-      </div>
-    </AdminRouter>
+    <AdminShell
+      staff={{ role: staff.role, email: staff.email, name: staff.name ?? null }}
+      defaultOpen={jar.get(SIDEBAR_COOKIE)?.value !== "false"}
+    >
+      <main id="contenido" tabIndex={-1} className="px-4 pt-6 pb-12 outline-none md:px-8 md:pt-8">
+        <div className="mx-auto max-w-[1180px]">{children}</div>
+      </main>
+    </AdminShell>
   );
 }
