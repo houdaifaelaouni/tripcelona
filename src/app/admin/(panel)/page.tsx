@@ -4,7 +4,6 @@ import { Flash } from "@/components/admin/flash";
 import { CalendarDays, Euro, Inbox, Users } from "lucide-react";
 import {
   BookingStatus,
-  DepartureStatus,
   EmptyState,
   PageTitle,
   Panel,
@@ -18,19 +17,23 @@ import {
 import { OccupancyChart, SalesChart } from "@/components/admin/dashboard-charts";
 import { Alert } from "@/components/admin/alert";
 import { ButtonLink } from "@/components/admin/button";
+import { DeparturesCalendar, type CalendarDeparture } from "@/components/admin/departures-calendar";
+import { TourPerformance, type TourPerf } from "@/components/admin/tour-performance";
 import { requireStaff } from "@/lib/auth/staff";
 import { assessHealth, loadHealthInput, type HealthReport } from "@/lib/ops/health";
 import { pendingMigrations } from "@/lib/ops/schema-check";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { formatDateShort, formatPrice, formatTime } from "@/lib/tours/format";
+import { formatDateShort, formatPrice } from "@/lib/tours/format";
 
 export const metadata: Metadata = { title: "Panel" };
 
 export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
   const staff = await requireStaff();
-  const { aviso } = await searchParams;
+  const { aviso, mes } = await searchParams;
   const db = await createClient();
+  const calendar = await loadCalendar(db, typeof mes === "string" ? mes : undefined);
+  const performance = staff.role === "owner" ? await loadPerformance(db) : null;
 
   const { data: departures } = await db
     .from("tour_departures")
@@ -228,56 +231,14 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
         </Panel>
       </div>
       {health !== undefined && <HealthPanel report={health} />}
-      <div className="grid gap-x-6 xl:grid-cols-2">
-        <Panel
-          title="Próximas salidas"
-          actions={
-            <ButtonLink href="/admin/excursiones" variant="outline" size="sm">
-              Ver excursiones
-            </ButtonLink>
-          }
-        >
-          {departures?.length ? (
-            <Table className="min-w-[480px]">
-              <thead>
-                <tr>
-                  <th className={th}>Fecha</th>
-                  <th className={th}>Excursión</th>
-                  <th className={th}>Plazas</th>
-                  <th className={th}>Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {departures.map((d) => (
-                  <tr key={d.id}>
-                    <td className={`${td} whitespace-nowrap`}>
-                      {formatDateShort(d.starts_at)} · {formatTime(d.starts_at)}
-                    </td>
-                    <td className={td}>
-                      <Link
-                        className="font-medium text-primary hover:text-brand-secondary"
-                        href={`/admin/excursiones/${d.tours.id}`}
-                      >
-                        {d.tours.title}
-                      </Link>
-                    </td>
-                    <td className={`${td} whitespace-nowrap`}>
-                      {d.seats_taken} / {d.capacity}
-                    </td>
-                    <td className={td}>
-                      <DepartureStatus status={d.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          ) : (
-            <EmptyState illustration="calendar" title="Sin salidas programadas">
-              Añade fechas desde la ficha de cada excursión para abrir la venta.
-            </EmptyState>
-          )}
-        </Panel>
-
+      <DeparturesCalendar
+        departures={calendar.departures}
+        year={calendar.year}
+        month={calendar.month}
+        canSeePassengers={staff.role === "owner"}
+      />
+      {performance && performance.length > 0 && <TourPerformance tours={performance} days={30} />}
+      <div>
         {bookings && (
           <Panel
             title="Últimas reservas"
@@ -332,6 +293,93 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
       </div>
     </>
   );
+}
+
+type Db = Awaited<ReturnType<typeof createClient>>;
+const TZ_DAY = (iso: string) =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date(iso));
+
+/** Departures of one month (`?mes=YYYY-MM`, default: this month in Madrid). */
+async function loadCalendar(db: Db, mes?: string) {
+  const [cy, cm] = TZ_DAY(new Date().toISOString()).split("-").map(Number);
+  const m = /^(\d{4})-(\d{2})$/.exec(mes ?? "");
+  const year = m ? Number(m[1]) : cy;
+  const month = m && Number(m[2]) >= 1 && Number(m[2]) <= 12 ? Number(m[2]) : cm;
+  const prefix = `${year}-${String(month).padStart(2, "0")}`;
+  // One day of margin each side, then keep the ones that fall in the month in Madrid.
+  const from = new Date(Date.UTC(year, month - 1, 0)).toISOString();
+  const to = new Date(Date.UTC(year, month, 2)).toISOString();
+  const { data } = await db
+    .from("tour_departures")
+    .select("id, starts_at, capacity, seats_taken, status, price_cents, tours(id, title)")
+    .gte("starts_at", from)
+    .lt("starts_at", to)
+    .order("starts_at")
+    .limit(500);
+  const departures: CalendarDeparture[] = (data ?? [])
+    .filter((d) => TZ_DAY(d.starts_at).startsWith(prefix))
+    .map((d) => ({
+      id: d.id,
+      startsAt: d.starts_at,
+      capacity: d.capacity,
+      seatsTaken: d.seats_taken,
+      status: d.status,
+      priceCents: d.price_cents,
+      tourId: d.tours.id,
+      tourTitle: d.tours.title,
+    }));
+  return { year, month, departures };
+}
+
+/** Owner only: paid sales per tour in the last 30 days, with their departures. */
+async function loadPerformance(db: Db): Promise<TourPerf[]> {
+  const now = Date.now();
+  const { data: sold } = await db
+    .from("bookings")
+    .select("total_cents, travellers, tour_departures(tours(id, title))")
+    .eq("status", "paid")
+    .gte("created_at", new Date(now - 30 * 864e5).toISOString())
+    .limit(5000);
+  const map = new Map<string, TourPerf>();
+  for (const b of sold ?? []) {
+    const tour = b.tour_departures?.tours;
+    if (!tour) continue;
+    const row = map.get(tour.id) ?? {
+      id: tour.id,
+      title: tour.title,
+      revenueCents: 0,
+      bookings: 0,
+      travellers: 0,
+      departures: [],
+    };
+    row.revenueCents += b.total_cents;
+    row.bookings += 1;
+    row.travellers += b.travellers;
+    map.set(tour.id, row);
+  }
+  const tours = [...map.values()].sort((a, b) => b.revenueCents - a.revenueCents).slice(0, 10);
+  if (!tours.length) return [];
+  const { data: deps } = await db
+    .from("tour_departures")
+    .select("id, tour_id, starts_at, capacity, seats_taken, status")
+    .in(
+      "tour_id",
+      tours.map((t) => t.id),
+    )
+    .gte("starts_at", new Date(now - 90 * 864e5).toISOString())
+    .lte("starts_at", new Date(now + 180 * 864e5).toISOString())
+    .order("starts_at")
+    .limit(1000);
+  for (const d of deps ?? []) {
+    map.get(d.tour_id)?.departures.push({
+      id: d.id,
+      startsAt: d.starts_at,
+      capacity: d.capacity,
+      seatsTaken: d.seats_taken,
+      status: d.status,
+    });
+  }
+  return tours;
 }
 
 const STATUS_TEXT: Record<
